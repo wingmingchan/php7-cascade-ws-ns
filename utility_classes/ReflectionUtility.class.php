@@ -42,9 +42,9 @@ Returns the class information given right before the class definition.
         
         foreach( $methods as $method )
         {
-        	// skip private methods
+            // skip private methods
             if( self::getMethodSignature( $method ) == "" )
-            	continue;
+                continue;
             
             $class_doc .= S_LI .
                 self::getMethodSignature( $method ) .
@@ -202,10 +202,10 @@ Returns an unordered list of signatures of methods defined in the class.
         
         foreach( $methods as $method )
         {
-        	// skip empty string
-        	if( self::getMethodSignature( $method ) == "" )
-        		continue;
-        		
+            // skip empty string
+            if( self::getMethodSignature( $method ) == "" )
+                continue;
+                
             $method_info .= S_LI . S_CODE . self::getMethodSignature( $method ) . E_CODE . E_LI;
         }
         
@@ -318,9 +318,9 @@ Displays the signature of a method.
             $method->getDeclaringClass()->getName() . "::" : "" );
         
         $modifiers = ( method_exists( $method, "getDeclaringClass" ) ?
-        	implode( ' ', \Reflection::getModifierNames( $method->getModifiers() ) ) :
-        	"" );
-        	
+            implode( ' ', \Reflection::getModifierNames( $method->getModifiers() ) ) :
+            "" );
+            
         $return_type = ( method_exists( $method, "getReturnType" )  ? 
             $method->getReturnType() : "" );
         
@@ -349,42 +349,42 @@ Displays the signature of a method.
                 
                 if( method_exists( $method, "getDeclaringClass" ) && $param->isOptional() )
                 {
-                	// ReflectionException: Cannot determine default value for internal functions
-                	try
-                	{   
-						$default_value = $param->getDefaultValue();
-				
-						if( isset( $default_value ) )
-						{
-							if( $default_value == 1 && $param_type == "bool" )
-							{
-								$method_info .= " = true";
-							}
-							elseif( $default_value == 0 &&  $param_type == "bool" && $default_value != "" )
-							{
-								$method_info .= " = false";
-							}
-							elseif( $default_value == "" )
-							{
-								if( $default_value === "" )
-									$method_info .= " = \"\"";
-								else
-									$method_info .= " = false";
-							}
-							else
-							{
-								$method_info .= " = $default_value";
-							}
-						}
-						else
-						{
-							$method_info .= ' = NULL';
-						}
-					}
-					catch( \ReflectionException $e )
-					{
-						// do nothing
-					}
+                    // ReflectionException: Cannot determine default value for internal functions
+                    try
+                    {   
+                        $default_value = $param->getDefaultValue();
+                
+                        if( isset( $default_value ) )
+                        {
+                            if( $default_value == 1 && $param_type == "bool" )
+                            {
+                                $method_info .= " = true";
+                            }
+                            elseif( $default_value == 0 &&  $param_type == "bool" && $default_value != "" )
+                            {
+                                $method_info .= " = false";
+                            }
+                            elseif( $default_value == "" )
+                            {
+                                if( $default_value === "" )
+                                    $method_info .= " = \"\"";
+                                else
+                                    $method_info .= " = false";
+                            }
+                            else
+                            {
+                                $method_info .= " = $default_value";
+                            }
+                        }
+                        else
+                        {
+                            $method_info .= ' = NULL';
+                        }
+                    }
+                    catch( \ReflectionException $e )
+                    {
+                        // do nothing
+                    }
                 }
                     
                 if( $count < $num_of_params )
@@ -398,7 +398,7 @@ Displays the signature of a method.
         $method_info .= ")";
         
         if( strpos( $modifiers, "private" ) !== false )
-        	return "";
+            return "";
         
         return trim( $method_info );
     }
