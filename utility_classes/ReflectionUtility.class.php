@@ -289,7 +289,7 @@ Displays the return type of a method.
 <example>u\ReflectionUtility::showMethodReturnType( "cascade_ws_utility\ReflectionUtility", "showMethod" );</example>
 <return-type>void</return-type></documentation>
 */
-    public static function showMethodReturnType( $obj,/* string */$method_name,/* bool */$with_hr=false )
+    public static function showMethodReturnType( $obj, string $method_name, bool $with_hr=false )
     {
         echo self::getXmlValue( $obj, $method_name, "return-type", S_PRE, E_PRE );
         if( $with_hr ) echo HR;
