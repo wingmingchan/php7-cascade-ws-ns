@@ -498,7 +498,7 @@ Creates an asset object, bridging this class and the Asset classes.
 Gets the audits object after the call of readAudits().
 @return stdClass The audits object
 <documentation><description>Gets the audits object after the call of readAudits().</description>
-<example>u\DebugUtility::dump( $service->getAudits();</example>
+<example>u\DebugUtility::dump( $service->getAudits() );</example>
 <return-type>stdClass</return-type></documentation>
 */
     public function getAudits() : \stdClass
