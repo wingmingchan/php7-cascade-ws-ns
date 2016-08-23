@@ -5,6 +5,7 @@
   * MIT Licensed
   * Modification history:
   * 8/23/2016 Added more documentation and split private methods.
+  * 8/22/2016 Added more methods.
   * 8/16/2016 Added getFunctionSignature and showFunctionSignature.
   * 8/15/2016 Added getClassDocumentation.
   * 8/14/2016 Class being tested with extra comment.
@@ -589,7 +590,18 @@ method signatures.</p></description>
             {
                 if( $child->getName() == $ele_name )
                 {
-                    return $child->asXML();
+                	if( $child->getName() == "example" || 
+                		$child->getName() == "exception" ||
+                		$child->getName() == "return-type" )
+                		return $child->__toString(); // strip XML markups
+                	else
+                	{
+                		$str = $child->asXML();
+                		$str = str_replace( "<description>", "", $str );
+                		$str = str_replace( "</description>", "", $str );
+                	}
+                	
+                    return $str;
                 }
             }
             return c\M::INFORMATION_NOT_AVAILABLE;
