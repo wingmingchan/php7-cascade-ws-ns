@@ -43,7 +43,27 @@ class information.</p></description>
     public static function getClassDocumentation( $obj, bool $with_hr=false ) : string
     {
         $class_doc = "";
-        $r = new \ReflectionClass( $obj );
+        $r         = new \ReflectionClass( $obj );
+        
+        $constants = $r->getConstants();
+        
+        if( isset( $constants ) && count( $constants ) > 0 )
+        {
+            $class_doc = S_H2 . "Class Constants" . E_H2 . S_UL;
+            
+            foreach( $constants as $key => $value )
+            {
+                if( $value === false )
+                    $value = "false";
+                elseif( $value === true )
+                    $value = "true";
+
+                $class_doc .= S_LI . S_CODE . $key . E_CODE . ": $value" . E_LI;
+            }
+            
+            $class_doc .= E_UL;
+        }
+        
         $class_doc .= self::getClassInfo( $obj, $r ) . "<h2>Class API</h2>";
         
         $methods = $r->getMethods();
@@ -590,17 +610,17 @@ method signatures.</p></description>
             {
                 if( $child->getName() == $ele_name )
                 {
-                	if( $child->getName() == "example" || 
-                		$child->getName() == "exception" ||
-                		$child->getName() == "return-type" )
-                		return $child->__toString(); // strip XML markups
-                	else
-                	{
-                		$str = $child->asXML();
-                		$str = str_replace( "<description>", "", $str );
-                		$str = str_replace( "</description>", "", $str );
-                	}
-                	
+                    if( $child->getName() == "example" || 
+                        $child->getName() == "exception" ||
+                        $child->getName() == "return-type" )
+                        return $child->__toString(); // strip XML markups
+                    else
+                    {
+                        $str = $child->asXML();
+                        $str = str_replace( "<description>", "", $str );
+                        $str = str_replace( "</description>", "", $str );
+                    }
+                    
                     return $str;
                 }
             }
