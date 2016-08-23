@@ -1,5 +1,8 @@
 # php7-cascade-ws-ns
-My Cascade web service library, using namespaces, written in PHP 7. Last modified: Aug 16, 2016, 12:27 PM
+My Cascade web service library, using namespaces, written in PHP 7. Last modified: Aug 23, 2016, 12:27 PM
+
+<p style="color:red">Since I have just started making changes to my library, this will take months to finish. I will only post
+classes already converted.</p>
 
 1. For more information, visit http://www.upstate.edu/cascade-admin/web-services/index.php
 2. Examples and recipes: https://github.com/wingmingchan/php-cascade-ws-ns-examples
