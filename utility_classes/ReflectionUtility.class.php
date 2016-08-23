@@ -44,6 +44,7 @@ class information.</p></description>
     {
         $class_doc = "";
         $r         = new \ReflectionClass( $obj );
+        $class_doc .= self::getClassInfo( $obj, $r );
         
         $constants = $r->getConstants();
         
@@ -64,11 +65,8 @@ class information.</p></description>
             $class_doc .= E_UL;
         }
         
-        $class_doc .= self::getClassInfo( $obj, $r ) . "<h2>Class API</h2>";
-        
-        $methods = $r->getMethods();
-        
-        $class_doc .= S_UL;
+        $class_doc .= S_H2 . "Class API" . E_H2 . S_UL;
+        $methods   = $r->getMethods();
         
         foreach( $methods as $method )
         {
