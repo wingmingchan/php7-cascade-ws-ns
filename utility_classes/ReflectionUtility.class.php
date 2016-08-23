@@ -4,7 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
-  * 8/23/2016 Added more documentation and split private methods.
+  * 8/23/2016 Added more documentation and split private methods. Added getNameSpace.
   * 8/22/2016 Added more methods.
   * 8/16/2016 Added getFunctionSignature and showFunctionSignature.
   * 8/15/2016 Added getClassDocumentation.
@@ -288,6 +288,35 @@ The returned string does not include exception information.</p></description>
         $method_info .= E_UL;
         
         return $method_info;
+    }
+
+/**
+Returns the namespace of a class or the empty string.
+@param mixed $obj A string (the class name) or an object
+@return string The namespace
+<documentation><description><p>Returns the namespace of a class or the empty string.</p></description>
+<example>echo u\ReflectionUtility::getNameSpace( "cascade_ws_asset\Page" );</example>
+<return-type>string</return-type>
+<exception>ReflectionException</exception>
+</documentation>
+*/
+    public static function getNameSpace( $obj ) : string
+    {
+        $name_space = "";
+        $r          = new \ReflectionClass( $obj );
+        
+        if( method_exists( $r, "getConstants" ) &&
+            is_array( $r->getConstants() )
+        )
+        {
+            $constants = $r->getConstants();
+            DebugUtility::dump( $constants );
+            
+            if( isset( $constants[ "NAME_SPACE" ] ) )
+                $name_space = $constants[ "NAME_SPACE" ];
+        }
+        
+        return $name_space;
     }
     
 /**
