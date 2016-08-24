@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 8/24/2016 Add getClassDescription and getClassPostscript, and turn getClassInfo to private.
   * 8/23/2016 Added more documentation and split private methods. Added getNameSpace.
   * 8/22/2016 Added more methods.
   * 8/16/2016 Added getFunctionSignature and showFunctionSignature.
@@ -25,13 +26,16 @@ All methods provided in this class are static. For practical purposes, use only 
 methods are used to generate documentation pages in the cascade-admin site.
 The value of the <code>$obj</code> variable in these methods can be an object of any class,
 or a string (the full name of a class to be inspected).</p>
-</description></documentation>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/utility-class-test-code/reflection-utility.php">reflection-utility.php</a></li></ul></postscript>
+</documentation>
 */
 class ReflectionUtility
 {
 /**
 Returns the class information given right before the class definition.
 @param mixed $obj A string (the class name) or an object
+@param bool $with_hr Whether to include a horizontal rule
 <documentation><description><p>Returns the class information given right before the class definition.
 If <code>true</code> is passed in for <code>$with_hr</code>, then an &lt;hr/&gt; element will be added after the
 class information.</p></description>
@@ -44,7 +48,7 @@ class information.</p></description>
     {
         $class_doc = "";
         $r         = new \ReflectionClass( $obj );
-        $class_doc .= self::getClassInfo( $obj, $r );
+        $class_doc .= self::getClassDescription( $obj, $r );
         
         $constants = $r->getConstants();
         
@@ -81,7 +85,7 @@ class information.</p></description>
                 E_LI;
         }
         
-        $class_doc .= E_UL;
+        $class_doc .= E_UL . self::getClassPostscript( $obj, $r );
         
         if( $with_hr )
             $class_doc .= HR;
@@ -90,33 +94,27 @@ class information.</p></description>
     }
 
 /**
-Returns the class information given right before the class definition.
+Returns the content of the &lt;description&gt; element
+given right before the class definition.
 @param mixed $obj A string (the class name) or an object
-@param ReflectionClass The ReflectionClass object
-<documentation><description><p>Returns the class information given right before the class definition.
+@param ReflectionClass $r The ReflectionClass object
+@param bool $with_hr Whether to include a horizontal rule
+<documentation><description><p>Returns the content of the &lt;description&gt; element
+given right before the class definition.
 If <code>$r</code> is set, then <code>$obj</code> will be ignored.
 If <code>true</code> is passed in for <code>$with_hr</code>, then an &lt;hr/&gt; element will be added after the
-class information.</p></description>
-<example>echo u\ReflectionUtility::getClassInfo( "cascade_ws_utility\ReflectionUtility", NULL, true );</example>
+description.</p></description>
+<example>echo u\ReflectionUtility::getClassDescription( "cascade_ws_utility\ReflectionUtility", NULL, true );</example>
 <return-type>string</return-type>
 <exception>ReflectionException</exception>
 </documentation>
 */
-    public static function getClassInfo( $obj, \ReflectionClass $r=NULL, $with_hr=false ) : string
+    public static function getClassDescription( 
+        $obj, \ReflectionClass $r=NULL, bool $with_hr=false ) : string
     {
-        $class_info = "";
-        
-        if( !isset( $r ) )
-            $r = new \ReflectionClass( $obj );
-            
-        $class_info = self::getClassXmlValue( $r->getDocComment(), "description" );
-        
-        if( $with_hr )
-            $class_info .= HR;
-        
-        return $class_info;
+        return self::getClassInfo( $obj, $r, "description", $with_hr );
     }
-    
+
 /**
 Returns the class name.
 @param mixed $obj A string (the class name) or an object
@@ -132,6 +130,27 @@ Returns the class name.
         $r = new \ReflectionClass( $obj );
         return $r->getName();
     }
+    
+/**
+Returns the content of the &lt;postscript&gt; element
+given right before the class definition.
+@param mixed $obj A string (the class name) or an object
+@param ReflectionClass $r The ReflectionClass object
+@param bool $with_hr Whether to include a horizontal rule
+<documentation><description><p>Returns the content of the &lt;postscript&gt; element
+given right before the class definition.
+If <code>$r</code> is set, then <code>$obj</code> will be ignored.
+If <code>true</code> is passed in for <code>$with_hr</code>, then an &lt;hr/&gt; element will be added after the
+postscript.</p></description>
+<example>echo u\ReflectionUtility::getClassPostscript( "cascade_ws_utility\ReflectionUtility", NULL, true );</example>
+<return-type>string</return-type>
+<exception>ReflectionException</exception>
+</documentation>
+*/	public static function getClassPostscript( 
+	    $obj, \ReflectionClass $r=NULL, bool $with_hr=false ) : string
+	{
+		return self::getClassInfo( $obj, $r, "postscript", $with_hr );
+	}
     
 /**
 Returns the signature of a function.
@@ -224,7 +243,7 @@ of the class.</p></description>
 /**
 Returns the signature of a method.
 @param ReflectionMethod $method The method object
-@return string The info string
+@return string The method signature
 <documentation><description><p>Returns the signature of a method.
 The returned string does not include exception information.</p></description>
 <example>echo u\ReflectionUtility::getMethodSignature( 
@@ -242,7 +261,7 @@ The returned string does not include exception information.</p></description>
 Returns the signature of a method.
 @param mixed $obj A string (the class name) or an object
 @param string $method_name The method name
-@return string The info string
+@return string The method signature
 <documentation><description><p>Returns the signature of a method.
 The returned string does not include exception information.</p></description>
 <example>echo u\ReflectionUtility::getMethodSignatureByName( 
@@ -262,7 +281,7 @@ The returned string does not include exception information.</p></description>
 /**
 Returns an unordered list of signatures of methods defined in the class.
 @param mixed $obj A string (the class name) or an object
-@return string The string containing information of all methods
+@return string The string containing signatures of all methods
 <documentation><description><p>Returns an unordered list of signatures of methods defined in the class.
 The returned string does not include exception information.</p></description>
 <example>u\ReflectionUtility::showMethodSignatures( 
@@ -320,26 +339,45 @@ Returns the namespace of a class or the empty string.
     }
     
 /**
-Displays the class information given right before the class definition.
+Displays the description given right before the class definition.
 @param mixed $obj A string (the class name) or an object
-<documentation><description><p>Displays an unordered list of information of methods defined in the class.
+@param bool $with_hr Whether to include a horizontal rule
+<documentation><description><p>Displays the description given right before the class definition.
 If <code>true</code> is passed in for <code>$with_hr</code>, then a horizontal rule will be output after the
 class information.</p></description>
-<example>u\ReflectionUtility::showClassInfo( "cascade_ws_utility\ReflectionUtility", true );</example>
+<example>u\ReflectionUtility::showClassDescription( "cascade_ws_utility\ReflectionUtility", true );</example>
 <return-type>void</return-type>
 <exception>ReflectionException</exception>
 </documentation>
 */
-    public static function showClassInfo( $obj, bool $with_hr=false )
+    public static function showClassDescription( $obj, bool $with_hr=false )
     {
-        echo self::getClassInfo( $obj );
+        echo self::getClassDescription( $obj );
+        if( $with_hr ) echo HR;
+    }
+    
+/**
+Displays the postscript given right before the class definition.
+@param mixed $obj A string (the class name) or an object
+@param bool $with_hr Whether to include a horizontal rule
+<documentation><description><p>Displays the postscript given right before the class definition.
+If <code>true</code> is passed in for <code>$with_hr</code>, then a horizontal rule will be output after the
+class information.</p></description>
+<example>u\ReflectionUtility::showClassPostscript( "cascade_ws_utility\ReflectionUtility", true );</example>
+<return-type>void</return-type>
+<exception>ReflectionException</exception>
+</documentation>
+*/
+    public static function showClassPostscript( $obj, bool $with_hr=false )
+    {
+        echo self::getClassDescription( $obj );
         if( $with_hr ) echo HR;
     }
     
 /**
 Displays the signature of a function.
-@param mixed $obj A string (the class name) or an object
-@param string $method_name The method name
+@param string $function_name The method name
+@param bool $with_hr Whether to include a horizontal rule
 <documentation><description><p>Displays the signature of a function.
 If <code>true</code> is passed in for <code>$with_hr</code>, then a horizontal rule will be output after the
 function signatures.</p></description>
@@ -360,6 +398,7 @@ function signatures.</p></description>
 Displays the description of a method.
 @param mixed $obj A string (the class name) or an object
 @param string $method_name The method name
+@param bool $with_hr Whether to include a horizontal rule
 <documentation><description><p>Displays the description of a method.
 If <code>true</code> is passed in for <code>$with_hr</code>, then a horizontal rule will be output after the
 method description.</p></description>
@@ -379,6 +418,7 @@ method description.</p></description>
 Displays an example of how to use a method.
 @param mixed $obj A string (the class name) or an object
 @param string $method_name The method name
+@param bool $with_hr Whether to include a horizontal rule
 <documentation><description><p>Displays an example of how to use a method.
 If <code>true</code> is passed in for <code>$with_hr</code>, then a horizontal rule will be output after the
 method example.</p></description>
@@ -397,6 +437,7 @@ method example.</p></description>
 Displays exception information of a method.
 @param mixed $obj A string (the class name) or an object
 @param string $method_name The method name
+@param bool $with_hr Whether to include a horizontal rule
 <documentation><description><p>Displays exception information of a method.
 If <code>true</code> is passed in for <code>$with_hr</code>, then a horizontal rule will be output after the
 method exception information.</p></description>
@@ -416,6 +457,7 @@ method exception information.</p></description>
 Displays all textual information give right before the definition of a method.
 @param mixed $obj A string (the class name) or an object
 @param string $method_name The method name
+@param bool $with_hr Whether to include a horizontal rule
 <documentation><description><p>Displays all textual information give right before the definition of a method,
 including XML markups.
 If <code>true</code> is passed in for <code>$with_hr</code>, then a horizontal rule will be output after the
@@ -438,6 +480,7 @@ method information.</p></description>
 Displays the return type of a method.
 @param mixed $obj A string (the class name) or an object
 @param string $method_name The method name
+@param bool $with_hr Whether to include a horizontal rule
 <documentation><description><p>Displays the return type of a method.
 If <code>true</code> is passed in for <code>$with_hr</code>, then a horizontal rule will be output after the
 method return type.</p></description>
@@ -458,6 +501,7 @@ method return type.</p></description>
 Displays the signature of a method.
 @param mixed $obj A string (the class name) or an object
 @param string $method_name The method name
+@param bool $with_hr Whether to include a horizontal rule
 <documentation><description><p>Displays the signature of a method. 
 The information shown includes exception information.
 If <code>true</code> is passed in for <code>$with_hr</code>, then a horizontal rule will be output after the
@@ -477,6 +521,7 @@ method signature.</p></description>
 /**
 Displays an unordered list of signatures of methods defined in the class.
 @param mixed $obj A string (the class name) or an object
+@param bool $with_hr Whether to include a horizontal rule
 <documentation><description><p>Displays an unordered list of signatures of methods defined in the class.
 The information shown includes exception information.
 If <code>true</code> is passed in for <code>$with_hr</code>, then a horizontal rule will be output after the
@@ -496,22 +541,21 @@ method signatures.</p></description>
     private static function getSignature( $method ) : string
     {
         $method_info = "";
-        $type        = gettype( $method );
-        
-        $class = ( method_exists( $method, "getDeclaringClass" ) ?
+        $class       = ( method_exists( $method, "getDeclaringClass" ) ?
             $method->getDeclaringClass()->getName() . "::" : "" );
-        
-        $modifiers = ( method_exists( $method, "getDeclaringClass" ) ?
+        $modifiers   = ( method_exists( $method, "getDeclaringClass" ) ?
             implode( ' ', \Reflection::getModifierNames( $method->getModifiers() ) ) :
             "" );
-            
         $return_type = ( method_exists( $method, "getReturnType" )  ? 
             $method->getReturnType() : "" );
         
-        if( gettype( $method ) == "ReflectionMethod" )
-            $return_type = ( $return_type != "" ? $return_type :  
-                self::getMethodXmlValue( NULL, "", "return-type", "", "", $method )
-             );
+        if( self::getClassName( $method ) == "ReflectionMethod" )
+        {
+            if( method_exists( $method, "getReturnType" ) )
+                $return_type = ( $return_type != "" ? $return_type :  
+                    self::getMethodXmlValue( NULL, "", "return-type", "", "", $method )
+            );
+        }
          
         if( $return_type == c\M::INFORMATION_NOT_AVAILABLE )
              $return_type = "";
@@ -604,13 +648,30 @@ method signatures.</p></description>
         return trim( $method_info );
     }
     
+    private static function getClassInfo( 
+        $obj, \ReflectionClass $r=NULL, string $ele_name, bool $with_hr=false ) : string
+    {
+        $class_info = "";
+        
+        if( !isset( $r ) )
+            $r = new \ReflectionClass( $obj );
+            
+        $class_info = self::getClassXmlValue( $r->getDocComment(), $ele_name );
+        
+        if( $with_hr )
+            $class_info .= HR;
+        
+        return $class_info;
+    }
+
     private static function getClassXmlValue( string $class_info, string $ele_name ) : string
     {
         return self::getXmlValue( $class_info, $ele_name );
     }
     
     private static function getMethodXmlValue( 
-        $obj, string $method_name, string $ele_name, string $s_html, string $e_html, \ReflectionMethod $method=NULL ) : string
+        $obj, string $method_name, string $ele_name, string $s_html, string $e_html, 
+        \ReflectionMethod $method=NULL ) : string
     {
         // retrieve the method documentation
         if( !isset( $method ) )
@@ -646,6 +707,8 @@ method signatures.</p></description>
                         $str = $child->asXML();
                         $str = str_replace( "<description>", "", $str );
                         $str = str_replace( "</description>", "", $str );
+                        $str = str_replace( "<postscript>", "", $str );
+                        $str = str_replace( "</postscript>", "", $str );
                     }
                     
                     return $str;
