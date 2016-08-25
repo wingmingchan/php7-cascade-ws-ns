@@ -146,11 +146,11 @@ postscript.</p></description>
 <return-type>string</return-type>
 <exception>ReflectionException</exception>
 </documentation>
-*/	public static function getClassPostscript( 
-	    $obj, \ReflectionClass $r=NULL, bool $with_hr=false ) : string
-	{
-		return self::getClassInfo( $obj, $r, "postscript", $with_hr );
-	}
+*/    public static function getClassPostscript( 
+        $obj, \ReflectionClass $r=NULL, bool $with_hr=false ) : string
+    {
+        return self::getClassInfo( $obj, $r, "postscript", $with_hr );
+    }
     
 /**
 Returns the signature of a function.
