@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 8/26/2016 Added constant NAME_SPACE.
   * 8/24/2016 Add getClassDescription and getClassPostscript, and turn getClassInfo to private.
   * 8/23/2016 Added more documentation and split private methods. Added getNameSpace.
   * 8/22/2016 Added more methods.
@@ -32,6 +33,8 @@ or a string (the full name of a class to be inspected).</p>
 */
 class ReflectionUtility
 {
+    const NAME_SPACE = "cascade_ws_utility";
+
 /**
 Returns the class information given right before the class definition.
 @param mixed $obj A string (the class name) or an object
