@@ -36,8 +36,15 @@ use cascade_ws_asset     as a;
 use cascade_ws_exception as e;
 
 /**
+<documentation>
+<description><h2>Introduction</h2>
 <p>This class encapsulates the WSDL URL, the authentication object, and the SoapClient object, 
 and provides services of all operations defined in the WSDL.</p>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/tree/master/working-with-AssetOperationHandlerService">working-with-AssetOperationHandlerService</a></li></ul></postscript>
+</documentation>
+
+
 */
 class AssetOperationHandlerService
 {
@@ -133,7 +140,28 @@ Dynamically generates the read and get methods.
 Batch-executes the operations.
 @param array $operations The array of operations
 <documentation><description><p>Batch-executes the operations.</p></description>
-<example></example>
+<example>$paths = array( 
+             "/_cascade/blocks/code/text-block", 
+             "_cascade/blocks/code/ajax-read-profile-php" );
+
+$operations = array();
+
+foreach( $paths as $path )
+{
+    $id        = $service->createId( a\TextBlock::TYPE, $path, "cascade-admin" );
+    $operation = new \stdClass();
+    $read_op   = new \stdClass();
+    
+    $read_op->identifier = $id;
+    $operation->read     = $read_op;
+    $operations[]        = $operation;
+}
+
+try
+{
+    $service->batch( $operations );
+    u\DebugUtility::dump( $service->getReply()->batchReturn );
+}</example>
 <return-type>void</return-type></documentation>
 */
     function batch( array $operations )
@@ -152,7 +180,10 @@ Checks in an asset with the given identifier.
 @param stdClass $identifier The identifier of the asset to be checked in
 @param string   $comments The comments to be added
 <documentation><description><p>Checks in an asset with the given identifier.</p></description>
-<example></example>
+<example>$path = "/files/AssetOperationHandlerService.class.php.zip";
+$id = $service->createId( a\File::TYPE, $path, "cascade-admin" );
+$service->checkIn( $id, 'Testing the checkIn method.' );
+</example>
 <return-type>void</return-type></documentation>
 */
     function checkIn( \stdClass $identifier, string $comments='' )
@@ -170,7 +201,10 @@ Checks in an asset with the given identifier.
 Checks out an asset with the given identifier.
 @param stdClass $identifier The identifier of the asset to be checked out
 <documentation><description><p>Checks out an asset with the given identifier.</p></description>
-<example></example>
+<example>$path = "/files/AssetOperationHandlerService.class.php.zip";
+$id = $service->createId( a\File::TYPE, $path, "cascade-admin" );
+$service->checkOut( $id );
+</example>
 <return-type>void</return-type></documentation>
 */
     function checkOut( \stdClass $identifier )
@@ -190,7 +224,16 @@ Copies the asset with the given identifier.
 @param string   $newName The new name assigned to the new object
 @param bool     $doWorkflow Whether to do any workflow
 <documentation><description><p>Copies the asset with the given identifier.</p></description>
-<example></example>
+<example>// the block to be copy
+$block_id = $service->createId( a\TextBlock::TYPE, "_cascade/blocks/code/text-block", "cascade-admin" );
+// the parent folder where the new block should be placed
+$parent_id = $service->createId( a\Folder::TYPE, "_cascade/blocks/code", "cascade-admin" );
+// new name for the copy
+$new_name = "another-text-block";
+// no workflow
+$do_workflow = false;
+$service->copy( $block_id, $parent_id, $new_name, $do_workflow );
+</example>
 <return-type>void</return-type></documentation>
 */
     public function copy( \stdClass $identifier, \stdClass $newIdentifier, string $newName, bool $doWorkflow ) 
@@ -212,7 +255,19 @@ Creates the asset.
 @param stdClass $asset The asset to be created
 @return string The ID of the newly created asset
 <documentation><description><p>Creates the asset.</p></description>
-<example></example>
+<example>// get the image data
+$img_url     = "http://www.upstate.edu/scripts/faculty/thumbs/nadkarna.jpg";
+$img_binary  = file_get_contents( $img_url );
+// the folder where the file should be created
+$parent_id   = '980d653f8b7f0856015997e4bb59f630';
+$site_name   = 'cascade-admin';
+$img_name    = 'nadkarna.jpg';
+// create the asset
+$asset       = new \stdClass();
+$asset->file = $service->createFileWithParentIdSiteNameNameData( 
+	$parent_id, $site_name, $img_name, $img_binary );
+$service->create( $asset );    
+</example>
 <return-type>string</return-type></documentation>
 */
     public function create( \stdClass $asset ) : string
@@ -234,7 +289,7 @@ Creates an id object for an asset.
 @param string $siteName The site name
 @return stdClass The identifier
 <documentation><description><p>Creates an id object for an asset.</p></description>
-<example></example>
+<example>$block_id = $service->createId( a\TextBlock::TYPE, "_cascade/blocks/code/text-block", "cascade-admin" );</example>
 <return-type>stdClass</return-type></documentation>
 */
     public function createId( string $type, string $id_path, string $site_name = NULL ) : \stdClass
@@ -305,7 +360,7 @@ Creates an id object for an asset.
 @param string $type The type of the asset
 @return stdClass The identifier
 <documentation><description><p>Creates an id object for an asset.</p></description>
-<example></example>
+<example>$block_id = $service->createIdWithIdType( "388fa7a58b7ffe83164c93149320e775", a\TextBlock::TYPE );</example>
 <return-type>stdClass</return-type></documentation>
 */
     public function createIdWithIdType( string $id, string $type ) : \stdClass
@@ -320,7 +375,7 @@ Creates an id object for an asset.
 @param string $type The type of the asset
 @return stdClass The identifier
 <documentation><description><p>Creates an id object for an asset.</p></description>
-<example></example>
+<example>$block_id = $service->createIdWithPathSiteNameType( "_cascade/blocks/code/text-block", "cascade-admin", a\TextBlock::TYPE );</example>
 <return-type>stdClass</return-type></documentation>
 */
     public function createIdWithPathSiteNameType( string $path, string $site_name, string $type ) : \stdClass
@@ -336,7 +391,8 @@ Creates a file stdClass object.
 @param binary $data The data of the file
 @return stdClass The file object
 <documentation><description><p>Creates a file stdClass object.</p></description>
-<example></example>
+<example>$asset->file = $service->createFileWithParentIdSiteNameNameData( 
+    $parent_id, $site_name, $img_name, $img_binary );</example>
 <return-type>stdClass</return-type></documentation>
 */
     public function createFileWithParentIdSiteNameNameData(
@@ -354,7 +410,9 @@ Creates a file stdClass object.
 Deletes the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be deleted
 <documentation><description><p>Deletes the asset with the given identifier.</p></description>
-<example></example>
+<example>$path = "/_cascade/blocks/code/text-block2";
+$service->delete( $service->createId( a\TextBlock::TYPE, $path, "cascade-admin" ) );
+</example>
 <return-type>void</return-type></documentation>
 */
     public function delete( \stdClass $identifier )
@@ -371,7 +429,9 @@ Deletes the asset with the given identifier.
 Deletes the message with the given identifier.
 @param stdClass $identifier The identifier of the message to be deleted
 <documentation><description><p>Deletes the message with the given identifier.</p></description>
-<example></example>
+<example>$mid = "9e10ae5b8b7ffe8364375ac78e212e42";
+$service->deleteMessage( $service->createId( c\T::MESSAGE, $mid ) );
+</example>
 <return-type>void</return-type></documentation>
 */
     public function deleteMessage( \stdClass $identifier )
@@ -388,7 +448,10 @@ Deletes the message with the given identifier.
 Edits the given asset.
 @param stdClass $asset The asset to be edited
 <documentation><description><p>Edits the given asset.</p></description>
-<example></example>
+<example> $asset = new \stdClass();
+$asset->xhtmlDataDefinitionBlock = $block;
+$service->edit( $asset );
+</example>
 <return-type>void</return-type></documentation>
 */
     public function edit( \stdClass $asset )
@@ -406,7 +469,10 @@ Edits the given accessRightsInformation.
 @param stdClass $accessRightsInformation the accessRightsInformation to be edited
 @param bool     $applyToChildren Whether to apply the settings to children
 <documentation><description><p>Edits the given accessRightsInformation.</p></description>
-<example></example>
+<example>$accessRightInfo->aclEntries->aclEntry = $aclEntries;
+// false: do not apply to children
+$service->editAccessRights( $accessRightInfo, false ); 
+</example>
 <return-type>void</return-type></documentation>
 */
     public function editAccessRights( \stdClass $accessRightsInformation, bool $applyToChildren )
@@ -425,7 +491,7 @@ Edits the preferences.
 @param string $name The name of the preference
 @param string $name The value of the preference
 <documentation><description><p>Edits the preferences.</p></description>
-<example></example>
+<example>$service->editPreferences( "system_pref_allow_font_assignment", "off" );</example>
 <return-type>void</return-type></documentation>
 */
     public function editPreferences( string $name, string $value ) 
@@ -446,7 +512,7 @@ Edits the given workflowSettings.
 @param bool     $applyInheritWorkflowsToChildren Whether to apply inherited workflows to children
 @param bool     $applyRequireWorkflowToChildren Whether to apply required workflows to children
 <documentation><description><p>Edits the given workflowSettings.</p></description>
-<example></example>
+<example>$service->editWorkflowSettings( $workflowSettings, false, false );</example>
 <return-type>void</return-type></documentation>
 */
     public function editWorkflowSettings( 
@@ -470,7 +536,7 @@ Creates an asset object, bridging this class and the Asset classes.
 @return a\Asset The asset object
 @throw Exception if the asset cannot be retrieved
 <documentation><description><p>Creates an asset object, bridging this class and the Asset classes.</p></description>
-<example></example>
+<example>$page = $service->getAsset( a\Page::TYPE, $page_id )</example>
 <return-type>Asset</return-type></documentation>
 */
     public function getAsset( string $type, string $id_path, string $site_name=NULL ) : a\Asset
@@ -562,9 +628,9 @@ Gets the message after an operation.
 @return string The message
 <documentation><description><p>Gets the message after an operation.</p></description>
 <example>echo $service->getMessage();</example>
-<return-type>string</return-type></documentation>
+<return-type>mixed</return-type></documentation>
 */
-    public function getMessage() : string
+    public function getMessage()
     {
         return $this->message;
     }
@@ -586,7 +652,7 @@ u\DebugUtility::dump( $service->getPreferences() );</example>
 Gets the accessRightInformation object after the call of readAccessRightInformation().
 @return stdClass The accessRightsInformation object
 <documentation><description><p>Gets the accessRightInformation object after the call of readAccessRightInformation().</p></description>
-<example></example>
+<example>$accessRightInfo = $service->getReadAccessRightInformation();</example>
 <return-type>stdClass</return-type></documentation>
 */
     public function getReadAccessRightInformation() : \stdClass
@@ -598,7 +664,7 @@ Gets the accessRightInformation object after the call of readAccessRightInformat
 Gets the asset object after the call of read().
 @return stdClass The asset read
 <documentation><description><p>Gets the asset object after the call of read().</p></description>
-<example></example>
+<example>$container = $service->getReadAsset()->assetFactoryContainer;</example>
 <return-type>stdClass</return-type></documentation>
 */
     public function getReadAsset() : \stdClass
@@ -610,7 +676,7 @@ Gets the asset object after the call of read().
 Gets the file object after the call of read().
 @return stdClass The file read
 <documentation><description><p>Gets the file object after the call of read().</p></description>
-<example></example>
+<example>$file = $service->getReadFile();</example>
 <return-type>stdClass</return-type></documentation>
 */
     public function getReadFile() : \stdClass
@@ -622,10 +688,12 @@ Gets the file object after the call of read().
 Gets the workflow object after the call of readWorkflow().
 @return stdClass The workflow read
 <documentation><description><p>Gets the workflow object after the call of readWorkflow().</p></description>
-<example></example>
-<return-type>stdClass</return-type></documentation>
+<example>$service->readWorkflowInformation( 
+    $service->createId( a\Page::TYPE, $path, "cascade-admin" ) );
+$workflow = $service->getReadWorkflow();</example>
+<return-type>mixed</return-type></documentation>
 */
-    public function getReadWorkflow() : \stdClass
+    public function getReadWorkflow()
     {
         return $this->reply->readWorkflowInformationReturn->workflow;
     }
@@ -634,7 +702,10 @@ Gets the workflow object after the call of readWorkflow().
 Gets the workflowSettings object after the call of readWorkflowSettings().
 @return stdClass The workflowSettings object
 <documentation><description><p></p></description>
-<example></example>
+<example>$service->readWorkflowSettings( 
+    $service->createId( a\Folder::TYPE, "/", $site_name ) );
+$workflowSettings = $service->getReadWorkflowSettings();
+</example>
 <return-type>stdClass</return-type></documentation>
 */
     public function getReadWorkflowSettings() : \stdClass
@@ -646,7 +717,7 @@ Gets the workflowSettings object after the call of readWorkflowSettings().
 Gets the response object after an operation.
 @return stdClass The response object
 <documentation><description><p>Gets the workflowSettings object after the call of readWorkflowSettings().</p></description>
-<example></example>
+<example>$reply = $service->getReply();</example>
 <return-type>stdClass</return-type></documentation>
 */
     public function getReply() : \stdClass
@@ -658,7 +729,11 @@ Gets the response object after an operation.
 Gets the searchMatches object after the call of search().
 @return stdClass The searchMatches object
 <documentation><description><p>Gets the searchMatches object after the call of search().</p></description>
-<example></example>
+<example>$service->search( $search_for );
+if( is_null( $service->getSearchMatches()->match ) )
+{
+    // do something
+}</example>
 <return-type>stdClass</return-type></documentation>
 */
     public function getSearchMatches() : \stdClass
@@ -667,13 +742,13 @@ Gets the searchMatches object after the call of search().
     }
     
 /**
-Returns the string 'true' or 'false' after an operation.
+Returns a bool after an operation.
 @return string The string 'true' or 'false'
-<documentation><description><p>Returns the string 'true' or 'false' after an operation.</p></description>
-<example></example>
-<return-type>string</return-type></documentation>
+<documentation><description><p>Returns a bool after an operation indicating whether the search is successful.</p></description>
+<example>if ( $service->getSuccess() )</example>
+<return-type>bool</return-type></documentation>
 */
-    public function getSuccess() : string
+    public function getSuccess() : bool
     {
         return $this->success;
     }
@@ -683,7 +758,9 @@ Gets the type of an asset.
 @param string $id_string The 32-digit hex id string
 @return string The type string
 <documentation><description><p>Gets the type of an asset.</p></description>
-<example></example>
+<example>$id = "3896de848b7ffe83164c931422421045";
+echo $service->getType( $id ), BR;
+</example>
 <return-type>string</return-type></documentation>
 */
     public function getType( string $id_string ) : string
@@ -724,7 +801,7 @@ Gets the type of an asset.
 Gets the WSDL URL string.
 @return string The WSDL URL string
 <documentation><description><p>Gets the WSDL URL string.</p></description>
-<example></example>
+<example>echo $service->getUrl(), BR;</example>
 <return-type>string</return-type></documentation>
 */
     public function getUrl() : string
@@ -737,10 +814,11 @@ Returns a bool indicating whether the string is a 32-digit hex string.
 @param string $string The input string
 @return bool Whether the input string is a hex string
 <documentation><description><p>Returns a bool indicating whether the string is a 32-digit hex string.</p></description>
-<example></example>
-<return-type>string</return-type></documentation>
+<example>if( $service->isHexString( $id ) )
+    echo $service->getType( $id ), BR;</example>
+<return-type>bool</return-type></documentation>
 */
-    public function isHexString( string $string ) : string
+    public function isHexString( string $string ) : bool
     {
         $pattern = "/[0-9a-f]{32}/";
         $matches = array();
@@ -756,7 +834,11 @@ Returns a bool indicating whether the string is a 32-digit hex string.
 Returns true if an operation is successful.
 @return bool The result of an operation
 <documentation><description><p>Returns true if an operation is successful.</p></description>
-<example></example>
+<example>$service->readPreferences();
+if( $service->isSuccessful() )
+{
+    // do something
+}</example>
 <return-type>bool</return-type></documentation>
 */
     public function isSuccessful() : bool
@@ -767,7 +849,7 @@ Returns true if an operation is successful.
 /**
 Lists all messages.
 <documentation><description><p>Lists all messages.</p></description>
-<example></example>
+<example>$service->listMessages();</example>
 <return-type>void</return-type></documentation>
 */
     public function listMessages()
@@ -787,7 +869,7 @@ Lists all messages.
 /**
 Lists all sites.
 <documentation><description><p>Lists all sites.</p></description>
-<example></example>
+<example>$service->listSites();</example>
 <return-type>void</return-type></documentation>
 */
     public function listSites()
@@ -803,7 +885,8 @@ Lists all sites.
 Lists all subscribers of an asset.
 @param stdClass $identifier The identifier of the asset
 <documentation><description><p>Lists all subscribers of an asset.</p></description>
-<example></example>
+<example>$service->listSubscribers( 
+    $service->createId( $type, $path, $site_name ) );</example>
 <return-type>void</return-type></documentation>
 */
     public function listSubscribers( \stdClass $identifier )
@@ -821,7 +904,10 @@ Marks a message as 'read' or 'unread'.
 @param stdClass $identifier The identifier of the message
 @param string   $markType The string 'read' or 'unread'
 <documentation><description><p>Marks a message as 'read' or 'unread'.</p></description>
-<example></example>
+<example>$service->markMessage( 
+    $service->createIdWithIdType( $id, c\T::MESSAGE ), 
+    c\T::UNREAD );
+</example>
 <return-type>void</return-type></documentation>
 */
     public function markMessage( \stdClass $identifier, string $markType )
@@ -842,7 +928,7 @@ Moves the asset with the given identifier.
 @param string   $newName The new name assigned to the object moved
 @param bool     $doWorkflow Whether to do workflow
 <documentation><description><p>Moves the asset with the given identifier.</p></description>
-<example></example>
+<example>$service->move( $block_id, $parent_id, $new_name, $do_workflow );</example>
 <return-type>void</return-type></documentation>
 */
     function move( \stdClass $identifier, \stdClass $newIdentifier=NULL, string $newName="", bool $doWorkflow=false ) 
@@ -865,7 +951,7 @@ Performs the workflow transition.
 @param string   $actionIdentifier The identifier of the action
 @param string   $transitionComment The comments
 <documentation><description><p>Performs the workflow transition.</p></description>
-<example></example>
+<example>$service->performWorkflowTransition( $id, $action, 'Testing' );</example>
 <return-type>void</return-type></documentation>
 */
     public function performWorkflowTransition( 
@@ -887,7 +973,7 @@ Performs the workflow transition.
 /**
 Prints the XML of the last request.
 <documentation><description><p>Prints the XML of the last request.</p></description>
-<example></example>
+<example>$service->printLastRequest();</example>
 <return-type>void</return-type></documentation>
 */
     public function printLastRequest()
@@ -898,7 +984,7 @@ Prints the XML of the last request.
 /**
 Prints the XML of the last response.
 <documentation><description><p>Prints the XML of the last response.</p></description>
-<example></example>
+<example>$service->printLastResponse();</example>
 <return-type>void</return-type></documentation>
 */
     public function printLastResponse()
@@ -912,7 +998,8 @@ Publishes the asset with the given identifier.
 @param Destination $destination The destination(s) where the asset should be published
 <documentation>
 <description><p>Publishes the asset with the given identifier.</p></description>
-<example></example>
+<example>$folder_path = "projects/web-services/reports";
+$service->publish( $service->createId( a\Folder::TYPE, $folder_path, "cascade-admin" ) );</example>
 <return-type>void</return-type>
 </documentation>
 */
@@ -943,7 +1030,8 @@ Reads the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be read
 <documentation>
 <description><p>Reads the asset with the given identifier.</p></description>
-<example>blah</example>
+<example>$service->read( 
+    $service->createId( a\Folder::TYPE, $path, "cascade-admin" ) );</example>
 <return-type>void</return-type>
 </documentation>
 */
@@ -963,7 +1051,9 @@ Reads the asset with the given identifier.
 Reads the access rights of the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be read
 <documentation><description><p>Reads the access rights of the asset with the given identifier.</p></description>
-<example></example>
+<example>$service->readAccessRights( 
+    $service->createId( a\TextBlock::TYPE, $path, "cascade-admin" ) );
+</example>
 <return-type>void</return-type></documentation>
 */
     public function readAccessRights( \stdClass $identifier ) 
@@ -980,7 +1070,12 @@ Reads the access rights of the asset with the given identifier.
 Reads the audits of the asset with the given parameters.
 @param stdClass $params The parameters of readAudits
 <documentation><description><p>Reads the audits of the asset with the given parameters.</p></description>
-<example></example>
+<example>$page_id = "980d85f48b7f0856015997e492c9b83b";
+$audit_params = new \stdClass();
+$audit_params->identifier = $service->createId( a\Page::TYPE, $page_id );
+$audit_params->auditType  = c\T::EDIT;
+$service->readAudits( $audit_params );
+</example>
 <return-type>void</return-type></documentation>
 */
     public function readAudits( \stdClass $params ) 
@@ -997,7 +1092,7 @@ Reads the audits of the asset with the given parameters.
 /**
 Reads the preferences.
 <documentation><description><p>Reads the preferences.</p></description>
-<example></example>
+<example>$service->readPreferences();</example>
 <return-type>void</return-type></documentation>
 */
     public function readPreferences() 
@@ -1014,7 +1109,9 @@ Reads the preferences.
 Reads the workflow information associated with the given identifier.
 @param stdClass $identifier The identifier of the object to be read
 <documentation><description><p>Reads the workflow information associated with the given identifier.</p></description>
-<example></example>
+<example>$path = '/projects/web-services/reports/creating-format';
+$service->readWorkflowInformation( 
+	$service->createId( a\Page::TYPE, $path, "cascade-admin" ) );</example>
 <return-type>void</return-type></documentation>
 */
     public function readWorkflowInformation( \stdClass $identifier ) 
@@ -1031,7 +1128,10 @@ Reads the workflow information associated with the given identifier.
 Reads the workflow settings associated with the given identifier.
 @param stdClass $identifier The identifier of the object to be read
 <documentation><description><p>Reads the workflow settings associated with the given identifier.</p></description>
-<example></example>
+<example>$site_name = "cascade-admin";
+$service->readWorkflowSettings( 
+	$service->createId( a\Folder::TYPE, "/", $site_name ) );
+</example>
 <return-type>void</return-type></documentation>
 */
     public function readWorkflowSettings( \stdClass $identifier ) 
@@ -1050,7 +1150,7 @@ Retrieves a property of an asset.
 @param string $property The property name
 @return stdClass The property or NULL
 <documentation><description><p>Retrieves a property of an asset.</p></description>
-<example></example>
+<example>$page = $service->retrieve( $service->createId( a\Page::TYPE, $page_path, "cascade-admin" ) );</example>
 <return-type>stdClass</return-type></documentation>
 */
 
@@ -1077,7 +1177,11 @@ Retrieves a property of an asset.
 Searches for some entity.
 @param stdClass $searchInfo The searchInfo object
 <documentation><description><p>Searches for some entity.</p></description>
-<example></example>
+<example>$search_for               = new \stdClass();
+$search_for->matchType    = c\T::MATCH_ANY;
+$search_for->searchGroups = true;
+$search_for->assetName    = $group;
+$service->search( $search_for );</example>
 <return-type>void</return-type></documentation>
 */
     public function search( \stdClass $searchInfo ) 
@@ -1095,7 +1199,13 @@ Searches for some entity.
 Sends a message.
 @param stdClass $message The message object to be sent
 <documentation><description><p>Sends a message.</p></description>
-<example></example>
+<example>$message          = new \stdClass();
+$message->to      = 'test'; // a group
+$message->from    = 'chanw';
+$message->subject = 'test';
+$message->body    = 'This is a test. This is only a test.';
+$service->sendMessage( $message );
+</example>
 <return-type>void</return-type></documentation>
 */
     public function sendMessage( \stdClass $message ) 
@@ -1114,7 +1224,14 @@ Copies the site with the given identifier.
 @param string $original_name The name of the site to be copied
 @param string $new_name The name assigned to the new site
 <documentation><description><p>Copies the site with the given identifier.</p></description>
-<example></example>
+<example>$seed_site_id   = "a0d0fb818b7f08ee0990fe6e89648961";
+$seed_site_name = "_rwd_seed";
+$new_site_name  = "access-test";
+$service->$seed_site_id   = "a0d0fb818b7f08ee0990fe6e89648961";
+$seed_site_name = "_rwd_seed";
+$new_site_name  = "access-test";
+$service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
+</example>
 <return-type>void</return-type></documentation>
 */
     function siteCopy( string $original_id, string $original_name, string $new_name ) 
@@ -1134,7 +1251,7 @@ Unpublishes the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be unpublished
 @param Destination $destination The destination where the asset should be unpublished
 <documentation><description><p>Unpublishes the asset with the given identifier.</p></description>
-<example></example>
+<example>$service->unpublish( $service->createId( a\Page::TYPE, $page_path, "cascade-admin" ) );</example>
 <return-type>void</return-type></documentation>
 */
     public function unpublish( \stdClass $identifier, a\Destination $destination=NULL ) 
