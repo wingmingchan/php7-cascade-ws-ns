@@ -24,7 +24,7 @@ Returns a bool, indicating whether the two SimpleXMLElement objects store identi
 @param SimpleXMLElement $xml2 The second SimpleXMLElement object
 @return bool The bool value
 <documentation><description><p>Returns a bool, indicating whether the two SimpleXMLElement objects store identical XML markups.</p></description>
-<example>if( u\XmlUtility::isXmlIdentical( $source_s_xml, $source_s_xml ) )
+<example>if( u\XmlUtility::isXmlIdentical( $source_s_xml, $target_s_xml ) )
     echo "Identical", BR;
 else
     echo "Different", BR;</example>
