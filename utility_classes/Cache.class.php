@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 8/26/2016 Added constant NAME_SPACE.
   * 5/28/2015 Added namespaces.
   * 7/25/2014 File created.
  */
@@ -26,6 +27,7 @@ class Cache
 {
     const DEBUG = false;
     const DUMP  = false;
+    const NAME_SPACE = "cascade_ws_utility";
     
 /**
 Clears the cache array.

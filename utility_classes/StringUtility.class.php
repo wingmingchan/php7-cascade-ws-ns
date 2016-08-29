@@ -4,7 +4,8 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
-  * 8/24/2016 Added documentation comments.
+  * 8/26/2016 Added constant NAME_SPACE.
+  * 8/24/2016 Added documentation comments. Added boolToString and stringToBool.
   * 5/28/2015 Added namespaces.
   * 9/8/2014 Added getParentPathFromPath.
   * 8/13/2014 Added removeSiteNameFromPath.
@@ -24,6 +25,26 @@ namespace cascade_ws_utility;
 */
 class StringUtility
 {
+    const NAME_SPACE = "cascade_ws_utility";
+
+/**
+Returns a string value of the bool.
+@param bool $value The bool value
+@return string The string value of the bool
+<documentation><description><p>Returns a string value of the bool.</p></description>
+<example>echo u\StringUtility::boolToString( true ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function boolToString( bool $value ) : string
+    {
+        if( $value )
+            return "true";
+        else
+            return "false";
+    }
+    
 /**
 Returns a bool, indicating whether the $haystack ends with $needle.
 @param string $haystack The string to be examined
@@ -40,6 +61,22 @@ Returns a bool, indicating whether the $haystack ends with $needle.
         return $needle === "" || substr( $haystack, -strlen( $needle ) ) === $needle;
     }
     
+/**
+Returns a coalesed string.
+@param $str_null The input string or NULL
+@return string Either the input string (when not NULL), or the string "NULL"
+<documentation><description><p>Returns a coalesed string. If the parameter is a string,
+then the string is returned. If <code>NULL</code> is passed in, then the string <code>NULL</code> is returned.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $m->getEndDate() ), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function getCoalescedString( $str_null ) : string
+    {
+        return $str_null ?? 'NULL';
+    }
+
 /**
 Returns an array out of the string, using $delimiter as the delimiter.
 @param string $delimiter The delimiter string
@@ -200,6 +237,25 @@ Returns a bool, indicating whether the $haystack starts with $needle.
     public static function startsWith( string $haystack, string $needle ) : bool
     {
         return $needle === "" || strpos( $haystack, $needle ) === 0;
+    }
+
+/**
+Returns a bool value of the string.
+@param string $value The string value
+@return string The bool value of the string
+<documentation><description><p>Returns a bool value of the string.</p></description>
+<example>if( u\StringUtility::stringToBool( "true" ) )
+    echo "Tis true", BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function stringToBool( string $value ) : bool
+    {
+        if( $value === "true" || $value === "1" )
+            return true;
+        else
+            return false;
     }
 }
 ?>

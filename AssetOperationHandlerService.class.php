@@ -48,7 +48,7 @@ The constructor.
 @param string $url The url of the WSDL
 @param stdClass $auth The authentication object
 @throws ServerException if the server connection cannot be established
-<documentation><description>The constructor.</description>
+<documentation><description><p>The constructor.</p></description>
 <example>$service = new aohs\AssetOperationHandlerService( $wsdl, $auth );</example>
 <return-type>void</return-type></documentation>
 */
@@ -88,12 +88,13 @@ Dynamically generates the read and get methods.
 @param array $params The parameters fed into the function
 @method stdClass getAssetFactory() Returns the asset factory read
 @method readAssetFactory( stdClass ) Reads an asset factory
-<documentation><description>Dynamically generates the read and get methods.</description>
+<documentation><description><p>Dynamically generates the read and get methods.</p></description>
 <example></example>
 <return-type>mixed</return-type></documentation>
 */
     function __call( string $func, array $params )
     {
+        $property = "";
         // derive the property name from method name
         if( strpos( $func, 'read' ) === 0 )
             $property = substr( $func, 4 );
@@ -131,7 +132,7 @@ Dynamically generates the read and get methods.
 /**
 Batch-executes the operations.
 @param array $operations The array of operations
-<documentation><description>Batch-executes the operations.</description>
+<documentation><description><p>Batch-executes the operations.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -150,7 +151,7 @@ Batch-executes the operations.
 Checks in an asset with the given identifier.
 @param stdClass $identifier The identifier of the asset to be checked in
 @param string   $comments The comments to be added
-<documentation><description>Checks in an asset with the given identifier.</description>
+<documentation><description><p>Checks in an asset with the given identifier.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -168,7 +169,7 @@ Checks in an asset with the given identifier.
 /**
 Checks out an asset with the given identifier.
 @param stdClass $identifier The identifier of the asset to be checked out
-<documentation><description>Checks out an asset with the given identifier.</description>
+<documentation><description><p>Checks out an asset with the given identifier.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -188,7 +189,7 @@ Copies the asset with the given identifier.
 @param stdClass $newIdentifier The new identifier of the new object
 @param string   $newName The new name assigned to the new object
 @param bool     $doWorkflow Whether to do any workflow
-<documentation><description>Copies the asset with the given identifier.</description>
+<documentation><description><p>Copies the asset with the given identifier.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -210,7 +211,7 @@ Copies the asset with the given identifier.
 Creates the asset.
 @param stdClass $asset The asset to be created
 @return string The ID of the newly created asset
-<documentation><description>Creates the asset.</description>
+<documentation><description><p>Creates the asset.</p></description>
 <example></example>
 <return-type>string</return-type></documentation>
 */
@@ -232,7 +233,7 @@ Creates an id object for an asset.
 @param string $id_path Either the id or the path of an asset
 @param string $siteName The site name
 @return stdClass The identifier
-<documentation><description>Creates an id object for an asset.</description>
+<documentation><description><p>Creates an id object for an asset.</p></description>
 <example></example>
 <return-type>stdClass</return-type></documentation>
 */
@@ -303,7 +304,7 @@ Creates an id object for an asset.
 @param string $id The id string of an asset
 @param string $type The type of the asset
 @return stdClass The identifier
-<documentation><description>Creates an id object for an asset.</description>
+<documentation><description><p>Creates an id object for an asset.</p></description>
 <example></example>
 <return-type>stdClass</return-type></documentation>
 */
@@ -318,7 +319,7 @@ Creates an id object for an asset.
 @param string $siteName The site name
 @param string $type The type of the asset
 @return stdClass The identifier
-<documentation><description>Creates an id object for an asset.</description>
+<documentation><description><p>Creates an id object for an asset.</p></description>
 <example></example>
 <return-type>stdClass</return-type></documentation>
 */
@@ -334,7 +335,7 @@ Creates a file stdClass object.
 @param string $name The name of the file
 @param binary $data The data of the file
 @return stdClass The file object
-<documentation><description>Creates a file stdClass object.</description>
+<documentation><description><p>Creates a file stdClass object.</p></description>
 <example></example>
 <return-type>stdClass</return-type></documentation>
 */
@@ -352,7 +353,7 @@ Creates a file stdClass object.
 /**
 Deletes the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be deleted
-<documentation><description>Deletes the asset with the given identifier.</description>
+<documentation><description><p>Deletes the asset with the given identifier.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -369,7 +370,7 @@ Deletes the asset with the given identifier.
 /**
 Deletes the message with the given identifier.
 @param stdClass $identifier The identifier of the message to be deleted
-<documentation><description>Deletes the message with the given identifier.</description>
+<documentation><description><p>Deletes the message with the given identifier.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -386,7 +387,7 @@ Deletes the message with the given identifier.
 /**
 Edits the given asset.
 @param stdClass $asset The asset to be edited
-<documentation><description>Edits the given asset.</description>
+<documentation><description><p>Edits the given asset.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -404,7 +405,7 @@ Edits the given asset.
 Edits the given accessRightsInformation.
 @param stdClass $accessRightsInformation the accessRightsInformation to be edited
 @param bool     $applyToChildren Whether to apply the settings to children
-<documentation><description>Edits the given accessRightsInformation.</description>
+<documentation><description><p>Edits the given accessRightsInformation.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -423,7 +424,7 @@ Edits the given accessRightsInformation.
 Edits the preferences.
 @param string $name The name of the preference
 @param string $name The value of the preference
-<documentation><description>Edits the preferences.</description>
+<documentation><description><p>Edits the preferences.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -444,7 +445,7 @@ Edits the given workflowSettings.
 @param stdClass $workflowSettings The workflowSettings to be edited
 @param bool     $applyInheritWorkflowsToChildren Whether to apply inherited workflows to children
 @param bool     $applyRequireWorkflowToChildren Whether to apply required workflows to children
-<documentation><description>Edits the given workflowSettings.</description>
+<documentation><description><p>Edits the given workflowSettings.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -468,7 +469,7 @@ Creates an asset object, bridging this class and the Asset classes.
 @param binary $site_name The site name
 @return a\Asset The asset object
 @throw Exception if the asset cannot be retrieved
-<documentation><description>Creates an asset object, bridging this class and the Asset classes.</description>
+<documentation><description><p>Creates an asset object, bridging this class and the Asset classes.</p></description>
 <example></example>
 <return-type>Asset</return-type></documentation>
 */
@@ -497,7 +498,7 @@ Creates an asset object, bridging this class and the Asset classes.
 /**
 Gets the audits object after the call of readAudits().
 @return stdClass The audits object
-<documentation><description>Gets the audits object after the call of readAudits().</description>
+<documentation><description><p>Gets the audits object after the call of readAudits().</p></description>
 <example>u\DebugUtility::dump( $service->getAudits() );</example>
 <return-type>stdClass</return-type></documentation>
 */
@@ -509,7 +510,7 @@ Gets the audits object after the call of readAudits().
 /**
 Gets the ID of an asset newly created.
 @return string The ID string
-<documentation><description>Gets the ID of an asset newly created.</description>
+<documentation><description><p>Gets the ID of an asset newly created.</p></description>
 <example>echo $service->getCreatedAssetId();</example>
 <return-type>string</return-type></documentation>
 */
@@ -521,7 +522,7 @@ Gets the ID of an asset newly created.
 /**
 Gets the last request XML.
 @return string The last request XML
-<documentation><description>Gets the last request XML.</description>
+<documentation><description><p>Gets the last request XML.</p></description>
 <example>echo u\XMLUtility::replaceBrackets( $service->getLastRequest() );</example>
 <return-type>string</return-type></documentation>
 */
@@ -533,7 +534,7 @@ Gets the last request XML.
 /**
 Gets the last response.
 @return string The last response
-<documentation><description>Gets the last response.</description>
+<documentation><description><p>Gets the last response.</p></description>
 <example>echo S_PRE, u\XMLUtility::replaceBrackets( $service->getLastResponse() ), E_PRE;</example>
 <return-type>string</return-type></documentation>
 */
@@ -545,7 +546,7 @@ Gets the last response.
 /**
 Gets the messages object after the call of listMessages().
 @return stdClass The listed messages
-<documentation><description>Gets the messages object after the call of listMessages().</description>
+<documentation><description><p>Gets the messages object after the call of listMessages().</p></description>
 <example>$service->listMessages();
 u\DebugUtility::dump( $service->getListedMessages() );
 </example>
@@ -559,7 +560,7 @@ u\DebugUtility::dump( $service->getListedMessages() );
 /**
 Gets the message after an operation.
 @return string The message
-<documentation><description>Gets the message after an operation.</description>
+<documentation><description><p>Gets the message after an operation.</p></description>
 <example>echo $service->getMessage();</example>
 <return-type>string</return-type></documentation>
 */
@@ -571,7 +572,7 @@ Gets the message after an operation.
 /**
 Gets the preferences after the call of readPreferences().
 @return stdClass The preferences object
-<documentation><description>Gets the preferences after the call of readPreferences().</description>
+<documentation><description><p>Gets the preferences after the call of readPreferences().</p></description>
 <example>$service->readPreferences();
 u\DebugUtility::dump( $service->getPreferences() );</example>
 <return-type>stdClass</return-type></documentation>
@@ -584,7 +585,7 @@ u\DebugUtility::dump( $service->getPreferences() );</example>
 /**
 Gets the accessRightInformation object after the call of readAccessRightInformation().
 @return stdClass The accessRightsInformation object
-<documentation><description>Gets the accessRightInformation object after the call of readAccessRightInformation().</description>
+<documentation><description><p>Gets the accessRightInformation object after the call of readAccessRightInformation().</p></description>
 <example></example>
 <return-type>stdClass</return-type></documentation>
 */
@@ -596,7 +597,7 @@ Gets the accessRightInformation object after the call of readAccessRightInformat
 /**
 Gets the asset object after the call of read().
 @return stdClass The asset read
-<documentation><description>Gets the asset object after the call of read().</description>
+<documentation><description><p>Gets the asset object after the call of read().</p></description>
 <example></example>
 <return-type>stdClass</return-type></documentation>
 */
@@ -608,7 +609,7 @@ Gets the asset object after the call of read().
 /**
 Gets the file object after the call of read().
 @return stdClass The file read
-<documentation><description>Gets the file object after the call of read().</description>
+<documentation><description><p>Gets the file object after the call of read().</p></description>
 <example></example>
 <return-type>stdClass</return-type></documentation>
 */
@@ -620,7 +621,7 @@ Gets the file object after the call of read().
 /**
 Gets the workflow object after the call of readWorkflow().
 @return stdClass The workflow read
-<documentation><description>Gets the workflow object after the call of readWorkflow().</description>
+<documentation><description><p>Gets the workflow object after the call of readWorkflow().</p></description>
 <example></example>
 <return-type>stdClass</return-type></documentation>
 */
@@ -632,7 +633,7 @@ Gets the workflow object after the call of readWorkflow().
 /**
 Gets the workflowSettings object after the call of readWorkflowSettings().
 @return stdClass The workflowSettings object
-<documentation><description></description>
+<documentation><description><p></p></description>
 <example></example>
 <return-type>stdClass</return-type></documentation>
 */
@@ -644,7 +645,7 @@ Gets the workflowSettings object after the call of readWorkflowSettings().
 /**
 Gets the response object after an operation.
 @return stdClass The response object
-<documentation><description>Gets the workflowSettings object after the call of readWorkflowSettings().</description>
+<documentation><description><p>Gets the workflowSettings object after the call of readWorkflowSettings().</p></description>
 <example></example>
 <return-type>stdClass</return-type></documentation>
 */
@@ -656,7 +657,7 @@ Gets the response object after an operation.
 /**
 Gets the searchMatches object after the call of search().
 @return stdClass The searchMatches object
-<documentation><description>Gets the searchMatches object after the call of search().</description>
+<documentation><description><p>Gets the searchMatches object after the call of search().</p></description>
 <example></example>
 <return-type>stdClass</return-type></documentation>
 */
@@ -668,7 +669,7 @@ Gets the searchMatches object after the call of search().
 /**
 Returns the string 'true' or 'false' after an operation.
 @return string The string 'true' or 'false'
-<documentation><description>Returns the string 'true' or 'false' after an operation.</description>
+<documentation><description><p>Returns the string 'true' or 'false' after an operation.</p></description>
 <example></example>
 <return-type>string</return-type></documentation>
 */
@@ -681,7 +682,7 @@ Returns the string 'true' or 'false' after an operation.
 Gets the type of an asset.
 @param string $id_string The 32-digit hex id string
 @return string The type string
-<documentation><description>Gets the type of an asset.</description>
+<documentation><description><p>Gets the type of an asset.</p></description>
 <example></example>
 <return-type>string</return-type></documentation>
 */
@@ -722,7 +723,7 @@ Gets the type of an asset.
 /**
 Gets the WSDL URL string.
 @return string The WSDL URL string
-<documentation><description>Gets the WSDL URL string.</description>
+<documentation><description><p>Gets the WSDL URL string.</p></description>
 <example></example>
 <return-type>string</return-type></documentation>
 */
@@ -735,7 +736,7 @@ Gets the WSDL URL string.
 Returns a bool indicating whether the string is a 32-digit hex string.
 @param string $string The input string
 @return bool Whether the input string is a hex string
-<documentation><description>Returns a bool indicating whether the string is a 32-digit hex string.</description>
+<documentation><description><p>Returns a bool indicating whether the string is a 32-digit hex string.</p></description>
 <example></example>
 <return-type>string</return-type></documentation>
 */
@@ -754,7 +755,7 @@ Returns a bool indicating whether the string is a 32-digit hex string.
 /**
 Returns true if an operation is successful.
 @return bool The result of an operation
-<documentation><description>Returns true if an operation is successful.</description>
+<documentation><description><p>Returns true if an operation is successful.</p></description>
 <example></example>
 <return-type>bool</return-type></documentation>
 */
@@ -765,7 +766,7 @@ Returns true if an operation is successful.
     
 /**
 Lists all messages.
-<documentation><description>Lists all messages.</description>
+<documentation><description><p>Lists all messages.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -785,7 +786,7 @@ Lists all messages.
     
 /**
 Lists all sites.
-<documentation><description>Lists all sites.</description>
+<documentation><description><p>Lists all sites.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -801,7 +802,7 @@ Lists all sites.
 /**
 Lists all subscribers of an asset.
 @param stdClass $identifier The identifier of the asset
-<documentation><description>Lists all subscribers of an asset.</description>
+<documentation><description><p>Lists all subscribers of an asset.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -819,7 +820,7 @@ Lists all subscribers of an asset.
 Marks a message as 'read' or 'unread'.
 @param stdClass $identifier The identifier of the message
 @param string   $markType The string 'read' or 'unread'
-<documentation><description>Marks a message as 'read' or 'unread'.</description>
+<documentation><description><p>Marks a message as 'read' or 'unread'.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -840,7 +841,7 @@ Moves the asset with the given identifier.
 @param stdClass $newIdentifier The new container identifier
 @param string   $newName The new name assigned to the object moved
 @param bool     $doWorkflow Whether to do workflow
-<documentation><description>Moves the asset with the given identifier.</description>
+<documentation><description><p>Moves the asset with the given identifier.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -863,7 +864,7 @@ Performs the workflow transition.
 @param string   $workflowId The current workflow ID
 @param string   $actionIdentifier The identifier of the action
 @param string   $transitionComment The comments
-<documentation><description>Performs the workflow transition.</description>
+<documentation><description><p>Performs the workflow transition.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -885,7 +886,7 @@ Performs the workflow transition.
     
 /**
 Prints the XML of the last request.
-<documentation><description>Prints the XML of the last request.</description>
+<documentation><description><p>Prints the XML of the last request.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -896,7 +897,7 @@ Prints the XML of the last request.
     
 /**
 Prints the XML of the last response.
-<documentation><description>Prints the XML of the last response.</description>
+<documentation><description><p>Prints the XML of the last response.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -909,9 +910,11 @@ Prints the XML of the last response.
 Publishes the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be published
 @param Destination $destination The destination(s) where the asset should be published
-<documentation><description>Publishes the asset with the given identifier.</description>
+<documentation>
+<description><p>Publishes the asset with the given identifier.</p></description>
 <example></example>
-<return-type>void</return-type></documentation>
+<return-type>void</return-type>
+</documentation>
 */
     public function publish( \stdClass $identifier, a\Destination $destination=NULL ) 
     {
@@ -938,9 +941,11 @@ Publishes the asset with the given identifier.
 /**
 Reads the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be read
-<documentation><description>Reads the asset with the given identifier.</description>
-<example></example>
-<return-type>void</return-type></documentation>
+<documentation>
+<description><p>Reads the asset with the given identifier.</p></description>
+<example>blah</example>
+<return-type>void</return-type>
+</documentation>
 */
     public function read( \stdClass $identifier ) 
     {
@@ -957,7 +962,7 @@ Reads the asset with the given identifier.
 /**
 Reads the access rights of the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be read
-<documentation><description>Reads the access rights of the asset with the given identifier.</description>
+<documentation><description><p>Reads the access rights of the asset with the given identifier.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -974,7 +979,7 @@ Reads the access rights of the asset with the given identifier.
 /**
 Reads the audits of the asset with the given parameters.
 @param stdClass $params The parameters of readAudits
-<documentation><description>Reads the audits of the asset with the given parameters.</description>
+<documentation><description><p>Reads the audits of the asset with the given parameters.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -991,7 +996,7 @@ Reads the audits of the asset with the given parameters.
     
 /**
 Reads the preferences.
-<documentation><description>Reads the preferences.</description>
+<documentation><description><p>Reads the preferences.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -1008,7 +1013,7 @@ Reads the preferences.
 /**
 Reads the workflow information associated with the given identifier.
 @param stdClass $identifier The identifier of the object to be read
-<documentation><description>Reads the workflow information associated with the given identifier.</description>
+<documentation><description><p>Reads the workflow information associated with the given identifier.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -1025,7 +1030,7 @@ Reads the workflow information associated with the given identifier.
 /**
 Reads the workflow settings associated with the given identifier.
 @param stdClass $identifier The identifier of the object to be read
-<documentation><description>Reads the workflow settings associated with the given identifier.</description>
+<documentation><description><p>Reads the workflow settings associated with the given identifier.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -1044,12 +1049,12 @@ Retrieves a property of an asset.
 @param stdClass $id The id of the property
 @param string $property The property name
 @return stdClass The property or NULL
-<documentation><description>Retrieves a property of an asset.</description>
+<documentation><description><p>Retrieves a property of an asset.</p></description>
 <example></example>
 <return-type>stdClass</return-type></documentation>
 */
 
-    function retrieve( \stdClass $id, string $property="" ) : \stdClass
+    function retrieve( \stdClass $id, string $property="" )
     {
         if( $property == "" )
         {
@@ -1071,7 +1076,7 @@ Retrieves a property of an asset.
 /**
 Searches for some entity.
 @param stdClass $searchInfo The searchInfo object
-<documentation><description>Searches for some entity.</description>
+<documentation><description><p>Searches for some entity.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -1089,7 +1094,7 @@ Searches for some entity.
 /**
 Sends a message.
 @param stdClass $message The message object to be sent
-<documentation><description>Sends a message.</description>
+<documentation><description><p>Sends a message.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -1108,7 +1113,7 @@ Copies the site with the given identifier.
 @param string $original_id The ID string of the site to be copied
 @param string $original_name The name of the site to be copied
 @param string $new_name The name assigned to the new site
-<documentation><description>Copies the site with the given identifier.</description>
+<documentation><description><p>Copies the site with the given identifier.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
@@ -1128,7 +1133,7 @@ Copies the site with the given identifier.
 Unpublishes the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be unpublished
 @param Destination $destination The destination where the asset should be unpublished
-<documentation><description>Unpublishes the asset with the given identifier.</description>
+<documentation><description><p>Unpublishes the asset with the given identifier.</p></description>
 <example></example>
 <return-type>void</return-type></documentation>
 */

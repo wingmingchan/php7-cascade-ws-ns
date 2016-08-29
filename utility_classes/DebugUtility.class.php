@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 8/26/2016 Added constant NAME_SPACE.
   * 8/24/2016 Added documentation comments and changed the output to SCRIPT_FILENAME.
   * 3/17/2016 Minor bug fix.
   * 5/28/2015 Added namespaces.
@@ -20,6 +21,8 @@ namespace cascade_ws_utility;
 */
 class DebugUtility
 {
+    const NAME_SPACE = "cascade_ws_utility";
+
 /**
 Outputs the contents of the variable.
 @param mixed $var The variable to be output
