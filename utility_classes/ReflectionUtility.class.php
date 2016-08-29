@@ -57,7 +57,7 @@ class information.</p></description>
         
         if( isset( $constants ) && count( $constants ) > 0 )
         {
-            $class_doc = S_H2 . "Class Constants" . E_H2 . S_UL;
+            $class_doc .= S_H2 . "Class Constants" . E_H2 . S_UL;
             
             foreach( $constants as $key => $value )
             {
@@ -84,7 +84,7 @@ class information.</p></description>
             $class_doc .= S_LI . 
                 S_CODE . self::getSignature( $method ) . E_CODE .
                 self::getMethodXmlValue( $obj, $method->getName(), "description", "", "", $method ) .
-                self::getMethodXmlValue( $obj, $method->getName(), "example", S_PRE, E_PRE, $method ) .
+                self::getMethodXmlValue( $obj, $method->getName(), "example", S_PRE, E_PRE, $method, false ) .
                 E_LI;
         }
         
@@ -669,23 +669,27 @@ method signatures.</p></description>
 
     private static function getClassXmlValue( string $class_info, string $ele_name ) : string
     {
-        return self::getXmlValue( $class_info, $ele_name );
+        return self::getXmlValue( $class_info, $ele_name, true );
     }
     
     private static function getMethodXmlValue( 
         $obj, string $method_name, string $ele_name, string $s_html, string $e_html, 
-        \ReflectionMethod $method=NULL ) : string
+        \ReflectionMethod $method=NULL, $use_default=true ) : string
     {
         // retrieve the method documentation
         if( !isset( $method ) )
             $method  = self::getMethod( $obj, $method_name );
             
         $xml_str = $method->getDocComment();
+        $xml_value = self::getXmlValue( $xml_str, $ele_name, $use_default );
         
-        return $s_html . self::getXmlValue( $xml_str, $ele_name ) . $e_html;
+        if( $xml_value != "" )
+        	return $s_html . $xml_value . $e_html;
+        	
+        return $xml_value;
     }
     
-    private static function getXmlValue( string $xml_str, string $ele_name ) : string
+    private static function getXmlValue( string $xml_str, string $ele_name, $use_default ) : string
     {
         // chop off everything before the first <
         $xml_str = substr( $xml_str, strpos( $xml_str, "<" ) );
@@ -717,7 +721,10 @@ method signatures.</p></description>
                     return $str;
                 }
             }
-            return c\M::INFORMATION_NOT_AVAILABLE;
+            if( $use_default )
+            	return c\M::INFORMATION_NOT_AVAILABLE;
+            else
+            	return "";
         }
         catch( \Exception $e )
         {
