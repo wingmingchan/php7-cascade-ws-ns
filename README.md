@@ -21,7 +21,8 @@ u\ReflectionUtility::showMethodExample( "cascade_ws_asset\Asset", "edit" );
 </pre>
 <p>The ReflectionUtility class can also be used to reveal information of any class and any function:</p>
 <pre>
-u\ReflectionUtility::showMethodSignatures( "ReflectionClass", true );
+echo u\ReflectionUtility::getMethodSignatures( "SimpleXMLElement", true ), BR;
+
 u\ReflectionUtility::showFunctionSignature( "str_replace", true );
 </pre>
 
