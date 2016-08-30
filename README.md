@@ -14,10 +14,10 @@ take advantage of the new features. I expect that this upgrade process will last
 <p>When a class is upgraded with required information, the following type of code is made possible:</p>
 <pre>
 echo u\ReflectionUtility::getClassDocumentation( "cascade_ws_asset\Asset", true );
-u\ReflectionUtility::getMethodSignatures( "cascade_ws_asset\Asset" );
-u\ReflectionUtility::getMethodSignature( "cascade_ws_asset\Asset", "edit" );
-u\ReflectionUtility::getMethodDescription( "cascade_ws_asset\Asset", "edit" );
-u\ReflectionUtility::getMethodExample( "cascade_ws_asset\Asset", "edit" );
+u\ReflectionUtility::showMethodSignatures( "cascade_ws_asset\Asset" );
+u\ReflectionUtility::showMethodSignature( "cascade_ws_asset\Asset", "edit" );
+u\ReflectionUtility::showMethodDescription( "cascade_ws_asset\Asset", "edit" );
+u\ReflectionUtility::showMethodExample( "cascade_ws_asset\Asset", "edit" );
 </pre>
 
 <h2>Progress</h2>
