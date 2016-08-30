@@ -9,7 +9,7 @@ take advantage of the new features. I expect that this upgrade process will last
 <p>The library is upgraded to PHP7 due to two main reasons:</p>
 <ul>
 <li>When using parameter types and return types, I can have tighter control over client code</li>
-<li>I can use the type information, together with the ReflectionUtility class, to generate documentation pages</li>
+<li>I can use the type information, together with the ReflectionUtility class, to generate documentation pages; for an example of a generated page, see http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/asset.php</li>
 </ul>
 <p>When a class is upgraded with required information, the following type of code is made possible:</p>
 <pre>
