@@ -19,6 +19,11 @@ u\ReflectionUtility::showMethodSignature( "cascade_ws_asset\Asset", "edit" );
 u\ReflectionUtility::showMethodDescription( "cascade_ws_asset\Asset", "edit" );
 u\ReflectionUtility::showMethodExample( "cascade_ws_asset\Asset", "edit" );
 </pre>
+<p>The ReflectionUtility class can also be used to reveal information of any class and any function:</p>
+<pre>
+u\ReflectionUtility::showMethodSignatures( "ReflectionClass", true );
+u\ReflectionUtility::showFunctionSignature( "str_replace", true );
+</pre>
 
 <h2>Progress</h2>
 <ul>
