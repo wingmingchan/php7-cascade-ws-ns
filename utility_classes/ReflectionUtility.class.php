@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 8/30/2016 Added more flags to control output of documentation.
   * 8/26/2016 Added constant NAME_SPACE.
   * 8/24/2016 Add getClassDescription and getClassPostscript, and turn getClassInfo to private.
   * 8/23/2016 Added more documentation and split private methods. Added getNameSpace.
@@ -88,7 +89,7 @@ class information.</p></description>
                 E_LI;
         }
         
-        $class_doc .= E_UL . self::getClassPostscript( $obj, $r );
+        $class_doc .= E_UL . self::getClassPostscript( $obj, $r, false, false );
         
         if( $with_hr )
             $class_doc .= HR;
@@ -150,9 +151,9 @@ postscript.</p></description>
 <exception>ReflectionException</exception>
 </documentation>
 */    public static function getClassPostscript( 
-        $obj, \ReflectionClass $r=NULL, bool $with_hr=false ) : string
+        $obj, \ReflectionClass $r=NULL, bool $with_hr=false, bool $with_default=true ) : string
     {
-        return self::getClassInfo( $obj, $r, "postscript", $with_hr );
+        return self::getClassInfo( $obj, $r, "postscript", $with_hr, $with_default );
     }
     
 /**
@@ -652,14 +653,15 @@ method signatures.</p></description>
     }
     
     private static function getClassInfo( 
-        $obj, \ReflectionClass $r=NULL, string $ele_name, bool $with_hr=false ) : string
+        $obj, \ReflectionClass $r=NULL, string $ele_name, 
+        bool $with_hr=false, $with_default=true ) : string
     {
         $class_info = "";
         
         if( !isset( $r ) )
             $r = new \ReflectionClass( $obj );
             
-        $class_info = self::getClassXmlValue( $r->getDocComment(), $ele_name );
+        $class_info = self::getClassXmlValue( $r->getDocComment(), $ele_name, $with_default );
         
         if( $with_hr )
             $class_info .= HR;
@@ -667,9 +669,9 @@ method signatures.</p></description>
         return $class_info;
     }
 
-    private static function getClassXmlValue( string $class_info, string $ele_name ) : string
+    private static function getClassXmlValue( string $class_info, string $ele_name, $with_default ) : string
     {
-        return self::getXmlValue( $class_info, $ele_name, true );
+        return self::getXmlValue( $class_info, $ele_name, $with_default );
     }
     
     private static function getMethodXmlValue( 
