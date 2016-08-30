@@ -3,9 +3,24 @@ My Cascade web service library, using namespaces, written in PHP 7. Last modifie
 <p>This version of the library makes use of features in PHP7. Since I have just started making changes,
 most files are identical to those in the older version. Everything is posted here so that the library 
 constantly remains complete with all new features I am adding, and users can use this version to
-take advantage of the new features. I expect that this upgrade process will last for at least a few months.</p>
+take advantage of the new features. I expect that this upgrade process will last for a few months.</p>
 
-<p>Phase 1: adding type information to the library and reworking the test code.</p>
+<h2>Purpose of the Upgrade</h2>
+<p>The library is upgraded to PHP7 due to two main reasons:</p>
+<ul>
+<li>When using parameter types and return types, I can have tighter control over client code</li>
+<li>I can use the type information, together with the ReflectionUtility class, to generate documentation pages</li>
+</ul>
+<p>When a class is upgraded with required information, the following type of code is made possible:</p>
+<pre>
+echo u\ReflectionUtility::getClassDocumentation( "cascade_ws_asset\Asset", true );
+u\ReflectionUtility::getMethodSignatures( "cascade_ws_asset\Asset" );
+u\ReflectionUtility::getMethodSignature( "cascade_ws_asset\Asset", "edit" );
+u\ReflectionUtility::getMethodDescription( "cascade_ws_asset\Asset", "edit" );
+u\ReflectionUtility::getMethodExample( "cascade_ws_asset\Asset", "edit" );
+</pre>
+
+<h2>Progress</h2>
 <ul>
 <li>Updated Asset and associated test code</li>
 </ul>
