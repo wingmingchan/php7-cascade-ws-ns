@@ -38,10 +38,10 @@ u\ReflectionUtility::showFunctionSignature( "str_replace", true );
 <ol>
 <li>For more information, visit http://www.upstate.edu/cascade-admin/web-services/index.php</li>
 <li>Online tutorials: http://www.upstate.edu/cascade-admin/web-services/courses/ws-online-tutorials.php</li>
+<li>Online tutorial recordings: https://www.youtube.com/playlist?list=PLiPcpR6GRx5cGyfQESK6ZAj4My8rJidt4</li>
 <li>Examples and recipes: https://github.com/wingmingchan/php-cascade-ws-ns-examples</li>
 <li>Asset classes API: http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/index.php</li>
 <li>Cascade Web Services courses: http://www.upstate.edu/cascade-admin/web-services/courses/index.php</li>
-<li>Online tutorial recordings: https://www.youtube.com/playlist?list=PLiPcpR6GRx5cGyfQESK6ZAj4My8rJidt4</li>
 <li>Cascade Web Services Library Support: https://groups.google.com/forum/#!forum/cascade-web-services-library-support</li>
 <li>Erik España: https://github.com/espanae/cascade-server-web-services</li>
 <li>Mark Nokes: https://github.com/marknokes</li>
