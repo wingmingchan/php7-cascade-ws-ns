@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 8/30/2016 Added XML documentation.
   * 4/13/2016 Added more initialization of stdClass objects.
   * 3/8/2016 Added get_class to dump.
   * 2/11/2016 Added more code to constructor so getIdentifier can return more info.
@@ -44,9 +45,8 @@ abstract class Asset
     const NAME_SPACE = "cascade_ws_asset";
     
 /**
-<documentation><description>The constructor. Since this is an abstract class, the constructor cannot be called.</description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>The constructor. Since <code>Asset</code> is an abstract class, the constructor cannot be called.</p></description>
+<exception>NullServiceException, NullIdentifierException, NullAssetException</exception>
 </documentation>
 */
     protected function __construct( aohs\AssetOperationHandlerService $service, \stdClass $identifier )
@@ -137,6 +137,18 @@ abstract class Asset
         }
     }
     
+/**
+<documentation><description><p>Copies the calling object and creates a new asset of the same type in the supplied parent container, and returns an object representing the newly created asset.</p></description>
+<example>$page->copy(
+    $cascade->getAsset( 
+        a\Folder::TYPE, "3890a3f88b7ffe83164c931457a2709c" ), // the target folder
+    "test-asset" // new name
+);
+</example>
+<return-type>Asset</return-type>
+<exception>EmptyNameException, CopyErrorException</exception>
+</documentation>
+*/
     public function copy( Container $parent, string $new_name ) : Asset
     {
         if( $new_name == "" )
@@ -185,6 +197,13 @@ abstract class Asset
         }
     }
     
+/**
+<documentation><description><p>Displays some basic information of the calling object and returns it.</p></description>
+<example>$page->display();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public function display() : Asset
     {
         echo S_H2 . "Asset::display" . E_H2 .
@@ -199,6 +218,13 @@ abstract class Asset
         return $this;
     }
 
+/**
+<documentation><description><p>Dumps the property of the calling object and returns the object.</p></description>
+<example>$page->dump();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public function dump( bool $formatted=true ) : Asset
     {
         if( $formatted ) echo S_H2 . get_class( $this ) . " " . c\L::READ_DUMP . E_H2 . S_PRE;
@@ -208,6 +234,14 @@ abstract class Asset
         return $this;
     }
     
+/**
+<documentation><description><p>Calls <code>reloadProperty</code> and returns the calling object. This method is normally overridden by descendant classes for editable assets. The various parameters are required by classes like <code>Page</code> and <code>DataDefinitionBlock</code>.</p></description>
+<example>$page->setText( "main-content-content", "Test content" )->
+    edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -219,6 +253,13 @@ abstract class Asset
         return $this->reloadProperty();
     }
     
+/**
+<documentation><description><p>Returns an array of <a href="http://www.upstate.edu/cascade-admin/web-services/api/audit.php"><code>Audit</code></a> objects. This method has not been successfully tested with <code>$type</code> equals to <code>group</code> or <code>role</code>. <code>$start_time</code> and <code>$end_time</code>, when not <code>NULL</code>, are used to filter the output.</p></description>
+<example>$audits = $page->getAudits();</example>
+<return-type>array</return-type>
+<exception>NoSuchTypeException, Exception</exception>
+</documentation>
+*/
     public function getAudits( string $type="", \DateTime $start_time=NULL, \DateTime $end_time=NULL ) : array
     {
         if( !is_string( $type ) || !c\AuditTypes::isAuditType( $type ) )
@@ -244,7 +285,7 @@ abstract class Asset
 
         $a_std = new \stdClass();
         
-        // unable to test with user, group, role
+        // unable to test with group, role
         if( $this->getType() == User::TYPE )
         {
             $a_std->username = $this->getName();
@@ -328,52 +369,123 @@ abstract class Asset
         return $audits;
     }
     
+/**
+<documentation><description><p>Returns <code>id</code>.</p></description>
+<example>echo $page->getId(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getId() : string
     {
         return $this->id;
     }
     
+/**
+<documentation><description><p>Returns the identifier passed into the constructor.</p></description>
+<example>u\DebugUtility::dump( $page->getIdentifier() );</example>
+<return-type>stdClass</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIdentifier() : \stdClass
     {
         return $this->identifier;
     }
     
+/**
+<documentation><description><p>Returns <code>name</code>.</p></description>
+<example>echo $page->getName(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getName() : string
     {
         return $this->name;
     }
     
+/**
+<documentation><description><p>Returns <code>path</code>.</p></description>
+<example>echo $page->getPath(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPath() : string
     {
         return $this->path;
     }
     
+/**
+<documentation><description><p>Returns the property.</p></description>
+<example>u\DebugUtility::dump( $page->getProperty() );</example>
+<return-type>stdClass</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getProperty() : \stdClass
     {
         return $this->property;
     }
     
+/**
+<documentation><description><p>Returns the property name.</p></description>
+<example>echo $page->getPropertyName(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPropertyName() : string
     {
         if( self::DEBUG ) { u\DebugUtility::out( "From Asset::getPropertyName " . $this->property_name ); }
         return $this->property_name;
     }
     
+/**
+<documentation><description><p>Returns the <code>$service</code> object passed into the constructor.</p></description>
+<example>u\DebugUtility::dump( $page->getService() );</example>
+<return-type>AssetOperationHandlerService</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getService() : aohs\AssetOperationHandlerService
     {
         return $this->service;
     }
     
+/**
+<documentation><description><p>Returns <code>siteId</code>.</p></description>
+<example>echo $page->getSiteId(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSiteId() : string
     {
         return $this->site_id;
     }
   
+/**
+<documentation><description><p>Returns <code>siteName</code>.</p></description>
+<example>echo $page->getSiteName(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSiteName() : string
     {
         return $this->site_name;
     }
     
+/**
+<documentation><description><p>Returns an array of subscribers (<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>Identifier</code></a> objects).</p></description>
+<example>$subscribers = $page->getSubscribers(); // array of Identifier objects
+echo "There are " . count( $subscribers ) . " subscribers.", BR;</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSubscribers() : array
     {
         $results = array();
@@ -407,11 +519,27 @@ abstract class Asset
         return $results;
     }
     
+/**
+<documentation><description><p>Returns the type string.</p></description>
+<example>echo $page->getType(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getType() : string
     {
         return $this->type;
     }
     
+/**
+<documentation><description><p>Publishes all publishable subscribers to the supplied destination, or to all destinations if none supplied, and returns the calling object.</p></description>
+<example>$page->publishSubscribers( 
+    $cascade->getAsset( a\Destination::TYPE, "388fd57b8b7ffe83164c9314b3e7eef4" ) 
+);</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public function publishSubscribers( Destination $destination=NULL ) : Asset
     {
         $subscriber_ids = $this->getSubscribers();
@@ -438,6 +566,13 @@ abstract class Asset
         return $this;
     }
     
+/**
+<documentation><description><p>Reads the asset and returns the calling object.</p></description>
+<example>$page = $page->reloadProperty();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public function reloadProperty() : Asset
     {
         $this->property = 
@@ -445,6 +580,14 @@ abstract class Asset
         return $this;
     }
     
+/**
+<documentation><description><p>eturns a new object of the named type bearing the supplied identity information. The <code>$id_path</code> parameter can be an id string like <code>d7b47ebb8b7f085600a0fcdc2149931f</code> or a path string. When it is a path string, the site name must also be supplied. Note that all asset classes inherit this static method.</p></description>
+<example>$page = a\Asset::getAsset( 
+    $service, a\Page::TYPE, $page_id );</example>
+<return-type>Asset</return-type>
+<exception>NoSuchTypeException, Exception</exception>
+</documentation>
+*/
     public static function getAsset( 
         aohs\AssetOperationHandlerService $service, string $type, string $id_path, string $site_name=NULL ) : Asset
     {
