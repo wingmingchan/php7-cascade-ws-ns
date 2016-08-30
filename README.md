@@ -23,6 +23,8 @@ u\ReflectionUtility::showMethodExample( "cascade_ws_asset\Asset", "edit" );
 <h2>Progress</h2>
 <ul>
 <li>Updated Asset and associated test code</li>
+<li>All utility classes have been updated</li>
+
 </ul>
 
 
