@@ -27,6 +27,41 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>An <code>AssetFactory</code> object represents an asset factory asset.</p>
+<h2>Structure of <code>assetFactory</code></h2>
+<pre>assetFactory
+  id
+  name
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  applicableGroups
+  assetType
+  baseAssetId
+  baseAssetPath
+  baseAssetRecycled (bool)
+  placementFolderId
+  placementFolderPath
+  placementFolderRecycled (bool)
+  placementFolderId
+  placementFolderPath
+  allowSubfolderPlacement (bool)
+  folderPlacementPosition (int)
+  overwrite (bool)
+  workflowMode
+  workflowDefinitionId
+  workflowDefinitionPath
+  plugins
+    plugin (NULL, stdClass or array of stdClass)
+</pre>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/asset_factory.php">asset_factory.php</a></li></ul></postscript>
+</documentation>
+*/
 class AssetFactory extends ContainedAsset
 {
     const DEBUG = false;
@@ -61,6 +96,13 @@ class AssetFactory extends ContainedAsset
     const SD_FIELDS_TO_SYSTEM_NAME_PARAM_CONCAT_TOKEN  = "assetfactory.plugin.sdfieldstosystemname.param.name.concattoken";
     const SD_FIELDS_TO_SYSTEM_NAME_PARAM_FIELD_IDS     = "assetfactory.plugin.sdfieldstosystemname.param.name.fieldids";
     
+/**
+<documentation><description><p>The constructor, overriding the parent method to process plugins..</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
         parent::__construct( $service, $identifier );
@@ -72,6 +114,13 @@ class AssetFactory extends ContainedAsset
         }
     }
     
+/**
+<documentation><description><p>Adds the group name to <code>applicableGroups</code> and returns the calling object.</p></description>
+<example>$af->addGroup( $group )->edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public function addGroup( Group $g ) : Asset
     {
         if( $g == NULL )
@@ -93,6 +142,13 @@ class AssetFactory extends ContainedAsset
         return $this;
     }
 
+/**
+<documentation><description><p>Adds the named plugin, calls <code>edit</code>, and returns the calling object.</p></description>
+<example>$af->addPlugin( a\AssetFactory::CREATE_RESIZED_IMAGES_PLUGIN );</example>
+<return-type>Asset</return-type>
+<exception>NoSuchPluginException</exception>
+</documentation>
+*/
     public function addPlugin( $name ) : Asset
     {
         if( !in_array( $name, self::$plugin_names ) )
@@ -110,6 +166,13 @@ class AssetFactory extends ContainedAsset
         return $this->edit();
     }
     
+/**
+<documentation><description><p>Edits and returns the calling object.</p></description>
+<example>$af->addGroup( $group )->edit();</example>
+<return-type>Asset</return-type>
+<exception>EditingFailureException</exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -143,61 +206,146 @@ class AssetFactory extends ContainedAsset
         return $this->reloadProperty();
     }
     
+/**
+<documentation><description><p>Returns <code>allowSubfolderPlacement</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $af->getAllowSubfolderPlacement() ) . BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getAllowSubfolderPlacement() : bool
     {
         return $this->getProperty()->allowSubfolderPlacement;
     }
 
+/**
+<documentation><description><p>Returns <code>applicableGroups</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $af->getApplicableGroups() ) . BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getApplicableGroups()
     {
         return $this->getProperty()->applicableGroups;
     }
     
-    public function getAssetType()
+/**
+<documentation><description><p>Returns <code>assetType</code>.</p></description>
+<example>echo $af->getAssetType() . BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getAssetType() : string
     {
         return $this->getProperty()->assetType;
     }
     
+/**
+<documentation><description><p>Returns <code>baseAssetId</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $af->getBaseAssetId() ) . BR</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getBaseAssetId()
     {
         return $this->getProperty()->baseAssetId;
     }
     
+/**
+<documentation><description><p>Returns <code>baseAssetPath</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $af->getBaseAssetPath() ) . BR</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getBaseAssetPath()
     {
         return $this->getProperty()->baseAssetPath;
     }
     
+/**
+<documentation><description><p>Returns <code>baseAssetRecycled</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $af->getBaseAssetRecycled() ) . BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getBaseAssetRecycled() : bool
     {
         return $this->getProperty()->baseAssetRecycled;
     }
     
-    public function getFolderPlacementPosition()
+/**
+<documentation><description><p>Returns <code>folderPlacementPosition</code>.</p></description>
+<example>echo $af->getFolderPlacementPosition() . BR;</example>
+<return-type>int</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getFolderPlacementPosition() : int
     {
         return $this->getProperty()->folderPlacementPosition;
     }
     
+/**
+<documentation><description><p>Returns <code>overwrite</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $af->getOverwrite() ) . BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getOverwrite() : bool
     {
         return $this->getProperty()->overwrite;
     }
     
+/**
+<documentation><description><p>Returns <code>placementFolderId</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $af->getPlacementFolderId() ) . BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPlacementFolderId()
     {
         return $this->getProperty()->placementFolderId;
     }
     
+/**
+<documentation><description><p>Returns <code>placementFolderPath</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $af->getPlacementFolderPath() ) . BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPlacementFolderPath()
     {
         return $this->getProperty()->placementFolderPath;
     }
     
+/**
+<documentation><description><p>Returns <code>placementFolderRecycled</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $af->getPlacementFolderRecycled() ) . BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPlacementFolderRecycled() : bool
     {
         return $this->getProperty()->placementFolderRecycled;
     }
 
+/**
+<documentation><description><p>Returns the <code>p\Plugin</code> object bearing that name.</p></description>
+<example>if( $af->hasPlugin( a\AssetFactory::FILE_LIMIT_PLUGIN ) )
+    u\DebugUtility::dump( $af->getPlugin( a\AssetFactory::FILE_LIMIT_PLUGIN ) );</example>
+<return-type>Plugin</return-type>
+<exception>NoSuchPluginException</exception>
+</documentation>
+*/
     public function getPlugin( string $name ) : p\Plugin
     {
         if( $this->hasPlugin( $name ) )
@@ -214,6 +362,13 @@ class AssetFactory extends ContainedAsset
             S_SPAN . "The plugin $name does not exist." . E_SPAN );    
     }
     
+/**
+<documentation><description><p>Returns an array of <code>p\Plugin</code> names.</p></description>
+<example>u\DebugUtility::dump( $af->getPluginNames() );</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPluginNames() : array
     {
         $names = array();
@@ -228,26 +383,62 @@ class AssetFactory extends ContainedAsset
         return $names;
     }
     
+/**
+<documentation><description><p>Returns the <code>plugins</code> property.</p></description>
+<example>u\DebugUtility::dump( $af->getPluginStd() );</example>
+<return-type>stdClass</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPluginStd() : \stdClass
     {
         return $this->getProperty()->plugins;
     }
     
+/**
+<documentation><description><p>Returns <code>workflowDefinitionId</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $af->getWorkflowDefinitionId() ) . BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getWorkflowDefinitionId()
     {
         return $this->getProperty()->workflowDefinitionId;
     }
     
+/**
+<documentation><description><p>Returns <code>workflowDefinitionPath</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $af->getWorkflowDefinitionPath() ) . BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getWorkflowDefinitionPath()
     {
         return $this->getProperty()->workflowDefinitionPath;
     }
     
-    public function getWorkflowMode()
+/**
+<documentation><description><p>Returns <code>workflowMode</code>.</p></description>
+<example>echo $af->getWorkflowMode() . BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getWorkflowMode() : string
     {
         return $this->getProperty()->workflowMode;
     }
     
+/**
+<documentation><description><p>Returns a bool indicating whether the <code>p\Plugin</code> so named exists.</p></description>
+<example>if( $af->hasPlugin( a\AssetFactory::FILE_LIMIT_PLUGIN ) )
+    u\DebugUtility::dump( $af->getPlugin( a\AssetFactory::FILE_LIMIT_PLUGIN ) );</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasPlugin( string $name ) : bool
     {
         if( count( $this->plugins ) > 0 )
@@ -263,6 +454,15 @@ class AssetFactory extends ContainedAsset
         return false;
     }
     
+/**
+<documentation><description><p>Returns a bool indicating whether the asset factory is applicable to the group.</p></description>
+<example>if( $af->isApplicableToGroup( $group ) )
+    echo "Applicable to ", $group->getName(), BR;
+</example>
+<return-type>bool</return-type>
+<exception>NullAssetException</exception>
+</documentation>
+*/
     public function isApplicableToGroup( Group $g ) : bool
     {
         if( $g == NULL )
@@ -276,6 +476,13 @@ class AssetFactory extends ContainedAsset
         return in_array( $group_name, $group_array );
     }
     
+/**
+<documentation><description><p>Removes the group name from <code>applicableGroups</code> and returns the calling object.</p></description>
+<example>$af->removeGroup( $group )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NullAssetException</exception>
+</documentation>
+*/
     public function removeGroup( Group $g ) : Asset
     {
         if( $g == NULL )
@@ -307,6 +514,13 @@ class AssetFactory extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p>Removes the named plugin, calls <code>edit</code>, and returns the calling object.</p></description>
+<example>$af->removePlugin( a\AssetFactory::CREATE_RESIZED_IMAGES_PLUGIN );</example>
+<return-type>Asset</return-type>
+<exception>NoSuchPluginException</exception>
+</documentation>
+*/
     public function removePlugin( string $name ) : Asset
     {
         if( !in_array( $name, self::$plugin_names ) )
@@ -330,6 +544,15 @@ class AssetFactory extends ContainedAsset
         return $this->edit();
     }
     
+/**
+<documentation><description><p>Removes the named parameter from the named plugin, calls <code>edit</code>, and returns the calling object.</p></description>
+<example>$af->removePluginParameter( 
+    a\AssetFactory::STRUCTURED_DATA_FIELD_TO_SYSTEM_NAME_PLUGIN,
+    a\AssetFactory::SD_FIELD_TO_SYSTEM_NAME_PARAM_FIELD_ID );</example>
+<return-type>Asset</return-type>
+<exception>NoSuchPluginException, NoSuchPluginParameterException</exception>
+</documentation>
+*/
     public function removePluginParameter( string $plugin_name, string $param_name ) : Asset
     {
         if( !in_array( $plugin_name, self::$plugin_names ) )
@@ -342,6 +565,13 @@ class AssetFactory extends ContainedAsset
         return $this->edit();
     }
     
+/**
+<documentation><description><p>Sets <code>allowSubfolderPlacement</code> and returns the calling object.</p></description>
+<example>$af->setAllowSubfolderPlacement( true )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
     public function setAllowSubfolderPlacement( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -353,6 +583,14 @@ class AssetFactory extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p>Sets <code>assetType</code>, <code>baseAssetId</code>, and <code>baseAssetPath</code>,
+and returns the calling object. If the asset passed in is <code>NULL</code>, then a dummy type <code>File::TYPE</code> is used to set <code>assetType</code>.</p></description>
+<example>$af->setBaseAsset()->edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public function setBaseAsset( Asset $a=NULL ) : Asset
     {
         if( isset( $a ) )
@@ -381,7 +619,14 @@ class AssetFactory extends ContainedAsset
         return $this;
     }
     
-    public function setFolderPlacementPosition( $value ) : Asset
+/**
+<documentation><description><p>Sets <code>folderPlacementPosition</code> and returns the calling object.</p></description>
+<example>$af->setFolderPlacementPosition( 1 )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setFolderPlacementPosition( int $value ) : Asset
     {
         if( is_nan( $value ) )
         {
@@ -394,6 +639,13 @@ class AssetFactory extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p>Sets <code>overwrite</code> and returns the calling object.</p></description>
+<example>$af->setOverwrite( true )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
     public function setOverwrite( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -405,6 +657,13 @@ class AssetFactory extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p>Sets <code>placementFolderId</code> and <code>placementFolderPath</code>, and returns the calling object.</p></description>
+<example>$af->setPlacementFolder( $cascade->getFolder( "images", "cascade-admin" ) )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NullAssetException</exception>
+</documentation>
+*/
     public function setPlacementFolder( Folder $folder ) : Asset
     {
         if( $folder == NULL )
@@ -417,6 +676,16 @@ class AssetFactory extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p>Sets the value of the named <code>parameter</code> in the named plugin, calls <code>edit</code>, and returns the calling object.</p></description>
+<example>$af->setPluginParameterValue(
+    a\AssetFactory::FILE_LIMIT_PLUGIN,
+    a\AssetFactory::FILE_LIMIT_PARAM_SIZE,
+    "13" );</example>
+<return-type>Asset</return-type>
+<exception>NoSuchPluginException, NoSuchPluginParameterException</exception>
+</documentation>
+*/
     public function setPluginParameterValue( string $plugin_name, string $param_name, string $param_value ) : Asset
     {
         if( !in_array( $plugin_name, self::$plugin_names ) )
@@ -438,6 +707,16 @@ class AssetFactory extends ContainedAsset
         return $this->edit();
     }
     
+/**
+<documentation><description><p>Sets the plugins, calls <code>edit</code>, and returns the calling object.</p></description>
+<example>$temp_plugins = $af->getPluginStd();
+// do something, and then restore the plugins
+$af->setPlugins( $temp_plugins );
+</example>
+<return-type>Asset</return-type>
+<exception>EditingFailureException</exception>
+</documentation>
+*/
     public function setPlugins( \stdClass $plugins ) : Asset
     {
         $property = $this->getProperty();
@@ -457,6 +736,14 @@ class AssetFactory extends ContainedAsset
         return $this->reloadProperty();
     }
     
+/**
+<documentation><description><p>Sets <code>workflowMode</code>, and if <code>$mode</code> is <code>c\T::FACTORY_CONTROLLED</code>,
+sets <code>workflowDefinitionId</code> and <code>workflowDefinitionPath</code>, and returns the calling object.</p></description>
+<example>$af->setWorkflowMode( c\T::NONE )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableWorkflowModeException, NullAssetException</exception>
+</documentation>
+*/
     public function setWorkflowMode( string $mode=c\T::NONE, WorkflowDefinition $wd=NULL ) : Asset
     {
         if( !c\WorkflowModeValues::isWorkflowMode( $mode ) )
