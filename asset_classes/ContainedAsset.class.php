@@ -4,20 +4,43 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 8/30/2016 Fixed a bug in getParentContainerId.
   * 4/25/2016 Added isDescendantOf.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>The <code>ContainedAsset</code> class is an abstract sub-class of <code>Asset</code> and the superclass of all asset classes except the following three classes:</p>
+<ul>
+<li><code>Group</code></li>
+<li><code>Role</code></li>
+<li><code>User</code></li>
+</ul>
+<p>These three classes do not have parent containers. Note that although <code>Site</code> is a sub-class of <code>ScheduledPublishing</code>,
+which is a sub-class of <code>ContainedAsset</code>, and hence inherits all methods defined in <code>ContainedAsset</code>, a site does not have a parent container.
+Calling any method defined in <code>ContainedAsset</code> on a <code>Site</code> object will cause an exception to be thrown from <code>ContainedAsset</code>.</p>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/contained_asset.php">contained_asset.php</a></li></ul></postscript>
+</documentation>
+*/
 abstract class ContainedAsset extends Asset
 {
     const DEBUG = false;
 
+/**
+<documentation><description><p>Returns the parent container or <code>NULL</code>.</p></description>
+<example>u\DebugUtility::dump( $bf->getParentContainer() );</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getParentContainer()
     {
         if( $this->getType() == c\T::SITE )
@@ -35,6 +58,14 @@ abstract class ContainedAsset extends Asset
         return NULL;
     }
     
+/**
+<documentation><description><p>Returns <code>parentContainerId</code> or <code>parentFolderId</code>.</p></description>
+<example>echo $dd->getParentContainerId(), BR,
+     $dd->getParentContainerPath(), BR;</example>
+<return-type>mixed</return-type>
+<exception>WrongAssetTypeException</exception>
+</documentation>
+*/
     public function getParentContainerId()
     {
         if( $this->getType() == c\T::SITE )
@@ -44,10 +75,20 @@ abstract class ContainedAsset extends Asset
         
         if( isset( $this->getProperty()->parentFolderId ) )
             return $this->getProperty()->parentFolderId;
-        else
+        elseif( isset( $this->getProperty()->parentContainerId ) )
             return $this->getProperty()->parentContainerId;
+        else
+            return NULL;
     }
     
+/**
+<documentation><description><p>Returns <code>parentContainerPath</code> or <code>parentFolderPath</code>.</p></description>
+<example>echo $dd->getParentContainerId(), BR,
+     $dd->getParentContainerPath(), BR;</example>
+<return-type>mixed</return-type>
+<exception>WrongAssetTypeException</exception>
+</documentation>
+*/
     public function getParentContainerPath()
     {
         if( $this->getType() == c\T::SITE )
@@ -63,12 +104,27 @@ abstract class ContainedAsset extends Asset
             return NULL;
     }
     
-    public function isDescendantOf( Container $container )
+/**
+<documentation><description><p>Returns a bool, indicating whether this asset is a descendant of the named container.</p></description>
+<example>echo u\StringUtility::boolToString( $dd->isDescendantOf( $msc ) ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isDescendantOf( Container $container ) : bool
     {
         return $container->isAncestorOf( $this );
     }
     
-    public function isInContainer( Container $c )
+/**
+<documentation><description><p>Returns a bool, indicating whether the asset is a direct child of the named container.</p></description>
+<example>if( $page->isInContainer( $test2 ) )
+    $page->move( $test1, false );</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isInContainer( Container $c ) : bool
     {
         if( $this->getType() == c\T::SITE )
         {
@@ -77,7 +133,15 @@ abstract class ContainedAsset extends Asset
         return $c->getId() == $this->getParentContainerId();
     }
     
-    public function move( Container $new_parent, $doWorkflow=false )
+/**
+<documentation><description><p>Moves the asset to the destination container, calls <code>reloadProperty</code>, and returns the calling object.</p></description>
+<example>if( $page->isInContainer( $test2 ) )
+    $page->move( $test1, false );</example>
+<return-type>Asset</return-type>
+<exception>WrongAssetTypeException, NullAssetException</exception>
+</documentation>
+*/
+    public function move( Container $new_parent, $doWorkflow=false ) : Asset
     {
         if( $this->getType() == c\T::SITE )
         {
@@ -88,13 +152,22 @@ abstract class ContainedAsset extends Asset
         {
             throw new e\NullAssetException( c\M::NULL_CONTAINER );
         }
-        $this->moveRename( $new_parent, NULL, $doWorkflow );
+        $this->moveRename( $new_parent, "", $doWorkflow );
         $this->reloadProperty();
         
         return $this;
     }
     
-    public function rename( $new_name, $doWorkflow=false )
+/**
+<documentation><description><p>Renames the asset to the new name, calls <code>reloadProperty</code>, and returns the calling object.</p></description>
+<example>$p = $cascade->getAsset( a\Page::TYPE, $id );
+$p->rename( 'test3' );
+</example>
+<return-type>Asset</return-type>
+<exception>WrongAssetTypeException, EmptyValueException</exception>
+</documentation>
+*/
+    public function rename( string $new_name, bool $doWorkflow=false ) : Asset
     {
         if( $this->getType() == c\T::SITE )
         {
@@ -111,7 +184,7 @@ abstract class ContainedAsset extends Asset
         return $this;
     }
     
-    private function moveRename( $parent_container, $new_name, $doWorkflow=false )
+    private function moveRename( Container $parent_container=NULL, string $new_name="", bool $doWorkflow=false )
     {
         if( !c\BooleanValues::isBoolean( $doWorkflow ) )
             throw new e\UnacceptableValueException( "The value $doWorkflow must be a boolean." );
