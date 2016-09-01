@@ -28,7 +28,7 @@ u\ReflectionUtility::showFunctionSignature( "str_replace", true );
 
 <h2>Progress</h2>
 <ul>
-<li>Updated Asset, Audit, ContainedAsset, AssetFactory, Container and associated test code</li>
+<li>Updated Asset, Audit, ContainedAsset, AssetFactory, Container, AssetFactoryContainer and associated test code</li>
 <li>All utility classes have been updated</li>
 
 </ul>
