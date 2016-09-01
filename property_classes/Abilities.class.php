@@ -20,10 +20,23 @@ use cascade_ws_exception as e;
  * The parent class of GlobalAbilities and SiteAbilities. This class only deals with the 49 properties shared
  * by the two children.
  *
- * @link http://www.upstate.edu/cascade-admin/projects/web-services/oop/classes/property-classes/abilities.php
  */
+ 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>This class implements a cache for storing Asset objects.</p>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 abstract class Abilities extends Property
 {
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
     public function __construct( 
         \stdClass $a=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
@@ -85,595 +98,1189 @@ abstract class Abilities extends Property
         }
     }
     
-    public function getAccessAdminArea()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getAccessAdminArea() : bool
     {
         return $this->access_admin_area;
     }
     
-    public function getAccessAssetFactories()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getAccessAssetFactories() : bool
     {
         return $this->access_asset_factories;
     }
     
-    public function getAccessAudits()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getAccessAudits() : bool
     {
         return $this->access_audits;
     }
     
-    public function getAccessConfigurationSets()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getAccessConfigurationSets() : bool
     {
         return $this->access_configuration_sets;
     }
     
-    public function getAccessContentTypes()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getAccessContentTypes() : bool
     {
         return $this->access_content_types;
     }
     
-    public function getAccessDataDefinitions()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getAccessDataDefinitions() : bool
     {
         return $this->access_data_definitions;
     }
     
-    public function getAccessMetadataSets()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getAccessMetadataSets() : bool
     {
         return $this->access_metadata_sets;
     }
     
-    public function getAccessPublishSets()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getAccessPublishSets() : bool
     {
         return $this->access_publish_sets;
     }
     
-    public function getAccessTransports()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getAccessTransports() : bool
     {
         return $this->access_transports;
     }
     
-    public function getAccessWorkflowDefinitions()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getAccessWorkflowDefinitions() : bool
     {
         return $this->access_workflow_definitions;
     }
     
-    public function getActivateDeleteVersions()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getActivateDeleteVersions() : bool
     {
         return $this->activate_delete_versions;
     }
     
-    public function getAlwaysAllowedToToggleDataChecks()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getAlwaysAllowedToToggleDataChecks() : bool
     {
         return $this->always_allowed_to_toggle_data_checks;
     }
 
-    public function getAssignApproveWorkflowSteps()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getAssignApproveWorkflowSteps() : bool
     {
         return $this->assign_approve_workflow_steps;
     }
     
-    public function getAssignWorkflowsToFolders()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getAssignWorkflowsToFolders() : bool
     {
         return $this->assign_workflows_to_folders;
     }
     
-    public function getBreakLocks()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getBreakLocks() : bool
     {
         return $this->break_locks;
     }
     
-    public function getBrokenLinkReportAccess()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getBrokenLinkReportAccess() : bool
     {
         return $this->broken_link_report_access;
     }
     
-    public function getBrokenLinkReportMarkFixed()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getBrokenLinkReportMarkFixed() : bool
     {
         return $this->broken_link_report_mark_fixed;
     }
     
-    public function getBulkChange()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getBulkChange() : bool
     {
         return $this->bulk_change;
     }
     
-    public function getBypassWorkflow()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getBypassWorkflow() : bool
     {
         return $this->bypass_workflow;
     }
     
-    public function getBypassAssetFactoryGroupsNewMenu()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getBypassAssetFactoryGroupsNewMenu() : bool
     {
         return $this->bypass_asset_factory_groups_new_menu;
     }
     
-    public function getBypassDestinationGroupsWhenPublishing()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getBypassDestinationGroupsWhenPublishing() : bool
     {
         return $this->bypass_destination_groups_when_publishing;
     }
     
-    public function getBypassWorkflowDefintionGroupsForFolders()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getBypassWorkflowDefintionGroupsForFolders() : bool
     {
         return $this->bypass_workflow_defintion_groups_for_folders;
     }    
     
-    public function getBypassAllPermissionsChecks()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getBypassAllPermissionsChecks() : bool
     {
         return $this->bypass_all_permissions_checks;
     }
     
-    public function getCancelPublishJobs()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getCancelPublishJobs() : bool
     {
         return $this->cancel_publish_jobs;
     }
     
-    public function getDeleteWorkflows()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getDeleteWorkflows() : bool
     {
         return $this->delete_workflows;
     }
     
-    public function getDiagnosticTests()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getDiagnosticTests() : bool
     {
         return $this->diagnostic_tests;
     }
     
-    public function getEditAccessRights()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getEditAccessRights() : bool
     {
         return $this->edit_access_rights;
     }
     
-    public function getEditDataDefinition()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getEditDataDefinition() : bool
     {
         return $this->edit_data_definition;
     }
     
-    public function getEditPageContentType()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getEditPageContentType() : bool
     {
         return $this->edit_page_content_type;
     }
     
-    public function getEditPageLevelConfigurations()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getEditPageLevelConfigurations() : bool
     {
         return $this->edit_page_level_configurations;
     }
     
-    public function getIntegrateFolder()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getIntegrateFolder() : bool
     {
         return $this->integrate_folder;
     }
     
-    public function getImportZipArchive()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getImportZipArchive() : bool
     {
         return $this->import_zip_archive;
     }
     
-    public function getMoveRenameAssets()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getMoveRenameAssets() : bool
     {
         return $this->move_rename_assets;
     }
 
-    public function getMultiSelectCopy()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getMultiSelectCopy() : bool
     {
         return $this->multi_select_copy;
     }
     
-    public function getMultiSelectDelete()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getMultiSelectDelete() : bool
     {
         return $this->multi_select_delete;
     }
     
-    public function getMultiSelectMove()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getMultiSelectMove() : bool
     {
         return $this->multi_select_move;
     }
     
-    public function getMultiSelectPublish()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getMultiSelectPublish() : bool
     {
         return $this->multi_select_publish;
     }
     
-    public function getPublishReadableAdminAreaAssets()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getPublishReadableAdminAreaAssets() : bool
     {
         return $this->publish_readable_admin_area_assets;
     }
     
-    public function getPublishReadableHomeAssets()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getPublishReadableHomeAssets() : bool
     {
         return $this->publish_readable_home_assets;
     }
     
-    public function getPublishWritableAdminAreaAssets()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getPublishWritableAdminAreaAssets() : bool
     {
         return $this->publish_writable_admin_area_assets;
     }
     
-    public function getPublishWritableHomeAssets()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getPublishWritableHomeAssets() : bool
     {
         return $this->publish_writable_home_assets;
     }
 
-    public function getRecycleBinDeleteAssets()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getRecycleBinDeleteAssets() : bool
     {
         return $this->recycle_bin_delete_assets;
     }
     
-    public function getRecycleBinViewRestoreAllAssets()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getRecycleBinViewRestoreAllAssets() : bool
     {
         return $this->recycle_bin_view_restore_all_assets;
     }
     
-    public function getRecycleBinViewRestoreUserAssets()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getRecycleBinViewRestoreUserAssets() : bool
     {
         return $this->recycle_bin_view_restore_user_assets;
     }
     
-    public function getReorderPublishQueue()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getReorderPublishQueue() : bool
     {
         return $this->reorder_publish_queue;
     }
     
-    public function getSendStaleAssetNotifications()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getSendStaleAssetNotifications() : bool
     {
         return $this->send_stale_asset_notifications;
     }
 
-    public function getUploadImagesFromWysiwyg()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getUploadImagesFromWysiwyg() : bool
     {
         return $this->upload_images_from_wysiwyg;
     }
     
-    public function getViewPublishQueue()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getViewPublishQueue() : bool
     {
         return $this->view_publish_queue;
     }
     
-    public function getViewVersions()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getViewVersions() : bool
     {
         return $this->view_versions;
     }
     
-    public function setAccessAdminArea( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setAccessAdminArea( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_admin_area = $bool;
         return $this;
     }
     
-    public function setAccessAssetFactories( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setAccessAssetFactories( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_asset_factories = $bool;
         return $this;
     }
     
-    public function setAccessAudits( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setAccessAudits( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_audits = $bool;
         return $this;
     }
     
-    public function setAccessConfigurationSets( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setAccessConfigurationSets( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_configuration_sets = $bool;
         return $this;
     }
     
-    public function setAccessContentTypes( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setAccessContentTypes( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_content_types = $bool;
         return $this;
     }
     
-    public function setAccessDataDefinitions( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setAccessDataDefinitions( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_data_definitions = $bool;
         return $this;
     }
     
-    public function setAccessMetadataSets( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setAccessMetadataSets( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_metadata_sets = $bool;
         return $this;
     }
     
-    public function setAccessPublishSets( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setAccessPublishSets( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_publish_sets = $bool;
         return $this;
     }
     
-    public function setAccessTransports( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setAccessTransports( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_transports = $bool;
         return $this;
     }
     
-    public function setAccessWorkflowDefinitions( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setAccessWorkflowDefinitions( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_workflow_definitions = $bool;
         return $this;
     }
     
-    public function setActivateDeleteVersions( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setActivateDeleteVersions( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->activate_delete_versions = $bool;
         return $this;
     }
     
-    public function setAlwaysAllowedToToggleDataChecks( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setAlwaysAllowedToToggleDataChecks( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->always_allowed_to_toggle_data_checks = $bool;
         return $this;
     }
 
-    public function setAssignApproveWorkflowSteps( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setAssignApproveWorkflowSteps( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->assign_approve_workflow_steps = $bool;
         return $this;
     }
     
-    public function setAssignWorkflowsToFolders( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setAssignWorkflowsToFolders( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->assign_workflows_to_folders = $bool;
         return $this;
     }
     
-    public function setBrokenLinkReportAccess( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setBrokenLinkReportAccess( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->broken_link_report_access = $bool;
         return $this;
     }
     
-    public function setBrokenLinkReportMarkFixed( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setBrokenLinkReportMarkFixed( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->broken_link_report_mark_fixed = $bool;
         return $this;
     }
     
-    public function setBulkChange( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setBulkChange( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->bulk_change = $bool;
         return $this;
     }
     
-    public function setBypassWorkflow( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setBypassWorkflow( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->bypass_workflow = $bool;
         return $this;
     }
     
-    public function setBreakLocks( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setBreakLocks( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->break_locks = $bool;
         return $this;
     }
     
-    public function setBypassAssetFactoryGroupsNewMenu( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setBypassAssetFactoryGroupsNewMenu( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->bypass_asset_factory_groups_new_menu = $bool;
         return $this;
     }
     
-    public function setBypassDestinationGroupsWhenPublishing( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setBypassDestinationGroupsWhenPublishing( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->bypass_destination_groups_when_publishing = $bool;
         return $this;
     }
     
-    public function setBypassWorkflowDefintionGroupsForFolders( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setBypassWorkflowDefintionGroupsForFolders( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->bypass_workflow_defintion_groups_for_folders = $bool;
         return $this;
     }    
     
-    public function setBypassAllPermissionsChecks( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setBypassAllPermissionsChecks( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->bypass_all_permissions_checks = $bool;
         return $this;
     }
     
-    public function setCancelPublishJobs( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setCancelPublishJobs( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->cancel_publish_jobs = $bool;
         return $this;
     }
     
-    public function setDeleteWorkflows( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setDeleteWorkflows( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->delete_workflows = $bool;
         return $this;
     }
     
-    public function setDiagnosticTests( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setDiagnosticTests( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->diagnostic_tests = $bool;
         return $this;
     }
     
-    public function setEditAccessRights( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setEditAccessRights( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->edit_access_rights = $bool;
         return $this;
     }
     
-    public function setEditDataDefinition( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setEditDataDefinition( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->edit_data_definition = $bool;
         return $this;
     }
     
-    public function setEditPageContentType( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setEditPageContentType( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->edit_page_content_type = $bool;
         return $this;
     }
     
-    public function setEditPageLevelConfigurations( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setEditPageLevelConfigurations( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->edit_page_level_configurations = $bool;
         return $this;
     }
     
-    public function setIntegrateFolder( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setIntegrateFolder( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->integrate_folder = $bool;
         return $this;
     }
     
-    public function setImportZipArchive( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setImportZipArchive( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->import_zip_archive = $bool;
         return $this;
     }
     
-    public function setMoveRenameAssets( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setMoveRenameAssets( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->move_rename_assets = $bool;
         return $this;
     }
 
-    public function setMultiSelectCopy( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setMultiSelectCopy( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->multi_select_copy = $bool;
         return $this;
     }
     
-    public function setMultiSelectDelete( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setMultiSelectDelete( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->multi_select_delete = $bool;
         return $this;
     }
     
-    public function setMultiSelectMove( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setMultiSelectMove( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->multi_select_move = $bool;
         return $this;
     }
     
-    public function setMultiSelectPublish( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setMultiSelectPublish( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->multi_select_publish = $bool;
         return $this;
     }
     
-    public function setPublishReadableAdminAreaAssets( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setPublishReadableAdminAreaAssets( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->publish_readable_admin_area_assets = $bool;
         return $this;
     }
     
-    public function setPublishReadableHomeAssets( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setPublishReadableHomeAssets( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->publish_readable_home_assets = $bool;
         return $this;
     }
     
-    public function setPublishWritableAdminAreaAssets( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setPublishWritableAdminAreaAssets( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->publish_writable_admin_area_assets = $bool;
         return $this;
     }
     
-    public function setPublishWritableHomeAssets( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setPublishWritableHomeAssets( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->publish_writable_home_assets = $bool;
         return $this;
     }
 
-    public function setRecycleBinDeleteAssets( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setRecycleBinDeleteAssets( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->recycle_bin_delete_assets = $bool;
         return $this;
     }
     
-    public function setRecycleBinViewRestoreAllAssets( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setRecycleBinViewRestoreAllAssets( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->recycle_bin_view_restore_all_assets = $bool;
         return $this;
     }
     
-    public function setRecycleBinViewRestoreUserAssets( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setRecycleBinViewRestoreUserAssets( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->recycle_bin_view_restore_user_assets = $bool;
         return $this;
     }
     
-    public function setReorderPublishQueue( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setReorderPublishQueue( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->reorder_publish_queue = $bool;
         return $this;
     }
 
-    public function setSendStaleAssetNotifications( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setSendStaleAssetNotifications( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->send_stale_asset_notifications = $bool;
         return $this;
     }
 
-    public function setUploadImagesFromWysiwyg( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setUploadImagesFromWysiwyg( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->upload_images_from_wysiwyg = $bool;
         return $this;
     }
     
-    public function setViewPublishQueue( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setViewPublishQueue( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->view_publish_queue = $bool;
         return $this;
     }
     
-    public function setViewVersions( $bool )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setViewVersions( $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->view_versions = $bool;
         return $this;
     }
     
-    public function toStdClass()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj           = new \stdClass();
         
