@@ -97,7 +97,7 @@ class AssetFactory extends ContainedAsset
     const SD_FIELDS_TO_SYSTEM_NAME_PARAM_FIELD_IDS     = "assetfactory.plugin.sdfieldstosystemname.param.name.fieldids";
     
 /**
-<documentation><description><p>The constructor, overriding the parent method to process plugins..</p></description>
+<documentation><description><p>The constructor, overriding the parent method to process plugins.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
