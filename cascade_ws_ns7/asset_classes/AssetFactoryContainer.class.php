@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/6/2016 Added getDescription.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_asset;

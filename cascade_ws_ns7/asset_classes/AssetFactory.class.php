@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/6/2016 Added getDescription.
   * 2/11/2016 Added constants and methods related to plugins.
   * 5/28/2015 Added namespaces.
   * 9/25/2014 Added setWorkflowMode.
@@ -279,9 +280,9 @@ class AssetFactory extends ContainedAsset
     }
     
 /**
-<documentation><description><p>Returns <code>folderPlacementPosition</code>.</p></description>
-<example>echo $af->getFolderPlacementPosition() . BR;</example>
-<return-type>int</return-type>
+<documentation><description><p>Returns <code>description</code>.</p></description>
+<example></example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
