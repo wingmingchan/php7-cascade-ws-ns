@@ -88,6 +88,18 @@ class AssetFactoryContainer extends Container
     }
 
 /**
+<documentation><description><p>Returns <code>description</code>.</p></description>
+<example></example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getDescription() : string
+    {
+        return $this->getProperty()->description;
+    }
+    
+/**
 <documentation><description><p>Returns a bool, indicating whether the asset factory container is applicable to the group.</p></description>
 <example>if( $afc->isApplicableToGroup( $group ) )
     echo "Applicable to ", $group->getName(), BR;</example>

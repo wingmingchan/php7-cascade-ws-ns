@@ -5,7 +5,7 @@
   * MIT Licensed
   * Modification history:
   * 9/6/2016 Added isDynamicMetadataFieldRequired.
-  * 12/29/2015 Added expirationFolderFieldRequired and expirationFolderFieldVisibility for 7.14.3.
+  * 12/29/2015 Added expirationFolderFieldRequired and expirationFolderFieldVisibility for 8.
   * 9/14/2015 Added getMetaData.
   * 5/28/2015 Added namespaces.
   * 9/18/2014 Added a call to edit in a few methods.
@@ -885,7 +885,7 @@ class MetadataSet extends ContainedAsset
 <exception></exception>
 </documentation>
 */
-    public function setExpirationFolderFieldRequired( $expiration_folder_field_required=false )
+    public function setExpirationFolderFieldRequired( bool $expiration_folder_field_required=false )
     {
         if( !c\BooleanValues::isBoolean( $expiration_folder_field_required ) )
             throw new e\UnacceptableValueException( 
@@ -902,7 +902,7 @@ class MetadataSet extends ContainedAsset
 <exception></exception>
 </documentation>
 */
-    public function setExpirationFolderFieldVisibility( $expiration_folder_field_visibility=self::HIDDEN )
+    public function setExpirationFolderFieldVisibility( string $expiration_folder_field_visibility=self::HIDDEN )
     {
         if( !c\VisibilityValues::isVisibility( $expiration_folder_field_visibility ) )
             throw new e\UnacceptableValueException( 

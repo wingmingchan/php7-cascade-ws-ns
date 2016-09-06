@@ -285,6 +285,18 @@ class AssetFactory extends ContainedAsset
 <exception></exception>
 </documentation>
 */
+    public function getDescription() : string
+    {
+        return $this->getProperty()->description;
+    }
+    
+/**
+<documentation><description><p>Returns <code>folderPlacementPosition</code>.</p></description>
+<example>echo $af->getFolderPlacementPosition() . BR;</example>
+<return-type>int</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFolderPlacementPosition() : int
     {
         return $this->getProperty()->folderPlacementPosition;
