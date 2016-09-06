@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/1/2016 Fixed a bug. Added static properties to class info.
   * 8/30/2016 Added more flags to control output of documentation.
   * 8/26/2016 Added constant NAME_SPACE.
   * 8/24/2016 Add getClassDescription and getClassPostscript, and turn getClassInfo to private.
@@ -73,8 +74,45 @@ class information.</p></description>
             $class_doc .= E_UL;
         }
         
-        $class_doc .= S_H2 . "Class API" . E_H2 . S_UL;
+        $prop_names = array();
+        $properties = $r->getProperties( \ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_STATIC );
+
+        foreach( $properties as $prop )
+        {
+        	$prop_names[] = $prop->getName();
+        }
+        
+        $static_properties = $r->getStaticProperties();
+        
+        if( count( $properties ) > 0 )
+        {
+        	//$class_doc .= S_H2 . "Class Properties" . E_H2 . S_UL;
+        	
+        	$counter = 0;
+        	
+        	// only public static arrays
+        	foreach( $static_properties as $name => $value )
+        	{
+        		if( in_array( $name, $prop_names ) && is_array( $value ) )
+        		{
+        			$counter++;
+        			
+        			if( $counter == 1 )
+        				$class_doc .= S_H2 . "Class Properties" . E_H2 . S_UL;
+        				
+        			$class_doc .= S_LI . S_H3 . "$" . $name . E_H3;
+        			$class_doc .= S_PRE . var_export( $value, true ) . E_PRE . E_LI;
+        			
+        			if( $counter == count( $static_properties ) )
+        				$class_doc .= E_UL;
+        		}
+        	}
+        }
+        
         $methods   = $r->getMethods();
+        
+        if( count( $methods ) > 0 )
+        	$class_doc .= S_H2 . "Class API" . E_H2 . S_UL;
         
         foreach( $methods as $method )
         {
@@ -89,7 +127,10 @@ class information.</p></description>
                 E_LI;
         }
         
-        $class_doc .= E_UL . self::getClassPostscript( $obj, $r, false, false );
+        if( count( $methods ) > 0 )
+        	$class_doc .= E_UL;
+        
+        $class_doc .= self::getClassPostscript( $obj, $r, false, false );
         
         if( $with_hr )
             $class_doc .= HR;

@@ -31,6 +31,13 @@ abstract class ScheduledPublishing extends ContainedAsset
     
     const DEFAULT_TIME = "00:00:00.000";
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
@@ -43,6 +50,13 @@ abstract class ScheduledPublishing extends ContainedAsset
         );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function addGroupToSendReport( Group $g )
     {
         if( $g == NULL )
@@ -63,6 +77,13 @@ abstract class ScheduledPublishing extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function addUserToSendReport( User $u )
     {
         if( $u == NULL )
@@ -83,56 +104,133 @@ abstract class ScheduledPublishing extends ContainedAsset
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCronExpression()
     {
         return $this->getProperty()->cronExpression;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDaysOfWeek()
     {
         return $this->days_of_week;
     }
    
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPublishDaysOfWeek()
     {
         return $this->getProperty()->publishDaysOfWeek;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPublishIntervalHours()
     {
         return $this->getProperty()->publishIntervalHours;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getScheduledDestinationMode()
     {
         return $this->getProperty()->scheduledPublishDestinationMode;
     }
   
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSendReportOnErrorOnly()
     {
         return $this->getProperty()->sendReportOnErrorOnly;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSendReportToGroups()
     {
         return $this->getProperty()->sendReportToGroups;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSendReportToUsers()
     {
         return $this->getProperty()->sendReportToUsers;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTimeToPublish()
     {
         return $this->getProperty()->timeToPublish;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getUsesScheduledPublishing()
     {
         return $this->getProperty()->usesScheduledPublishing;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setCronExpression( $cron )
     {
         if( isset( $cron ) && trim( $cron ) != "" )
@@ -143,16 +241,37 @@ abstract class ScheduledPublishing extends ContainedAsset
             S_SPAN . c\M::EMPTY_CRON_EXPRESSION . E_SPAN );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDayOfWeek( $days, $time=NULL )
     {
         return $this->setPublishDayOfWeek( $days, $time=NULL );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setIntervalHours( $hours, $time=NULL )
     {
         return $this->setPublishIntervalHours( $hours, $time=NULL );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPublishDayOfWeek( $days, $time=NULL )
     {
         if( isset( $days ) )
@@ -163,6 +282,13 @@ abstract class ScheduledPublishing extends ContainedAsset
             S_SPAN . c\M::NULL_DAYS . E_SPAN );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPublishIntervalHours( $hours, $time=NULL )
     {
         if( isset( $hours ) )
@@ -173,6 +299,13 @@ abstract class ScheduledPublishing extends ContainedAsset
             S_SPAN . c\M::NULL_INTERVAL . E_SPAN );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setScheduledPublishing( 
         $uses_scheduled_publishing=false,
         //$mode="",
@@ -334,6 +467,13 @@ abstract class ScheduledPublishing extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setSendReportOnErrorOnly( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -343,6 +483,13 @@ abstract class ScheduledPublishing extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function unsetScheduledPublishing()
     {
         return $this->setScheduledPublishing( false );

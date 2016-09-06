@@ -15,16 +15,38 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class XmlBlock extends Block
 {
     const DEBUG = false;
     const TYPE  = c\T::XMLBLOCK;
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getXML()
     {
         return $this->getProperty()->xml;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setXML( $xml, $enforce_xml=false )
     {
         if( trim( $xml ) == '' )

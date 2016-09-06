@@ -18,6 +18,13 @@ abstract class Connector extends ContainedAsset
 {
     const DEBUG = false;
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
@@ -27,6 +34,13 @@ abstract class Connector extends ContainedAsset
         $this->processParameters();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function addContentTypeLink( ContentType $ct, $page_config_name )
     {
         if( $this->getPropertyName() == c\P::GOOGLEANALYTICSCONNECTOR )
@@ -92,6 +106,13 @@ abstract class Connector extends ContainedAsset
         return $this;
     }
         
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -159,41 +180,97 @@ abstract class Connector extends ContainedAsset
         return $this->reloadProperty();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getAuth1()
     {
         return $this->getProperty()->auth1;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getAuth2()
     {
         return $this->getProperty()->auth2;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getConnectorContentTypeLinks()
     {
         return $this->connector_content_type_links;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getConnectorParameters()
     {
         return $this->connector_parameters;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getUrl()
     {
         return $this->getProperty()->url;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getVerified()
     {
         return $this->getProperty()->verified;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getVerifiedDate()
     {
         return $this->getProperty()->verifiedDate;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasContentType( $ct_path )
     {
         if( $this->getPropertyName() == c\P::GOOGLEANALYTICSCONNECTOR )
@@ -210,6 +287,13 @@ abstract class Connector extends ContainedAsset
         return false;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function removeContentTypeLink( ContentType $ct )
     {
         if( $this->getPropertyName() == c\P::GOOGLEANALYTICSCONNECTOR )
@@ -233,6 +317,13 @@ abstract class Connector extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDestination( Destination $d )
     {
         if( $this->getPropertyName() != c\P::TWITTERCONNECTOR &&

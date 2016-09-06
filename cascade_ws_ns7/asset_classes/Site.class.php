@@ -17,6 +17,14 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class Site extends ScheduledPublishing
 {
     const DEBUG    = false;
@@ -27,6 +35,13 @@ class Site extends ScheduledPublishing
     const FIFTEEN  = c\T::FIFTEEN;
     const THIRTY   = c\T::THIRTY;
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
@@ -34,6 +49,13 @@ class Site extends ScheduledPublishing
         $this->processRoleAssignments();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function addRole( Role $r )
     {
         if( $r == NULL )
@@ -56,6 +78,13 @@ class Site extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function addGroupToRole( Role $r, Group $g )
     {
         $role_name = $r->getName();
@@ -77,6 +106,13 @@ class Site extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function addUserToRole( Role $r, User $u )
     {
         $role_name = $r->getName();
@@ -98,6 +134,13 @@ class Site extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -162,11 +205,25 @@ class Site extends ScheduledPublishing
         return $this->reloadProperty();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getAssetTree()
     {
         return $this->getBaseFolder()->getAssetTree();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getBaseFolder()
     {
         if( $this->base_folder == NULL )
@@ -178,61 +235,145 @@ class Site extends ScheduledPublishing
         return $this->base_folder;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getBaseFolderAssetTree()
     {
         return $this->getBaseFolder()->getAssetTree();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getBaseFolderId()
     {
         return $this->getRootFolderId();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCssClasses()
     {
         return $this->getProperty()->cssClasses;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCssFileId()
     {
         return $this->getProperty()->cssFileId;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCssFilePath()
     {
         return $this->getProperty()->cssFilePath;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCssFileRecycled()
     {
         return $this->getProperty()->cssFileRecycled;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDefaultMetadataSetId()
     {
         return $this->getProperty()->defaultMetadataSetId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDefaultMetadataSetPath()
     {
         return $this->getProperty()->defaultMetadataSetPath;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getExternalLinkCheckOnPublish()
     {
         return $this->getProperty()->externalLinkCheckOnPublish;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getLinkCheckerEnabled()
     {
         return $this->getProperty()->linkCheckerEnabled;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRecycleBinExpiration()
     {
         return $this->getProperty()->recycleBinExpiration;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootAssetFactoryContainer()
     {
         return Asset::getAsset(
@@ -241,6 +382,13 @@ class Site extends ScheduledPublishing
             $this->getProperty()->rootAssetFactoryContainerId );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootAssetFactoryContainerAssetTree()
     {
         return Asset::getAsset( $this->getService(),
@@ -249,16 +397,37 @@ class Site extends ScheduledPublishing
                 getAssetTree();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootAssetFactoryContainerId()
     {
         return $this->getProperty()->rootAssetFactoryContainerId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootAssetTree()
     {
         return $this->getAssetTree();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootConnectorContainer()
     {
         return self::getAsset(
@@ -267,6 +436,13 @@ class Site extends ScheduledPublishing
             $this->getProperty()->rootConnectorContainerId );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootConnectorContainerAssetTree()
     {
         return Asset::getAsset( $this->getService(),
@@ -275,11 +451,25 @@ class Site extends ScheduledPublishing
                 getAssetTree();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootConnectorContainerId()
     {
         return $this->getProperty()->rootConnectorContainerId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootContentTypeContainer()
     {
         return Asset::getAsset( $this->getService(),
@@ -287,6 +477,13 @@ class Site extends ScheduledPublishing
             $this->getProperty()->rootContentTypeContainerId );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootContentTypeContainerAssetTree()
     {
         return Asset::getAsset( $this->getService(),
@@ -295,11 +492,25 @@ class Site extends ScheduledPublishing
                 getAssetTree();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootContentTypeContainerId()
     {
         return $this->getProperty()->rootContentTypeContainerId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootDataDefinitionContainer()
     {
         return Asset::getAsset( $this->getService(),
@@ -307,6 +518,13 @@ class Site extends ScheduledPublishing
             $this->getProperty()->rootDataDefinitionContainerId );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootDataDefinitionContainerAssetTree()
     {
         return Asset::getAsset( $this->getService(),
@@ -315,21 +533,49 @@ class Site extends ScheduledPublishing
                 getAssetTree();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootDataDefinitionContainerId()
     {
         return $this->getProperty()->rootDataDefinitionContainerId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootFolderAssetTree()
     {
         return $this->getAssetTree();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootFolderId()
     {
         return $this->getProperty()->rootFolderId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootMetadataSetContainer()
     {
         return Asset::getAsset( $this->getService(),
@@ -337,6 +583,13 @@ class Site extends ScheduledPublishing
             $this->getProperty()->rootMetadataSetContainerId );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootMetadataSetContainerAssetTree()
     {
         return Asset::getAsset( $this->getService(),
@@ -345,11 +598,25 @@ class Site extends ScheduledPublishing
                 getAssetTree();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootMetadataSetContainerId()
     {
         return $this->getProperty()->rootMetadataSetContainerId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootPageConfigurationSetContainer()
     {
         return Asset::getAsset( $this->getService(),
@@ -357,6 +624,13 @@ class Site extends ScheduledPublishing
             $this->getProperty()->rootPageConfigurationSetContainerId );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootPageConfigurationSetContainerAssetTree()
     {
         return Asset::getAsset( $this->getService(),
@@ -365,11 +639,25 @@ class Site extends ScheduledPublishing
                 getAssetTree();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootPageConfigurationSetContainerId()
     {
         return $this->getProperty()->rootPageConfigurationSetContainerId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootPublishSetContainer()
     {
         return Asset::getAsset( $this->getService(),
@@ -377,6 +665,13 @@ class Site extends ScheduledPublishing
             $this->getProperty()->rootPublishSetContainerId );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootPublishSetContainerAssetTree()
     {
         return Asset::getAsset( $this->getService(),
@@ -385,11 +680,25 @@ class Site extends ScheduledPublishing
                 getAssetTree();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootPublishSetContainerId()
     {
         return $this->getProperty()->rootPublishSetContainerId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootSiteDestinationContainer()
     {
         return Asset::getAsset( $this->getService(),
@@ -397,6 +706,13 @@ class Site extends ScheduledPublishing
             $this->getProperty()->rootSiteDestinationContainerId );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootSiteDestinationContainerAssetTree()
     {
         return Asset::getAsset( $this->getService(),
@@ -405,11 +721,25 @@ class Site extends ScheduledPublishing
                 getAssetTree();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootSiteDestinationContainerId()
     {
         return $this->getProperty()->rootSiteDestinationContainerId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootTransportContainer()
     {
         return Asset::getAsset( $this->getService(),
@@ -417,6 +747,13 @@ class Site extends ScheduledPublishing
             $this->getProperty()->rootTransportContainerId );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootTransportContainerAssetTree()
     {
         return Asset::getAsset( $this->getService(),
@@ -425,11 +762,25 @@ class Site extends ScheduledPublishing
                 getAssetTree();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootTransportContainerId()
     {
         return $this->getProperty()->rootTransportContainerId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootWorkflowDefinitionContainer()
     {
         return Asset::getAsset( $this->getService(),
@@ -437,6 +788,13 @@ class Site extends ScheduledPublishing
             $this->getProperty()->rootWorkflowDefinitionContainerId );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootWorkflowDefinitionContainerAssetTree()
     {
         return Asset::getAsset( $this->getService(),
@@ -445,11 +803,25 @@ class Site extends ScheduledPublishing
                 getAssetTree();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRootWorkflowDefinitionContainerId()
     {
         return $this->getProperty()->rootWorkflowDefinitionContainerId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSiteAssetFactoryContainer()
     {
         return Asset::getAsset( $this->getService(),
@@ -457,6 +829,13 @@ class Site extends ScheduledPublishing
             $this->getProperty()->siteAssetFactoryContainerId );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSiteAssetFactoryContainerAssetTree()
     {
         return Asset::getAsset( $this->getService(),
@@ -465,52 +844,122 @@ class Site extends ScheduledPublishing
                 getAssetTree();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getScheduledPublishDestinationMode()
     {
         // all-destinations or selected-destinations
         return $this->getProperty()->scheduledPublishDestinationMode;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getScheduledPublishDestinations()
     {
         return $this->getProperty()->scheduledPublishDestinations;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSiteAssetFactoryContainerId()
     {
         return $this->getProperty()->siteAssetFactoryContainerId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSiteAssetFactoryContainerPath()
     {
         return $this->getProperty()->siteAssetFactoryContainerPath;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSiteStartingPageId()
     {
         return $this->getProperty()->siteStartingPageId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSiteStartingPagePath()
     {
         return $this->getProperty()->siteStartingPagePath;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSiteStartingPageRecycled()
     {
         return $this->getProperty()->siteStartingPageRecycled;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getUnpublishOnExpiration()
     {
         return $this->getProperty()->unpublishOnExpiration;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getUrl()
     {
         return $this->getProperty()->url;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasRole( Role $r )
     {
         if( $r == NULL )
@@ -529,6 +978,13 @@ class Site extends ScheduledPublishing
         return false;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function publish( Destination $destination=NULL )
     {
         if( isset( $destination ) )
@@ -549,6 +1005,13 @@ class Site extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function removeRole( Role $r )
     {
         if( $r == NULL )
@@ -577,6 +1040,13 @@ class Site extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setCssClasses( $classes )
     {
         if( trim( $classes ) == "" || $class == NULL )
@@ -595,6 +1065,13 @@ class Site extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setCssFile( File $css=NULL, $classes=NULL )
     {
         if( $css == NULL )
@@ -610,6 +1087,13 @@ class Site extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDefaultMetadataSet( MetadataSet $m )
     {
         if( $m == NULL )
@@ -622,6 +1106,13 @@ class Site extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setExternalLinkCheckOnPublish( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -632,6 +1123,13 @@ class Site extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setLinkCheckerEnabled( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -642,6 +1140,13 @@ class Site extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setRecycleBinExpiration( $e )
     {
         if( $e != self::NEVER && $e != self::ONE && 
@@ -655,6 +1160,13 @@ class Site extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setSiteAssetFactoryContainer( AssetFactoryContainer $a=NULL )
     {
         if( $a == NULL )
@@ -668,6 +1180,13 @@ class Site extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setStartingPage( Page $p=NULL )
     {
         if( $p == NULL )
@@ -681,6 +1200,13 @@ class Site extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setUnpublishOnExpiration( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -691,6 +1217,13 @@ class Site extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setUrl( $u )
     {
         if( trim( $u ) == "" )

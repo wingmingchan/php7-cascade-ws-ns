@@ -14,6 +14,14 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class PublishSetContainer extends Container
 {
     const TYPE = c\T::PUBLISHSETCONTAINER;

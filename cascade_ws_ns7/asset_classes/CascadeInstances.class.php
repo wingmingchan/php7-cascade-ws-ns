@@ -26,11 +26,26 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class CascadeInstances
 {
     const DEBUG = false;
     const DUMP  = false;
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         Cascade $source_cascade, 
         Cascade $target_cascade )
@@ -55,6 +70,13 @@ class CascadeInstances
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function display()
     {
         echo "Source URL: " . $this->source_url . BR .
@@ -68,63 +90,147 @@ class CascadeInstances
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSourceCascade()
     {
         return $this->source_cascade;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSourceService()
     {
         return $this->source_service;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSourceSite()
     {
         return $this->source_site;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSourceSiteName()
     {
         if( $this->isSourceSiteSet() )
             return $this->source_site->getName();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTargetCascade()
     {
         return $this->target_cascade;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTargetService()
     {
         return $this->target_service;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTargetSite()
     {
         return $this->target_site;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTargetSiteName()
     {
         if( $this->isTargetSiteSet() )
             return $this->target_site->getName();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function isSameInstance()
     {
         return $this->source_url == $this->target_url;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function isSourceSiteSet()
     {
         return $this->source_site_set;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function isTargetSiteSet()
     {
         return $this->target_site_set;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportMissingAssetsIn( $other, $type )
     {
         $this->checkSourceTargetSite();
@@ -186,6 +292,13 @@ class CascadeInstances
         return $results;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setSourceSite( $site_name )
     {
         try
@@ -201,6 +314,13 @@ class CascadeInstances
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setTargetSite( $site_name )
     {
         try
@@ -216,6 +336,13 @@ class CascadeInstances
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function updateAssetFactoryContainer( $exception_thrown=true )
     {
         $this->checkSourceTargetSite();
@@ -246,6 +373,13 @@ class CascadeInstances
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function updateBlock( Folder $f=NULL, $exception_thrown=true, 
         $update_data=true, $update_metadata=true )
     {
@@ -281,6 +415,13 @@ class CascadeInstances
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function updateContentTypeContainer()
     {
         $this->checkSourceTargetSite();
@@ -309,6 +450,13 @@ class CascadeInstances
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function updateDataDefinitionContainer()
     {
         $this->checkSourceTargetSite();
@@ -337,6 +485,13 @@ class CascadeInstances
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function updateFile( Folder $f=NULL, $exception_thrown=true )
     {
         $this->checkSourceTargetSite();
@@ -367,6 +522,13 @@ class CascadeInstances
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function updateFolder( $bypass_root=true, Folder $f=NULL, $exception_thrown=true )
     {
         $this->checkSourceTargetSite();
@@ -398,6 +560,13 @@ class CascadeInstances
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function updateFormat( Folder $f=NULL )
     {
         $this->checkSourceTargetSite();
@@ -426,6 +595,13 @@ class CascadeInstances
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function updateMetadataSetContainer()
     {
         $this->checkSourceTargetSite();
@@ -454,6 +630,13 @@ class CascadeInstances
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function updatePage( Folder $f=NULL, $exception_thrown=true,
         $update_data=true, $update_metadata=true )
     {
@@ -488,6 +671,13 @@ class CascadeInstances
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function updatePageConfigurationSetContainer( $exception_thrown=true )
     {
         $this->checkSourceTargetSite();
@@ -518,6 +708,13 @@ class CascadeInstances
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function updateReference( Folder $f=NULL )
     {
         $this->checkSourceTargetSite();
@@ -545,6 +742,13 @@ class CascadeInstances
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function updateSiteDestinationContainer()
     {
         $this->checkSourceTargetSite();
@@ -574,6 +778,13 @@ class CascadeInstances
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function updateSymlink( Folder $f=NULL, $exception_thrown=true )
     {
         $this->checkSourceTargetSite();
@@ -602,6 +813,13 @@ class CascadeInstances
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function updateTemplate( Folder $f=NULL, $exception_thrown=true )
     {
         $this->checkSourceTargetSite();
@@ -630,6 +848,13 @@ class CascadeInstances
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function updateWorkflowDefinitionContainer()
     {
         $this->checkSourceTargetSite();

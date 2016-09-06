@@ -19,6 +19,14 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class DataDefinitionBlockPhantom extends Block
 {
     const DEBUG = false;
@@ -30,6 +38,13 @@ class DataDefinitionBlockPhantom extends Block
     * @param $service the AssetOperationHandlerService object
     * @param $identifier the identifier object
     */
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
@@ -45,6 +60,13 @@ class DataDefinitionBlockPhantom extends Block
         }
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function appendSibling( $identifier )
     {
         $this->checkStructuredData();
@@ -55,6 +77,13 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function copyDataTo( $block )
     {
         $this->checkStructuredData();
@@ -62,6 +91,13 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function createNInstancesForMultipleField( $number, $identifier )
     {
         $this->checkStructuredData();
@@ -100,6 +136,13 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function displayDataDefinition()
     {
         $this->checkStructuredData();
@@ -107,6 +150,13 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function displayXhtml()
     {
         if( !$this->hasStructuredData() )
@@ -118,6 +168,13 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -162,66 +219,143 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getAssetNodeType( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->getAssetNodeType( $identifier );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getBlockId( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->getBlockId( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getBlockPath( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->getBlockPath( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDataDefinition()
     {
         $this->checkStructuredData();
         return $this->structured_data->getDataDefinition();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFileId( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->getFileId( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFilePath( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->getFilePath( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIdentifiers()
     {
         $this->checkStructuredData();
         return $this->structured_data->getIdentifiers();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getLinkableId( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->getLinkableId( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getLinkablePath( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->getLinkablePath( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getNodeType( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->getNodeType( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getNumberOfSiblings( $identifier )
     {
         $this->checkStructuredData();
@@ -240,118 +374,258 @@ class DataDefinitionBlockPhantom extends Block
         return $this->structured_data->getNumberOfSiblings( $identifier );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageId( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->getPageId( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPagePath( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->getPagePath( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPossibleValues( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->getPossibleValues( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getStructuredDataPhantom()
     {
         $this->checkStructuredData();
         return $this->structured_data;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSymlinkId( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->getSymlinkId( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSymlinkPath( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->getSymlinkPath( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getText( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->getText( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTextNodeType( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->getTextNodeType( $identifier );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getXhtml()
     {
         return $this->xhtml;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasIdentifier( $identifier )
     {
         $this->checkStructuredData();
         return $this->hasNode( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasNode( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->hasNode( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasStructuredData()
     {
         return $this->structured_data != NULL;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function isAssetNode( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->isAssetNode( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function isGroupNode( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->isGroupNode( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function isMultiLineNode( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->isMultiLineNode( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function isMultiple( $field_name )
     {
         $this->checkStructuredData();
         return $this->getDataDefinition()->isMultiple( $field_name );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function isRequired( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->isRequired( $identifier );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function isTextNode( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->isTextNode( $identifier );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function isWYSIWYG( $identifier )
     {
         $this->checkStructuredData();
         return $this->structured_data->isWYSIWYG( $identifier );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function removeLastSibling( $identifier )
     {
         $this->checkStructuredData();
@@ -360,6 +634,13 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function replaceByPattern( $pattern, $replace, $include=NULL )
     {
         $this->checkStructuredData();
@@ -367,6 +648,13 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function replaceXhtmlByPattern( $pattern, $replace )
     {
         if( $this->hasStructuredData() )
@@ -380,6 +668,13 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function replaceText( $search, $replace, $include=NULL )
     {
         $this->checkStructuredData();
@@ -387,12 +682,26 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function searchText( $string )
     {
         $this->checkStructuredData();
         return $this->structured_data->searchText( $string );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function searchXhtml( $string )
     {
         if( $this->hasStructuredData() )
@@ -404,6 +713,13 @@ class DataDefinitionBlockPhantom extends Block
         return strpos( $this->xhtml, $string ) !== false;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setBlock( $identifier, Block $block=NULL )
     {
         $this->checkStructuredData();
@@ -411,6 +727,13 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setFile( $identifier, File $file=NULL )
     {
         $this->checkStructuredData();
@@ -418,6 +741,13 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setLinkable( $identifier, Linkable $linkable=NULL )
     {
         $this->checkStructuredData();
@@ -425,6 +755,13 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPage( $identifier, Page $page=NULL )
     {
         $this->checkStructuredData();
@@ -432,6 +769,13 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setStructuredData( p\StructuredData $structured_data )
     {
         $this->checkStructuredData();
@@ -441,6 +785,13 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setSymlink( $identifier, Symlink $symlink=NULL )
     {
         $this->checkStructuredData();
@@ -448,6 +799,13 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setText( $identifier, $text )
     {
         $this->checkStructuredData();
@@ -455,6 +813,13 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setXhtml( $xhtml )
     {
         if( !$this->hasStructuredData() )
@@ -469,6 +834,13 @@ class DataDefinitionBlockPhantom extends Block
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function swapData( $identifier1, $identifier2 )
     {
         $this->checkStructuredData();

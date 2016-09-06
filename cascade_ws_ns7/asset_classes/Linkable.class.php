@@ -20,6 +20,13 @@ abstract class Linkable extends ContainedAsset
 {
     const DEBUG = false;
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         aohs\AssetOperationHandlerService $service, 
         \stdClass $identifier )
@@ -33,6 +40,13 @@ abstract class Linkable extends ContainedAsset
         }
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -56,56 +70,133 @@ abstract class Linkable extends ContainedAsset
         return $this->reloadProperty();
     }
         
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCreatedBy()
     {
         return $this->getProperty()->createdBy;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCreatedDate()
     {
         return $this->getProperty()->createdDate;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDynamicField( $name )
     {
         return $this->metadata->getDynamicField( $name );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDynamicFields()
     {
         return $this->metadata->getDynamicFields();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getExpirationFolderId()
     {
         return $this->getProperty()->expirationFolderId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getExpirationFolderPath()
     {
         return $this->getProperty()->expirationFolderPath;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getExpirationFolderRecycled()
     {
         return $this->getProperty()->expirationFolderRecycled;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getLastModifiedBy()
     {
         return $this->getProperty()->lastModifiedBy;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getLastModifiedDate()
     {
         return $this->getProperty()->lastModifiedDate;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMetadata() 
     {
         return $this->metadata;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMetadataSet()
     {
         $service = $this->getService();
@@ -116,26 +207,61 @@ abstract class Linkable extends ContainedAsset
                 $this->getMetadataSetId() ) );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMetadataSetId()
     {
         return $this->getProperty()->metadataSetId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMetadataSetPath()
     {
         return $this->getProperty()->metadataSetPath;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMetadataStdClass()
     {
         return $this->metadata->toStdClass();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasDynamicField( $name )
     {
         return $this->metadata->hasDynamicField( $name );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setExpirationFolder( Folder $f )
     {
         $this->getProperty()->expirationFolderId   = $f->getId();
@@ -143,6 +269,13 @@ abstract class Linkable extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setMetadata( p\Metadata $m )
     {
         $this->metadata = $m;
@@ -151,6 +284,13 @@ abstract class Linkable extends ContainedAsset
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setMetadataSet( MetadataSet $m )
     {
         if( $m == NULL )
@@ -167,6 +307,13 @@ abstract class Linkable extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPageContentType( ContentType $c )
     {
         if( $this->getType() != Page::TYPE )

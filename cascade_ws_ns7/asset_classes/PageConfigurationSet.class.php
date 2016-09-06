@@ -18,11 +18,26 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class PageConfigurationSet extends ContainedAsset
 {
     const DEBUG = false;
     const TYPE  = c\T::CONFIGURATIONSET;
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
@@ -31,11 +46,25 @@ class PageConfigurationSet extends ContainedAsset
         $this->processPageConfigurations();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function addConfiguration( $name, Template $t, $extension, $type )
     {
         return $this->addPageConfiguration( $name, $t, $extension, $type );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function addPageConfiguration( $name, Template $t, $extension, $type )
     {
         if( trim( $extension ) == "" )
@@ -63,11 +92,25 @@ class PageConfigurationSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function deleteConfiguration( $name )
     {
         return $this->deletePageConfiguration( $name );        
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function deletePageConfiguration( $name )
     {
         if( $this->getDefaultConfiguration() == $name )
@@ -91,6 +134,13 @@ class PageConfigurationSet extends ContainedAsset
         return $this;        
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -123,12 +173,26 @@ class PageConfigurationSet extends ContainedAsset
         return $this->reloadProperty();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getConfiguration( $name )
     {
         return $this->getPageConfiguration( $name );
     }
 
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDefaultConfiguration()
     {
         foreach( $this->page_configurations as $page_configuration )
@@ -140,16 +204,37 @@ class PageConfigurationSet extends ContainedAsset
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIncludeXMLDeclaration( $config )
     {
         return $this->page_configuration_map[ $config ]->getIncludeXMLDeclaration();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getOutputExtension( $config )
     {
         return $this->page_configuration_map[ $config ]->getOutputExtension();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageConfiguration( $name )
     {
         $this->checkPageConfiguration( $name );
@@ -162,11 +247,25 @@ class PageConfigurationSet extends ContainedAsset
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageConfigurationNames()
     {
         return $this->page_configuration_names;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageConfigurations()
     {
         $config_array = array();
@@ -180,6 +279,13 @@ class PageConfigurationSet extends ContainedAsset
         return $config_array;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageConfigurationTemplate( $name )
     {
         $this->checkPageConfiguration( $name );
@@ -195,44 +301,100 @@ class PageConfigurationSet extends ContainedAsset
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageRegionNames( $name )
     {
         $this->checkPageConfiguration( $name );
         return $this->page_configuration_map[ $name ]->getPageRegionNames();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageRegion( $name, $region_name )
     {
         $this->checkPageConfiguration( $name );
         return $this->page_configuration_map[ $name ]->getPageRegion( $region_name );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPublishable( $name )
     {
         return $this->page_configuration_map[ $name ]->getPublishable();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSerializationType( $name )
     {
         return $this->page_configuration_map[ $name ]->getSerializationType();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasConfiguration( $name )
     {
         return $this->hasPageConfiguration( $name );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasPageConfiguration( $name )
     {
         return in_array( $name, $this->page_configuration_names );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasPageRegion( $name, $region_name )
     {
         $this->checkPageConfiguration( $name );
         return $this->page_configuration_map[ $name ]->hasPageRegion( $region_name );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setConfigurationPageRegionBlock( $name, $region_name, $block )
     {
         $this->checkPageConfiguration( $name );
@@ -241,6 +403,13 @@ class PageConfigurationSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setConfigurationPageRegionFormat( $name, $region_name, $format )
     {
         $this->checkPageConfiguration( $name );
@@ -248,6 +417,13 @@ class PageConfigurationSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDefaultConfiguration( $name )
     {
         $this->checkPageConfiguration( $name );
@@ -266,6 +442,13 @@ class PageConfigurationSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setFormat( $name, Format $format )
     {
         $this->checkPageConfiguration( $name );
@@ -273,6 +456,13 @@ class PageConfigurationSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setIncludeXMLDeclaration( $name, $i )
     {
         $this->checkPageConfiguration( $name );
@@ -280,6 +470,13 @@ class PageConfigurationSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setOutputExtension( $name, $ext )
     {
         $this->checkPageConfiguration( $name );
@@ -287,6 +484,13 @@ class PageConfigurationSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPublishable( $name, $p )
     {
         $this->checkPageConfiguration( $name );
@@ -294,6 +498,13 @@ class PageConfigurationSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setSerializationType( $name, $type )
     {
         $this->checkPageConfiguration( $name );

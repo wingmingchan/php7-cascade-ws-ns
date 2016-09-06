@@ -14,11 +14,26 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class ScriptFormat extends Format
 {
     const DEBUG = false;
     const TYPE  = c\T::VELOCITYFORMAT;
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function displayScript()
     {
         $script_string = htmlentities( $this->getProperty()->script ); // &
@@ -30,11 +45,25 @@ class ScriptFormat extends Format
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getScript()
     {
         return $this->getProperty()->script;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setScript( $script )
     {
         $this->getProperty()->script = $script;

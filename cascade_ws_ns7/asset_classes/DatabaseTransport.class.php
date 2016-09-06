@@ -14,41 +14,98 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class DatabaseTransport extends Transport
 {
     const DEBUG = false;
     const TYPE  = c\T::DATABASETRANSPORT;
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDatabaseName()
     {
         return $this->getProperty()->databaseName;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPassword()
     {
         return $this->getProperty()->password;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getServerName()
     {
         return $this->getProperty()->serverName;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getServerPort()
     {
         return $this->getProperty()->serverPort;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTransportSiteId()
     {
         return $this->getProperty()->transportSiteId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getUsername()
     {
         return $this->getProperty()->username;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDatabaseName( $d )
     {
         if( trim( $d ) == "" )
@@ -58,12 +115,26 @@ class DatabaseTransport extends Transport
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPassword( $pw="" )
     {
         $this->getProperty()->password = $pw;
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setServerName( $s )
     {
         if( trim( $s ) == "" )
@@ -73,6 +144,13 @@ class DatabaseTransport extends Transport
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setServerPort( $p )
     {
         if( !is_numeric( $p ) )
@@ -82,6 +160,13 @@ class DatabaseTransport extends Transport
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setTransportSiteId( $t )
     {
         if( !is_numeric( $t ) )
@@ -91,6 +176,13 @@ class DatabaseTransport extends Transport
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setUsername( $u )
     {
         if( trim( $u ) == "" )

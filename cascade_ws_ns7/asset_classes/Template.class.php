@@ -17,11 +17,26 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class Template extends ContainedAsset
 {
     const DEBUG = false;
     const TYPE  = c\T::TEMPLATE;
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
@@ -37,6 +52,13 @@ class Template extends ContainedAsset
         $this->xml = $this->getProperty()->xml;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function displayXml()
     {
         $xml_string = u\XMLUtility::replaceBrackets( $this->xml );
@@ -47,6 +69,13 @@ class Template extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -80,16 +109,37 @@ class Template extends ContainedAsset
         return $this->reloadProperty();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCreatedBy()
     {
         return $this->getProperty()->createdBy;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCreatedDate()
     {
         return $this->getProperty()->createdDate;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFormat()
     {
         if( isset( $this->getProperty()->formatId ) )
@@ -102,31 +152,73 @@ class Template extends ContainedAsset
         return NULL;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFormatId()
     {
         return $this->getProperty()->formatId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFormatPath()
     {
         return $this->getProperty()->formatPath;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFormatRecycled()
     {
         return $this->getProperty()->formatRecycled;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getLastModifiedBy()
     {
         return $this->getProperty()->lastModifiedBy;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getLastModifiedDate()
     {
         return $this->getProperty()->lastModifiedDate;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageRegion( $name )
     {
         if( self::DEBUG ) { u\DebugUtility::dump( $this->page_region_map ); }
@@ -138,26 +230,61 @@ class Template extends ContainedAsset
         return $this->page_region_map[ $name ];
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageRegionBlock( $region_name )
     {
         return $this->getPageRegion( $region_name )->getBlock();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageRegionFormat( $region_name )
     {
         return $this->getPageRegion( $region_name )->getFormat();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageRegionNames()
     {
         return array_keys( $this->page_region_map );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageRegions()
     {
         return $this->page_regions;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageRegionStdForPageConfiguration()
     {
         $temp = array();
@@ -196,31 +323,73 @@ class Template extends ContainedAsset
         return $std;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRegionNames()
     {
         return $this->getPageRegionNames();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTargetId()
     {
         return $this->getProperty()->targetId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTargetPath()
     {
         return $this->getProperty()->targetPath;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getXml()
     {
         return $this->xml;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasPageRegion( $name )
     {
         return isset( $this->page_region_map[ $name ] );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setFormat( Format $format=NULL )
     {
         if( isset( $format ) )
@@ -243,6 +412,13 @@ class Template extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPageRegion( $name, p\PageRegion $page_region )
     {
         if( !isset( $this->page_region_map[ $name ] ) )
@@ -268,6 +444,13 @@ class Template extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPageRegionBlock( $name, $block=NULL, $block_recycled=false, $no_block=false )
     {
         $page_region = $this->getPageRegion( $name );
@@ -277,6 +460,13 @@ class Template extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPageRegionFormat( $name, $format=NULL, $format_recycled=false, $no_format=false )
     {
         $page_region = $this->getPageRegion( $name );
@@ -286,6 +476,13 @@ class Template extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setXml( $xml )
     {
         if( trim( $xml ) == "" )

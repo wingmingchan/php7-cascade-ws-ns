@@ -29,6 +29,13 @@ abstract class Block extends ContainedAsset
         $this->processMetadata();
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -57,56 +64,133 @@ abstract class Block extends ContainedAsset
         return $this->reloadProperty();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCreatedBy()
     {
         return $this->getProperty()->createdBy;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCreatedDate()
     {
         return $this->getProperty()->createdDate;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDynamicField( $name )
     {
         return $this->metadata->getDynamicField( $name );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDynamicFields()
     {
         return $this->metadata->getDynamicFields();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getExpirationFolderId()
     {
         return $this->getProperty()->expirationFolderId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getExpirationFolderPath()
     {
         return $this->getProperty()->expirationFolderPath;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getExpirationFolderRecycled() : bool
     {
         return $this->getProperty()->expirationFolderRecycled;
     }
         
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getLastModifiedBy() : string
     {
         return $this->getProperty()->lastModifiedBy;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getLastModifiedDate() : string
     {
         return $this->getProperty()->lastModifiedDate;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMetadata()
     {
         return $this->metadata;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMetadataSet()
     {
         $service = $this->getService();
@@ -117,26 +201,61 @@ abstract class Block extends ContainedAsset
                 $this->getProperty()->metadataSetId ) );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMetadataSetId()
     {
         return $this->getProperty()->metadataSetId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMetadataSetPath()
     {
         return $this->getProperty()->metadataSetPath;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMetadataStdClass()
     {
         return $this->metadata->toStdClass();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasDynamicField( $name ) : bool
     {
         return $this->metadata->hasDynamicField( $name );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setExpirationFolder( Folder $f ) : Asset
     {
         $this->getProperty()->expirationFolderId   = $f->getId();
@@ -144,6 +263,13 @@ abstract class Block extends ContainedAsset
         return $this;
     }
         
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setMetadata( p\Metadata $m ) : Asset
     {
         $this->metadata = $m;
@@ -152,6 +278,13 @@ abstract class Block extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setMetadataSet( MetadataSet $m ) : Asset
     {
         if( $m == NULL )

@@ -18,6 +18,13 @@ abstract class Format extends ContainedAsset
 {
     const DEBUG = false;
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -40,21 +47,49 @@ abstract class Format extends ContainedAsset
         return $this->reloadProperty();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCreatedBy()
     {
         return $this->getProperty()->createdBy;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCreatedDate()
     {
         return $this->getProperty()->createdDate;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getLastModifiedBy()
     {
         return $this->getProperty()->lastModifiedBy;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getLastModifiedDate()
     {
         return $this->getProperty()->lastModifiedDate;

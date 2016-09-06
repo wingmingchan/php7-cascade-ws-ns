@@ -15,52 +15,123 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class FtpTransport extends Transport
 {
     const DEBUG = false;
     const TYPE  = c\T::FTPTRANSPORT;
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDirectory()
     {
         return $this->getProperty()->directory;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDoPASV()
     {
         return $this->getProperty()->doPASV;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDoSFTP()
     {
         return $this->getProperty()->doSFTP;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getHostName()
     {
         return $this->getProperty()->hostName;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPassword()
     {
         return $this->getProperty()->password;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPort()
     {
         return $this->getProperty()->port;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getUsername()
     {
         return $this->getProperty()->username;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDirectory( $d )
     {
         $this->getProperty()->directory = $d;
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDoPASV( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -71,6 +142,13 @@ class FtpTransport extends Transport
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDoSFTP( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -80,6 +158,13 @@ class FtpTransport extends Transport
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setHostName( $h )
     {
         if( trim( $h ) == "" )
@@ -89,6 +174,13 @@ class FtpTransport extends Transport
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPort( $p )
     {
         if( !is_numeric( $p ) )
@@ -98,6 +190,13 @@ class FtpTransport extends Transport
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPassword( $pw )
     {
         if( trim( $pw ) == "" )
@@ -107,6 +206,13 @@ class FtpTransport extends Transport
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setUsername( $u )
     {
         if( trim( $u ) == "" )

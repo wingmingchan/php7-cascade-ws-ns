@@ -581,7 +581,7 @@ echo "There are " . count( $subscribers ) . " subscribers.", BR;</example>
     }
     
 /**
-<documentation><description><p>eturns a new object of the named type bearing the supplied identity information. The <code>$id_path</code> parameter can be an id string like <code>d7b47ebb8b7f085600a0fcdc2149931f</code> or a path string. When it is a path string, the site name must also be supplied. Note that all asset classes inherit this static method.</p></description>
+<documentation><description><p>Returns a new object of the named type bearing the supplied identity information. The <code>$id_path</code> parameter can be an id string like <code>d7b47ebb8b7f085600a0fcdc2149931f</code> or a path string. When it is a path string, the site name must also be supplied. Note that all asset classes inherit this static method.</p></description>
 <example>$page = a\Asset::getAsset( 
     $service, a\Page::TYPE, $page_id );</example>
 <return-type>Asset</return-type>

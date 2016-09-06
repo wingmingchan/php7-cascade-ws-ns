@@ -18,6 +18,14 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class DataDefinition extends ContainedAsset
 {
     const DEBUG     = false;
@@ -29,6 +37,13 @@ class DataDefinition extends ContainedAsset
     * @param $service the AssetOperationHandlerService object
     * @param $identifier the identifier object
     */
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
@@ -46,6 +61,13 @@ class DataDefinition extends ContainedAsset
         $this->createStructuredData( new \SimpleXMLElement( $this->xml ) );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function display() : Asset
     {
         $xml_string = u\XMLUtility::replaceBrackets( $this->xml );
@@ -59,6 +81,13 @@ class DataDefinition extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function displayAttributes()
     {
         echo S_H2 . "Attributes" . E_H2 . S_PRE;
@@ -68,6 +97,13 @@ class DataDefinition extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function displayXml( $formatted=true )
     {
         if( $formatted )
@@ -84,6 +120,13 @@ class DataDefinition extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -106,6 +149,13 @@ class DataDefinition extends ContainedAsset
         return $this->reloadProperty();
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getField( $field_name )
     {
         if( !in_array( $field_name, $this->identifiers ) )
@@ -115,41 +165,97 @@ class DataDefinition extends ContainedAsset
         return $this->attributes[ $field_name ];
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIdentifiers()
     {
         return $this->identifiers;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getStructuredData()
     {
         return $this->structured_data;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getStructuredDataObject()
     {
         return new p\StructuredData( $this->structured_data, $this->getService(), $this->getId() );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getStructuredDataStdClass()
     {
         return $this->structured_data;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getXml()
     {
         return $this->xml;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasField( $field_name )
     {
         return $this->hasIdentifier( $field_name );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasIdentifier( $field_name )
     {
         return ( in_array( $field_name, $this->identifiers ) );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function isMultiple( $field_name )
     {
         if( !in_array( $field_name, $this->identifiers ) )
@@ -170,6 +276,13 @@ class DataDefinition extends ContainedAsset
         return false;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setXml( $xml )
     {
         $this->getProperty()->xml = $xml;

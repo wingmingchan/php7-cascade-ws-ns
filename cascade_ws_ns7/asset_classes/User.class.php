@@ -15,17 +15,39 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class User extends Asset
 {
     const DEBUG = false;
     const TYPE  = c\T::USER;
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function disable() : Asset
     {
         $this->getProperty()->enabled = false;
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -48,77 +70,182 @@ class User extends Asset
         return $this->reloadProperty();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function enable() : Asset
     {
         $this->getProperty()->enabled = true;
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getAuthType() : string
     {
         return $this->getProperty()->authType;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDefaultGroup() : string
     {
         return $this->getProperty()->defaultGroup;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDefaultSiteId() : string
     {
         return $this->getProperty()->defaultSiteId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDefaultSiteName() : string
     {
         return $this->getProperty()->defaultSiteName;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getEnabled() : string
     {
         return $this->getProperty()->enabled;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getId() : string
     {
         return $this->getProperty()->username;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getEmail() : string
     {
         return $this->getProperty()->email;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFullName() : string
     {
         return $this->getProperty()->fullName;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getGroups() : string
     {
         return $this->getProperty()->groups;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getName() : string
     {
         return $this->getProperty()->username;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRole() : string
     {
         return $this->getProperty()->role;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPassword() : string
     {
         return $this->getProperty()->password;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getUserName() : string
     {
         return $this->getProperty()->username;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function isInGroup( Group $group ) : bool
     {
         $users = $group->getUsers();
@@ -129,6 +256,13 @@ class User extends Asset
         return false;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function joinGroup( Group $g ) : Asset
     {
         $g->addUser( Asset::getAsset( $this->getService(),
@@ -137,6 +271,13 @@ class User extends Asset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function leaveGroup( Group $g ) : Asset
     {
         $g->removeUser( Asset::getAsset( $this->getService(),
@@ -145,6 +286,13 @@ class User extends Asset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDefaultGroup( Group $group=NULL ) : Asset
     {
         if( isset( $group ) )
@@ -154,6 +302,13 @@ class User extends Asset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDefaultSite( Site $site=NULL )
     {
         if( isset( $site ) )
@@ -169,6 +324,13 @@ class User extends Asset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setEnabled( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -178,6 +340,13 @@ class User extends Asset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setEmail( $email )
     {
         if( trim( $email ) == '' )
@@ -188,6 +357,13 @@ class User extends Asset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setFullName( $name )
     {
         if( trim( $name ) == '' )
@@ -198,6 +374,13 @@ class User extends Asset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPassword( $pw )
     {
         if( trim( $pw ) == '' )

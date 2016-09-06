@@ -16,11 +16,26 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class PublishSet extends ScheduledPublishing
 {
     const DEBUG = false;
     const TYPE  = c\T::PUBLISHSET;
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
@@ -30,6 +45,13 @@ class PublishSet extends ScheduledPublishing
         $this->processPublishableAssetIdentifiers();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function addFile( File $file )
     {
         $id             = $file->getId();
@@ -48,6 +70,13 @@ class PublishSet extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function addFolder( Folder $folder )
     {
         $id             = $folder->getId();
@@ -66,6 +95,13 @@ class PublishSet extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function addPage( Page $page )
     {
         $id             = $page->getId();
@@ -84,6 +120,13 @@ class PublishSet extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -182,6 +225,13 @@ class PublishSet extends ScheduledPublishing
         return $this->reloadProperty();
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFilePaths()
     {
         $file_paths = array();
@@ -194,6 +244,13 @@ class PublishSet extends ScheduledPublishing
         return $file_paths;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFolderPaths()
     {
         $folder_paths = array();
@@ -205,6 +262,13 @@ class PublishSet extends ScheduledPublishing
         return $folder_paths;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPagePaths()
     {
         $page_paths = array();
@@ -216,6 +280,13 @@ class PublishSet extends ScheduledPublishing
         return $page_paths;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function publish( Destination $destination=NULL )
     {
         if( isset( $destination ) )
@@ -236,6 +307,13 @@ class PublishSet extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function removeFile( File $file )
     {
         $id = $file->getId();
@@ -253,6 +331,13 @@ class PublishSet extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function removeFolder( Folder $folder )
     {
         $id = $folder->getId();
@@ -270,6 +355,13 @@ class PublishSet extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function removePage( Page $page )
     {
         $id = $page->getId();

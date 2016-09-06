@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/6/2016 Added isDynamicMetadataFieldRequired.
   * 12/29/2015 Added expirationFolderFieldRequired and expirationFolderFieldVisibility for 7.14.3.
   * 9/14/2015 Added getMetaData.
   * 5/28/2015 Added namespaces.
@@ -19,6 +20,14 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class MetadataSet extends ContainedAsset
 {
     const DEBUG    = false;
@@ -36,6 +45,13 @@ class MetadataSet extends ContainedAsset
     const TEASER      = "teaser";
     const TITLE       = "title";
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
@@ -49,6 +65,13 @@ class MetadataSet extends ContainedAsset
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function addDynamicFieldDefinition( $field_name, $type, $label, 
         $required=false, $visibility=c\T::VISIBLE, $possible_values="" )
     {
@@ -115,6 +138,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function addField( $field_name, $type, $label, 
         $required=false, $visibility=c\T::VISIBLE, $possible_values="" )
     {
@@ -124,6 +154,13 @@ class MetadataSet extends ContainedAsset
     /**
      * Appends a value/item to the end of a field.
      */
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function appendValue( $name, $value )
     {
         $value = trim( $value );
@@ -140,6 +177,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
        
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -176,36 +220,85 @@ class MetadataSet extends ContainedAsset
         return $this->reloadProperty();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getAuthorFieldRequired()
     {
         return $this->getProperty()->authorFieldRequired;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getAuthorFieldVisibility()
     {
         return $this->getProperty()->authorFieldVisibility;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDescriptionFieldRequired()
     {
         return $this->getProperty()->descriptionFieldRequired;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDescriptionFieldVisibility()
     {
         return $this->getProperty()->descriptionFieldVisibility;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDisplayNameFieldRequired()
     {
         return $this->getProperty()->displayNameFieldRequired;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDisplayNameFieldVisibility()
     {
         return $this->getProperty()->displayNameFieldVisibility;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception>NoSuchMetadataFieldDefinitionException</exception>
+</documentation>
+*/
     public function getDynamicMetadataFieldDefinition( $name )
     {
         if( !$this->hasDynamicMetadataFieldDefinition( $name ) )
@@ -219,16 +312,37 @@ class MetadataSet extends ContainedAsset
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDynamicMetadataFieldDefinitionNames()
     {
         return $this->field_names;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDynamicMetadataFieldDefinitionsStdClass()
     {
         return $this->getProperty()->dynamicMetadataFieldDefinitions;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDynamicMetadataFieldPossibleValueStrings( $name )
     {
         if( !$this->hasDynamicMetadataFieldDefinition( $name ) )
@@ -242,36 +356,85 @@ class MetadataSet extends ContainedAsset
         }
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getEndDateFieldRequired()
     {
         return $this->getProperty()->endDateFieldRequired;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getEndDateFieldVisibility()
     {
         return $this->getProperty()->endDateFieldVisibility;
     }
 /*    
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getExpirationFolderFieldRequired()
     {
         return $this->getProperty()->expirationFolderFieldRequired;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getExpirationFolderFieldVisibility()
     {
         return $this->getProperty()->expirationFolderFieldVisibility;
     }
-*/    
+   
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getKeywordsFieldRequired()
     {
         return $this->getProperty()->keywordsFieldRequired;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getKeywordsFieldVisibility()
     {
         return $this->getProperty()->keywordsFieldVisibility;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMetaData()
     {
         $m = AssetTemplate::getMetadata();
@@ -298,8 +461,15 @@ class MetadataSet extends ContainedAsset
         return new p\Metadata( $m, $this->getService(), $this->getId() );
     }
     
-    // used by WordPressConnector
-    public function getNonHiddenWiredFieldNames()
+    
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getNonHiddenWiredFieldNames()  // used by WordPressConnector
     {
         $fields = array();
         
@@ -321,57 +491,134 @@ class MetadataSet extends ContainedAsset
         return $fields;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getReviewDateFieldRequired()
     {
         return $this->getProperty()->reviewDateFieldRequired;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getReviewDateFieldVisibility()
     {
         return $this->getProperty()->reviewDateFieldVisibility;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getStartDateFieldRequired()
     {
         return $this->getProperty()->startDateFieldRequired;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getStartDateFieldVisibility()
     {
         return $this->getProperty()->startDateFieldVisibility;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSummaryFieldRequired()
     {
         return $this->getProperty()->summaryFieldRequired;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSummaryFieldVisibility()
     {
         return $this->getProperty()->summaryFieldVisibility;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTeaserFieldRequired()
     {
         return $this->getProperty()->teaserFieldRequired;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTeaserFieldVisibility()
     {
         return $this->getProperty()->teaserFieldVisibility;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTitleFieldRequired()
     {
         return $this->getProperty()->titleFieldRequired;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTitleFieldVisibility()
     {
         return $this->getProperty()->titleFieldVisibility;
     }
     
-    public function hasDynamicMetadataFieldDefinition( $name )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function hasDynamicMetadataFieldDefinition( string $name ) : bool
     {
         if( !is_array( $this->field_names ) )
         {
@@ -379,7 +626,27 @@ class MetadataSet extends ContainedAsset
         }
         return in_array( $name, $this->field_names );
     }
+
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NoSuchMetadataFieldDefinitionException</exception>
+</documentation>
+*/
+	public function isDynamicMetadataFieldRequired( string $name ) : bool
+	{
+		$dfd = $this->getDynamicMetadataFieldDefinition( $name );
+		return $dfd->getRequired();
+	}
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function removeDynamicMetadataFieldDefinition( $name )
     {
         if( !in_array( $name, $this->field_names ) )
@@ -415,6 +682,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function removeValue( $name, $value )
     {
         $value = trim( $value );
@@ -431,6 +705,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setAuthorFieldRequired( $author_field_required=false )
     {
         if( !c\BooleanValues::isBoolean( $author_field_required ) )
@@ -441,6 +722,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setAuthorFieldVisibility( $author_field_visibility=self::HIDDEN )
     {
         if( !c\VisibilityValues::isVisibility( $author_field_visibility ) )
@@ -451,6 +739,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDescriptionFieldRequired( $description_field_required=false )
     {
         if( !c\BooleanValues::isBoolean( $description_field_required ) )
@@ -461,6 +756,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDescriptionFieldVisibility( $description_field_visibility=self::HIDDEN )
     {
         if( !c\VisibilityValues::isVisibility( $description_field_visibility ) )
@@ -471,6 +773,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDisplayNameFieldRequired( $display_name_field_required=false )
     {
         if( !c\BooleanValues::isBoolean( $display_name_field_required ) )
@@ -481,6 +790,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDisplayNameFieldVisibility( $display_name_field_visibility=self::HIDDEN )
     {
         if( !c\VisibilityValues::isVisibility( $display_name_field_visibility ) )
@@ -491,6 +807,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDynamicMetadataFieldDefinitions( \stdClass $dmfd=NULL )
     {
         if( $dmfd == NULL || !isset( $dmfd->dynamicMetadataFieldDefinition ) )
@@ -521,6 +844,13 @@ class MetadataSet extends ContainedAsset
         return $this->edit();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setEndDateFieldRequired( $end_date_field_required=false )
     {
         if( !c\BooleanValues::isBoolean( $end_date_field_required ) )
@@ -531,6 +861,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setEndDateFieldVisibility( $end_date_field_visibility=self::HIDDEN )
     {
         if( !c\VisibilityValues::isVisibility( $end_date_field_visibility ) )
@@ -541,6 +878,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
 /* commented out because they don't work until 7.14.3
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setExpirationFolderFieldRequired( $expiration_folder_field_required=false )
     {
         if( !c\BooleanValues::isBoolean( $expiration_folder_field_required ) )
@@ -551,6 +895,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setExpirationFolderFieldVisibility( $expiration_folder_field_visibility=self::HIDDEN )
     {
         if( !c\VisibilityValues::isVisibility( $expiration_folder_field_visibility ) )
@@ -560,7 +911,14 @@ class MetadataSet extends ContainedAsset
         $this->getProperty()->expirationFolderFieldVisibility = $expiration_folder_field_visibility;
         return $this;
     }
-*/    
+   
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setKeywordsFieldRequired( $keywords_field_required=false )
     {
         if( !c\BooleanValues::isBoolean( $keywords_field_required ) )
@@ -571,6 +929,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setKeywordsFieldVisibility( $keywords_field_visibility=self::HIDDEN )
     {
         if( !c\VisibilityValues::isVisibility( $keywords_field_visibility ) )
@@ -581,6 +946,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setLabel( $name, $label )
     {
         $label = trim( $label );
@@ -603,6 +975,13 @@ class MetadataSet extends ContainedAsset
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setRequired( $name, $required )
     {
         if( !c\BooleanValues::isBoolean( $required ) )
@@ -623,6 +1002,13 @@ class MetadataSet extends ContainedAsset
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setReviewDateFieldRequired( $review_date_field_required=false )
     {
         if( !c\BooleanValues::isBoolean( $review_date_field_required ) )
@@ -633,6 +1019,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setReviewDateFieldVisibility( $review_date_field_visibility=self::HIDDEN )
     {
         if( !c\VisibilityValues::isVisibility( $review_date_field_visibility ) )
@@ -643,6 +1036,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setSelectedByDefault( $name, $value )
     {
         $value = trim( $value );
@@ -669,6 +1069,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setStartDateFieldRequired( $start_date_field_required=false )
     {
         if( !c\BooleanValues::isBoolean( $start_date_field_required ) )
@@ -679,6 +1086,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setStartDateFieldVisibility( $start_date_field_visibility=self::HIDDEN )
     {
         if( !c\VisibilityValues::isVisibility( $start_date_field_visibility ) )
@@ -689,6 +1103,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setSummaryFieldRequired( $summary_field_required=false )
     {
         if( !c\BooleanValues::isBoolean( $summary_field_required ) )
@@ -699,6 +1120,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setSummaryFieldVisibility( $summary_field_visibility=self::HIDDEN )
     {
         if( !c\VisibilityValues::isVisibility( $summary_field_visibility ) )
@@ -709,6 +1137,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setTeaserFieldRequired( $teaser_field_required=false )
     {
         if( !c\BooleanValues::isBoolean( $teaser_field_required ) )
@@ -719,6 +1154,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setTeaserFieldVisibility( $teaser_field_visibility=self::HIDDEN )
     {
         if( !c\VisibilityValues::isVisibility( $teaser_field_visibility ) )
@@ -729,6 +1171,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setTitleFieldRequired( $title_field_required=false )
     {
         if( !c\BooleanValues::isBoolean( $title_field_required ) )
@@ -739,6 +1188,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setTitleFieldVisibility( $title_field_visibility=self::HIDDEN )
     {
         if( !c\VisibilityValues::isVisibility( $title_field_visibility ) )
@@ -749,6 +1205,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setVisibility( $name, $visibility )
     {
         if( !c\VisibilityValues::isVisibility( $visibility ) )
@@ -777,6 +1240,13 @@ class MetadataSet extends ContainedAsset
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function swapDynamicMetadataFieldDefinitions( $def1, $def2 )
     {
         if( $def1 == '' || $def2 == '' )
@@ -820,11 +1290,25 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function swapFields( $def1, $def2 )
     {
         return $this->swapDynamicMetadataFieldDefinitions( $def1, $def2 );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function swapValues( $name, $value1, $value2 )
     {
         $def = $this->getDynamicMetadataFieldDefinition( $name );
@@ -835,6 +1319,13 @@ class MetadataSet extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function unsetSelectedByDefault( $name, $value )
     {
         $value = trim( $value );

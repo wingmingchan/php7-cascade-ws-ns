@@ -24,11 +24,26 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class Report
 {
     const DEBUG = false;
     const DUMP  = false;
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( Cascade $cascade )
     {
         $this->cascade = $cascade;
@@ -37,6 +52,13 @@ class Report
         $this->cache->clearCache();
     }
         
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __call( $func, $params )
     {
         // for metadata
@@ -100,27 +122,62 @@ class Report
             return NULL;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function clearResults()
     {
         $this->results = array();
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCache()
     {
         return $this->cache;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getResults()
     {
         return $this->results;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRoot()
     {
         return $this->root;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportDate( \DateTime $dt )
     {
         $this->checkRootFolder();
@@ -159,6 +216,13 @@ class Report
         return $this->results;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportEndDateAfter( \DateTime $dt=NULL, $type=Page::TYPE, $retraverse=false )
     {
         if( $retraverse )
@@ -166,6 +230,13 @@ class Report
         return $this->results[ $type ][ __FUNCTION__ ];
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportEndDateBefore( \DateTime $dt=NULL, $type=Page::TYPE, $retraverse=false )
     {
         if( $retraverse )
@@ -173,6 +244,13 @@ class Report
         return $this->results[ $type ][ __FUNCTION__ ];
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportLast( $type, $days_inclusive, $direction )
     {
         $this->checkRootFolder();
@@ -200,6 +278,13 @@ class Report
         return $this->results;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportMetadataWiredFields( $max_num_of_char=1, $substring="" )
     {
         $this->checkRootFolder();
@@ -266,6 +351,13 @@ class Report
         return $this->results;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportLongDisplayName( $max_num_of_char=1, $type=Page::TYPE, $retraverse=false )
     {
         if( $retraverse )
@@ -277,6 +369,13 @@ class Report
             return NULL;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportLongTitle( $max_num_of_char=1, $type=Page::TYPE, $retraverse=false )
     {
         if( $retraverse )
@@ -288,6 +387,13 @@ class Report
             return NULL;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportNumberOfAssets( $types )
     {
         $this->checkRootFolder();
@@ -318,6 +424,13 @@ class Report
         return $this->results;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportOrphanFiles()
     {
         $this->checkRootFolder();
@@ -343,6 +456,13 @@ class Report
         return $this->results;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportPageFieldEmptyValue( $fields, $or=true )
     {
         $this->checkRootFolder();
@@ -380,6 +500,13 @@ class Report
         return $this->results;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportPageFieldMatchesValue( $field_value, $or=true )
     {
         $this->checkRootFolder();
@@ -410,6 +537,13 @@ class Report
         return $this->results;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportPageNodeContainsValue( $node_value, $or=true )
     {
         $this->checkRootFolder();
@@ -434,6 +568,13 @@ class Report
         return $this->results;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportPageNodeEmptyValue( $nodes, $or=true )
     {
         $this->checkRootFolder();
@@ -471,6 +612,13 @@ class Report
         return $this->results;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportPublishable( $publishable=true )
     {
         $this->checkRootFolder();
@@ -504,6 +652,13 @@ class Report
         return $this->results;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportRelativeLink()
     {
         $this->checkRootFolder();
@@ -529,6 +684,13 @@ class Report
         return $this->results;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportReviewDateAfter( \DateTime $dt=NULL, $type=Page::TYPE, $retraverse=false )
     {
         if( $retraverse )
@@ -540,6 +702,13 @@ class Report
             return NULL;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportReviewDateBefore( \DateTime $dt=NULL, $type=Page::TYPE, $retraverse=false )
     {
         if( $retraverse )
@@ -551,6 +720,13 @@ class Report
             return NULL;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportScheduledPublishDestination()
     {
         // no need to set the root        
@@ -581,6 +757,13 @@ class Report
         return $this->results;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportScheduledPublishing()
     {
         $this->reportScheduledPublishDestination();
@@ -588,6 +771,13 @@ class Report
         return $this->reportScheduledPublishSite();
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportScheduledPublishPublishSet()
     {
         // no need to set the root        
@@ -618,6 +808,13 @@ class Report
         return $this->results;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportScheduledPublishSite()
     {
         // no need to set the root        
@@ -644,17 +841,38 @@ class Report
         return $this->results;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setRootContainer( Container $root )
     {
         $this->root = $root;
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setRootFolder( Folder $root )
     {
         return $this->setRootContainer( $root );
     }
         
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportStartDateAfter( \DateTime $dt=NULL, $type=Page::TYPE, $retraverse=false )
     {
         if( $retraverse )
@@ -666,6 +884,13 @@ class Report
             return NULL;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportStartDateBefore( \DateTime $dt=NULL, $type=Page::TYPE, $retraverse=false )
     {
         if( $retraverse )

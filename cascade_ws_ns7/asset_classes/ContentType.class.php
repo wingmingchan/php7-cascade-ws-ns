@@ -16,6 +16,14 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class ContentType extends ContainedAsset
 {
     const DEBUG = false;
@@ -36,6 +44,13 @@ class ContentType extends ContainedAsset
     const TEASER           = "teaser";
     const TITLE            = "title";
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
@@ -79,6 +94,13 @@ class ContentType extends ContainedAsset
             self::SUMMARY, self::TEASER, self::TITLE );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function addInlineEditableField( $config, $region, $group_path, $type, $name )
     {
         $identifier = $config . DataDefinition::DELIMITER .
@@ -148,6 +170,13 @@ class ContentType extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function display() : Asset
     {
         parent::display();
@@ -160,6 +189,13 @@ class ContentType extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -211,16 +247,37 @@ class ContentType extends ContainedAsset
         return $this->reloadProperty();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getConfigurationSet()
     {
         return $this->getPageConfigurationSet();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getContentTypePageConfigurationNames()
     {
         return $this->content_type_page_configuration_names;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDataDefinition()
     {
         if( isset( $this->getProperty()->dataDefinitionId ) )
@@ -234,26 +291,61 @@ class ContentType extends ContainedAsset
         return NULL;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDataDefinitionId()
     {
         return $this->getProperty()->dataDefinitionId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDataDefinitionPath()
     {
         return $this->getProperty()->dataDefinitionPath;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getInlineEditableFieldNames()
     {
         return $this->inline_editable_field_names;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getInlineEditableFields()
     {
         return $this->getProperty()->inlineEditableFields;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMetadataSet()
     {
         $service = $this->getService();
@@ -263,16 +355,37 @@ class ContentType extends ContainedAsset
             $this->getProperty()->metadataSetId );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMetadataSetId()
     {
         return $this->getProperty()->metadataSetId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMetadataSetPath()
     {
         return $this->getProperty()->metadataSetPath;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageConfigurationSet()
     {
         $service = $this->getService();
@@ -282,16 +395,37 @@ class ContentType extends ContainedAsset
             $this->getProperty()->pageConfigurationSetId );
     }
         
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageConfigurationSetId()
     {
         return $this->getProperty()->pageConfigurationSetId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageConfigurationSetPath()
     {
         return $this->getProperty()->pageConfigurationSetPath;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPublishMode( $config_name )
     {
         if( !in_array( $config_name, $this->content_type_page_configuration_names ) )
@@ -309,12 +443,26 @@ class ContentType extends ContainedAsset
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasDataDefinitionGroupPath( $name )
     {
         $name = str_replace( '/', DataDefinition::DELIMITER, $name );
         return in_array( $name, $this->data_definition->getIdentifiers() );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasInlineEditableField( $name )
     {
         if( isset( $this->inline_editable_field_names ) && is_array( $this->inline_editable_field_names ) )
@@ -322,17 +470,38 @@ class ContentType extends ContainedAsset
         return false;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasPageConfiguration( $name )
     {
         return in_array( $name, $this->content_type_page_configuration_names );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasRegion( $config_name, $region_name )
     {
         return in_array( $region_name, 
             $this->configuration_set->getPageRegionNames( $config_name ) );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function removeInlineEditableField( $identifier )
     {
         if( !$this->hasInlineEditableField( $identifier ) )
@@ -366,6 +535,13 @@ class ContentType extends ContainedAsset
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDataDefinition( DataDefinition $dd=NULL )
     {
         if( isset( $dd ) )
@@ -381,6 +557,13 @@ class ContentType extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setMetadataSet( MetadataSet $ms )
     {
         $this->getProperty()->metadataSetId   = $ms->getId();
@@ -388,6 +571,13 @@ class ContentType extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPageConfigurationSet( PageConfigurationSet $pcs )
     {
         $this->getProperty()->pageConfigurationSetId   = $pcs->getId();
@@ -395,6 +585,13 @@ class ContentType extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPublishMode( $config_name, $mode )
     {
         if( !in_array( $config_name, $this->content_type_page_configuration_names ) )

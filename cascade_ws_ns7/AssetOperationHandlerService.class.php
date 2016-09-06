@@ -4,6 +4,7 @@
   Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   MIT Licensed
   Modification history:
+   9/2/2016 Changed checkOut so that it returns the id of the working copy.
    8/15/2016 Added comments to work with ReflectionUtility.
    7/6/2015 Added getPreferences, readPreferences, and editPreferences.
    6/23/2015 Reverted the signature of performWorkflowTransition.
@@ -33,6 +34,7 @@ namespace cascade_ws_AOHS;
 use cascade_ws_constants as c;
 use cascade_ws_utility   as u;
 use cascade_ws_asset     as a;
+use cascade_ws_property  as p;
 use cascade_ws_exception as e;
 
 /**
@@ -205,7 +207,7 @@ Checks out an asset with the given identifier.
 $id = $service->createId( a\File::TYPE, $path, "cascade-admin" );
 $service->checkOut( $id );
 </example>
-<return-type>void</return-type></documentation>
+<return-type>string</return-type></documentation>
 */
     function checkOut( \stdClass $identifier )
     {
@@ -215,6 +217,13 @@ $service->checkOut( $id );
         
         $this->reply = $this->soapClient->checkOut( $checkout_param );
         $this->storeResults( $this->reply->checkOutReturn );
+        
+        if( $this->reply->checkOutReturn->success == "true" &&
+        	isset( $this->reply->checkOutReturn->workingCopyIdentifier ) &&
+        	!is_null( $this->reply->checkOutReturn->workingCopyIdentifier->id )  )
+        	return $this->reply->checkOutReturn->workingCopyIdentifier->id;
+        else
+        	return "";
     }
     
 /**
@@ -268,9 +277,9 @@ $asset->file = $service->createFileWithParentIdSiteNameNameData(
 	$parent_id, $site_name, $img_name, $img_binary );
 $service->create( $asset );    
 </example>
-<return-type>string</return-type></documentation>
+<return-type>mixed</return-type></documentation>
 */
-    public function create( \stdClass $asset ) : string
+    public function create( \stdClass $asset )
     {
         $create_params                 = new \stdClass();
         $create_params->authentication = $this->auth;

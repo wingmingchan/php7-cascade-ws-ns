@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/6/2016 Added all isXReuired methods
   * 1/8/2016 Added code to deal with host asset.
   * 5/28/2015 Added namespaces.
   * 9/21/2014 Fixed a bug in toStdClass.
@@ -180,16 +181,88 @@ class Metadata extends Property
         return in_array( $name, $this->dynamic_field_names );
     }
     
+    public function isAuthorFieldRequired() : bool
+    {
+        $this->checkMetadataSet();
+        return $this->metadata_set->getAuthorFieldRequired();      
+    }
+    
+    public function isDescriptionFieldRequired() : bool
+    {
+        $this->checkMetadataSet();
+        return $this->metadata_set->getDescriptionFieldRequired();      
+    }
+    
+    public function isDynamicFieldRequired( string $name ) : bool
+    {
+        return isDynamicMetadataFieldRequired( string $name );      
+    }
+    
+    public function isDynamicMetadataFieldRequired( string $name ) : bool
+    {
+        $this->checkMetadataSet();
+        return $this->metadata_set->isDynamicMetadataFieldRequired( $name );      
+    }
+    
+    public function isDisplayNameFieldRequired() : bool
+    {
+        $this->checkMetadataSet();
+        return $this->metadata_set->getDisplayNameFieldRequired();      
+    }
+    
+    public function isEndDateFieldRequired() : bool
+    {
+        $this->checkMetadataSet();
+        return $this->metadata_set->getEndDateFieldRequired();      
+    }
+    
+    public function isExpirationFolderFieldRequired() : bool
+    {
+        $this->checkMetadataSet();
+        return $this->metadata_set->getExpirationFolderFieldRequired();      
+    }
+    
+    public function isKeywordsFieldRequired() : bool
+    {
+        $this->checkMetadataSet();
+        return $this->metadata_set->getKeywordsFieldRequired();      
+    }
+    
+    public function isReviewDateFieldRequired() : bool
+    {
+        $this->checkMetadataSet();
+        return $this->metadata_set->getReviewDateFieldRequired();      
+    }
+    
+    public function isStartDateFieldRequired() : bool
+    {
+        $this->checkMetadataSet();
+        return $this->metadata_set->getStartDateFieldRequired();      
+    }
+    
+    public function isSummaryFieldRequired() : bool
+    {
+        $this->checkMetadataSet();
+        return $this->metadata_set->getSummaryFieldRequired();      
+    }
+    
+    public function isTeaserFieldRequired() : bool
+    {
+        $this->checkMetadataSet();
+        return $this->metadata_set->getTeaserFieldRequired();      
+    }
+    
+    public function isTitleFieldRequired() : bool
+    {
+        $this->checkMetadataSet();
+        return $this->metadata_set->getTitleFieldRequired();      
+    }
+    
     public function setAuthor( $author )
     {
         $author = trim( $author );
     
-        if( $this->metadata_set == NULL )
-        {
-            $this->metadata_set = new a\MetadataSet( 
-                $this->service, $this->service->createId( 
-                    a\MetadataSet::TYPE, $this->metadata_set_id ) );
-        }
+        $this->checkMetadataSet();
                 
         if( $this->metadata_set->getAuthorFieldRequired() && $author == '' )
         {
@@ -205,12 +278,7 @@ class Metadata extends Property
     {
         $display_name = trim( $display_name );
     
-        if( $this->metadata_set == NULL )
-        {
-            $this->metadata_set = new a\MetadataSet( 
-                $this->service, $this->service->createId( 
-                    a\MetadataSet::TYPE, $this->metadata_set_id ) );
-        }
+        $this->checkMetadataSet();
                 
         if( $this->metadata_set->getDisplayNameFieldRequired() && $display_name == '' )
         {
@@ -236,11 +304,7 @@ class Metadata extends Property
         
         $v_count = count( $values );
         
-        if( $this->metadata_set == NULL )
-        {
-            $this->metadata_set = a\Asset::getAsset( 
-                $this->service, a\MetadataSet::TYPE, $this->metadata_set_id );
-        }
+        $this->checkMetadataSet();
         
         $df_def     = $this->metadata_set->getDynamicMetadataFieldDefinition( $field );
         $field_type = $df_def->getFieldType();
@@ -343,12 +407,7 @@ class Metadata extends Property
     {
         $end_date = trim( $end_date );
     
-        if( $this->metadata_set == NULL )
-        {
-            $this->metadata_set = new a\MetadataSet( 
-                $this->service, $this->service->createId( 
-                    a\MetadataSet::TYPE, $this->metadata_set_id ) );
-        }
+        $this->checkMetadataSet();
                 
         if( $this->metadata_set->getEndDateFieldRequired() && ( $end_date == '' || $end_date == NULL ) )
         {
@@ -367,12 +426,7 @@ class Metadata extends Property
     {
         $keywords = trim( $keywords );
     
-        if( $this->metadata_set == NULL )
-        {
-            $this->metadata_set = new a\MetadataSet( 
-                $this->service, $this->service->createId( 
-                    a\MetadataSet::TYPE, $this->metadata_set_id ) );
-        }
+        $this->checkMetadataSet();
                 
         if( $this->metadata_set->getKeywordsFieldRequired() && $keywords == '' )
         {
@@ -388,12 +442,7 @@ class Metadata extends Property
     {
         $meta_description = trim( $meta_description );
     
-        if( $this->metadata_set == NULL )
-        {
-            $this->metadata_set = new a\MetadataSet( 
-                $this->service, $this->service->createId( 
-                    a\MetadataSet::TYPE, $this->metadata_set_id ) );
-        }
+        $this->checkMetadataSet();
                 
         if( $this->metadata_set->getDescriptionFieldRequired() && $meta_description == '' )
         {
@@ -409,12 +458,7 @@ class Metadata extends Property
     {
         $review_date = trim( $review_date );
     
-        if( $this->metadata_set == NULL )
-        {
-            $this->metadata_set = new a\MetadataSet( 
-                $this->service, $this->service->createId( 
-                    a\MetadataSet::TYPE, $this->metadata_set_id ) );
-        }
+        $this->checkMetadataSet();
                 
         if( $this->metadata_set->getReviewDateFieldRequired() && ( $review_date == '' || $review_date == NULL ) )
         {
@@ -433,12 +477,7 @@ class Metadata extends Property
     {
         $start_date = trim( $start_date );
     
-        if( $this->metadata_set == NULL )
-        {
-            $this->metadata_set = new a\MetadataSet( 
-                $this->service, $this->service->createId( 
-                    a\MetadataSet::TYPE, $this->metadata_set_id ) );
-        }
+        $this->checkMetadataSet();
                 
         if( $this->metadata_set->getStartDateFieldRequired() && ( $start_date == '' || $start_date == NULL ) )
         {
@@ -457,12 +496,7 @@ class Metadata extends Property
     {
         $summary = trim( $summary );
     
-        if( $this->metadata_set == NULL )
-        {
-            $this->metadata_set = new a\MetadataSet( 
-                $this->service, $this->service->createId( 
-                    a\MetadataSet::TYPE, $this->metadata_set_id ) );
-        }
+        $this->checkMetadataSet();
                 
         if( $this->metadata_set->getSummaryFieldRequired() && $summary == '' )
         {
@@ -478,12 +512,7 @@ class Metadata extends Property
     {
         $teaser = trim( $teaser );
     
-        if( $this->metadata_set == NULL )
-        {
-            $this->metadata_set = new a\MetadataSet( 
-                $this->service, $this->service->createId( 
-                    a\MetadataSet::TYPE, $this->metadata_set_id ) );
-        }
+        $this->checkMetadataSet();
                 
         if( $this->metadata_set->getTeaserFieldRequired() && $teaser == '' )
         {
@@ -499,12 +528,7 @@ class Metadata extends Property
     {
         $title = trim( $title );
     
-        if( $this->metadata_set == NULL )
-        {
-            $this->metadata_set = new a\MetadataSet( 
-                $this->service, $this->service->createId( 
-                    a\MetadataSet::TYPE, $this->metadata_set_id ) );
-        }
+        $this->checkMetadataSet();
                 
         if( $this->metadata_set->getTitleFieldRequired() && $title == '' )
         {
@@ -568,6 +592,16 @@ class Metadata extends Property
     public static function isWiredField( $field_name )
     {
         return in_array( $field_name, self::$wired_fields );
+    }
+    
+    private function checkMetadataSet()
+    {
+        if( $this->metadata_set == NULL )
+        {
+            $this->metadata_set = new a\MetadataSet( 
+                $this->service, $this->service->createId( 
+                    a\MetadataSet::TYPE, $this->metadata_set_id ) );
+        }
     }
     
     private function processDynamicFields( $fields )

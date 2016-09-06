@@ -35,7 +35,7 @@ namespace cascade_ws_constants
 {
 use cascade_ws_asset as a;
 
-// xhtml tags
+// xhtml tags which can be used with class names.
 define( 'BR',    "<br />\n" );
 define( 'E_CODE',  "</code>" );
 define( 'S_CODE',  "<code>" );
@@ -60,8 +60,16 @@ define( 'S_STRONG', "<strong>\n" );
 define( 'E_UL', "</ul>\n" );
 define( 'S_UL', "<ul>\n" );
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>The <code>F</code> class defines constants of global function names and values used in asset tree traversal.</p>
+</description>
+</documentation>
+*/
 class F // global functions
 {
+    const NAME_SPACE                  = 'cascade_ws_constants';
+    
     const ASSOCIATE_WITH_METADATA_SET = 'assetTreeAssociateWithMetadataSet';
     const COUNT                       = 'assetTreeCount';
     const DISPLAY                     = 'assetTreeDisplay';
@@ -80,8 +88,16 @@ class F // global functions
     const UNCONDITIONAL_REMOVAL       = 'unconditional-removal';
 }
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>The <code>L</code> class defines labels used in outputs.</p>
+</description>
+</documentation>
+*/
 class L // output labels for displaying purposes
 {
+    const NAME_SPACE                  = 'cascade_ws_constants';
+    
     const ACTION                  = "Action: ";
     const ASSET_TYPE              = "Asset type: ";
     const BODY                    = "Body: ";
@@ -120,8 +136,16 @@ class L // output labels for displaying purposes
     const USER                    = "User: ";
 }
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>The <code>M</code> class defines messages used in exceptions.</p>
+</description>
+</documentation>
+*/
 class M // messages for exceptions
 {
+    const NAME_SPACE                  = 'cascade_ws_constants';
+    
     const ACCESS_TO_USERS_GROUPS         = "Access can only be granted to users and groups.";
     const COMMENT_NOT_STRING             = "The comment should be a string. ";
     const COPY_ASSET_FAILURE             = "Failed to copy the asset. ";
@@ -219,7 +243,7 @@ class M // messages for exceptions
     const NULL_LINKABLE                  = "The linkable supplied cannot be NULL. ";
     const NULL_METADATA_SET              = "The metadata set cannot be NULL. ";
     const NULL_PAGE                      = "The page supplied cannot be NULL. ";
-    const NULL_PREFERENCE                = "The prefence cannot be NULL. ";
+    const NULL_PREFERENCE                = "The preference cannot be NULL. ";
     const NULL_ROLE                      = "The role cannot be NULL. ";
     const NULL_SERVICE                   = "The service object cannot be NULL. ";
     const NULL_SYMLINK                   = "The symlink supplied cannot be NULL. ";
@@ -245,8 +269,16 @@ class M // messages for exceptions
     const WRONG_ROLE                     = "The role does not exists. ";
 }
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>The <code>P</code> class defines property names.</p>
+</description>
+</documentation>
+*/
 class P // property names
 {
+    const NAME_SPACE                  = 'cascade_ws_constants';
+    
     const ASSET_FACTORY                    = "assetFactory";
     const ASSETFACTORY                     = "assetFactory";
     const ASSET_FACTORY_CONTAINER          = "assetFactoryContainer";
@@ -333,8 +365,16 @@ class P // property names
     const XSLTFORMAT                       = "xsltFormat";
 }
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>The <code>S</code> class defines types used in searches.</p>
+</description>
+</documentation>
+*/
 class S // search types
 {
+    const NAME_SPACE                  = 'cascade_ws_constants';
+    
     const SEARCH_ASSET_FACTORIES         = 'searchAssetFactories';
     const SEARCHASSETFACTORIES           = 'searchAssetFactories';
     const SEARCH_BLOCKS                  = 'searchBlocks';
@@ -381,9 +421,17 @@ class S // search types
     const SEARCHWORKFLOWDEFINITIONS      = 'searchWorkflowDefinitions';
 }
 
-
+/**
+<documentation><description><h2>Introduction</h2>
+<p>The <code>T</code> class defines type strings,
+and <code>get</code> methods to return information using types as keys.</p>
+</description>
+</documentation>
+*/
 class T // types
 {
+    const NAME_SPACE                  = 'cascade_ws_constants';
+    
     const ROOT_PATH      = "/";
     const CA             = "cascade-admin";
     
@@ -802,12 +850,26 @@ class T // types
             T::XSLTFORMAT                    => P::XSLTFORMAT
     );
     
-    public static function getTypeArray()
+/**
+<documentation><description><p>Returns the array named <code>$type_class_name_map</code>.</p></description>
+<example></example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function getTypeArray() : array
     {
         return array_keys( self::$type_class_name_map );
     }
     
-    public static function getClassNameByType( $type )
+/**
+<documentation><description><p>Maps a type string to its corresponding class name.</p></description>
+<example></example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function getClassNameByType( string $type )
     {
         if( isset( self::$type_class_name_map[ $type ] ) )
         {
@@ -816,7 +878,14 @@ class T // types
         return NULL;
     }
     
-    public static function getParentType( $type )
+/**
+<documentation><description><p>Maps a type string to its corresponding class name of the parent container.</p></description>
+<example></example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function getParentType( string $type )
     {
         if( isset( self::$type_parent_type_map[ $type ] ) )
         {
@@ -826,32 +895,89 @@ class T // types
     }
 }
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>The <code>AuditTypes</code> class defines an array storing types of audits and a method to check if a string is a type of audit.</p>
+</description>
+</documentation>
+*/
 class AuditTypes
 {
+    const NAME_SPACE                  = 'cascade_ws_constants';
+    
     public static $types = array( 
         T::LOGIN, T::LOGIN_FAILED, T::LOGOUT, T::START_WORKFLOW, T::ADVANCE_WORKFLOW,
         T::EDIT, T::COPY, T::CREATE, T::REFERENCE, T::DELETE, T::DELETE_UNPUBLISH,
         T::CHECK_IN, T::CHECK_OUT, T::ACTIVATE_VERSION, T::PUBLISH, T::UNPUBLISH,
-        T::RECYCLE, T::RESTORE, T::MOVE, ""
+        T::RECYCLE, T::RESTORE, T::MOVE
     );
     
-    public static function isAuditType( $value )
+/**
+<documentation><description><p>Returns a bool, indicating whether the string is a type of audits.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function isAuditType( string $value ) : bool
     {
         return in_array( trim( $value ), self::$types );
     }
 }
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>The <code>BooleanValues</code> class provides two methods to check if a value is a bool value.</p>
+</description>
+</documentation>
+*/
 class BooleanValues
 {
-    public static function isBoolean( $value )
+    const NAME_SPACE                  = 'cascade_ws_constants';
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether <code>$value</code> stores a bool value.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function isBoolean( bool $value ) : bool
+    {
+        return $value === true || $value === false;
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether <code>$value</code> stores a bool value.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function isBool( bool $value ) : bool
     {
         return $value === true || $value === false;
     }
 }
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>The <code>LevelValues</code> class provides a method to check if a value is a level value.</p>
+</description>
+</documentation>
+*/
 class LevelValues
 {
-    public static function isLevel( $level )
+    const NAME_SPACE                  = 'cascade_ws_constants';
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether <code>$level</code> stores a level value.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function isLevel( string $level ) : bool
     {
         return $level == T::READ || $level == T::WRITE || $level == T::NONE;
     }
@@ -859,6 +985,8 @@ class LevelValues
 
 class NamingBehaviorValues
 {
+    const NAME_SPACE                  = 'cascade_ws_constants';
+    
     public static function isNamingBehaviorValue( $value )
     {
         return $value == a\WorkflowDefinition::NAMING_BEHAVIOR_AUTO || 
@@ -869,6 +997,8 @@ class NamingBehaviorValues
 
 class RecycleBinExpirationValues
 {
+    const NAME_SPACE                  = 'cascade_ws_constants';
+    
     public static function isRecycleBinExpirationValue( $value )
     {
         return $value == T::NEVER || $value == T::ONE || $value == T::FIFTEEN || $value == T::THIRTY;
@@ -877,6 +1007,8 @@ class RecycleBinExpirationValues
 
 class RoleTypeValues
 {
+    const NAME_SPACE                  = 'cascade_ws_constants';
+    
     public static function isRoleTypeValue( $value )
     {
         return $value == T::SITE || $value == "global";
@@ -885,6 +1017,8 @@ class RoleTypeValues
 
 class SerializationTypeValues
 {
+    const NAME_SPACE                  = 'cascade_ws_constants';
+    
     public static function isSerializationTypeValue( $value )
     {
         return $value == T::HTML || $value == T::PDF || $value == T::XML || $value == T::RTF;
@@ -893,6 +1027,8 @@ class SerializationTypeValues
 
 class SearchTypes
 {
+    const NAME_SPACE                  = 'cascade_ws_constants';
+    
     public static $types = array(
         S::SEARCHASSETFACTORIES,
         S::SEARCHBLOCKS,
@@ -926,6 +1062,8 @@ class SearchTypes
 
 class VisibilityValues
 {
+    const NAME_SPACE                  = 'cascade_ws_constants';
+    
     public static function isVisibility( $value )
     {
         return $value == T::VISIBLE || $value == T::INLINE || $value == T::HIDDEN;
@@ -934,6 +1072,8 @@ class VisibilityValues
 
 class WorkflowModeValues
 {
+    const NAME_SPACE                  = 'cascade_ws_constants';
+    
     public static function isWorkflowMode( $value )
     {
         return $value == T::NONE || $value == T::FACTORY_CONTROLLED || $value == T::FOLDER_CONTROLLED;

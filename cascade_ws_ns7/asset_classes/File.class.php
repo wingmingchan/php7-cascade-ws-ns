@@ -19,11 +19,26 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class File extends Linkable
 {
     const DEBUG = false;
     const TYPE  = c\T::FILE;
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -69,46 +84,109 @@ class File extends Linkable
         return $this->reloadProperty();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getData()
     {
         return $this->getProperty()->data;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getLastPublishedBy()
     {
         return $this->getProperty()->lastPublishedBy;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getLastPublishedDate()
     {
         return $this->getProperty()->lastPublishedDate;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMaintainAbsoluteLinks()
     {
         return $this->getProperty()->maintainAbsoluteLinks;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRewriteLinks()
     {
         return $this->getProperty()->rewriteLinks;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getShouldBeIndexed()
     {
         return $this->getProperty()->shouldBeIndexed;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getShouldBePublished()
     {
         return $this->getProperty()->shouldBePublished;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getText()
     {
         return $this->getProperty()->text;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getWorkflow()
     {
         $service = $this->getService();
@@ -129,12 +207,26 @@ class File extends Linkable
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function isPublishable()
     {
         $parent = $this->getAsset( $this->getService(), Folder::TYPE, $this->getParentContainerId() );
         return $parent->isPublishable() && $this->getShouldBePublished();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function publish( Destination $destination=NULL )
     {
         if( isset( $destination ) )
@@ -158,12 +250,26 @@ class File extends Linkable
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setData( $data )
     {
         $this->getProperty()->data = $data;
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setMaintainAbsoluteLinks( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -175,6 +281,13 @@ class File extends Linkable
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setRewriteLinks( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -186,6 +299,13 @@ class File extends Linkable
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setShouldBeIndexed( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -196,6 +316,13 @@ class File extends Linkable
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setShouldBePublished( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -206,12 +333,26 @@ class File extends Linkable
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setText( $text )
     {
         $this->getProperty()->text = $text;
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function unpublish()
     {
         $this->getService()->unpublish( $this->getIdentifier() );

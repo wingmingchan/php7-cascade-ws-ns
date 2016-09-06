@@ -15,6 +15,14 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class WorkflowDefinition extends ContainedAsset
 {
     const DEBUG = false;
@@ -24,6 +32,13 @@ class WorkflowDefinition extends ContainedAsset
     const NAMING_BEHAVIOR_DEFINITION = c\T::NAMEOFDEFINITION;
     const NAMING_BEHAVIOR_BLANK      = 'empty';
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
@@ -71,6 +86,13 @@ class WorkflowDefinition extends ContainedAsset
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function addGroup( Group $g )
     {
         if( $g == NULL )
@@ -93,6 +115,13 @@ class WorkflowDefinition extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function displayXml()
     {
         $xml_string = u\XMLUtility::replaceBrackets( 
@@ -104,13 +133,27 @@ class WorkflowDefinition extends ContainedAsset
         return $this;
     }
     
-    public function dump( $formatted=false )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
+    public function dump( bool $formatted=false ) : Asset
     {
         parent::dump( $formatted );        
         $this->displayXml();
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -134,32 +177,74 @@ class WorkflowDefinition extends ContainedAsset
         return $this->reloadProperty();
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getApplicableGroups()
     {
         return $this->getProperty()->applicableGroups;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCopy()
     {
         return $this->getProperty()->copy;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCreate()
     {
         return $this->getProperty()->create;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDelete()
     {
         return $this->getProperty()->delete;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getEdit()
     {
         return $this->getProperty()->edit;
     }
     
-    public function getIdentifier()
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getIdentifier() : \stdClass
     {
         $obj                 = new \stdClass();
         $obj->id             = $this->getProperty()->id;
@@ -169,14 +254,28 @@ class WorkflowDefinition extends ContainedAsset
         $obj->path->siteName = $this->getProperty()->siteName;
         $obj->type           = c\T::WORKFLOWDEFINITION;
         $obj->recycled       = false;
-        return new p\Identifier( $obj );
+        return $obj;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getNamingBehavior()
     {
         return $this->getProperty()->namingBehavior;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getNonOrderedStep( $step_id )
     {
         if( !isset( $this->non_ordered_step_map[ $step_id ] ) )
@@ -186,11 +285,25 @@ class WorkflowDefinition extends ContainedAsset
         return $this->non_ordered_step_map[ $step_id ];
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getNonOrderedSteps()
     {
         return $this->non_ordered_steps;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getOrderedStep( $step_id )
     {
         if( !isset( $this->ordered_step_map[ $step_id ] ) )
@@ -200,26 +313,61 @@ class WorkflowDefinition extends ContainedAsset
         return $this->ordered_step_map[ $step_id ];
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getOrderedSteps()
     {
         return $this->ordered_steps;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getXml()
     {
         return $this->getProperty()->xml;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasNonOrderedStep( $step_id )
     {
         return isset( $this->non_ordered_step_map[ $step_id ] );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasOrderedStep( $step_id )
     {
         return isset( $this->ordered_step_map[ $step_id ] );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function isApplicableToGroup( Group $g )
     {
         if( $g == NULL )
@@ -234,6 +382,13 @@ class WorkflowDefinition extends ContainedAsset
         return in_array( $group_name, $group_array );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function removeGroup( Group $g )
     {
         if( $g == NULL )
@@ -263,6 +418,13 @@ class WorkflowDefinition extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setCopy( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -273,6 +435,13 @@ class WorkflowDefinition extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setCreate( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -283,6 +452,13 @@ class WorkflowDefinition extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDelete( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -293,6 +469,13 @@ class WorkflowDefinition extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setEdit( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -303,6 +486,13 @@ class WorkflowDefinition extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setNamingBehavior( $nb )
     {
         if( $nb != self::NAMING_BEHAVIOR_AUTO && 
@@ -316,6 +506,13 @@ class WorkflowDefinition extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setXml( $xml )
     {
         if( trim( $xml ) == "" )
@@ -326,6 +523,13 @@ class WorkflowDefinition extends ContainedAsset
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function toXml()
     {
         $xml_string = "<system-workflow-definition name=\"" . $this->name .

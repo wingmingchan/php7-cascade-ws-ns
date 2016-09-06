@@ -15,11 +15,26 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class XsltFormat extends Format
 {
     const DEBUG = false;
     const TYPE  = c\T::XSLTFORMAT;
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function displayXml()
     {
         $xml_string = htmlentities( $this->getProperty()->xml ); // &
@@ -31,11 +46,25 @@ class XsltFormat extends Format
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getXml()
     {
         return $this->getProperty()->xml;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setXml( $xml, $enforce_xml=false )
     {
         if( trim( $xml ) == '' )

@@ -4,6 +4,8 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/2/2016 Changed checkOut so that a reference of a string can be passed in to store the id of the working copy.
+  * Changed the type of the third parameter of clearPermissions to string.
   * 3/18/2016 Fixed bugs related to MessageArrays.
   * 3/16/2016 Fixed a bug in createFolderIndexBlock.
   * 1/5/2016 Added copyAsset.
@@ -42,11 +44,137 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+<p>The <code>Cascade</code> class is designed to create, retrieve and delete assets. It also provides methods to deal with a few specific types of entities:
+sites, access rights, roles, groups, users, audits, and messages, as well as a few <code>search</code> methods.</p>
+<h2>Instantiating the <code>Cascade</code> Object</h2>
+<p>A <code>Cascade</code> object, <code>$cascade</code>, has already been instantiated in an authentication file and can be used directly.</p>
+<h2>Manipulating Sites</h2>
+<p>A <code>Cascade</code> object stores all site information. Since a Cascade instance might have hundreds of sites,
+I do not want to create <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/site.php"><code>Site</code></a> objects
+directly inside a <code>Cascade</code> object. Instead, when the <code>Cascade</code> object is created, it only stores site information in
+<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects,
+which are much smaller than <code>Site</code> objects. When <code>Site</code> objects are needed, they can be obtained by calling
+<code>p\Identifier::getAsset()</code> or <code>Cascade::getAsset</code>. Therefore, the <code>Cascade::getSites</code> method
+only returns an array of <code>p\Identifier</code> objects. On the other hand, when a single site is needed,
+<code>Cascade::getSite( $site_name )</code> does return a <code>Site</code> object.</p>
+<p>When we need to visit every site and do some simple thing to each of them, we may want to continue what we want to do
+even if the operation fails in a site or two. Since <code>Asset::getAsset</code> throws an exception when the asset in question does not exist,
+we may want to just ignore the exception and move on. One simple technique can be used to achieve this.
+We can use a <code>try&#8230;catch</code> block inside <code>foreach</code>:</p>
+<pre class="code">require_once('cascade_ws_ns/auth_chanw.php');
+
+use cascade_ws_constants as c;
+use cascade_ws_asset     as a;
+use cascade_ws_property  as p;
+use cascade_ws_utility   as u;
+use cascade_ws_exception as e;
+
+try
+{
+    $sites = $cascade-&gt;getSites();
+    
+    foreach( $sites as $site )
+    {
+        try
+        {
+            // try to modify the same factory of every site
+            $af = $cascade-&gt;getAsset( 
+                a\AssetFactory::TYPE, 
+                "Upstate/Upload PDF-Max 10M", 
+                $site-&gt;getPathPath() );
+
+            $af-&gt;setPluginParameterValue(
+                "com.cms.assetfactory.FileLimitPlugin",
+                "assetfactory.plugin.filelimit.param.name.size",
+                "10000"
+            )-&gt;edit();
+        }
+        catch( \Exception $e ) // if the factory does not exist
+        {
+            echo $site-&gt;getPathPath() . 
+                " failed to modify Upload PDF-Max 10M" . BR;
+            continue;
+        }
+    }
+}
+catch( \Exception $e )
+{
+    echo S_PRE . $e . E_PRE;
+}
+catch( \Error $er )
+{
+    echo S_PRE . $er . E_PRE; 
+}
+</pre>
+<h2>Manipulating Access Rights</h2>
+<p>There are two ways to deal with access rights through the <code>$cascade</code> object.
+We can retrieve the <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/access-rights-information.php"><code>p\AccessRightsInformation</code></a>
+object and manipulate that object directly. Or we can use the <code>$cascade</code> object without going through the <code>p\AccessRightsInformation</code> object.</p>
+<p>Note that since the <code>$cascade</code> object can be used to manipulate the access rights of a large amount of assets,
+it cannot store all this information. This means that every time before <code>Cascade::setAccessRights</code> is called on a different asset,
+we need to read the access rights of that asset first.</p>
+<h2>Working With Roles, Groups, and Users</h2>
+<p>This class is designed to overcome the following problems inherent in Cascade CMS:</p>
+<ul>
+<li>When reading, Cascade returns at most 250 groups/users.</li>
+<li>Roles cannot be retrieved by their names.</li>
+</ul>
+<p>This class provides three methods to retrieve all roles, groups, and users: <code>Cascade::getRoles</code>, <code>Cascade::getGroups</code>,
+and <code>Cascade::getUsers</code>. For <code>Cascade::getUsers</code>, the method returns the result of searching the users,
+using a wild-card character, plus any users that belong to one group or another (provided that the number of groups does not exceed 250, see below).
+That is to say, it returns the union of two sets: the maximum number of users read from Cascade, and any other users that belong to one group or another.
+This may not cover all users, but at least it covers users that belong to some group. As for groups, because they are not subscribers of any other asset,
+there is no way to read all of them if the maximum number exceeds 250.</p>
+<p>This class also provides a few methods working with role names (not the numeric ID's).
+For example, we can retrieve a <code>Role</code> object by using <code>Cascade::getRoleAssetByName( string $role_name )</code>.</p>
+<h2>Working With Audits</h2>
+<p>This class provides a <code>getAudits</code> methods that returns an array of
+<a href="http://www.upstate.edu/cascade-admin/web-services/api/audit.php"><code>Audit</code></a> object.</p>
+<h2>Working With Messages</h2>
+<p>This class provides a number of methods to retrieve and delete messages.
+See <a href="http://www.upstate.edu/cascade-admin/web-services/api/message.php">Message</a> for methods working with individual messages.</p>
+<h2>Creating Assets</h2>
+<p>In the <code>Cascade</code> class, there are more than forty <code>createX</code> methods, where <code>X</code> is a type of asset.
+Some examples are <code>Cascade::createAssetFactory</code>, <code>Cascade::createTextBlock</code> and <code>Cascade::createXsltFormat</code>.
+A <code>createX</code> method will first test if the named asset already exists. If it does, it will return an object representing the asset.
+If the asset does not exist, then it will create the asset, and return an object representing the new asset.
+Note that if data is passed into a <code>createX</code> method, and if the asset already exists before the method call,
+then the existing asset will keep its original data and the new data passed in will be ignored.
+The new data will be used to populate the asset only when the asset is newly created.</p>
+<h2>Getting <code>Asset</code> Objects</h2>
+<p>There are two ways to retrieve an <code>Asset</code> object representing an asset using the <code>$cascade</code> object.
+The first way is to call <code>Cascade::getAsset</code>.
+This method requires parameters, including type information, to identify the asset to be retrieved, and throws an exception
+if the asset does not exist. The second way is to call <code>Cascade::getX</code>, where <code>X</code> is a class name,
+a name of a concrete sub-class of the <code>Asset</code> class, like <code>AssetFactory</code> or <code>IndexBlock</code>.
+A method like <code>Cascade::getIndexBlock</code> requires the identifier of the asset to be retrieved,
+but it does not require type information. If the asset exists, the method returns the object representing the asset;
+else it returns <code>NULL</code>. Therefore, these methods can be used to test the existence of assets without involving exceptions. Example:</p>
+<pre class="code">$a = $cascade-&gt;
+    getAssetFactory( 'Upstate/New Default 3-Column Page', 'cascade-admin' );
+if( isset( $a ) ) echo $a-&gt;getId() . BR;
+</pre>
+<p>The only exception in this group of methods is <code>Cascade::getSite</code>, which is independently defined and throws an exception if the site does not exist.</p>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/cascade.php">cascade.php</a></li></ul></postscript>
+</documentation>
+*/
 class Cascade
 {
-    const DEBUG = false;
-    const DUMP  = false;
+    const DEBUG      = false;
+    const DUMP       = false;
+    const NAME_SPACE = "cascade_ws_asset";
 
+/**
+<documentation><description><p>The constructor. An instance of this class has been instantiated in an authenticatioin file.</p></description>
+<example>$cascade = new a\Cascade( $service );</example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( aohs\AssetOperationHandlerService $service )
     {
         try
@@ -60,7 +188,17 @@ class Cascade
         }
     }
     
-    function __call( $func, $params )
+/**
+<documentation><description><p>This single method generates all <code>getX</code> methods (like <code>getIndexBlock</code> and <code>getPage</code>)
+and <code>deleteX</code> methods. A <code>getX</code> method returns either an object representing the asset, or <code>NULL</code>
+if the asset does not exist. A <code>deleteX</code> will delete an existing asset, and returns the <code>Cascade</code> object,
+or simply returns the <code>Cascade</code> object, if the asset does not exist, without throwing any exceptions.</p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    function __call( string $func, $params )
     {
         $delete = false;
         
@@ -149,7 +287,14 @@ class Cascade
         }
     }
     
-    public function checkIn( Asset $a, $comments='' )
+/**
+<documentation><description><p>Checks in the asset and returns <code>$cascade</code>.</p></description>
+<example>$cascade->checkIn( $page );</example>
+<return-type>Cascade</return-type>
+<exception>NullAssetException, Exception</exception>
+</documentation>
+*/
+    public function checkIn( Asset $a, string $comments='' ) : Cascade
     {
         if( $a == NULL )
         {
@@ -167,7 +312,23 @@ class Cascade
         return $this;
     }
     
-    public function checkOut( Asset $a )
+/**
+<documentation><description><p>Checks out the asset and returns <code>$cascade</code>.
+To access the id of the working copy, pass in a string variable as the second argument.</p></description>
+<example>$id = "";
+$cascade->checkOut( $page, $id );
+
+// work with the working copy
+$working_page = $cascade->getAsset( a\Page::TYPE, $id );
+$working_page->getMetadata()->setDisplayName( "Upgrade Cascade CMS" )->
+    getHostAsset()->edit();
+// merge the changes
+$cascade->checkIn( $page );</example>
+<return-type>Cascade</return-type>
+<exception>NullAssetException</exception>
+</documentation>
+*/
+    public function checkOut( Asset $a, string &$id="" ) : Cascade
     {
         if( $a == NULL )
         {
@@ -175,11 +336,20 @@ class Cascade
                 S_SPAN . c\M::NULL_ASSET . E_SPAN );
         }
         
-        $this->service->checkOut( $a->getIdentifier() );
+        $id = $this->service->checkOut( $a->getIdentifier() );
         return $this;
     }
     
-    public function clearPermissions( $type, $id_path, $site_name=NULL, $applied_to_children=false )
+/**
+<documentation><description><p>Clears all access rights from groups and users, and sets all level to <code>none</code>,
+and returns <code>$cascade</code>. Note that when an ID string is supplied and the <code>$site_name</code> is not needed,
+an empty string must be passed in as the third argument if there is a fourth argument.</p></description>
+<example>$cascade->clearPermissions( a\Page::TYPE, "51e41e738b7f08ee0eb80213bbea02b9" );</example>
+<return-type>Cascade</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function clearPermissions( string $type, string $id_path, string $site_name="", bool $applied_to_children=false ) : Cascade
     {
         $ari = $this->getAccessRights( $type, $id_path, $site_name );
         $ari->clearPermissions();
@@ -187,13 +357,32 @@ class Cascade
         return $this;
     }
     
-    public function copyAsset( Asset $asset, Container $container, $new_name )
+/**
+<documentation><description><p>Creates a copy of the asset in the container with the new name, and returns <code>$cascade</code>.</p></description>
+<example>$cascade->copyAsset(
+    $page,
+    $cascade->getAsset( a\Folder::TYPE, "fff3a7538b7f08ee3e513744ae475537" ), // target folder
+    "new-page" // new name
+);</example>
+<return-type>Cascade</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function copyAsset( Asset $asset, Container $container, string $new_name ) : Cascade
     {
         $asset->copy( $container, $new_name );
         return $this;
     }
     
-    public function copySite( Site $s, $new_name, $seconds=10 )
+/**
+<documentation><description><p>Copies the site, create a new site,
+and returns <code>$cascade</code>. Set <code>$seconds</code> to a large enough positive integer so that the copying process can finish.</p></description>
+<example>$cascade->copySite( $seed, 'test', 50 );</example>
+<return-type>Cascade</return-type>
+<exception>UnacceptableValueException, SiteCreationFailureException</exception>
+</documentation>
+*/
+    public function copySite( Site $s, string $new_name, int $seconds=10 ) : Cascade
     {
         if( !is_numeric( $seconds ) || !$seconds > 0 )
             throw new e\UnacceptableValueException( 
@@ -212,9 +401,22 @@ class Cascade
             S_SPAN . c\M::SITE_CREATION_FAILURE . E_SPAN . $this->service->getMessage() );
     }
     
-    /* the create group */
+/* the create group */
+/**
+<documentation><description><p>Returns an <code>AssetFactory</code> object,
+representing either an existing asset factory, or an asset factory newly created by the method.
+<code>$type</code> is the asset type associated with the asset factory, and <code>$mode</code> is the workflow mode.</p></description>
+<example>$cascade->createAssetFactory(
+    $cascade->getAsset( a\AssetFactoryContainer::TYPE, "3789d91a8b7f08ee2347507a434b94d3" ),
+    "Upload 1000x500 Image",
+    a\File::TYPE
+)->dump();</example>
+<return-type>Asset</return-type>
+<exception>CreationErrorException</exception>
+</documentation>
+*/
     public function createAssetFactory( 
-        AssetFactoryContainer $parent, $name, $type, $mode=c\T::NONE )
+        AssetFactoryContainer $parent, string $name, string $type, string $mode=c\T::NONE ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -231,7 +433,18 @@ class Cascade
             $asset, AssetFactory::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createAssetFactoryContainer( AssetFactoryContainer $parent, $name )
+/**
+<documentation><description><p>Returns an <code>AssetFactoryContainer</code> object,
+representing either an existing asset factory container, or an asset factory container newly created by the method.</p></description>
+<example>$cascade->createAssetFactoryContainer(
+    $cascade->getAsset( a\AssetFactoryContainer::TYPE, "980a7cff8b7f0856015997e40fe58068" ),
+    "Upload"
+)->dump();</example>
+<return-type>Asset</return-type>
+<exception>CreationErrorException</exception>
+</documentation>
+*/
+    public function createAssetFactoryContainer( AssetFactoryContainer $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -247,7 +460,18 @@ class Cascade
             $asset, AssetFactoryContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createConnectorContainer( ConnectorContainer $parent, $name )
+/**
+<documentation><description><p>Returns a <code>ConnectorContainer</code> object,
+representing either an existing connector container, or a connector container newly created by the method.</p></description>
+<example>$cascade->createConnectorContainer(
+    $cascade->getAsset( a\ConnectorContainer::TYPE, "980a826b8b7f0856015997e424411695" ),
+    "Test"
+)->dump();</example>
+<return-type>Asset</return-type>
+<exception>CreationErrorException</exception>
+</documentation>
+*/
+    public function createConnectorContainer( ConnectorContainer $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -263,12 +487,26 @@ class Cascade
             $asset, ConnectorContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
+/**
+<documentation><description><p>Returns a <code>ContentType</code> object,
+representing either an existing content type, or a content type newly created by the method.</p></description>
+<example>$cascade->createContentType(
+    $cascade->getAsset( a\ContentTypeContainer::TYPE, "980a7c9f8b7f0856015997e4dbf4ab28" ),
+    "Test",
+    $cascade->getAsset( a\PageConfigurationSet::TYPE, "5f1e42b08b7f08ee226116ffc4f6aac7" ),
+    $cascade->getAsset( a\MetadataSet::TYPE, "980d70498b7f0856015997e430d5c886" ),
+    $cascade->getAsset( a\DataDefinition::TYPE, "9e18141d8b7f08560053896c87327dcd" )
+)->dump();</example>
+<return-type>Asset</return-type>
+<exception>CreationErrorException</exception>
+</documentation>
+*/
     public function createContentType( 
         ContentTypeContainer $parent, 
-        $name, 
+        string $name, 
         PageConfigurationSet $pcs,
         MetadataSet $ms,
-        DataDefinition $dd=NULL )
+        DataDefinition $dd=NULL ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -288,7 +526,18 @@ class Cascade
             $asset, ContentType::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createContentTypeContainer( ContentTypeContainer $parent, $name )
+/**
+<documentation><description><p>Returns a <code>ContentTypeContainer</code> object,
+representing either an existing content type container, or a content type container newly created by the method.</p></description>
+<example>$cascade->createContentTypeContainer(
+    $cascade->getAsset( a\ContentTypeContainer::TYPE, "980a7c9f8b7f0856015997e4dbf4ab28" ),
+    "Test Container"
+)->dump();</example>
+<return-type>Asset</return-type>
+<exception>CreationErrorException</exception>
+</documentation>
+*/
+    public function createContentTypeContainer( ContentTypeContainer $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -304,8 +553,19 @@ class Cascade
             $asset, ContentTypeContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createContentTypeIndexBlock( Folder $parent, $name, ContentType $ct=NULL,
-        $max_rendered_assets=0 )
+/**
+<documentation><description><p>Returns an <code>IndexBlock</code> object,
+representing either an existing index block of type "content-type", or an index block newly created by the method.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception>CreationErrorException</exception>
+</documentation>
+*/
+    public function createContentTypeIndexBlock( 
+        Folder $parent, 
+        string $name, 
+        ContentType $ct=NULL,
+        $max_rendered_assets=0 ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -338,9 +598,22 @@ class Cascade
             $asset, IndexBlock::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
+/**
+<documentation><description><p>Returns a <code>DatabaseTransport</code> object,
+representing either an existing database transport, or a database transport newly created by the method.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception>CreationErrorException</exception>
+</documentation>
+*/
     public function createDatabaseTransport( 
-        TransportContainer $parent, $name, $server, $port, 
-        $username, $database, $transport )
+        TransportContainer $parent, 
+        string $name, 
+        string $server, 
+        stirng $port, 
+        string $username,
+        string $database, 
+        string $transport ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -375,7 +648,16 @@ class Cascade
             $asset, DatabaseTransport::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createDataDefinition( DataDefinitionContainer $parent, $name, $xml )
+/**
+<documentation><description><p>Returns a <code>DataDefinition</code> object,
+representing either an existing data definition, or a data definition newly created by the method.
+Note that the <code>$xml</code> string is sent to Cascade without data checking.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception>CreationErrorException</exception>
+</documentation>
+*/
+    public function createDataDefinition( DataDefinitionContainer $parent, string $name, string $xml ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -395,7 +677,16 @@ class Cascade
             $asset, DataDefinition::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createDataDefinitionBlock( Folder $parent, $name, DataDefinition $d )
+/**
+<documentation><description><p>Returns a <code>DataDefinitionBlock</code> object,
+representing either an existing data definition block, or a data definition block newly created by the method.
+Also see <code>createXhtmlBlock( Folder $parent, $name, $text="" )</code>.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception>CreationErrorException</exception>
+</documentation>
+*/
+    public function createDataDefinitionBlock( Folder $parent, string $name, DataDefinition $d ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -411,7 +702,15 @@ class Cascade
             $asset, DataDefinitionBlock::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createDataDefinitionContainer( DataDefinitionContainer $parent, $name )
+/**
+<documentation><description><p>Returns a <code>DataDefinitionContainer</code> object,
+representing either an existing data definition container, or a data definition container newly created by the method.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception>CreationErrorException</exception>
+</documentation>
+*/
+    public function createDataDefinitionContainer( DataDefinitionContainer $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -427,7 +726,15 @@ class Cascade
             $asset, DataDefinitionContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createDataDefinitionPage( Folder $parent, $name, ContentType $ct )
+/**
+<documentation><description><p>Returns a <code>Page</code> object,
+representing either an existing page associated with a data definition, or a page newly created by the method.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception>CreationErrorException</exception>
+</documentation>
+*/
+    public function createDataDefinitionPage( Folder $parent, string $name, ContentType $ct ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -444,8 +751,16 @@ class Cascade
             $asset, Page::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
+/**
+<documentation><description><p>Returns a <code>Destination</code> object,
+representing either an existing destination, or a destination newly created by the method.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception>CreationErrorException</exception>
+</documentation>
+*/
     public function createDestination( 
-        SiteDestinationContainer $parent, $name, Transport $transport )
+        SiteDestinationContainer $parent, string $name, Transport $transport ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -469,9 +784,17 @@ class Cascade
             $asset, Destination::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createFacebookConnector( ConnectorContainer $parent, $name, Destination $d,
-        $pg_value, $px_value,
-        ContentType $ct, $page_config )
+/**
+<documentation><description><p>Returns a <code>FacebookConnector</code> object,
+representing either an existing Facebook connector, or a Facebook connector newly created by the method.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception>CreationErrorException</exception>
+</documentation>
+*/
+    public function createFacebookConnector( ConnectorContainer $parent, string $name, Destination $d,
+        string $pg_value, string $px_value,
+        ContentType $ct, string $page_config ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -517,7 +840,15 @@ class Cascade
             $asset, FacebookConnector::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createFeedBlock( Folder $parent, $name, $url )
+/**
+<documentation><description><p>Returns a <code>FeedBlock</code> object,
+representing either an existing feed block, or a feed block newly created by the method.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createFeedBlock( Folder $parent, $name, $url ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(                 
@@ -537,7 +868,14 @@ class Cascade
             $asset, FeedBlock::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createFile( Folder $parent, $name, $text="", $data=NULL )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createFile( Folder $parent, $name, $text="", $data=NULL ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(                 
@@ -561,7 +899,14 @@ class Cascade
             $asset, File::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createFileSystemTransport( TransportContainer $parent, $name, $directory )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createFileSystemTransport( TransportContainer $parent, $name, $directory ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(
@@ -580,7 +925,14 @@ class Cascade
             $asset, FileSystemTransport::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createFolder( Folder $parent=NULL, $name="", $site_name="" )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createFolder( Folder $parent=NULL, $name="", $site_name="" ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(
@@ -605,8 +957,15 @@ class Cascade
             $asset, Folder::TYPE, $this->getPath( $parent, $name ), $site_name );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public function createFolderIndexBlock( Folder $parent, $name, Folder $f=NULL,
-        $max_rendered_assets=0 )
+        $max_rendered_assets=0 ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(
@@ -642,7 +1001,14 @@ class Cascade
             $asset, IndexBlock::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createFormat( Folder $parent, $name, $type, $script="", $xml="" )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createFormat( Folder $parent, $name, $type, $script="", $xml="" ) : Asset
     {
         $type = trim( $type );
         
@@ -656,8 +1022,15 @@ class Cascade
             return $this->createXsltFormat( $parent, $name, $xml );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public function createFtpTransport( 
-        TransportContainer $parent, $name, $server, $port, $username, $password )
+        TransportContainer $parent, $name, $server, $port, $username, $password ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(
@@ -688,7 +1061,14 @@ class Cascade
             $asset, FtpTransport::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createGoogleAnalyticsConnector( ConnectorContainer $parent, $name, $profile_id )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createGoogleAnalyticsConnector( ConnectorContainer $parent, $name, $profile_id ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(
@@ -715,7 +1095,14 @@ class Cascade
             $asset, GoogleAnalyticsConnector::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createGroup( $group_name, $role_name='Default' )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createGroup( $group_name, $role_name='Default' ) : Asset
     {
         if( trim( $group_name ) == "" )
             throw new e\CreationErrorException( 
@@ -728,8 +1115,15 @@ class Cascade
         return $this->createAsset( $asset, Group::TYPE, $group_name );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public function createIndexBlock( Folder $parent, $name, $type, ContentType $ct=NULL, Folder $f=NULL,
-        $max_rendered_assets=0 )
+        $max_rendered_assets=0 ) : Asset
     {
         if( $type == c\T::CONTENTTYPEINDEX )
             return $this->createContentTypeIndexBlock( $parent, $name, $ct, $max_rendered_assets );
@@ -737,7 +1131,14 @@ class Cascade
             return $this->createFolderIndexBlock( $parent, $name, $f, $max_rendered_assets );
     }
 
-    public function createMetadataSet( MetadataSetContainer $parent, $name )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createMetadataSet( MetadataSetContainer $parent, $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -752,7 +1153,14 @@ class Cascade
             $asset, MetadataSet::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createMetadataSetContainer( MetadataSetContainer $parent, $name )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createMetadataSetContainer( MetadataSetContainer $parent, $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -768,7 +1176,14 @@ class Cascade
             $asset, MetadataSetContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createPage( Folder $parent, $name, ContentType $ct, $xhtml="" )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createPage( Folder $parent, $name, ContentType $ct, $xhtml="" ) : Asset
     {
         if( $ct->getDataDefinition() != NULL )
             return $this->createDataDefinitionPage( $parent, $name, $ct );
@@ -776,11 +1191,18 @@ class Cascade
             return $this->createXhtmlPage( $parent, $name, $xhtml, $ct );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public function createPageConfigurationSet( 
         PageConfigurationSetContainer $parent, 
         $name,        // configuration set name
         $config_name, // default configuration name
-        Template $t, $extension, $type )
+        Template $t, $extension, $type ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -817,7 +1239,14 @@ class Cascade
             $asset, PageConfigurationSet::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createPageConfigurationSetContainer( PageConfigurationSetContainer $parent, $name )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createPageConfigurationSetContainer( PageConfigurationSetContainer $parent, $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -833,7 +1262,14 @@ class Cascade
             $asset, PageConfigurationSetContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createPublishSet( PublishSetContainer $parent, $name )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createPublishSet( PublishSetContainer $parent, $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -848,7 +1284,14 @@ class Cascade
             $asset, PublishSet::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
 
-    public function createPublishSetContainer( PublishSetContainer $parent, $name )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createPublishSetContainer( PublishSetContainer $parent, $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -864,7 +1307,14 @@ class Cascade
             $asset, PublishSetContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createReference( Asset $a, Folder $parent, $name )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createReference( Asset $a, Folder $parent, $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -881,7 +1331,14 @@ class Cascade
             $asset, Reference::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createRole( $name, $type )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createRole( $name, $type ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -902,7 +1359,14 @@ class Cascade
         return $this->createAsset( $asset, Role::TYPE, $name );
     }
     
-    public function createScriptFormat( Folder $parent, $name, $script )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createScriptFormat( Folder $parent, $name, $script ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -922,7 +1386,14 @@ class Cascade
             $asset, ScriptFormat::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createSite( $name, $url, $recycle_bin_expiration )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createSite( $name, $url, $recycle_bin_expiration ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -948,7 +1419,14 @@ class Cascade
         return $site;
     }
     
-    public function createSiteDestinationContainer( SiteDestinationContainer $parent, $name )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createSiteDestinationContainer( SiteDestinationContainer $parent, $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -964,7 +1442,14 @@ class Cascade
             $asset, SiteDestinationContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createSymlink( Folder $parent, $name, $url )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createSymlink( Folder $parent, $name, $url ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -984,7 +1469,14 @@ class Cascade
             $asset, Symlink::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createTemplate( Folder $parent, $name, $xml )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createTemplate( Folder $parent, $name, $xml ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1004,7 +1496,14 @@ class Cascade
             $asset, Template::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createTextBlock( Folder $parent, $name, $text )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createTextBlock( Folder $parent, $name, $text ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1024,7 +1523,14 @@ class Cascade
             $asset, TextBlock::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createTransportContainer( TransportContainer $parent, $name )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createTransportContainer( TransportContainer $parent, $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1040,9 +1546,16 @@ class Cascade
             $asset, TransportContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public function createTwitterConnector( ConnectorContainer $parent, $name, Destination $d,
         $ht_value, $px_value,
-        ContentType $ct, $page_config )
+        ContentType $ct, $page_config ) : Asset
     {
         if( self::DEBUG ) { u\DebugUtility::out( "Hash tag: $ht_value Prefix: $px_value" ); }
         if( trim( $name ) == "" )
@@ -1090,7 +1603,14 @@ class Cascade
             $asset, TwitterConnector::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createUser( $user_name, $password, Group $group, Role $global_role )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createUser( $user_name, $password, Group $group, Role $global_role ) : Asset
     {
         if( trim( $user_name ) == "" )
             throw new e\CreationErrorException( 
@@ -1110,8 +1630,15 @@ class Cascade
         return $this->createAsset( $asset, User::TYPE, $user_name );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public function createWordPressConnector( ConnectorContainer $parent, $name, $url,
-        ContentType $ct, $page_config )
+        ContentType $ct, $page_config ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1140,8 +1667,15 @@ class Cascade
             $asset, WordPressConnector::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public function createWorkflowDefinition( 
-        WorkflowDefinitionContainer $parent, $name, $naming_behavior, $xml )
+        WorkflowDefinitionContainer $parent, $name, $naming_behavior, $xml ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1167,7 +1701,14 @@ class Cascade
             $asset, WorkflowDefinition::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createWorkflowDefinitionContainer( WorkflowDefinitionContainer $parent, $name )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createWorkflowDefinitionContainer( WorkflowDefinitionContainer $parent, $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1183,7 +1724,14 @@ class Cascade
             $asset, WorkflowDefinitionContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createXhtmlBlock( Folder $parent, $name, $xhtml="" )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createXhtmlBlock( Folder $parent, $name, $xhtml="" ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1201,7 +1749,14 @@ class Cascade
             $asset, DataDefinitionBlock::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createXhtmlDataDefinitionBlock( Folder $parent, $name, DataDefinition $d=NULL, $xhtml="" )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createXhtmlDataDefinitionBlock( Folder $parent, $name, DataDefinition $d=NULL, $xhtml="" ) : Asset
     {
         if( $d == NULL )
             return $this->createXhtmlBlock( $parent, $name, $xhtml );
@@ -1209,7 +1764,14 @@ class Cascade
             return $this->createDataDefinitionBlock( $parent, $name, $d );
     }
     
-    public function createXhtmlPage( Folder $parent, $name, $xhtml="", ContentType $ct )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createXhtmlPage( Folder $parent, $name, $xhtml="", ContentType $ct ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1228,7 +1790,14 @@ class Cascade
             $asset, Page::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createXmlBlock( Folder $parent, $name, $xml )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createXmlBlock( Folder $parent, $name, $xml ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1248,7 +1817,14 @@ class Cascade
             $asset, XmlBlock::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
-    public function createXsltFormat( Folder $parent, $name, $xml )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function createXsltFormat( Folder $parent, $name, $xml ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1270,6 +1846,13 @@ class Cascade
     
     /* ================= */
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function deleteAllMessages()
     {
         MessageArrays::initialize( $this->service );
@@ -1277,6 +1860,13 @@ class Cascade
             MessageArrays::$all_message_ids );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function deleteAllMessagesWithoutIssues()
     {
         MessageArrays::initialize( $this->service );
@@ -1285,6 +1875,13 @@ class Cascade
                    deleteUnpublishMessagesWithoutIssues();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function deleteAsset( Asset $a )
     {
         $this->service->delete( $this->service->createId( $a->getType(), $a->getId() ) );
@@ -1297,6 +1894,13 @@ class Cascade
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function deleteExpirationMessages()
     {
         MessageArrays::initialize( $this->service );
@@ -1304,6 +1908,13 @@ class Cascade
             MessageArrays::$asset_expiration_message_ids );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function deletePublishMessagesWithoutIssues()
     {
         MessageArrays::initialize( $this->service );
@@ -1311,6 +1922,13 @@ class Cascade
             MessageArrays::$publish_message_ids_without_issues );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function deleteSummaryMessagesNoFailures()
     {
         MessageArrays::initialize( $this->service );
@@ -1318,6 +1936,13 @@ class Cascade
             MessageArrays::$summary_message_ids_no_failures );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function deleteUnpublishMessagesWithoutIssues()
     {
         MessageArrays::initialize( $this->service );
@@ -1325,6 +1950,13 @@ class Cascade
             MessageArrays::$unpublish_message_ids_without_issues );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function deleteWorkflowMessagesIsComplete()
     {
         MessageArrays::initialize( $this->service );
@@ -1332,6 +1964,13 @@ class Cascade
             MessageArrays::$workflow_message_ids_is_complete );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function denyAccess( $type, $id_path, $site_name=NULL, $applied_to_children=false, Asset $a=NULL )
     {
         $ari = $this->getAccessRights( $type, $id_path, $site_name );
@@ -1358,6 +1997,13 @@ class Cascade
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function denyAllAccess( $type, $id_path, $site_name=NULL, $applied_to_children=false )
     {
         if( self::DEBUG ) { u\DebugUtility::out( "Denying all access" ); }
@@ -1367,6 +2013,13 @@ class Cascade
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getAccessRights( $type, $id_path, $site_name=NULL )
     {
         // to make sure the asset exists
@@ -1386,12 +2039,26 @@ class Cascade
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getAllMessages()
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$all_messages;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getAsset( $type, $id_path, $site_name=NULL )
     {
         try
@@ -1404,6 +2071,13 @@ class Cascade
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getAssetByIdString( $id_string )
     {
         $type = $this->service->getType( $id_string );
@@ -1415,17 +2089,38 @@ class Cascade
         return NULL;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getAudits( 
         Asset $a, $type="", \DateTime $start_time=NULL, \DateTime $end_time=NULL )
     {
         return $a->getAudits( $type, $start_time, $end_time );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getBaseFolderAssetTree( $site_name )
     {
         return $this->getFolder( '/', $site_name )->getAssetTree();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getGroups()
     {
         if( $this->groups == NULL )
@@ -1455,6 +2150,13 @@ class Cascade
         return $this->groups;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getGroupsByName( $name="" )
     {
         if( $name == "" )
@@ -1484,6 +2186,13 @@ class Cascade
         return $group_ids;
     }    
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMessage( $id )
     {
         MessageArrays::initialize( $this->service );
@@ -1494,12 +2203,26 @@ class Cascade
         return NULL;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMessageIdObjMap()
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$id_obj_map;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPreference()
     {
         $this->service->readPreferences();
@@ -1508,24 +2231,52 @@ class Cascade
         return $p;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPublishMessages()
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$publish_messages;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPublishMessagesWithIssues()
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$publish_messages_with_issues;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPublishMessagesWithoutIssues()
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$publish_messages_without_issues;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRoleAssetById( $role_id )
     {
         if( $this->roles == NULL )
@@ -1540,6 +2291,13 @@ class Cascade
         return $this->role_id_object_map[ $role_id ];
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRoleAssetByName( $role_name )
     {
         $this->getRoles();
@@ -1551,16 +2309,37 @@ class Cascade
         return $this->role_name_object_map[ $role_name ];
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRoleById( $role_id )
     {
         return $this->getRoleAssetById( $role_id );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRoleByName( $role_name )
     {
         return $this->getRoleAssetByName( $role_name );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRoleIds()
     {
         if( $this->roles == NULL )
@@ -1570,6 +2349,13 @@ class Cascade
         return array_keys( $this->role_id_object_map );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRoleNames()
     {
         if( $this->roles == NULL )
@@ -1579,6 +2365,13 @@ class Cascade
         return array_keys( $this->role_name_object_map );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRoles()
     {
         // sleep for creation of new roles
@@ -1615,11 +2408,25 @@ class Cascade
         return $this->roles;
     }    
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getService()
     {
         return $this->service;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSite( $site_name )
     {
         $this->getSites();
@@ -1636,6 +2443,13 @@ class Cascade
             $this->name_site_map[ $site_name ]->getId() );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSites()
     {
         if( $this->sites == NULL )
@@ -1662,42 +2476,91 @@ class Cascade
         return $this->sites;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSummaryMessages()
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$summary_messages;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSummaryMessagesNoFailures()
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$summary_messages_no_failures;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSummaryMessagesWithFailures()
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$summary_messages_with_failures;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getUnpublishMessages()
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$unpublish_messages;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getUnpublishMessagesWithIssues()
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$unpublish_messages_with_issues;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getUnpublishMessagesWithoutIssues()
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$unpublish_messages_without_issues;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getUsers()
     {
         $user_name_array = array();
@@ -1765,6 +2628,13 @@ class Cascade
         return array_merge( $this->users, $extra_users );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getUsersByName( $name )
     {
         if( $name == "" )
@@ -1794,24 +2664,52 @@ class Cascade
         return $user_ids;
     }    
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getWorkflowMessages()
     {
         MessageArrays::initialize( $this->service );
         return $workflow_messages;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getWorkflowMessagesIsComplete()
     {
         MessageArrays::initialize( $this->service );
         return $workflow_messages_complete;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getWorkflowMessagesOther()
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$workflow_messages_other;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function grantAccess( $type, $id_path, $site_name=NULL, $applied_to_children=false, 
         Asset $a=NULL, $level=c\T::READ )
     {
@@ -1862,6 +2760,13 @@ class Cascade
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasGroup( $group_name )
     {
         try
@@ -1876,6 +2781,13 @@ class Cascade
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasRoleId( $role_id )
     {
         if( $this->roles == NULL )
@@ -1885,6 +2797,13 @@ class Cascade
         return in_array( $role_id, array_keys( $this->role_id_object_map ) );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasRoleName( $role_name )
     {
         if( $this->roles == NULL )
@@ -1894,6 +2813,13 @@ class Cascade
         return in_array( $role_name, array_keys( $this->role_name_object_map ) );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function moveAsset( Asset $a, Container $new_parent )
     {
         if( $a == NULL || $new_parent == NULL )
@@ -1922,6 +2848,13 @@ class Cascade
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function renameAsset( Asset $a, $new_name, $doWorkflow=false )
     {
         if( $a == NULL )
@@ -1950,11 +2883,25 @@ class Cascade
         return $this;
     }   
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function searchForAll( $asset_name, $asset_content, $asset_metadata, $search_type )
     {
         return $this->search(c\T::MATCH_ALL, $asset_name, $asset_content, $asset_metadata, $search_type );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function searchForAssetContent( $asset_content, $search_type )
     {
         if( trim( $asset_content ) == "" )
@@ -1965,6 +2912,13 @@ class Cascade
         return $this->search(c\T::MATCH_ANY, "", $asset_content, "", $search_type );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function searchForAssetName( $asset_name, $search_type )
     {
         if( trim( $asset_name ) == "" )
@@ -1975,6 +2929,13 @@ class Cascade
         return $this->search(c\T::MATCH_ANY, $asset_name, "", "", $search_type );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function searchForAssetMetadata( $asset_metadata, $search_type )
     {
         if( trim( $asset_metadata ) == "" )
@@ -1985,6 +2946,13 @@ class Cascade
         return $this->search(c\T::MATCH_ANY, "", "", $asset_metadata, $search_type );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setAccessRights( p\AccessRightsInformation $ari, $apply_to_children=false )
     {
         if( !c\BooleanValues::isBoolean( $apply_to_children ) )
@@ -2000,6 +2968,13 @@ class Cascade
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setAllLevel( $type, $id_path, $site_name=NULL, $level=C\T::NONE, $applied_to_children=false )
     {
         $ari = $this->getAccessRights( $type, $id_path, $site_name );
@@ -2008,6 +2983,13 @@ class Cascade
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPreference( $name, $value )
     {
         if( !isset( $this->preference ) )

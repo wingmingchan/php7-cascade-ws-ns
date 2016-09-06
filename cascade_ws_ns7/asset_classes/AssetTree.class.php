@@ -19,11 +19,26 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class AssetTree
 {
     const DEBUG      = false;
     const NAME_SPACE = "cascade_ws_asset";
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( Container $container )
     {
         if( $container == NULL )
@@ -59,11 +74,25 @@ class AssetTree
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasChildren() : bool
     {
         return $this->has_children;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function toListString() : string
     {
         $list_string = S_UL . S_LI;
@@ -98,6 +127,13 @@ class AssetTree
         return $list_string;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function toXml( string $indent="" ) : string
     {
         $xml_string = $indent . "<" . $this->root->getType() . " path=\"" .
@@ -124,6 +160,13 @@ class AssetTree
         return $xml_string;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function traverse( $function_array, $params=NULL, &$results=NULL ) : AssetTree
     {
         $service = $this->root->getService();

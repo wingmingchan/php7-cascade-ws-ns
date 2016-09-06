@@ -15,16 +15,38 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class IndexBlock extends Block
 {
     const DEBUG = false;
     const TYPE  = c\T::INDEXBLOCK;
  
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getAppendCallingPageData()
     {
         return $this->getProperty()->appendCallingPageData;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getContentType()
     {
         if( $this->isContent() && $this->getIndexedContentTypeId() != NULL )
@@ -36,11 +58,25 @@ class IndexBlock extends Block
         return NULL;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDepthOfIndex()
     {
         return $this->getProperty()->depthOfIndex;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFolder()
     {
         if( $this->isFolder() && $this->getIndexedFolderId() != NULL )
@@ -53,122 +89,290 @@ class IndexBlock extends Block
         return NULL;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIndexAccessRights()
     {
         return $this->getProperty()->indexAccessRights;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIndexBlocks()
     {
         return $this->getProperty()->indexBlocks;
     }
     
     // no setter
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIndexBlockType()
     {
         return $this->getProperty()->indexBlockType;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIndexedContentTypeId()
     {
         return $this->getProperty()->indexedContentTypeId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIndexedContentTypePath()
     {
         return $this->getProperty()->indexedContentTypePath;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIndexedFolderId()
     {
         return $this->getProperty()->indexedFolderId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIndexedFolderPath()
     {
         return $this->getProperty()->indexedFolderPath;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIndexedFolderRecycled()
     {
         return $this->getProperty()->indexedFolderRecycled;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIndexFiles()
     {
         return $this->getProperty()->indexFiles;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIndexLinks()
     {
         return $this->getProperty()->indexLinks;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIndexPages()
     {
         return $this->getProperty()->indexPages;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIndexRegularContent()
     {
         return $this->getProperty()->indexRegularContent;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIndexSystemMetadata()
     {
         return $this->getProperty()->indexSystemMetadata;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIndexUserInfo()
     {
         return $this->getProperty()->indexUserInfo;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIndexUserMetadata()
     {
         return $this->getProperty()->indexUserMetadata;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIndexWorkflowInfo()
     {
         return $this->getProperty()->indexWorkflowInfo;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getMaxRenderedAssets()
     {
         return $this->getProperty()->maxRenderedAssets;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageXML()
     {
         return $this->getProperty()->pageXML;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getRenderingBehavior()
     {
         return $this->getProperty()->renderingBehavior;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSortMethod()
     {
         return $this->getProperty()->sortMethod;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSortOrder()
     {
         return $this->getProperty()->sortOrder;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function isContent()
     {
         return $this->getProperty()->indexBlockType == c\T::CONTENTTYPEINDEX;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function isFolder()
     {
         return $this->getProperty()->indexBlockType == c\T::FOLDER;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setAppendCallingPageData( $b )
     {
         $this->checkBoolean( $b );
@@ -177,6 +381,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setContentType( ContentType $content_type )
     {
         if( $this->getIndexBlockType() != c\T::CONTENTTYPEINDEX )
@@ -190,6 +401,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDepthOfIndex( $num )
     {
         if( intval( $num ) < 1 )
@@ -208,6 +426,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setFolder( Folder $folder )
     {
         if( $this->getIndexBlockType() != Folder::TYPE )
@@ -221,6 +446,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setIndexAccessRights( $b )
     {
         $this->checkBoolean( $b );
@@ -228,6 +460,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setIndexBlocks( $b )
     {
         $this->checkBoolean( $b );
@@ -235,6 +474,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setIndexFiles( $b )
     {
         $this->checkBoolean( $b );
@@ -242,6 +488,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setIndexedFolderRecycled( $b )
     {
         $this->checkBoolean( $b );
@@ -249,6 +502,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setIndexLinks( $b )
     {
         $this->checkBoolean( $b );
@@ -256,6 +516,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setIndexPages( $b )
     {
         $this->checkBoolean( $b );
@@ -263,6 +530,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setIndexRegularContent( $b )
     {
         $this->checkBoolean( $b );
@@ -270,6 +544,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setIndexSystemMetadata( $b )
     {
         $this->checkBoolean( $b );
@@ -277,6 +558,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setIndexUserInfo( $b )
     {
         $this->checkBoolean( $b );
@@ -284,6 +572,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setIndexUserMetadata( $b )
     {
         $this->checkBoolean( $b );
@@ -291,6 +586,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setIndexWorkflowInfo( $b )
     {
         $this->checkBoolean( $b );
@@ -298,6 +600,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setMaxRenderedAssets( $num )
     {
         if( intval( $num ) < 0 )
@@ -310,6 +619,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPageXML( $page_xml )
     {
         if( $page_xml != c\T::NORENDER &&
@@ -325,6 +641,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setRenderingBehavior( $behavior )
     {
         if( $behavior != c\T::RENDERNORMALLY &&
@@ -341,6 +664,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setSortMethod( $method )
     {
         if( $method != c\T::FOLDERORDER &&
@@ -357,6 +687,13 @@ class IndexBlock extends Block
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setSortOrder( $order )
     {
         if( $order != c\T::ASCENDING &&

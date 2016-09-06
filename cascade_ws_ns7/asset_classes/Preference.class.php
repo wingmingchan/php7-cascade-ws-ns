@@ -14,6 +14,14 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class Preference
 {
     const DEBUG = true;
@@ -156,6 +164,13 @@ class Preference
     const LIST_SIZE_MSG                                  = "List size";
     const UNPUBLISH_BY_DEFAULT_ON_DELETE_MSG             = "Unpublish by default on delete";
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         aohs\AssetOperationHandlerService $service, \stdClass $preference_std )
     {
@@ -182,6 +197,13 @@ class Preference
         //if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $this->names ); }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function display()
     {
         echo "<table  class='preferences' summary='Preferences'>" .
@@ -399,6 +421,13 @@ class Preference
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function dump( $formatted=false )
     {
         if( $formatted ) echo S_H2 . c\L::READ_DUMP . E_H2 . S_PRE;
@@ -408,6 +437,13 @@ class Preference
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getValue( $name )
     {
         if( !in_array( $name, $this->names ) )
@@ -416,11 +452,25 @@ class Preference
         return $this->map[ $name ];
     }
   
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function toStdClass()
     {
         return $this->preference_std;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setValue( $name, $value )
     {
         if( !in_array( $name, $this->names ) )

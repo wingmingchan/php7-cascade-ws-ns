@@ -15,12 +15,27 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class Destination extends ScheduledPublishing
 {
     const DEBUG     = false;
     const TYPE      = c\T::DESTINATION;
     const DELIMITER = ";";
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function addGroup( Group $g )
     {
         if( $g == NULL )
@@ -40,12 +55,26 @@ class Destination extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function disable()
     {
         $this->setEnabled( false );
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function edit(
         p\Workflow $wf=NULL, 
         WorkflowDefinition $wd=NULL, 
@@ -91,52 +120,122 @@ class Destination extends ScheduledPublishing
         return $this->reloadProperty();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function enable()
     {
         $this->setEnabled( true );
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getApplicableGroups()
     {
         return $this->getProperty()->applicableGroups;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getCheckedByDefault()
     {
         return $this->getProperty()->checkedByDefault;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDirectory()
     {
         return $this->getProperty()->directory;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getEnabled()
     {
         return $this->getProperty()->enabled;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPublishASCII()
     {
         return $this->getProperty()->publishASCII;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTransportId()
     {
         return $this->getProperty()->transportId;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTransportPath()
     {
         return $this->getProperty()->transportPath;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getWebUrl()
     {
         return $this->getProperty()->webUrl;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function hasGroup( Group $g )
     {
         if( $g == NULL )
@@ -149,6 +248,13 @@ class Destination extends ScheduledPublishing
         return in_array( $group_name, $group_array );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function removeGroup( Group $g )
     {
         if( $g == NULL )
@@ -172,6 +278,13 @@ class Destination extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setCheckedByDefault( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -182,6 +295,13 @@ class Destination extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setDirectory( $d )
     {
         if( trim( $d ) == "" )
@@ -194,6 +314,13 @@ class Destination extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setEnabled( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -204,6 +331,13 @@ class Destination extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setPublishASCII( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -214,6 +348,13 @@ class Destination extends ScheduledPublishing
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setTransport( Transport $t )
     {
         if( $t == NULL )
@@ -227,6 +368,13 @@ class Destination extends ScheduledPublishing
         return $this;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setWebUrl( $u )
     {
         if( trim( $u ) == "" )

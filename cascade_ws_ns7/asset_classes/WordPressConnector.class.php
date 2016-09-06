@@ -14,6 +14,14 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class WordPressConnector extends Connector
 {
     const DEBUG      = false;
@@ -21,18 +29,39 @@ class WordPressConnector extends Connector
     const CATEGORIES = "Metadata mapping for categories";
     const TAGS       = "Metadata mapping for tags";
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setAuth1( $value )
     {
         $this->getProperty()->auth1 = $value;
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setAuth2( $value )
     {
         $this->getProperty()->auth2 = $value;
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setMetadataMapping( ContentType $ct, $name, $value )
     {
         if( $ct == NULL )
@@ -58,6 +87,13 @@ class WordPressConnector extends Connector
             S_SPAN . "The content does not exist in the connector." . E_SPAN );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function setUrl( $u )
     {
         if( trim( $u ) == "" )
