@@ -1,5 +1,5 @@
 # php7-cascade-ws-ns
-My Cascade web service library, using namespaces, written in PHP 7. Last modified: Sep 6, 2016, 10:35 AM
+My Cascade web service library, using namespaces, written in PHP 7. Last modified: Sep 6, 2016, 3:25 PM
 <p>This version of the library makes use of features in PHP 7. Since I have just started making changes,
 most files are identical to those in the older version. Everything is posted here so that the library 
 constantly remains complete with all new features I am adding, and users can use this version to
@@ -28,6 +28,7 @@ u\ReflectionUtility::showFunctionSignature( "str_replace", true );
 
 <h2>Progress</h2>
 <ul>
+<li>Added methods to a few classes for Cascade 8. Note that these methods won't work due to bugs in Cascade 8.</li>
 <li>Updated Asset, Audit, ContainedAsset, AssetFactory, Container, AssetFactoryContainer and associated test code</li>
 <li>All utility classes have been updated</li>
 
