@@ -195,7 +195,7 @@ class Metadata extends Property
     
     public function isDynamicFieldRequired( string $name ) : bool
     {
-        return isDynamicMetadataFieldRequired( string $name );      
+        return isDynamicMetadataFieldRequired( $name );      
     }
     
     public function isDynamicMetadataFieldRequired( string $name ) : bool
