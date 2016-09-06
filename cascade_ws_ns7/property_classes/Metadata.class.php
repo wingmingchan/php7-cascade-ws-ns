@@ -4,7 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
-  * 9/6/2016 Added all isXReuired methods
+  * 9/6/2016 Added all isXRequired methods.
   * 1/8/2016 Added code to deal with host asset.
   * 5/28/2015 Added namespaces.
   * 9/21/2014 Fixed a bug in toStdClass.
