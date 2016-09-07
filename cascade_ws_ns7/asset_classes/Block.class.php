@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/6/2016 Added expiration folder-related code.
   * 9/16/2015 Fixed a bug in setMetadata.
   * 5/28/2015 Added namespaces.
   * 9/29/2014 Added expiration folder-related methods.
@@ -115,7 +116,7 @@ abstract class Block extends ContainedAsset
 /**
 <documentation><description><p></p></description>
 <example></example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -127,7 +128,7 @@ abstract class Block extends ContainedAsset
 /**
 <documentation><description><p></p></description>
 <example></example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -252,7 +253,7 @@ abstract class Block extends ContainedAsset
 /**
 <documentation><description><p></p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */

@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/6/2016 Added expiration folder-related code.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_asset;
@@ -30,6 +31,30 @@ class Symlink extends Linkable
 /**
 <documentation><description><p></p></description>
 <example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getExpirationFolderId()
+    {
+        return $this->getProperty()->expirationFolderId;
+    }
+    
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getExpirationFolderPath()
+    {
+        return $this->getProperty()->expirationFolderPath;
+    }
+    
+/**
+<documentation><description><p></p></description>
+<example></example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -39,6 +64,18 @@ class Symlink extends Linkable
         return $this->getProperty()->linkURL;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getExpirationFolderPath()
+    {
+        return $this->getProperty()->expirationFolderPath;
+    }
+    
 /**
 <documentation><description><p></p></description>
 <example></example>

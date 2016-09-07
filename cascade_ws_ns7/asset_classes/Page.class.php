@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/6/2016 Added expiration folder-related code.
   * 6/20/2016 Added searchTextByPattern and searchWYSIWYGByPattern.
   * 6/2/2016 Added aliases.
   * 6/1/2016 Added isBlockChooser, isCalendarNode, isCheckboxNode, isDatetimeNode, isDropdownNode,
@@ -569,6 +570,30 @@ class Page extends Linkable
     {
         $this->checkStructuredData();
         return $this->structured_data->getDataDefinition();
+    }
+    
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getExpirationFolderId()
+    {
+        return $this->getProperty()->expirationFolderId;
+    }
+    
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getExpirationFolderPath()
+    {
+        return $this->getProperty()->expirationFolderPath;
     }
     
 /**
@@ -1936,6 +1961,20 @@ class Page extends Linkable
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setExpirationFolder( Folder $f ) : Asset
+    {
+        $this->getProperty()->expirationFolderId   = $f->getId();
+        $this->getProperty()->expirationFolderPath = $f->getPath();
+        return $this;
+    }
+        
 /**
 <documentation><description><p></p></description>
 <example></example>

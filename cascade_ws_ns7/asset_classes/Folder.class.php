@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/6/2016 Added expiration folder-related code.
   * 1/4/2016 Fixed a bug in publish.
   * 10/30/2015 Added unpublish.
   * 9/16/2015 Fixed a bug in setMetadata.

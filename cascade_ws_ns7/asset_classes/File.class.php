@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/6/2016 Added expiration folder-related code.
   * 1/4/2016 Fixed a bug in publish.
   * 10/30/2015 Modified edit to accept workflows, and added unpublish.
   * 5/28/2015 Added namespaces.
@@ -94,6 +95,30 @@ class File extends Linkable
     public function getData()
     {
         return $this->getProperty()->data;
+    }
+    
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getExpirationFolderId()
+    {
+        return $this->getProperty()->expirationFolderId;
+    }
+    
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getExpirationFolderPath()
+    {
+        return $this->getProperty()->expirationFolderPath;
     }
     
 /**
@@ -263,6 +288,20 @@ class File extends Linkable
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setExpirationFolder( Folder $f ) : Asset
+    {
+        $this->getProperty()->expirationFolderId   = $f->getId();
+        $this->getProperty()->expirationFolderPath = $f->getPath();
+        return $this;
+    }
+        
 /**
 <documentation><description><p></p></description>
 <example></example>
