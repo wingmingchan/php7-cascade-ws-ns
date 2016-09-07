@@ -4,7 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
-  * 9/6/2016 Added getDescription.
+  * 9/7/2016 Added getDescription and setDescription.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_asset;
@@ -91,11 +91,11 @@ class AssetFactoryContainer extends Container
 /**
 <documentation><description><p>Returns <code>description</code>.</p></description>
 <example></example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDescription() : string
+    public function getDescription()
     {
         return $this->getProperty()->description;
     }
@@ -156,6 +156,19 @@ class AssetFactoryContainer extends Container
         $group_string = implode( ';', $group_array );
         $this->getProperty()->applicableGroups = $group_string;
 
+        return $this;
+    }
+/**
+<documentation><description><p>Sets <code>description</code>,
+and returns the calling object.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setDescription( string $desc=NULL ) : Asset
+    {
+        $this->getProperty()->description = $desc;
         return $this;
     }
 }

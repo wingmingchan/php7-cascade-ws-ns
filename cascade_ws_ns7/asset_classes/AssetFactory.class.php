@@ -4,7 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
-  * 9/6/2016 Added getDescription.
+  * 9/7/2016 Added getDescription and setDescription.
   * 2/11/2016 Added constants and methods related to plugins.
   * 5/28/2015 Added namespaces.
   * 9/25/2014 Added setWorkflowMode.
@@ -282,11 +282,11 @@ class AssetFactory extends ContainedAsset
 /**
 <documentation><description><p>Returns <code>description</code>.</p></description>
 <example></example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDescription() : string
+    public function getDescription()
     {
         return $this->getProperty()->description;
     }
@@ -629,6 +629,20 @@ and returns the calling object. If the asset passed in is <code>NULL</code>, the
             $this->getProperty()->baseAssetId   = NULL;
             $this->getProperty()->baseAssetPath = NULL;
         }
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Sets <code>description</code>,
+and returns the calling object.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setDescription( string $desc=NULL ) : Asset
+    {
+        $this->getProperty()->description = $desc;
         return $this;
     }
     
