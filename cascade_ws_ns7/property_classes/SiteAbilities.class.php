@@ -27,8 +27,9 @@ class SiteAbilities extends Abilities
             parent::__construct( $a );
         }
         
-        $this->access_connectors   = $a->accessConnectors;
-        $this->access_destinations = $a->accessDestinations;
+        $this->access_connectors       = $a->accessConnectors;
+        $this->access_destinations     = $a->accessDestinations;
+        //$this->access_manage_site_area = $a->accessManageSiteArea;
     }
         
     public function getAccessConnectors()
@@ -40,7 +41,7 @@ class SiteAbilities extends Abilities
     {
         return $this->access_destinations;
     }
-    
+
     public function setAccessConnectors( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
@@ -64,8 +65,9 @@ class SiteAbilities extends Abilities
     public function toStdClass()
     {
         $obj = parent::toStdClass();
-        $obj->accessDestinations = $this->access_destinations;
-        $obj->accessConnectors   = $this->access_connectors;
+        $obj->accessDestinations   = $this->access_destinations;
+        $obj->accessConnectors     = $this->access_connectors;
+        //$obj->accessManageSiteArea = $this->access_manage_site_area;
         
         return $obj;
     }

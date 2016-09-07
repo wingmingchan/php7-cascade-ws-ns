@@ -4,6 +4,8 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/7/2016 Moved accessAdminArea to GlobalAbilities.
+  * 9/6/2016 Added accessManageSiteArea.
   * 12/29/2015 Added the two missing members
   * 5/28/2015 Added namespaces.
   * 8/10/2014 Added getBrokenLinkReportAccess, getBrokenLinkReportMarkFixed, setBrokenLinkReportAccess, and setBrokenLinkReportMarkFixed.
@@ -46,7 +48,6 @@ abstract class Abilities extends Property
     {
         if( isset( $a ) )
         {
-            $this->access_admin_area                            = $a->accessAdminArea;
             $this->access_asset_factories                       = $a->accessAssetFactories;
             $this->access_audits                                = $a->accessAudits;
             $this->access_configuration_sets                    = $a->accessConfigurationSets;
@@ -95,18 +96,8 @@ abstract class Abilities extends Property
             $this->upload_images_from_wysiwyg                   = $a->uploadImagesFromWysiwyg;
             $this->view_publish_queue                           = $a->viewPublishQueue;
             $this->view_versions                                = $a->viewVersions;
+            $this->access_manage_site_area                      = $a->accessManageSiteArea;
         }
-    }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-</documentation>
-*/
-    public function getAccessAdminArea() : bool
-    {
-        return $this->access_admin_area;
     }
     
 /**
@@ -162,6 +153,17 @@ abstract class Abilities extends Property
     public function getAccessDataDefinitions() : bool
     {
         return $this->access_data_definitions;
+    }
+    
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getAccessManageSiteArea() : bool
+    {
+        return $this->access_manage_site_area;
     }
     
 /**
@@ -643,19 +645,6 @@ abstract class Abilities extends Property
 <return-type></return-type>
 </documentation>
 */
-    public function setAccessAdminArea( $bool ) : Property
-    {
-        $this->checkBoolean( $bool );
-        $this->access_admin_area = $bool;
-        return $this;
-    }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-</documentation>
-*/
     public function setAccessAssetFactories( $bool ) : Property
     {
         $this->checkBoolean( $bool );
@@ -715,6 +704,20 @@ abstract class Abilities extends Property
         return $this;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+
+    public function setAccessManageSiteArea( $bool ) : Property
+    {
+        $this->checkBoolean( $bool );
+        $this->access_manage_site_area = $bool;
+        return $this;
+    }
+   
 /**
 <documentation><description><p></p></description>
 <example></example>
@@ -1307,7 +1310,6 @@ abstract class Abilities extends Property
         $obj->bypassAssetFactoryGroupsNewMenu         = $this->bypass_asset_factory_groups_new_menu;
         $obj->bypassDestinationGroupsWhenPublishing   = $this->bypass_destination_groups_when_publishing;
         $obj->bypassWorkflowDefintionGroupsForFolders = $this->bypass_workflow_defintion_groups_for_folders;
-        $obj->accessAdminArea                         = $this->access_admin_area;
         $obj->accessAssetFactories                    = $this->access_asset_factories;
         $obj->accessConfigurationSets                 = $this->access_configuration_sets;
         $obj->accessDataDefinitions                   = $this->access_data_definitions;
@@ -1333,6 +1335,7 @@ abstract class Abilities extends Property
         $obj->sendStaleAssetNotifications             = $this->send_stale_asset_notifications;
         $obj->brokenLinkReportAccess                  = $this->broken_link_report_access;
         $obj->brokenLinkReportMarkFixed               = $this->broken_link_report_mark_fixed;
+        $obj->accessManageSiteArea                    = $this->access_manage_site_area;
         
         return $obj;
     }
@@ -1394,5 +1397,6 @@ abstract class Abilities extends Property
     private $send_stale_asset_notifications;
     private $broken_link_report_access;
     private $broken_link_report_mark_fixed;
+    private $access_manage_site_area;
 }
 ?>
