@@ -67,15 +67,17 @@ class Symlink extends Linkable
 /**
 <documentation><description><p></p></description>
 <example></example>
-<return-type>mixed</return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getExpirationFolderPath()
+    public function setExpirationFolder( Folder $f ) : Asset
     {
-        return $this->getProperty()->expirationFolderPath;
+        $this->getProperty()->expirationFolderId   = $f->getId();
+        $this->getProperty()->expirationFolderPath = $f->getPath();
+        return $this;
     }
-    
+        
 /**
 <documentation><description><p></p></description>
 <example></example>
