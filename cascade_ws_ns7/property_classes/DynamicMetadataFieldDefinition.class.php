@@ -391,7 +391,7 @@ class DynamicMetadataFieldDefinition extends Property
     private $field_type;
     private $required;
     private $visibility;
-    private $possible_values;
-    private $values;
+    private $possible_values; // PossibleValue objects
+    private $values;          // strings
 }
 ?>
