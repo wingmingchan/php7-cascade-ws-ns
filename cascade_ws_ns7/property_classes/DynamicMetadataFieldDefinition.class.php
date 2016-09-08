@@ -4,6 +4,8 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/8/2016 Added getDefaultValue, getDefaultValueString, hasDefaultValue, 
+  * getPossibleValue, getPossibleValues. Fixed a bug.
   * 5/28/2015 Added namespaces.
   * 9/18/2014 Fixed bugs in appendValue and swapValue.
  */
@@ -14,11 +16,47 @@ use cascade_ws_AOHS as aohs;
 use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 
-class DynamicMetadataFieldDefinition extends Property
+/**
+<documentation><description><h2>Introduction</h2>
+<p>A <code>DynamicMetadataFieldDefinition</code> object represents a <code>dynamicMetadataFieldDefinition</code> property found in a <a href="site://cascade-admin-old/projects/web-services/oop/classes/asset-classes/metadata-set"><code>a\MetadataSet</code></a> object. It can contain <a href="/web-services/api/property-classes/possible-value"><code>PossibleValue</code></a> objects.</p>
+<h2>Structure of <code>dynamicMetadataFieldDefinition</code></h2>
+<pre>dynamicMetadataFieldDefinition (stdClass or array of stdClass)
+  name
+  label
+  fieldType
+  required
+  visibility
+  possibleValues
+    possibleValue (NULL, stdClass or array of stdClass)
+</pre>
+<h2>Design Issues</h2>
+<ul>
+<li>If a field is required, then it should be visible or inline, except when it already has a default value.</li>
+<li>If a field is hidden, then it should not be required; a required and hidden field containing no value is meaningless.</li>
+<li>Within a group of <code>PossibleValue</code> objects of the same <code>DynamicMetadataFieldDefintion</code> object, all <code>value</code>s must be non-empty and unique.</li>
+<li>For a single group of radio buttons and a dropdown, only one <code>PossibleValue</code> object can be selected by default.</li>
+<li>A field can have no <code>PossibleValue</code> objects selected by default.</li>
+<li>When appending a value to the set of possible values, if the value already exists, just echo a message without throwing an exception.</li>
+</ul>
+</description>
+<postscript><h2>Note</h2>
+<p>For a <code>dynamicMetadataFieldDefinition</code> property of type <code>text</code>,
+it cannot have possible values. For other types, the property must have at least one possible value (which can be <code>NULL</code>).
+Therefore, all methods related to <code>possibleValue</code> should not be invoked through an <code>DynamicMetadataFieldDefinition</code>
+object of type <code>text</code>.</p>
+<h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/dynamic_metadata_field_definition.php">dynamic_metadata_field_definition.php</a></li></ul></postscript>
+</documentation>
+*/class DynamicMetadataFieldDefinition extends Property
 {
     const DEBUG = false;
     const DUMP  = false;
     
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
     public function __construct( 
         \stdClass $obj=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
@@ -40,7 +78,16 @@ class DynamicMetadataFieldDefinition extends Property
         }
     }
     
-    public function appendValue( $value )
+/**
+<documentation><description><p>Appends the value at the end of the array of <code>possibleValue</code>,
+and returns the calling object.</p></description>
+<example>$dmfd = $ms->getDynamicMetadataFieldDefinition( "languages" );
+$dmfd->appendValue( "Chinese" );
+$ms->edit();</example>
+<return-type>Property</return-type>
+</documentation>
+*/
+    public function appendValue( string $value ) : Property
     {
         // type of text
         if( $this->possible_values == NULL )
@@ -72,21 +119,109 @@ class DynamicMetadataFieldDefinition extends Property
         return $this;
     }
     
-    public function getFieldType()
+/**
+<documentation><description><p>Returns the default value of a field, or <code>NULL</code> if undefined.</p></description>
+<example>if( $dmfd->hasDefaultValue() )
+    u\DebugUtility::dump( $dmfd->getDefaultValue()->toStdClass() );
+</example>
+<return-type>mixed</return-type>
+</documentation>
+*/
+    public function getDefaultValue()
+    {
+    	foreach( $this->possible_values as $ps )
+    	{
+    		if( $ps->isDefaultValue() )
+    			return $ps;
+    	}
+    	
+    	return NULL;
+    }
+    
+/**
+<documentation><description><p>Returns the default value string of a field, or <code>NULL</code> if undefined.</p></description>
+<example>u\DebugUtility::out( $dmfd->getDefaultValueString() );</example>
+<return-type>mixed</return-type>
+</documentation>
+*/
+    public function getDefaultValueString()
+    {
+    	foreach( $this->possible_values as $ps )
+    	{
+    		if( $ps->isDefaultValue() )
+    			return $ps->getValue();
+    	}
+    	
+    	return NULL;
+    }
+    
+/**
+<documentation><description><p>Returns <code>fieldType</code>.</p></description>
+<example>u\DebugUtility::out( $dmfd->getFieldType() );</example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getFieldType() : string
     {
         return $this->field_type;
     }
 
-    public function getLabel()
+/**
+<documentation><description><p>Returns <code>label</code>.</p></description>
+<example>u\DebugUtility::out( $dmfd->getLabel() );</example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getLabel() : string
     {
         return $this->label;
     }
 
-    public function getName()
+/**
+<documentation><description><p>Returns <code>name</code>.</p></description>
+<example>u\DebugUtility::out( $dmfd->getName() );</example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getName() : string
     {
         return $this->name;
     }
+    
+/**
+<documentation><description><p>Returns a <code>PossibleValue</code> object having the value.</p></description>
+<example>$english = $dmfd->getPossibleValue( "English" );</example>
+<return-type>PossibleValue</return-type>
+<exception>NoSuchValueException</exception>
+</documentation>
+*/
+    public function getPossibleValue( string $value ) : PossibleValue
+    {
+    	foreach( $this->possible_values as $possible_value )
+    	{
+    		if( $possible_value->getValue() == $value )
+    			return $possible_value;
+    	}
+    	throw new e\NoSuchValueException( "The value $value does not exist. " );
+    }
 
+/**
+<documentation><description><p>Returns an array of <code>PossibleValue</code> objects.</p></description>
+<example>u\DebugUtility::dump( $dmfd->getPossibleValues() );</example>
+<return-type>mixed</return-type>
+</documentation>
+*/
+    public function getPossibleValues() : array
+    {
+    	return $this->possible_values;
+    }
+
+/**
+<documentation><description><p>Returns the empty string or an array of value strings.</p></description>
+<example>u\DebugUtility::dump( $dmfd->getPossibleValueStrings() );</example>
+<return-type>mixed</return-type>
+</documentation>
+*/
     public function getPossibleValueStrings()
     {
         if( $this->possible_values == NULL )
@@ -98,17 +233,54 @@ class DynamicMetadataFieldDefinition extends Property
         return $this->values;
     }
     
-    public function getRequired()
+/**
+<documentation><description><p>Returns <code>required</code>.</p></description>
+<example>u\DebugUtility::dump( u\StringUtility::boolToString( $dmfd->getRequired() ) );</example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function getRequired() : bool
     {
         return $this->required;
     }
 
-    public function getVisibility()
+/**
+<documentation><description><p>Returns <code>visibility</code>.</p></description>
+<example>u\DebugUtility::dump( $dmfd->getVisibility() );</example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getVisibility() : string
     {
         return $this->visibility;
     }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the field has a default value.</p></description>
+<example>if( $dmfd->hasDefaultValue() )
+    u\DebugUtility::dump( $dmfd->getDefaultValue()->toStdClass() );
+</example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function hasDefaultValue() : bool
+    {
+    	foreach( $this->possible_values as $ps )
+    	{
+    		if( $ps->isDefaultValue() )
+    			return true;
+    	}
+    	
+    	return false;
+    }
 
-    public function hasPossibleValue( $value )
+/**
+<documentation><description><p>Returns a bool, indicating whether the value exists as a possible value.</p></description>
+<example>u\DebugUtility::dump( u\StringUtility::boolToString( $dmfd->hasPossibleValue( "Spanish") ) );</example>
+<return-type>mixed</return-type>
+</documentation>
+*/
+    public function hasPossibleValue( string $value ) : bool
     {
         if( $this->possible_values == NULL )
         {
@@ -118,8 +290,26 @@ class DynamicMetadataFieldDefinition extends Property
 
         return in_array( $value, $this->values );
     }
+
+/**
+<documentation><description><p>An alias of <code>getRequired</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function isRequired() : bool
+    {
+        return $this->required;
+    }
     
-    public function removeValue( $value )
+/**
+<documentation><description><p>Removes the <code>PossibleValue</code> object having that value, and returns the calling object.</p></description>
+<example>$dmfd->removeValue( "Chinese" );
+$ms->edit();</example>
+<return-type>Property</return-type>
+</documentation>
+*/
+    public function removeValue( string $value ) : Property
     {
         // type of text
         if( $this->possible_values == NULL )
@@ -165,7 +355,14 @@ class DynamicMetadataFieldDefinition extends Property
         return $this;
     }
     
-    public function setLabel( $label )
+/**
+<documentation><description><p>Sets <code>label</code> and returns the calling object.</p></description>
+<example>$dmfd->setLabel( "Different Languages" );
+$ms->edit();</example>
+<return-type>Property</return-type>
+</documentation>
+*/
+    public function setLabel( string $label ) : Property
     {
         $label = trim( $label );
         
@@ -177,7 +374,14 @@ class DynamicMetadataFieldDefinition extends Property
         return $this;
     }
     
-    public function setRequired( $required )
+/**
+<documentation><description><p>Sets <code>required</code> and returns the calling object.</p></description>
+<example>$dmfd->setRequired( true );
+$ms->edit()->dump();</example>
+<return-type>Property</return-type>
+</documentation>
+*/
+    public function setRequired( $required ) : Property
     {
         if( !c\BooleanValues::isBoolean( $required ) )
             throw new e\UnacceptableValueException(
@@ -191,7 +395,16 @@ class DynamicMetadataFieldDefinition extends Property
         return $this;
     }
     
-    public function setSelectedByDefault( $value )
+/**
+<documentation><description><p>Sets the <code>selectedByDefault</code> of the <code>possibleValue</code> having
+this value to <code>true</code>, and if the field is of type <code>radio</code> or <code>dropdown</code>,
+sets <code>selectedByDefault</code> of all other <code>possibleValue</code>s to false, and returns the object.</p></description>
+<example>$dmfd->setSelectedByDefault( "Male" );
+$ms->edit();</example>
+<return-type>Property</return-type>
+</documentation>
+*/
+    public function setSelectedByDefault( $value ) : Property
     {
         if( !in_array( $value, $this->values ) )
             throw new e\NoSuchValueException(
@@ -204,17 +417,26 @@ class DynamicMetadataFieldDefinition extends Property
             {
                 $item->setSelectedByDefault( true );
             }
+            
             // radio and dropdown
-            else if( $this->field_type == c\T::RADIO || $this->field_type == c\T::DROPDOWN )
+            if( $this->field_type == c\T::RADIO || $this->field_type == c\T::DROPDOWN )
             {
-                $item->setSelectedByDefault( false );
+            	if( $item->getValue() != $value )
+                	$item->setSelectedByDefault( false );
             }
         }
         
         return $this;
     }
     
-    public function setVisibility( $visibility )
+/**
+<documentation><description><p>Sets <code>visibility</code> and returns the calling object.</p></description>
+<example>$dmfd->setVisibility( c\T::VISIBLE );
+$ms->edit();</example>
+<return-type>Property</return-type>
+</documentation>
+*/
+    public function setVisibility( $visibility ) : Property
     {
         if( !c\VisibilityValues::isVisibility( $visibility ) )
             throw new e\UnacceptableValueException(
@@ -229,9 +451,18 @@ class DynamicMetadataFieldDefinition extends Property
         {
             $this->visibility = $visibility;
         }
+        return $this;
     }
     
-    public function swapValues( $value1, $value2 )
+/**
+<documentation><description><p>Swaps the two <code>PossibleValue</code> objects and returns the object.
+This method can be used to change the order of the items.</p></description>
+<example>$dmfd->swapValues( "Chinese", "Japanese" );
+$ms->edit();</example>
+<return-type>Property</return-type>
+</documentation>
+*/
+    public function swapValues( string $value1, string $value2 ) : Property
     {
         // type of text
         if( $this->possible_values == NULL )
@@ -281,7 +512,13 @@ class DynamicMetadataFieldDefinition extends Property
         return $this;
     }
     
-    public function toStdClass()
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example>u\DebugUtility::dump( $dmfd->toStdClass() );</example>
+<return-type>stdClass</return-type>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj                                = new \stdClass();
         $obj->name                          = $this->name;
@@ -345,7 +582,15 @@ class DynamicMetadataFieldDefinition extends Property
         return $obj;
     }
     
-    public function unsetSelectedByDefault( $value )
+/**
+<documentation><description><p>Sets the <code>selectedByDefault</code> of the <code>possibleValue</code>
+having this value to <code>false</code> and returns the object.</p></description>
+<example>$dmfd->unsetSelectedByDefault( "Japanese" );
+$ms->edit();</example>
+<return-type>Property</return-type>
+</documentation>
+*/
+    public function unsetSelectedByDefault( $value ) : Property
     {
         if( !$this->hasPossibleValue( $value ) )
             throw new e\NoSuchValueException(

@@ -26,7 +26,8 @@ use cascade_ws_exception as e;
  
 /**
 <documentation><description><h2>Introduction</h2>
-<p>This class implements a cache for storing Asset objects.</p>
+
+
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
 </documentation>
