@@ -54,6 +54,11 @@ class PossibleValue extends Property
         return $this->value;
     }
     
+    public function isDefaultValue() : bool
+    {
+    	return $this->selected_by_default;
+    }
+    
     public function setSelectedByDefault( $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
