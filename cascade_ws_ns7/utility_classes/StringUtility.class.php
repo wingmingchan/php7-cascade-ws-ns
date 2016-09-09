@@ -72,7 +72,7 @@ then the string is returned. If <code>NULL</code> is passed in, then the string 
 <exception></exception>
 </documentation>
 */
-    public static function getCoalescedString( $str_null ) : string
+    public static function getCoalescedString( string $str_null=NULL ) : string
     {
         return $str_null ?? 'NULL';
     }
