@@ -60,10 +60,10 @@ the method call is from line 15 of the test program named <code>debug-utility.ph
 <exception></exception>
 </documentation>
 */
-    public static function out( string $msg )
+    public static function out( string $msg=NULL )
     {
         self::getCallingInfo( $class, $line );
-        echo $class . "::" . $line . ": " . $msg . BR;
+        echo $class . "::" . $line . ": " . StringUtility::getCoalescedString( $msg ) . BR;
     }
 
     private static function getCallingInfo( &$class, &$line ) 
