@@ -4,7 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
-  * 9/9/2016 Added $wired_fields.
+  * 9/9/2016 Added $wired_fields. Added default values to getMetadata.
   * 9/6/2016 Added isDynamicMetadataFieldRequired.
   * 12/29/2015 Added expirationFolderFieldRequired and expirationFolderFieldVisibility for 8.
   * 9/14/2015 Added getMetaData.
@@ -64,12 +64,12 @@ use cascade_ws_property as p;
       required
       visibility
       possibleValues
-      possibleValue (NULL, stdClass or array of stdClass)
-        value
-        selectedByDefault
+        possibleValue (NULL, stdClass or array of stdClass)
+          value
+          selectedByDefault
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/metadata_set.php">metadata_set.php</a></li></ul></postscript>
 </documentation>
 */
 class MetadataSet extends ContainedAsset
@@ -90,12 +90,12 @@ class MetadataSet extends ContainedAsset
     const TITLE       = "title";
     
     public static $wired_fields = array(
-		"author", "description", "displayName", "endDate", "expirationFolder",
-		"keywords", "reviewDate", "startDate", "summary", "teaser", "title", 
+        "author", "description", "displayName", "endDate", "expirationFolder",
+        "keywords", "reviewDate", "startDate", "summary", "teaser", "title", 
     );
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>The constructor, overriding the parent method to process dynamic metadata field definition.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -115,14 +115,24 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Adds a dynamic metadata set field definition , calls <code>edit</code>, and returns the calling object.
+The <code>$possible_values</code> should be a string containing values, with semi-colons as delimiters.</p></description>
+<example>$ms->
+    addField( 
+        'text',             // field name
+        c\T::TEXT,          // type
+        'Text',             // label
+        false,              // required
+        c\T::INLINE,        // visibility
+        ""                  // possible value
+    );
+</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException, Exception</exception>
 </documentation>
 */
-    public function addDynamicFieldDefinition( $field_name, $type, $label, 
-        $required=false, $visibility=c\T::VISIBLE, $possible_values="" )
+    public function addDynamicFieldDefinition( string $field_name, string $type, string $label, 
+        bool $required=false, string $visibility=c\T::VISIBLE, string $possible_values="" ) : Asset
     {
         if( $this->hasDynamicMetadataFieldDefinition( $field_name ) )
         {
@@ -188,14 +198,14 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>An alias of <code>addDynamicFieldDefinition</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
     public function addField( $field_name, $type, $label, 
-        $required=false, $visibility=c\T::VISIBLE, $possible_values="" )
+        $required=false, $visibility=c\T::VISIBLE, $possible_values="" ) : Asset
     {
         return $this->addDynamicFieldDefinition( $field_name, $type, $label, $required, $visibility, $possible_values );
     }
@@ -204,13 +214,14 @@ class MetadataSet extends ContainedAsset
      * Appends a value/item to the end of a field.
      */
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Adds a value to the <code>dynamicMetadataFieldDefinition</code> bearing that name, calls <code>edit</code>,
+and returns the calling object.</p></description>
+<example>$ms->appendValue( $name, "No" );</example>
 <return-type></return-type>
-<exception></exception>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function appendValue( $name, $value )
+    public function appendValue( $name, $value ) : Asset
     {
         $value = trim( $value );
         
@@ -227,10 +238,10 @@ class MetadataSet extends ContainedAsset
     }
        
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Edits and returns the calling object.</p></description>
+<example>$ms->edit();</example>
+<return-type>Asset</return-type>
+<exception>EditingFailureException</exception>
 </documentation>
 */
     public function edit(
@@ -270,85 +281,85 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>authorFieldRequired</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $ms->getAuthorFieldRequired() ) . BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getAuthorFieldRequired()
+    public function getAuthorFieldRequired() : bool
     {
         return $this->getProperty()->authorFieldRequired;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>authorFieldVisibility</code>.</p></description>
+<example>echo $ms->getAuthorFieldVisibility() . BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getAuthorFieldVisibility()
+    public function getAuthorFieldVisibility() : string
     {
         return $this->getProperty()->authorFieldVisibility;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>descriptionFieldRequired</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $ms->getDescriptionFieldRequired() ) . BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDescriptionFieldRequired()
+    public function getDescriptionFieldRequired() : bool
     {
         return $this->getProperty()->descriptionFieldRequired;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>descriptionFieldVisibility</code>.</p></description>
+<example>echo $ms->getDescriptionFieldVisibility() . BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDescriptionFieldVisibility()
+    public function getDescriptionFieldVisibility() : string
     {
         return $this->getProperty()->descriptionFieldVisibility;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>displayNameFieldRequired</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $ms->getDisplayNameFieldRequired() ) . BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDisplayNameFieldRequired()
+    public function getDisplayNameFieldRequired() : bool
     {
         return $this->getProperty()->displayNameFieldRequired;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>displayNameFieldVisibility</code>.</p></description>
+<example>echo $ms->getDisplayNameFieldVisibility() . BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDisplayNameFieldVisibility()
+    public function getDisplayNameFieldVisibility() : string
     {
         return $this->getProperty()->displayNameFieldVisibility;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns the <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-metadata-field-definition.php"><code>DynamicMetadataFieldDefinition</code></a> object bearing that name.</p></description>
+<example>$dmd = $ms->getDynamicMetadataFieldDefinition( $name );</example>
+<return-type>DynamicMetadataFieldDefinition</return-type>
 <exception>NoSuchMetadataFieldDefinitionException</exception>
 </documentation>
 */
-    public function getDynamicMetadataFieldDefinition( $name )
+    public function getDynamicMetadataFieldDefinition( string $name ) : p\DynamicMetadataFieldDefinition
     {
         if( !$this->hasDynamicMetadataFieldDefinition( $name ) )
             throw new e\NoSuchMetadataFieldDefinitionException( 
@@ -362,21 +373,21 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns an array of names of the dynamic fields.</p></description>
+<example>u\DebugUtility::dump( $ms->getDynamicMetadataFieldDefinitionNames() );</example>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDynamicMetadataFieldDefinitionNames()
+    public function getDynamicMetadataFieldDefinitionNames() : array
     {
         return $this->field_names;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns the <code>dynamicMetadataFieldDefinitions</code> property.</p></description>
+<example>u\DebugUtility::dump( $ms->getDynamicMetadataFieldDefinitionsStdClass() );</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -386,10 +397,11 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Returns an array of strings, each of which is a possible value (i.e., an item) of the field bearing the name.
+If the field is a text field, this method returns an empty string.</p></description>
+<example>u\DebugUtility::dump( $ms->getDynamicMetadataFieldPossibleValueStrings( "dropdown" ) );</example>
+<return-type>mixed</return-type>
+<exception>NoSuchMetadataFieldDefinitionException</exception>
 </documentation>
 */
     public function getDynamicMetadataFieldPossibleValueStrings( $name )
@@ -406,85 +418,86 @@ class MetadataSet extends ContainedAsset
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>endDateFieldRequired</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $ms->getEndDateFieldRequired() ) . BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getEndDateFieldRequired()
+    public function getEndDateFieldRequired() : bool
     {
         return $this->getProperty()->endDateFieldRequired;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>endDateFieldVisibility</code>.</p></description>
+<example>echo $ms->getEndDateFieldVisibility() . BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getEndDateFieldVisibility()
+    public function getEndDateFieldVisibility() : string
     {
         return $this->getProperty()->endDateFieldVisibility;
     }
 /*    
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>expirationFolderFieldRequired</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $ms->getExpirationFolderFieldRequired() ) . BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getExpirationFolderFieldRequired()
+    public function getExpirationFolderFieldRequired() : bool
     {
         return $this->getProperty()->expirationFolderFieldRequired;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>expirationFolderFieldVisibility</code>.</p></description>
+<example>echo $ms->getExpirationFolderFieldVisibility() . BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getExpirationFolderFieldVisibility()
+    public function getExpirationFolderFieldVisibility() : string
     {
         return $this->getProperty()->expirationFolderFieldVisibility;
     }
    
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>keywordsFieldRequired</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $ms->getKeywordsFieldRequired() ) . BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getKeywordsFieldRequired()
+    public function getKeywordsFieldRequired() : bool
     {
         return $this->getProperty()->keywordsFieldRequired;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>keywordsFieldVisibility</code>.</p></description>
+<example>echo $ms->getKeywordsFieldVisibility() . BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getKeywordsFieldVisibility()
+    public function getKeywordsFieldVisibility() : string
     {
         return $this->getProperty()->keywordsFieldVisibility;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns a blank <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/metadata.php"><code>Metadata</code></a> object.
+Note that the object is populated with default values in dynamic fields.</p></description>
+<example>u\DebugUtility::dump( $ms->getMetadata()->toStdClass() );</example>
+<return-type>Property</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMetaData()
+    public function getMetadata() : p\Property
     {
         $m = AssetTemplate::getMetadata();
         
@@ -507,18 +520,36 @@ class MetadataSet extends ContainedAsset
             $m->dynamicFields->dynamicField = $a;
         }
         
-        return new p\Metadata( $m, $this->getService(), $this->getId() );
+        $metadata = new p\Metadata( $m, $this->getService(), $this->getId() );
+        
+        // default values
+        if( $this->hasDynamicMetadataFieldDefinitions() )
+        {
+            $df_names = $this->getDynamicMetadataFieldDefinitionNames();
+            
+            foreach( $df_names as $df_name )
+            {
+                $df = $this->getDynamicMetadataFieldDefinition( $df_name );
+                
+                if( $df->hasDefaultValue() )
+                {
+                    $metadata->setDynamicFieldValue( $df_name, $df->getDefaultValueString() );
+                }
+            }
+        }
+        
+        return $metadata;
     }
     
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of names of wired fields that are not hidden, used by the <code>WordPressConnector</code> class.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getNonHiddenWiredFieldNames()  // used by WordPressConnector
+    public function getNonHiddenWiredFieldNames() : array  // used by WordPressConnector
     {
         $fields = array();
         
@@ -541,128 +572,131 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>reviewDateFieldRequired</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $ms->getReviewDateFieldRequired() ) . BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getReviewDateFieldRequired()
+    public function getReviewDateFieldRequired() : bool
     {
         return $this->getProperty()->reviewDateFieldRequired;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>reviewDateFieldVisibility</code>.</p></description>
+<example>echo $ms->getReviewDateFieldVisibility() . BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getReviewDateFieldVisibility()
+    public function getReviewDateFieldVisibility() : string
     {
         return $this->getProperty()->reviewDateFieldVisibility;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>startDateFieldRequired</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $ms->getStartDateFieldRequired() ) . BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getStartDateFieldRequired()
+    public function getStartDateFieldRequired() : bool
     {
         return $this->getProperty()->startDateFieldRequired;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>startDateFieldVisibility</code>.</p></description>
+<example>echo $ms->getStartDateFieldVisibility() . BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getStartDateFieldVisibility()
+    public function getStartDateFieldVisibility() : string
     {
         return $this->getProperty()->startDateFieldVisibility;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>summaryFieldRequired</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $ms->getSummaryFieldRequired() ) . BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSummaryFieldRequired()
+    public function getSummaryFieldRequired() : bool
     {
         return $this->getProperty()->summaryFieldRequired;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>summaryFieldVisibility</code>.</p></description>
+<example>echo $ms->getSummaryFieldVisibility() . BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSummaryFieldVisibility()
+    public function getSummaryFieldVisibility() : string
     {
         return $this->getProperty()->summaryFieldVisibility;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>teaserFieldRequired</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $ms->getTeaserFieldRequired() ) . BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getTeaserFieldRequired()
+    public function getTeaserFieldRequired() : bool
     {
         return $this->getProperty()->teaserFieldRequired;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>teaserFieldVisibility</code>.</p></description>
+<example>echo $ms->getTeaserFieldVisibility() . BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getTeaserFieldVisibility()
+    public function getTeaserFieldVisibility() : string
     {
         return $this->getProperty()->teaserFieldVisibility;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>titleFieldRequired</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $ms->getTitleFieldRequired() ) . BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getTitleFieldRequired()
+    public function getTitleFieldRequired() : bool
     {
         return $this->getProperty()->titleFieldRequired;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>titleFieldVisibility</code>.</p></description>
+<example>echo $ms->getTitleFieldVisibility() . BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getTitleFieldVisibility()
+    public function getTitleFieldVisibility() : string
     {
         return $this->getProperty()->titleFieldVisibility;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Returns a bool, indicating whether the <code>dynamicMetadataFieldDefinition</code> bearing that name exists.</p></description>
+<example>if( $ms->hasDynamicMetadataFieldDefinition( $name ) )
+{
+    echo "Definition found" . BR;
+}</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -677,8 +711,12 @@ class MetadataSet extends ContainedAsset
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Returns a bool, indicating whether the metadata set has one or more dynamic metadata field definitions.</p></description>
+<example>if( $ms->hasDynamicMetadataFieldDefinitions() )
+{
+    // do something
+}
+</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -689,26 +727,29 @@ class MetadataSet extends ContainedAsset
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Returns a bool, indicating whether the named dynamic metadata field requires a value.</p></description>
+<example>if( $ms->isDynamicMetadataFieldRequired( "text" ) )
+{
+    echo "The text field requires a value.", BR;
+}</example>
 <return-type>bool</return-type>
 <exception>NoSuchMetadataFieldDefinitionException</exception>
 </documentation>
 */
-	public function isDynamicMetadataFieldRequired( string $name ) : bool
-	{
-		$dfd = $this->getDynamicMetadataFieldDefinition( $name );
-		return $dfd->getRequired();
-	}
+    public function isDynamicMetadataFieldRequired( string $name ) : bool
+    {
+        $dfd = $this->getDynamicMetadataFieldDefinition( $name );
+        return $dfd->getRequired();
+    }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Removes the field definition bearing that name, calls <code>edit</code>, and returns the calling object.</p></description>
+<example>$ms->removeDynamicMetadataFieldDefinition( $field );</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function removeDynamicMetadataFieldDefinition( $name )
+    public function removeDynamicMetadataFieldDefinition( $name ) : Asset
     {
         if( !in_array( $name, $this->field_names ) )
         {
@@ -744,13 +785,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Removes the value (i.e., item) from the named field definition, calls <code>edit</code>, and returns the calling object.</p></description>
+<example>$ms->removeValue( $name, "Maybe" );</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function removeValue( $name, $value )
+    public function removeValue( string $name, string $value ) : Asset
     {
         $value = trim( $value );
         
@@ -767,13 +808,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>authorFieldRequired</code> and returns the calling object.</p></description>
+<example>$ms->setAuthorFieldRequired( false )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setAuthorFieldRequired( $author_field_required=false )
+    public function setAuthorFieldRequired( bool $author_field_required=false ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $author_field_required ) )
             throw new e\UnacceptableValueException( 
@@ -784,13 +825,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>sets <code>authorFieldVisibility</code> and returns the calling object.</p></description>
+<example>$ms->setAuthorFieldVisibility( a\MetadataSet::INLINE )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setAuthorFieldVisibility( $author_field_visibility=self::HIDDEN )
+    public function setAuthorFieldVisibility( string $author_field_visibility=self::HIDDEN ) : Asset
     {
         if( !c\VisibilityValues::isVisibility( $author_field_visibility ) )
             throw new e\UnacceptableValueException( 
@@ -801,13 +842,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>descriptionFieldVisibility</code> and returns the calling object.</p></description>
+<example>$ms->setDescriptionFieldRequired( false )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setDescriptionFieldRequired( $description_field_required=false )
+    public function setDescriptionFieldRequired( bool $description_field_required=false ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $description_field_required ) )
             throw new e\UnacceptableValueException( 
@@ -818,13 +859,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>descriptionFieldVisibility</code> and returns the calling object.</p></description>
+<example>$ms->setDescriptionFieldVisibility( a\MetadataSet::INLINE )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setDescriptionFieldVisibility( $description_field_visibility=self::HIDDEN )
+    public function setDescriptionFieldVisibility( string $description_field_visibility=self::HIDDEN ) : Asset
     {
         if( !c\VisibilityValues::isVisibility( $description_field_visibility ) )
             throw new e\UnacceptableValueException( 
@@ -835,13 +876,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>displayNameFieldRequired</code> and returns the calling object.</p></description>
+<example>$ms->setDisplayNameFieldRequired( false )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setDisplayNameFieldRequired( $display_name_field_required=false )
+    public function setDisplayNameFieldRequired( bool $display_name_field_required=false ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $display_name_field_required ) )
             throw new e\UnacceptableValueException( 
@@ -852,13 +893,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>displayNameFieldVisibility</code> and returns the calling object.</p></description>
+<example>$ms->setDisplayNameFieldVisibility( a\MetadataSet::INLINE )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setDisplayNameFieldVisibility( $display_name_field_visibility=self::HIDDEN )
+    public function setDisplayNameFieldVisibility( string $display_name_field_visibility=self::HIDDEN ) : Asset
     {
         if( !c\VisibilityValues::isVisibility( $display_name_field_visibility ) )
             throw new e\UnacceptableValueException( 
@@ -869,13 +910,14 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets the <code>dynamicMetadataFieldDefinitions</code> property, calls <code>edit</code>, and returns the calling object.
+This method is used to replace the <code>dynamicMetadataFieldDefinitions</code> property.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setDynamicMetadataFieldDefinitions( \stdClass $dmfd=NULL )
+    public function setDynamicMetadataFieldDefinitions( \stdClass $dmfd=NULL ) : Asset
     {
         if( $dmfd == NULL || !isset( $dmfd->dynamicMetadataFieldDefinition ) )
         {
@@ -906,13 +948,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>endDateFieldRequired</code> and returns the calling object.</p></description>
+<example>$ms->setEndDateFieldRequired( false )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setEndDateFieldRequired( $end_date_field_required=false )
+    public function setEndDateFieldRequired( bool $end_date_field_required=false ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $end_date_field_required ) )
             throw new e\UnacceptableValueException( 
@@ -923,13 +965,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>endDateFieldVisibility</code> and returns the calling object.</p></description>
+<example>$ms->setEndDateFieldVisibility( a\MetadataSet::INLINE )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setEndDateFieldVisibility( $end_date_field_visibility=self::HIDDEN )
+    public function setEndDateFieldVisibility( string $end_date_field_visibility=self::HIDDEN ) : Asset
     {
         if( !c\VisibilityValues::isVisibility( $end_date_field_visibility ) )
             throw new e\UnacceptableValueException( 
@@ -940,13 +982,13 @@ class MetadataSet extends ContainedAsset
     }
 /* commented out because they don't work until 7.14.3
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>expirationFolderFieldRequired</code> and returns the calling object.</p></description>
+<example>$ms->setExpirationFolderFieldRequired( false )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setExpirationFolderFieldRequired( bool $expiration_folder_field_required=false )
+    public function setExpirationFolderFieldRequired( bool $expiration_folder_field_required=false ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $expiration_folder_field_required ) )
             throw new e\UnacceptableValueException( 
@@ -957,13 +999,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>expirationFolderFieldVisibility</code> and returns the calling object.</p></description>
+<example>$ms->setExpirationFolderFieldVisibility( a\MetadataSet::INLINE )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setExpirationFolderFieldVisibility( string $expiration_folder_field_visibility=self::HIDDEN )
+    public function setExpirationFolderFieldVisibility( string $expiration_folder_field_visibility=self::HIDDEN ) : Asset
     {
         if( !c\VisibilityValues::isVisibility( $expiration_folder_field_visibility ) )
             throw new e\UnacceptableValueException( 
@@ -974,13 +1016,13 @@ class MetadataSet extends ContainedAsset
     }
    
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>keywordsFieldRequired</code> and returns the calling object.</p></description>
+<example>$ms->setKeywordsFieldRequired( false )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setKeywordsFieldRequired( $keywords_field_required=false )
+    public function setKeywordsFieldRequired( bool $keywords_field_required=false ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $keywords_field_required ) )
             throw new e\UnacceptableValueException( 
@@ -991,13 +1033,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>keywordsFieldVisibility</code> and returns the calling object.</p></description>
+<example>$ms->setKeywordsFieldVisibility( a\MetadataSet::INLINE )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setKeywordsFieldVisibility( $keywords_field_visibility=self::HIDDEN )
+    public function setKeywordsFieldVisibility( string $keywords_field_visibility=self::HIDDEN ) : Asset
     {
         if( !c\VisibilityValues::isVisibility( $keywords_field_visibility ) )
             throw new e\UnacceptableValueException( 
@@ -1008,13 +1050,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets the <code>label</code> of the <code>dynamicMetadataFieldDefinition</code> bearing that name and returns the calling object.</p></description>
+<example>$ms->setLabel( $name, "Exclude from Left Menu" )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NoSuchMetadataFieldDefinitionException</exception>
 </documentation>
 */
-    public function setLabel( $name, $label )
+    public function setLabel( string $name, string $label ) : Asset
     {
         $label = trim( $label );
         
@@ -1037,13 +1079,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets the <code>required</code> of the <code>dynamicMetadataFieldDefinition</code> bearing that name and returns the calling object.</p></description>
+<example>$ms->setRequired( $name, false )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NoSuchMetadataFieldDefinitionException</exception>
 </documentation>
 */
-    public function setRequired( $name, $required )
+    public function setRequired( string $name, bool $required=false ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $required ) )
             throw new e\UnacceptableValueException( 
@@ -1064,13 +1106,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>reviewDateFieldRequired</code> and returns the calling object.</p></description>
+<example>$ms->setReviewDateFieldRequired( false )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setReviewDateFieldRequired( $review_date_field_required=false )
+    public function setReviewDateFieldRequired( bool $review_date_field_required=false ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $review_date_field_required ) )
             throw new e\UnacceptableValueException( 
@@ -1081,13 +1123,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>reviewDateFieldVisibility</code> and returns the calling object.</p></description>
+<example>$ms->setReviewDateFieldVisibility( a\MetadataSet::INLINE )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setReviewDateFieldVisibility( $review_date_field_visibility=self::HIDDEN )
+    public function setReviewDateFieldVisibility( string $review_date_field_visibility=self::HIDDEN ) : Asset
     {
         if( !c\VisibilityValues::isVisibility( $review_date_field_visibility ) )
             throw new e\UnacceptableValueException( 
@@ -1098,13 +1140,15 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>selectedByDefault</code> of the value (i.e., item) of the named field definition to <code>true</code> and returns the calling object.
+For fields of type <code>radio</code> and <code>dropdown</code>,
+the method also sets the <code>selectedByDefault</code> of all other values of the same field definition to <code>false</code>.</p></description>
+<example>$ms->setSelectedByDefault( $name, "No" )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NoSuchMetadataFieldDefinitionException</exception>
 </documentation>
 */
-    public function setSelectedByDefault( $name, $value )
+    public function setSelectedByDefault( string $name, string $value ) : Asset
     {
         $value = trim( $value );
         
@@ -1131,13 +1175,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>startDateFieldRequired</code> and returns the calling object.</p></description>
+<example>$ms->setStartDateFieldRequired( false )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setStartDateFieldRequired( $start_date_field_required=false )
+    public function setStartDateFieldRequired( bool $start_date_field_required=false ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $start_date_field_required ) )
             throw new e\UnacceptableValueException( 
@@ -1148,13 +1192,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>startDateFieldVisibility</code> and returns the calling object.</p></description>
+<example>$ms->setStartDateFieldVisibility( a\MetadataSet::INLINE )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setStartDateFieldVisibility( $start_date_field_visibility=self::HIDDEN )
+    public function setStartDateFieldVisibility( string $start_date_field_visibility=self::HIDDEN ) : Asset
     {
         if( !c\VisibilityValues::isVisibility( $start_date_field_visibility ) )
             throw new e\UnacceptableValueException( 
@@ -1165,13 +1209,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>summaryFieldRequired</code> and returns the calling object.</p></description>
+<example>$ms->setSummaryFieldRequired( false )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setSummaryFieldRequired( $summary_field_required=false )
+    public function setSummaryFieldRequired( bool $summary_field_required=false ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $summary_field_required ) )
             throw new e\UnacceptableValueException( 
@@ -1182,13 +1226,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>summaryFieldVisibility</code> and returns the calling object.</p></description>
+<example>$ms->setSummaryFieldVisibility( a\MetadataSet::INLINE )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setSummaryFieldVisibility( $summary_field_visibility=self::HIDDEN )
+    public function setSummaryFieldVisibility( string $summary_field_visibility=self::HIDDEN ) : Asset
     {
         if( !c\VisibilityValues::isVisibility( $summary_field_visibility ) )
             throw new e\UnacceptableValueException( 
@@ -1199,13 +1243,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>teaserFieldRequired</code> and returns the calling object.</p></description>
+<example>$ms->setTeaserFieldRequired( false )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setTeaserFieldRequired( $teaser_field_required=false )
+    public function setTeaserFieldRequired( bool $teaser_field_required=false ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $teaser_field_required ) )
             throw new e\UnacceptableValueException( 
@@ -1216,13 +1260,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>teaserFieldVisibility</code> and returns the calling object.</p></description>
+<example>$ms->setTeaserFieldVisibility( a\MetadataSet::INLINE )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setTeaserFieldVisibility( $teaser_field_visibility=self::HIDDEN )
+    public function setTeaserFieldVisibility( string $teaser_field_visibility=self::HIDDEN ) : Asset
     {
         if( !c\VisibilityValues::isVisibility( $teaser_field_visibility ) )
             throw new e\UnacceptableValueException( 
@@ -1233,13 +1277,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>titleFieldRequired</code> and returns the calling object.</p></description>
+<example>$ms->setTitleFieldRequired( false )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setTitleFieldRequired( $title_field_required=false )
+    public function setTitleFieldRequired( bool $title_field_required=false ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $title_field_required ) )
             throw new e\UnacceptableValueException( 
@@ -1250,13 +1294,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>titleFieldVisibility</code> and returns the calling object.</p></description>
+<example>$ms->setTitleFieldVisibility( a\MetadataSet::INLINE )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setTitleFieldVisibility( $title_field_visibility=self::HIDDEN )
+    public function setTitleFieldVisibility( string $title_field_visibility=self::HIDDEN ) : Asset
     {
         if( !c\VisibilityValues::isVisibility( $title_field_visibility ) )
             throw new e\UnacceptableValueException( 
@@ -1267,13 +1311,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>visibility</code> of the <code>dynamicMetadataFieldDefinition</code> bearing that name and returns the calling object.</p></description>
+<example>$ms->setVisibility( $name, c\T::INLINE )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException, NoSuchVisibilityException, NoSuchMetadataFieldDefinitionException</exception>
 </documentation>
 */
-    public function setVisibility( $name, $visibility )
+    public function setVisibility( string $name, string $visibility ) : Asset
     {
         if( !c\VisibilityValues::isVisibility( $visibility ) )
             throw new e\UnacceptableValueException( 
@@ -1302,13 +1346,14 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Swaps the two field definitions, calls <code>edit</code>, and returns the calling object.</p></description>
+<example>$ms->swapDynamicMetadataFieldDefinitions( $field1, $field2 )->
+swapDynamicMetadataFieldDefinitions( $field1, $field3 );</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException, NoSuchFieldException</exception>
 </documentation>
 */
-    public function swapDynamicMetadataFieldDefinitions( $def1, $def2 )
+    public function swapDynamicMetadataFieldDefinitions( string $def1, string $def2 ) : Asset
     {
         if( $def1 == '' || $def2 == '' )
             throw new e\EmptyValueException( 
@@ -1352,25 +1397,26 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>An alias of <code>swapDynamicMetadataFieldDefinitions</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function swapFields( $def1, $def2 )
+    public function swapFields( string $def1, string $def2 ) : Asset
     {
         return $this->swapDynamicMetadataFieldDefinitions( $def1, $def2 );
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Swaps the two values of the named field definitions,
+calls <code>edit</code>, and returns the calling object.</p></description>
+<example>$ms->swapValues( $name, "Yes", "No" );</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function swapValues( $name, $value1, $value2 )
+    public function swapValues( string $name, string $value1, string $value2 ) : Asset
     {
         $def = $this->getDynamicMetadataFieldDefinition( $name );
         $def->swapValues( $value1, $value2 );
@@ -1381,13 +1427,13 @@ class MetadataSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>selectedByDefault</code> of the value of the named field definition to <code>false</code> and returns the calling object.</p></description>
+<example>$ms->unsetSelectedByDefault( $name, "Maybe" )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NoSuchMetadataFieldDefinitionException</exception>
 </documentation>
 */
-    public function unsetSelectedByDefault( $name, $value )
+    public function unsetSelectedByDefault( string $name, string $value ) : Asset
     {
         $value = trim( $value );
         
