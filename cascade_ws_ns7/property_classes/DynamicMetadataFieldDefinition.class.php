@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/9/2016 Added isCheckbox, isDropdown, isMultiselect, isRadio, isText.
   * 9/8/2016 Added getDefaultValue, getDefaultValueString, hasDefaultValue, 
   * getPossibleValue, getPossibleValues. Fixed a bug.
   * 5/28/2015 Added namespaces.
@@ -292,6 +293,54 @@ $ms->edit();</example>
     }
 
 /**
+<documentation><description><p>Returns a bool, indicating whether the field is a checkbox field.</p></description>
+<example>if( $dmfd->isCheckbox() )
+    echo "A checkbox field", BR;</example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function isCheckbox() : bool
+    {
+        return $this->getFieldType() == c\T::CHECKBOX;
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the field is a dropdown field.</p></description>
+<example>if( $dmfd->isDropdown() )
+    echo "A dropdown field", BR;</example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function isDropdown() : bool
+    {
+        return $this->getFieldType() == c\T::DROPDOWN;
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the field is a multiselecct field.</p></description>
+<example>if( $dmfd->isMultiselect() )
+    echo "A multiselect field", BR;</example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function isMultiselect() : bool
+    {
+        return $this->getFieldType() == c\T::MULTISELECT;
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the field is a radio field.</p></description>
+<example>if( $dmfd->isRadio() )
+    echo "A radio field", BR;</example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function isRadio() : bool
+    {
+        return $this->getFieldType() == c\T::RADIO;
+    }
+    
+/**
 <documentation><description><p>An alias of <code>getRequired</code>.</p></description>
 <example></example>
 <return-type>bool</return-type>
@@ -300,6 +349,18 @@ $ms->edit();</example>
     public function isRequired() : bool
     {
         return $this->required;
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the field is a text field.</p></description>
+<example>if( $dmfd->isText() )
+    echo "A text field", BR;</example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function isText() : bool
+    {
+        return $this->getFieldType() == c\T::TEXT;
     }
     
 /**

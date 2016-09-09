@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/8/2016 Changed signature of denyAccess, grantAccess, moving $asset to the front.
   * 9/2/2016 Changed checkOut so that a reference of a string can be passed in to store the id of the working copy.
   * Changed the type of the third parameter of clearPermissions to string.
   * 3/18/2016 Fixed bugs related to MessageArrays.
@@ -39,10 +40,10 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
@@ -869,7 +870,11 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>File</code> object, representing either an
+existing file, or a file newly created by the method. <code>$text</code> is the textual
+information to be inserted into the file, and <code>$data</code> is the binary data.
+Either <code>$text</code> or <code>$data</code> must contain non-empty and non-<code>NULL</code>
+information. If both do, <code>$text</code> takes precedence.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -900,13 +905,15 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>FileSystemTransport</code> object, representing either an existing file system transport, or a file system transport newly
+created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function createFileSystemTransport( TransportContainer $parent, $name, $directory ) : Asset
+    public function createFileSystemTransport(
+        TransportContainer $parent, $name, $directory ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(
@@ -926,7 +933,12 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>Folder</code> object, representing either
+an existing folder, or a folder newly created by the method. Since this method can be used
+to retrieve the Base Folder of a site, the <code>$parent</code> can be <code>NULL</code>.
+In this case, the <code>$name</code> must the string <code>"/"</code> and the site name
+must be non-empty. When a non-<code>NULL</code> parent folder is passed in, the name must
+be non-empty, but the site name can be empty.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -958,7 +970,8 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>IndexBlock</code> object, representing
+either an existing index block of type "folder", or an index block newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -998,11 +1011,13 @@ representing either an existing feed block, or a feed block newly created by the
         $asset->indexBlock->pageXML               =c\T::NORENDER;
         
         return $this->createAsset(
-            $asset, IndexBlock::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, IndexBlock::TYPE, $this->getPath( $parent, $name ),
+            $parent->getSiteName() );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>This method combines <code>createScriptFormat</code> and
+<code>createXsltFormat</code>. The <code>$type</code> must be either <code>ScriptFormat::TYPE</code> or <code>XsltFormat::TYPE</code>.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1023,7 +1038,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>FtpTransport</code> object, representing either an existing ftp transport, or an ftp transport newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1062,7 +1077,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>GoogleAnalyticsConnector</code> object, representing either an existing Google Analytics connector, or a Google Analytics connector newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1096,7 +1111,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>Group</code> object, representing either an existing group, or a group newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1116,7 +1131,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>This method combines <code>createContentTypeIndexBlock</code> and <code>createFolderIndexBlock</code>. The type of index block created depends on the value of <code>$type</code>.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1126,13 +1141,15 @@ representing either an existing feed block, or a feed block newly created by the
         $max_rendered_assets=0 ) : Asset
     {
         if( $type == c\T::CONTENTTYPEINDEX )
-            return $this->createContentTypeIndexBlock( $parent, $name, $ct, $max_rendered_assets );
+            return $this->createContentTypeIndexBlock( 
+                $parent, $name, $ct, $max_rendered_assets );
         else
-            return $this->createFolderIndexBlock( $parent, $name, $f, $max_rendered_assets );
+            return $this->createFolderIndexBlock( 
+                $parent, $name, $f, $max_rendered_assets );
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>MetadataSet</code> object, representing either an existing metadata set, or a metadata set newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1150,11 +1167,12 @@ representing either an existing feed block, or a feed block newly created by the
         $asset->metadataSet->siteName            = $parent->getSiteName();
         
         return $this->createAsset(
-            $asset, MetadataSet::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, MetadataSet::TYPE, 
+            $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>MetadataSetContainer</code> object, representing either an existing metadata set container, or a metadata set container newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1173,11 +1191,12 @@ representing either an existing feed block, or a feed block newly created by the
         $asset->$property->siteName            = $parent->getSiteName();
         
         return $this->createAsset(
-            $asset, MetadataSetContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, MetadataSetContainer::TYPE, 
+            $this->getPath( $parent, $name ), $parent->getSiteName() );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>This method combines <code>createDataDefinitionPage</code> and <code>createXhtmlPage</code>. The resulting page type depends on whether the content type passed in has a data definition.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1192,7 +1211,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>PageConfigurationSet</code> object, representing either an existing configuration set, or a configuration set newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1236,11 +1255,12 @@ representing either an existing feed block, or a feed block newly created by the
         $asset->pageConfigurationSet->pageConfigurations->pageConfiguration = $config;
         
         return $this->createAsset(
-            $asset, PageConfigurationSet::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, PageConfigurationSet::TYPE, $this->getPath( $parent, $name ),
+            $parent->getSiteName() );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>PageConfigurationSetContainer</code> object, representing either an existing page configuration set container, or a page configuration set container newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1259,11 +1279,12 @@ representing either an existing feed block, or a feed block newly created by the
         $asset->$property->siteName            = $parent->getSiteName();
         
         return $this->createAsset(
-            $asset, PageConfigurationSetContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, PageConfigurationSetContainer::TYPE, $this->getPath( $parent, $name ),
+            $parent->getSiteName() );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>PublishSet</code> object, representing either an existing publish set, or a publish set newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1285,7 +1306,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>PublishSetContainer</code> object, representing either an existing publish set container, or a publish set container newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1308,7 +1329,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>Reference</code> object, representing either an existing reference, or a reference newly created by the method. <code>$a</code> is the object representing an asset (a page, file, or folder) to be referenced.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1332,7 +1353,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>Role</code> object, representing either an existing role, or a role newly created by the method. The type should be either "site" or "global".</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1360,7 +1381,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>ScriptFormat</code> object, representing either an existing Velocity format, or a Velocity format newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1383,11 +1404,12 @@ representing either an existing feed block, or a feed block newly created by the
         $asset->scriptFormat->script           = $script;
         
         return $this->createAsset(
-            $asset, ScriptFormat::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, ScriptFormat::TYPE, $this->getPath( $parent, $name ),
+            $parent->getSiteName() );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>Site</code> object, representing either an existing site, or a site newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1420,7 +1442,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>SiteDestinationContainer</code> object, representing either an existing site destination container, or a site destination container newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1439,11 +1461,12 @@ representing either an existing feed block, or a feed block newly created by the
         $asset->$property->siteName            = $parent->getSiteName();
         
         return $this->createAsset(
-            $asset, SiteDestinationContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, SiteDestinationContainer::TYPE, $this->getPath( $parent, $name ),
+            $parent->getSiteName() );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>Symlink</code> object, representing either an existing symlink, or a symlink newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1466,11 +1489,12 @@ representing either an existing feed block, or a feed block newly created by the
         $asset->symlink->linkURL          = $url;
         
         return $this->createAsset(
-            $asset, Symlink::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, Symlink::TYPE, $this->getPath( $parent, $name ),
+            $parent->getSiteName() );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>Template</code> object, representing either an existing template, or a template newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1493,11 +1517,12 @@ representing either an existing feed block, or a feed block newly created by the
         $asset->template->xml               = trim( $xml );
         
         return $this->createAsset(
-            $asset, Template::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, Template::TYPE, $this->getPath( $parent, $name ),
+            $parent->getSiteName() );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>TextBlock</code> object, representing either an existing text block, or a text block newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1520,11 +1545,12 @@ representing either an existing feed block, or a feed block newly created by the
         $asset->textBlock->text             = $text;
         
         return $this->createAsset(
-            $asset, TextBlock::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, TextBlock::TYPE, $this->getPath( $parent, $name ),
+            $parent->getSiteName() );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>TransportContainer</code> object, representing either an existing transport container, or a transport container newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1547,7 +1573,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>TwitterConnector</code> object, representing either an existing Twitter connector, or a Twitter connector newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1571,7 +1597,7 @@ representing either an existing feed block, or a feed block newly created by the
             throw new e\CreationErrorException( 
                 S_SPAN . c\M::EMPTY_CONFIGURATION_NAME . E_SPAN );
             
-        $asset                                         = AssetTemplate::getTwitterConnector();
+        $asset                                        = AssetTemplate::getTwitterConnector();
         $asset->twitterConnector->name                = $name;
         $asset->twitterConnector->parentContainerPath = $parent->getPath();
         $asset->twitterConnector->siteName            = $parent->getSiteName();
@@ -1600,11 +1626,12 @@ representing either an existing feed block, or a feed block newly created by the
         
         if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $asset ); }
         return $this->createAsset(
-            $asset, TwitterConnector::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, TwitterConnector::TYPE, $this->getPath( $parent, $name ),
+            $parent->getSiteName() );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>User</code> object, representing either an existing user, or a user newly created by the method. Note that the role passed in should be a global role.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1631,7 +1658,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>WordPressConnector</code> object, representing either an existing WordPress connector, or a WordPress connector newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1668,7 +1695,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>WorkflowDefinition</code> object, representing either an existing workflow definition, or a workflow definition newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1702,7 +1729,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>WorkflowDefinitionContainer</code> object, representing either an existing workflow definition container, or a workflow definition container newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1725,7 +1752,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>DataDefinitionBlock</code> object, representing either an existing XHTML block, or an XHTML block newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1750,7 +1777,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>This method combines <code>createXhtmlBlock</code> and <code>createDataDefinitionBlock</code>. The resulting block type depends on whether the data definition passed in is <code>NULL</code>.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1765,7 +1792,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>Page</code> object, representing either an existing page that is not associated with a data definition, or a page newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1791,7 +1818,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an <code>XmlBlock</code> object, representing either an existing XML block, or an XML block newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1818,7 +1845,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>XsltFormat</code> object, representing either an existing XSLT format, or an XSLT format newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1847,13 +1874,13 @@ representing either an existing feed block, or a feed block newly created by the
     /* ================= */
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Deletes all messages and returns <code>$cascade</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Cascade</return-type>
 <exception></exception>
 </documentation>
 */
-    public function deleteAllMessages()
+    public function deleteAllMessages() : Cascade
     {
         MessageArrays::initialize( $this->service );
         return $this->deleteMessagesWithIds( 
@@ -1861,7 +1888,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Deletes all messages without issues, and returns <code>$cascade</code>.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -1876,10 +1903,10 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Deletes the asset, unsets the variable, and returns <code>$cascade</code>.</p></description>
 <example></example>
 <return-type></return-type>
-<exception></exception>
+<exception>DeletionErrorException</exception>
 </documentation>
 */
     public function deleteAsset( Asset $a )
@@ -1895,7 +1922,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Deletes all asset expiration messages, and returns <code>$cascade</code>.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -1909,7 +1936,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Deletes all publish messages without issues, and returns <code>$cascade</code>.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -1923,7 +1950,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Deletes all summary messages without failures, and returns <code>$cascade</code>.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -1937,7 +1964,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Deletes all unpublish messages without issues, and returns <code>$cascade</code>.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -1951,7 +1978,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Deletes all completed workflow messages, and returns <code>$cascade</code>.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -1965,13 +1992,14 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Removes the access rights of the <code>Group</code> or <code>User</code> to the asset, and returns <code>$cascade</code>. The <code>$a</code> object must be either a <code>Group</code> object or a <code>User</code> object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Cascade</return-type>
+<exception>WrongAssetTypeException</exception>
 </documentation>
 */
-    public function denyAccess( $type, $id_path, $site_name=NULL, $applied_to_children=false, Asset $a=NULL )
+    public function denyAccess( Asset $a, string $type, string $id_path, 
+        string $site_name=NULL, bool $applied_to_children=false ) : Cascade
     {
         $ari = $this->getAccessRights( $type, $id_path, $site_name );
         
@@ -1998,13 +2026,14 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets all level to <code>none</code>, and returns <code>$cascade</code>. Note that when <code>$applied_to_children</code> is supplied while the <code>$site_name</code> is not needed, a <code>NULL</code> value must be passed in as the third argument.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Cascade</return-type>
 <exception></exception>
 </documentation>
 */
-    public function denyAllAccess( $type, $id_path, $site_name=NULL, $applied_to_children=false )
+    public function denyAllAccess( string $type, string $id_path, 
+        string $site_name=NULL, $applied_to_children=false ) : Cascade
     {
         if( self::DEBUG ) { u\DebugUtility::out( "Denying all access" ); }
         $ari = $this->getAccessRights( $type, $id_path, $site_name );
@@ -2014,10 +2043,10 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the access rights information (an <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/access-rights-information.php"><code>p\AccessRightsInformation</code></a> object).</p></description>
 <example></example>
 <return-type></return-type>
-<exception></exception>
+<exception>AccessRightsException</exception>
 </documentation>
 */
     public function getAccessRights( $type, $id_path, $site_name=NULL )
@@ -2040,7 +2069,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of messages (<a href="http://www.upstate.edu/cascade-admin/web-services/api/message.php"><code>Message</code></a> objects).</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -2053,10 +2082,10 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>eturns an <code>Asset</code> object.</p></description>
 <example></example>
 <return-type></return-type>
-<exception></exception>
+<exception>NullAssetException, NoSuchTypeException, Exception</exception>
 </documentation>
 */
     public function getAsset( $type, $id_path, $site_name=NULL )
@@ -2072,9 +2101,9 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an object representing the asset bearing the ID, or <code>NULL</code> if there is no asset bearing that ID.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -2090,34 +2119,35 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <a href="http://www.upstate.edu/cascade-admin/web-services/api/audit.php"><code>Audit</code></a> objects. The <code>$type</code> string can be empty, or one of the types defined for auditing. The two <code>DateTime</code> objects can be used to filter the returned objects. <code>$start_time</code> must be before or identical to <code>$end_time</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
     public function getAudits( 
-        Asset $a, $type="", \DateTime $start_time=NULL, \DateTime $end_time=NULL )
+        Asset $a, string $type="", 
+        \DateTime $start_time=NULL, \DateTime $end_time=NULL ) : array
     {
         return $a->getAudits( $type, $start_time, $end_time );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an <code>AssetTree</code> object, with the root set to be the Base Folder of the site.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
 */
-    public function getBaseFolderAssetTree( $site_name )
+    public function getBaseFolderAssetTree( string $site_name ) : AssetTree
     {
         return $this->getFolder( '/', $site_name )->getAssetTree();
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of groups (<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects).</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -2140,7 +2170,7 @@ representing either an existing feed block, or a feed block newly created by the
                     $this->groups = array();
                     
                     if( count( $groups ) == 1 ) // a string
-                        $this->groups[]            = new p\Identifier( $groups );
+                        $this->groups[] = new p\Identifier( $groups );
                     else
                         foreach( $groups as $group )
                             $this->groups[] = new p\Identifier( $group );
@@ -2151,9 +2181,9 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of groups (<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects) bearing the name. If <code>$name</code> is not supplied, then this method becomes an alias of <code>getGroups()</code>. The name can be an ID of a group, or it can be a string containing wild-card characters.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -2187,13 +2217,13 @@ representing either an existing feed block, or a feed block newly created by the
     }    
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <a href="http://www.upstate.edu/cascade-admin/web-services/api/message.php"><code>Message</code></a> object bearing the id.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMessage( $id )
+    public function getMessage( string $id )
     {
         MessageArrays::initialize( $this->service );
     
@@ -2204,48 +2234,51 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the id-<code>Message</code> object map.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMessageIdObjMap()
+    public function getMessageIdObjMap() : array
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$id_obj_map;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code><a href="http://www.upstate.edu/cascade-admin/web-services/api/preference.php">Preference</a></code> object, representing system preferences.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Preference</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPreference()
+    public function getPreference() : Preference
     {
-        $this->service->readPreferences();
-        $p = new Preference( $this->service, $this->service->getPreferences() );
-        $this->preference = $p;
-        return $p;
+        if( is_null( $this->preference ) )
+        {
+            $this->service->readPreferences();
+            $this->preference = 
+                new Preference( $this->service, $this->service->getPreferences() );
+        }
+        return $this->preference;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <code>Message</code> objects of type "Publish".</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPublishMessages()
+    public function getPublishMessages() : array
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$publish_messages;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <code>Message</code> objects of type "Publish" with issues.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -2258,7 +2291,7 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <code>Message</code> objects of type "Publish" without issues.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -2271,13 +2304,13 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the <code>Role</code> object bearing the numeric ID. This is equivalent to <code>$cascade-&gt;getAsset( Role::TYPE, $role_id )</code>.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>NullAssetException</exception>
 </documentation>
 */
-    public function getRoleAssetById( $role_id )
+    public function getRoleAssetById( string $role_id ) : Asset
     {
         if( $this->roles == NULL )
         {
@@ -2292,13 +2325,13 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the <code>Role</code> object bearing the name. Note that this method throws a <code>NullAssetException</code> object if the named role does not exist.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>NullAssetException</exception>
 </documentation>
 */
-    public function getRoleAssetByName( $role_name )
+    public function getRoleAssetByName( $role_name ) : Asset
     {
         $this->getRoles();
         
@@ -2310,37 +2343,37 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>An alias of <code>getRoleAssetById( $role_id )</code>.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>NullAssetException</exception>
 </documentation>
 */
-    public function getRoleById( $role_id )
+    public function getRoleById( $role_id ) : Asset
     {
         return $this->getRoleAssetById( $role_id );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>An alias of <code>getRoleAssetByName( $role_name )</code>.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>NullAssetException</exception>
 </documentation>
 */
-    public function getRoleByName( $role_name )
+    public function getRoleByName( $role_name ) : Asset
     {
         return $this->getRoleAssetByName( $role_name );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of all role numeric ID's.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getRoleIds()
+    public function getRoleIds() : array
     {
         if( $this->roles == NULL )
         {
@@ -2350,13 +2383,13 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of all role names.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getRoleNames()
+    public function getRoleNames() : array
     {
         if( $this->roles == NULL )
         {
@@ -2366,13 +2399,13 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of roles (<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects).</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getRoles()
+    public function getRoles() : array
     {
         // sleep for creation of new roles
         sleep( 5 );
@@ -2409,25 +2442,25 @@ representing either an existing feed block, or a feed block newly created by the
     }    
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the <code>$service</code> object passes into the constructor.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>AssetOperationHandlerService</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getService()
+    public function getService() : aohs\AssetOperationHandlerService
     {
         return $this->service;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the named site (a <code>Site</code> object). Note that this method throws <code>NoSuchSiteException</code> if the named site does not exists.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>NoSuchSiteException</exception>
 </documentation>
 */
-    public function getSite( $site_name )
+    public function getSite( string $site_name ) : Asset
     {
         $this->getSites();
         
@@ -2444,13 +2477,13 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of site identifiers (<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects).</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>array</return-type>
+<exception>Exception</exception>
 </documentation>
 */
-    public function getSites()
+    public function getSites() : array
     {
         if( $this->sites == NULL )
         {
@@ -2477,91 +2510,91 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <code>Message</code> objects of type "Summary".</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSummaryMessages()
+    public function getSummaryMessages() : array
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$summary_messages;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <code>Message</code> objects of type "Summary" without failures.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSummaryMessagesNoFailures()
+    public function getSummaryMessagesNoFailures() : array
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$summary_messages_no_failures;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <code>Message</code> objects of type "Summary" with failures.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSummaryMessagesWithFailures()
+    public function getSummaryMessagesWithFailures() : array
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$summary_messages_with_failures;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <code>Message</code> objects of type "Un-publish".</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getUnpublishMessages()
+    public function getUnpublishMessages() : array
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$unpublish_messages;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <code>Message</code> objects of type "Un-publish" with issues.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getUnpublishMessagesWithIssues()
+    public function getUnpublishMessagesWithIssues() : array
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$unpublish_messages_with_issues;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <code>Message</code> objects of type "Un-publish" without issues.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getUnpublishMessagesWithoutIssues()
+    public function getUnpublishMessagesWithoutIssues() : array
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$unpublish_messages_without_issues;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of users (<code>p\Identifier</code> objects).</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getUsers()
+    public function getUsers() : array
     {
         $user_name_array = array();
         
@@ -2610,7 +2643,8 @@ representing either an existing feed block, or a feed block newly created by the
                 
                 foreach( $users as $user )
                 {
-                    if( trim( $user ) != "" && !in_array( $user, $user_name_array ) && !in_array( $user, $extra_names ) )
+                    if( trim( $user ) != "" && !in_array( $user, $user_name_array ) &&
+                        !in_array( $user, $extra_names ) )
                     {
                         $user_std       = new \stdClass();
                         $user_std->id   =  $user;
@@ -2629,13 +2663,13 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of users (<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects) bearing the name. If <code>$name</code> is not supplied, then this method becomes an alias of <code>getUsers()</code>. The name can be an ID of a user, or it can be a string containing wild-card characters.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getUsersByName( $name )
+    public function getUsersByName( string $name="" ) : array
     {
         if( $name == "" )
             return $this->getUsers();
@@ -2665,53 +2699,54 @@ representing either an existing feed block, or a feed block newly created by the
     }    
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <code>Message</code> objects of type "Workflow".</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getWorkflowMessages()
+    public function getWorkflowMessages() : array
     {
         MessageArrays::initialize( $this->service );
         return $workflow_messages;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <code>Message</code> objects of type "Workflow" which are complete.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getWorkflowMessagesIsComplete()
+    public function getWorkflowMessagesIsComplete() : array
     {
         MessageArrays::initialize( $this->service );
         return $workflow_messages_complete;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <code>Message</code> objects of type "Workflow" which are non-complete.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getWorkflowMessagesOther()
+    public function getWorkflowMessagesOther() : array
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$workflow_messages_other;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Grants access rights to a <code>Group</code> or a <code>User</code> to the asset, and returns the object. Note that the asset <code>$a</code> must be either a <code>Group</code> object or a <code>User</code> object. <code>$level</code> can be either <code>constants\T::READ</code> or <code>constants\T::WRITE</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Cascade</return-type>
 <exception></exception>
 </documentation>
 */
-    public function grantAccess( $type, $id_path, $site_name=NULL, $applied_to_children=false, 
-        Asset $a=NULL, $level=c\T::READ )
+    public function grantAccess( Asset $a, string $type, string $id_path, 
+        string $site_name=NULL, bool $applied_to_children=false, 
+        string $level=c\T::READ ) : Cascade
     {
         $ari = $this->getAccessRights( $type, $id_path, $site_name );
         
@@ -2761,13 +2796,13 @@ representing either an existing feed block, or a feed block newly created by the
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a bool, indicating whether group exists.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
 */
-    public function hasGroup( $group_name )
+    public function hasGroup( string $group_name ) : bool
     {
         try
         {

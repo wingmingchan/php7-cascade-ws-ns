@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/9/2016 Added $wired_fields.
   * 9/6/2016 Added isDynamicMetadataFieldRequired.
   * 12/29/2015 Added expirationFolderFieldRequired and expirationFolderFieldVisibility for 8.
   * 9/14/2015 Added getMetaData.
@@ -23,7 +24,50 @@ use cascade_ws_property as p;
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>A <code>MetadataSet</code> object represents a metadata set asset. See <a href="site://cascade-admin-old/projects/web-services/oop/classes/property-classes/dynamic-field">DynamicField</a> for an important note on the use of default values. Use <code>MetadataSet::setSelectedByDefault</code> carefully.</p>
+<h2>Structure of <code>metadataSet</code></h2>
+<pre>metadataSet
+  id
+  name
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  authorFieldRequired
+  authorFieldVisibility
+  descriptionFieldRequired
+  descriptionFieldVisibility
+  displayNameFieldRequired
+  displayNameFieldVisibility
+  endDateFieldRequired
+  endDateFieldVisibility
+  expirationFolderFieldRequired (8)
+  expirationFolderFieldVisibility (8)
+  keywordsFieldRequired
+  keywordsFieldVisibility
+  reviewDateFieldRequired
+  reviewDateFieldVisibility
+  startDateFieldRequired
+  startDateFieldVisibility
+  summaryFieldRequired
+  summaryFieldVisibility
+  teaserFieldRequired
+  teaserFieldVisibility
+  titleFieldRequired
+  titleFieldVisibility
+  dynamicMetadataFieldDefinitions
+    dynamicMetadataFieldDefinition (NULL, stdClass or array of stdClass)
+      name
+      label
+      fieldType
+      required
+      visibility
+      possibleValues
+      possibleValue (NULL, stdClass or array of stdClass)
+        value
+        selectedByDefault
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
 </documentation>
@@ -44,6 +88,11 @@ class MetadataSet extends ContainedAsset
     const SUMMARY     = "summary";
     const TEASER      = "teaser";
     const TITLE       = "title";
+    
+    public static $wired_fields = array(
+		"author", "description", "displayName", "endDate", "expirationFolder",
+		"keywords", "reviewDate", "startDate", "summary", "teaser", "title", 
+    );
     
 /**
 <documentation><description><p></p></description>
@@ -625,6 +674,18 @@ class MetadataSet extends ContainedAsset
             return false;
         }
         return in_array( $name, $this->field_names );
+    }
+
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function hasDynamicMetadataFieldDefinitions() : bool
+    {
+        return count( $this->dynamic_metadata_field_definitions ) != 0;
     }
 
 /**

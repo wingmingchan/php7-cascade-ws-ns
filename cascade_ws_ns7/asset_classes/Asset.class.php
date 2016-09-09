@@ -585,7 +585,7 @@ echo "There are " . count( $subscribers ) . " subscribers.", BR;</example>
 <example>$page = a\Asset::getAsset( 
     $service, a\Page::TYPE, $page_id );</example>
 <return-type>Asset</return-type>
-<exception>NoSuchTypeException, Exception</exception>
+<exception>NullAssetException, NoSuchTypeException, Exception</exception>
 </documentation>
 */
     public static function getAsset( 
