@@ -63,7 +63,7 @@ Returns a bool, indicating whether the $haystack ends with $needle.
     
 /**
 Returns a coalesed string.
-@param $str_null The input string or NULL
+@param string $str_null The input string or NULL
 @return string Either the input string (when not NULL), or the string "NULL"
 <documentation><description><p>Returns a coalesed string. If the parameter is a string,
 then the string is returned. If <code>NULL</code> is passed in, then the string <code>NULL</code> is returned.</p></description>
