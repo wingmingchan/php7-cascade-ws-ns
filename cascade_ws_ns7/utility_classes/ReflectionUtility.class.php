@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/9/2016 Changed the code of showMethodInfo.
   * 9/1/2016 Fixed a bug. Added static properties to class info.
   * 8/30/2016 Added more flags to control output of documentation.
   * 8/26/2016 Added constant NAME_SPACE.
@@ -499,12 +500,13 @@ method exception information.</p></description>
     }
 
 /**
-Displays all textual information give right before the definition of a method.
+Displays information of a method. The inforamtion includes the description, the signature,
+and an example.
 @param mixed $obj A string (the class name) or an object
 @param string $method_name The method name
 @param bool $with_hr Whether to include a horizontal rule
-<documentation><description><p>Displays all textual information give right before the definition of a method,
-including XML markups.
+<documentation><description><p>Displays information of a method. The inforamtion includes the description, the signature,
+and an example.
 If <code>true</code> is passed in for <code>$with_hr</code>, then a horizontal rule will be output after the
 method information.</p></description>
 <example>u\ReflectionUtility::showMethodInfo(
@@ -515,9 +517,10 @@ method information.</p></description>
 */
     public static function showMethodInfo( $obj, string $method_name, bool $with_hr=false )
     {
-        echo S_PRE,
-            self::getMethodInfo( self::getMethod( $obj, $method_name ) ),
-            E_PRE;
+    	self::showMethodDescription( $obj, $method_name );
+    	self::showMethodSignature( $obj, $method_name );
+    	self::showMethodExample( $obj, $method_name );
+    	
         if( $with_hr ) echo HR;
     }
     
