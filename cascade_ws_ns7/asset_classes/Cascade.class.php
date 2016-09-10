@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  
   * 9/8/2016 Changed signature of denyAccess, grantAccess, moving $asset to the front.
   * 9/2/2016 Changed checkOut so that a reference of a string can be passed in to store the id of the working copy.
   * Changed the type of the third parameter of clearPermissions to string.
