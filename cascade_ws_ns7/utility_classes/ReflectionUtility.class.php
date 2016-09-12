@@ -81,40 +81,40 @@ class information.</p></description>
 
         foreach( $properties as $prop )
         {
-        	$prop_names[] = $prop->getName();
+            $prop_names[] = $prop->getName();
         }
         
         $static_properties = $r->getStaticProperties();
         
         if( count( $properties ) > 0 )
         {
-        	//$class_doc .= S_H2 . "Class Properties" . E_H2 . S_UL;
-        	
-        	$counter = 0;
-        	
-        	// only public static arrays
-        	foreach( $static_properties as $name => $value )
-        	{
-        		if( in_array( $name, $prop_names ) && is_array( $value ) )
-        		{
-        			$counter++;
-        			
-        			if( $counter == 1 )
-        				$class_doc .= S_H2 . "Class Properties" . E_H2 . S_UL;
-        				
-        			$class_doc .= S_LI . S_H3 . "$" . $name . E_H3;
-        			$class_doc .= S_PRE . var_export( $value, true ) . E_PRE . E_LI;
-        			
-        			if( $counter == count( $static_properties ) )
-        				$class_doc .= E_UL;
-        		}
-        	}
+            //$class_doc .= S_H2 . "Class Properties" . E_H2 . S_UL;
+            
+            $counter = 0;
+            
+            // only public static arrays
+            foreach( $static_properties as $name => $value )
+            {
+                if( in_array( $name, $prop_names ) && is_array( $value ) )
+                {
+                    $counter++;
+                    
+                    if( $counter == 1 )
+                        $class_doc .= S_H2 . "Class Properties" . E_H2 . S_UL;
+                        
+                    $class_doc .= S_LI . S_H3 . "$" . $name . E_H3;
+                    $class_doc .= S_PRE . var_export( $value, true ) . E_PRE . E_LI;
+                    
+                    if( $counter == count( $static_properties ) )
+                        $class_doc .= E_UL;
+                }
+            }
         }
         
         $methods   = $r->getMethods();
         
         if( count( $methods ) > 0 )
-        	$class_doc .= S_H2 . "Class API" . E_H2 . S_UL;
+            $class_doc .= S_H2 . "Class API" . E_H2 . S_UL;
         
         foreach( $methods as $method )
         {
@@ -130,7 +130,7 @@ class information.</p></description>
         }
         
         if( count( $methods ) > 0 )
-        	$class_doc .= E_UL;
+            $class_doc .= E_UL;
         
         $class_doc .= self::getClassPostscript( $obj, $r, false, false );
         
@@ -174,9 +174,9 @@ Returns the class name.
 */
     public static function getClassName( $obj ) : string
     {
-    	if( gettype( $obj) != "object" )
-    		return gettype( $obj);
-    	
+        if( gettype( $obj) != "object" )
+            return gettype( $obj);
+        
         $r = new \ReflectionClass( $obj );
         return $r->getName();
     }
@@ -521,10 +521,10 @@ method information.</p></description>
 */
     public static function showMethodInfo( $obj, string $method_name, bool $with_hr=false )
     {
-    	self::showMethodDescription( $obj, $method_name );
-    	self::showMethodSignature( $obj, $method_name );
-    	self::showMethodExample( $obj, $method_name );
-    	
+        self::showMethodDescription( $obj, $method_name );
+        self::showMethodSignature( $obj, $method_name );
+        self::showMethodExample( $obj, $method_name );
+        
         if( $with_hr ) echo HR;
     }
     
@@ -734,8 +734,8 @@ method signatures.</p></description>
         $xml_value = self::getXmlValue( $xml_str, $ele_name, $use_default );
         
         if( $xml_value != "" )
-        	return $s_html . $xml_value . $e_html;
-        	
+            return $s_html . $xml_value . $e_html;
+            
         return $xml_value;
     }
     
@@ -772,9 +772,9 @@ method signatures.</p></description>
                 }
             }
             if( $use_default )
-            	return c\M::INFORMATION_NOT_AVAILABLE;
+                return c\M::INFORMATION_NOT_AVAILABLE;
             else
-            	return "";
+                return "";
         }
         catch( \Exception $e )
         {
