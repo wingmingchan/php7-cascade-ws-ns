@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/12/2016 Added code to getClassName to deal with scalar types.
   * 9/9/2016 Changed the code of showMethodInfo.
   * 9/1/2016 Fixed a bug. Added static properties to class info.
   * 8/30/2016 Added more flags to control output of documentation.
@@ -173,6 +174,9 @@ Returns the class name.
 */
     public static function getClassName( $obj ) : string
     {
+    	if( gettype( $obj) != "object" )
+    		return gettype( $obj);
+    	
         $r = new \ReflectionClass( $obj );
         return $r->getName();
     }
