@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/13/2016 Fixed a bug in setValues.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_property;
@@ -12,9 +13,61 @@ use cascade_ws_constants as c;
 use cascade_ws_AOHS as aohs;
 use cascade_ws_utility as u;
 use cascade_ws_exception as e;
- 
+
+/**
+<documentation><description><h2>Introduction</h2>
+<p>A <code>FieldValue</code> object represents a <code>fieldValue</code> property found in a
+<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-field.php"><code>DynamicField</code></a> object inside
+a <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/metadata.php"><code>Metadata</code></a> object
+inside an asset that can be associated with a metadata set.</p>
+<h2>Definition-Data/Container Dichotomy</h2>
+<p>When working with metadata, we need to deal with its two sides at the same time. On the one hand, we are dealing with definitions of containers and types of data.
+We have a metadata set which define what wired and dynamic fields an asset can have. For a wired field, it has two properties: required and visibility.
+For a dynamic field, it has a name, a type, a label, and a set of possible values and so on. On the other hand, we are dealing with data.
+For each wired field, it has a setting for required (a boolean) and a setting for visibility. For dynamic fields, it has a name, a value for required,
+with zero or more values, each of which must be from the set of possible values in the definition, and so on.</p>
+<p>If we look at metadata this way, we have two parallel hierarchies:</p>
+<pre>Definition:
+metadataSet
+  dynamicMetadataFieldDefinition
+    possibleValue
+    
+Data:
+metadata
+  dynamicField
+    fieldValue
+</pre>
+<p>When the data, especially of a dynamic field, is altered, we need to look at the corresponding definition to make sure that the alteration is allowed.
+For example, when we add a value to a dynamic field, we need to make sure that the value added is one of those possible values defined in the corresponding
+dynamic metadata field definition, and that the value does not already exist in the dynamic field.</p>
+<p>When we are changing the metadata of an asset, we also need to check if the metadata container is defined in the corresponding metadata set.
+If the container does not exist, it is pointless to assign it a value.</p>
+<p>Since a few asset types (file, block, page, folder, and symlink) can be associated with metadata, classes related to metadata must be built outside
+these asset-related classes so that the same set of metadata-related classes can be reused.</p>
+<h2>Structure of <code>fieldValue</code></h2>
+<pre>fieldValue (NULL, stdClass or array of stdClass)
+  value
+</pre>
+<h2>Design Issues</h2>
+<ul>
+<li>A <code>FieldValue</code> object can contain zero, one, or more <code>value</code>s.
+The <code>toStdClass</code> method must generate the correct <code>\stdClass</code> object corresponding to these three cases.</li>
+<li>The <code>stdClass</code> object passed into the constructor cannot be NULL. But the object can contain nothing.</li>
+<li>To avoid empty values mixing with non-empty values, <code>setValues</code> should not allow <code>\stdClass</code> objects
+with no values mixed with <code>\stdClass</code> objects with a value property. But if a single object is passed in, then the object can have no value.</li>
+</ul>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/metadata_dynamic_field.php">metadata_dynamic_field.php</a></li></ul></postscript>
+</documentation>
+*/
 class FieldValue extends Property
 {
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
     public function __construct( 
         \stdClass $fv=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
@@ -38,12 +91,26 @@ class FieldValue extends Property
         }
     }
     
+/**
+<documentation><description><p>Returns <code>NULL</code>, or an array of strings.</p></description>
+<example>u\DebugUtility::dump( $radio_fv->getValues() );</example>
+<return-type>mixed</return-type>
+</documentation>
+*/
     public function getValues()
     {
         return $this->values; // can be NULL
     }
     
-    public function setValues( $values ) // an array of stdClass objects
+/**
+<documentation><description><p>Uses the set of <code>\stdClass</code> objects (each has a non-NULL and non-empty <code>value</code> property)
+to set the values and returns the calling object. The method must guarantee that no repeated values are allowed.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>EmptyValueException, NonUniqueValueException</exception>
+</documentation>
+*/
+    public function setValues( $values ) : Property // an array of stdClass objects
     {
         $this->values = array();
         
@@ -51,7 +118,10 @@ class FieldValue extends Property
         
         if( $count == 1 ) // NULL or object
         {
-            $this->values[] = $values[0]->value;
+            if( is_null( $values[ 0 ] ) )
+                $this->values[] = NULL;
+            else
+                $this->values[] = $values[ 0 ]->value;
         }
         else
         {
@@ -78,6 +148,12 @@ class FieldValue extends Property
         return $this;
     }
     
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example>u\DebugUtility::dump( $text_fv->toStdClass() );</example>
+<return-type>stdClass</return-type>
+</documentation>
+*/
     public function toStdClass()
     {
         $obj   = new \stdClass();

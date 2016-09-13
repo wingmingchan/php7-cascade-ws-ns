@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/9/2016 Added $prefix to getMethodName.
   * 8/26/2016 Added constant NAME_SPACE.
   * 8/24/2016 Added documentation comments. Added boolToString and stringToBool.
   * 5/28/2015 Added namespaces.
@@ -146,9 +147,9 @@ For example, <code>getMethodName( "structuredData" )</code> returns <code>getStr
 <exception></exception>
 </documentation>
 */
-    public static function getMethodName( string $property_name ) : string
+    public static function getMethodName( string $property_name, string $prefix="get" ) : string
     {
-        return 'get' . ucwords( $property_name );
+        return $prefix . ucwords( $property_name );
     }
     
 /**

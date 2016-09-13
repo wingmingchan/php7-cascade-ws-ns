@@ -130,13 +130,13 @@ $ms->edit();</example>
 */
     public function getDefaultValue()
     {
-    	foreach( $this->possible_values as $ps )
-    	{
-    		if( $ps->isDefaultValue() )
-    			return $ps;
-    	}
-    	
-    	return NULL;
+        foreach( $this->possible_values as $ps )
+        {
+            if( $ps->isDefaultValue() )
+                return $ps;
+        }
+        
+        return NULL;
     }
     
 /**
@@ -147,13 +147,13 @@ $ms->edit();</example>
 */
     public function getDefaultValueString()
     {
-    	foreach( $this->possible_values as $ps )
-    	{
-    		if( $ps->isDefaultValue() )
-    			return $ps->getValue();
-    	}
-    	
-    	return NULL;
+        foreach( $this->possible_values as $ps )
+        {
+            if( $ps->isDefaultValue() )
+                return $ps->getValue();
+        }
+        
+        return NULL;
     }
     
 /**
@@ -198,12 +198,12 @@ $ms->edit();</example>
 */
     public function getPossibleValue( string $value ) : PossibleValue
     {
-    	foreach( $this->possible_values as $possible_value )
-    	{
-    		if( $possible_value->getValue() == $value )
-    			return $possible_value;
-    	}
-    	throw new e\NoSuchValueException( "The value $value does not exist. " );
+        foreach( $this->possible_values as $possible_value )
+        {
+            if( $possible_value->getValue() == $value )
+                return $possible_value;
+        }
+        throw new e\NoSuchValueException( "The value $value does not exist. " );
     }
 
 /**
@@ -214,7 +214,7 @@ $ms->edit();</example>
 */
     public function getPossibleValues() : array
     {
-    	return $this->possible_values;
+        return $this->possible_values;
     }
 
 /**
@@ -266,13 +266,16 @@ $ms->edit();</example>
 */
     public function hasDefaultValue() : bool
     {
-    	foreach( $this->possible_values as $ps )
-    	{
-    		if( $ps->isDefaultValue() )
-    			return true;
-    	}
-    	
-    	return false;
+        if( !$this->isText() )
+        {
+            foreach( $this->possible_values as $ps )
+            {
+                if( $ps->isDefaultValue() )
+                    return true;
+            }
+        }
+        
+        return false;
     }
 
 /**
@@ -482,8 +485,8 @@ $ms->edit();</example>
             // radio and dropdown
             if( $this->field_type == c\T::RADIO || $this->field_type == c\T::DROPDOWN )
             {
-            	if( $item->getValue() != $value )
-                	$item->setSelectedByDefault( false );
+                if( $item->getValue() != $value )
+                    $item->setSelectedByDefault( false );
             }
         }
         
@@ -671,6 +674,7 @@ $ms->edit();</example>
     private function processPossibleValues( $values )
     {
         $this->possible_values = array();
+        $this->values          = array();
 
         if( $values == NULL ) // text
         {
@@ -698,6 +702,6 @@ $ms->edit();</example>
     private $required;
     private $visibility;
     private $possible_values; // PossibleValue objects
-    private $values;          // strings
+    private $values;          // array of strings
 }
 ?>

@@ -1960,20 +1960,6 @@ class Page extends Linkable
 
         return $this;
     }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
-<return-type>Asset</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function setExpirationFolder( Folder $f ) : Asset
-    {
-        $this->getProperty()->expirationFolderId   = $f->getId();
-        $this->getProperty()->expirationFolderPath = $f->getPath();
-        return $this;
-    }
         
 /**
 <documentation><description><p></p></description>

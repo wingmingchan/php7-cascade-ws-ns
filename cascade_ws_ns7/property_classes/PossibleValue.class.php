@@ -153,7 +153,7 @@ class PossibleValue extends Property
 */
     public function isDefaultValue() : bool
     {
-    	return $this->selected_by_default;
+        return $this->selected_by_default;
     }
     
 /**

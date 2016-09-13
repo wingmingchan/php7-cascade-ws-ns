@@ -19,11 +19,63 @@ use cascade_ws_asset as a;
 use cascade_ws_utility as u;
 use cascade_ws_exception as e;
  
+/**
+<documentation><description><h2>Introduction</h2>
+<p>A <code>Metadata</code> object represents the <code>metadata</code> property of an asset that can be associated with a metadata set.
+It contains zero or more <code>DynamicField</code> objects.</p>
+<p>As mentioned in <code>FieldValue</code>, we need to take care of the two sides of metadata, i.e., definition and data/container,
+when we deal with an asset that can have metadata. When the <code>metadata</code> property is modified, this class must guarantee
+that all modifications are allowed by the definition; i.e., that the containers are defined, and that the data are allowed in these containers.
+Therefore, besides storing the <code>metadata</code> property, a <code>Metadata</code> object can also store the global <code>$service</code> object
+and the id of its corresponding metadata set. When a <code>setX</code> method is called, it will retrieve the corresponding <code>a\MetadataSet</code> object
+and look at the definition. For example, if a value is added to a <code>dynamicField</code>, this value must be defined
+in the corresponding <code>DynamicMetadataFieldDefinition</code> object.</p>
+<h2>Structure of <code>metadata</code></h2>
+<pre>metadata
+  author
+  displayName
+  endDate
+  keywords
+  metaDescription
+  reviewDate
+  startDate
+  summary
+  teaser
+  title
+  dynamicFields (NULL or an stClass)
+    dynamicField
+      name
+      fieldValues
+        fieldValue
+          value
+</pre>
+<p>Note that although the properties <code>expirationFolderFieldRequired</code> and <code>expirationFolderFieldVisibility</code>
+are defined in a metadata set, the metadata <code>stdClass</code> object does not include information about expiration folder. Instead,
+<code>expirationFolderId</code> and <code>expirationFolderPath</code> are properties of assets.</p>
+<h2>Design Issues</h2>
+<ul>
+<li>The <code>$service</code> object and the corresponding <code>a\MetadataSet</code> object are needed only when a <code>setX</code> method is called.</li>
+<li>The <code>stdClass</code> object passed into the constructor cannot be NULL.</li>
+<li>If a field requires a value, then the corresponding <code>setX</code> method cannot be called with an empty value.</li>
+</ul>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/metadata.php">metadata.php</a></li>
+<li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/metadata_wired_field.php">metadata_wired_field.php</a></li>
+<li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/metadata_dynamic_field.php">metadata_dynamic_field.php</a></li>
+</ul></postscript>
+</documentation>
+*/
 class Metadata extends Property
 {
     const DEBUG = false;
     const DUMP  = false;
 
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
     public function __construct( 
         \stdClass $obj=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
@@ -33,19 +85,21 @@ class Metadata extends Property
     {
         if( isset( $obj ) )
         {
-            $this->author              = $obj->author;
-            $this->display_name        = $obj->displayName;
-            $this->end_date            = $obj->endDate;
-            $this->keywords            = $obj->keywords;
-            $this->meta_description    = $obj->metaDescription;
-            $this->review_date         = $obj->reviewDate;
-            $this->start_date          = $obj->startDate;
-            $this->summary             = $obj->summary;
-            $this->teaser              = $obj->teaser;
-            $this->title               = $obj->title;
-            $this->service             = $service;
-            $this->metadata_set        = NULL;
-            $this->metadata_set_id     = $metadata_set_id;
+            $this->author                 = $obj->author;
+            $this->display_name           = $obj->displayName;
+            $this->end_date               = $obj->endDate;
+            $this->keywords               = $obj->keywords;
+            $this->meta_description       = $obj->metaDescription;
+            $this->review_date            = $obj->reviewDate;
+            $this->start_date             = $obj->startDate;
+            $this->summary                = $obj->summary;
+            $this->teaser                 = $obj->teaser;
+            $this->title                  = $obj->title;
+            $this->service                = $service;
+            $this->metadata_set           = NULL;
+            $this->metadata_set_id        = $metadata_set_id;
+            
+
         
             if( isset( $obj->dynamicFields ) ) // could be NULL
             {
@@ -56,17 +110,36 @@ class Metadata extends Property
         }
     }
     
-    public function getAuthor()
+/**
+<documentation><description><p>Returns <code>author</code>.</p></description>
+<example>echo "Author: ", $m->getAuthor(), BR;</example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getAuthor() : string
     {
         return $this->author;
     }
     
-    public function getDisplayName()
+/**
+<documentation><description><p>Returns <code>displayName</code>.</p></description>
+<example>echo "Display name: ", $m->getDisplayName(), BR</example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getDisplayName() : string
     {
         return $this->display_name;
     }
     
-    public function getDynamicField( $name )
+/**
+<documentation><description><p>Returns the <code>DynamicField</code> object bearing the name.</p></description>
+<example>u\DebugUtility::dump( $m->getDynamicField( $checkbox_name )->toStdClass() );</example>
+<return-type>Property</return-type>
+<exception>EmptyNameException, NoSuchFieldException</exception>
+</documentation>
+*/
+    public function getDynamicField( $name ) : Property
     {
         $name = trim( $name );
         
@@ -84,22 +157,46 @@ class Metadata extends Property
                 S_SPAN . "The dynamic field $name does not exist" . E_SPAN );
     }
 
-    public function getDynamicFieldNames()
+/**
+<documentation><description><p>Returns an array of names of <code>DynamicField</code> objects.</p></description>
+<example>$field_names = $m->getDynamicFieldNames();</example>
+<return-type>array</return-type>
+</documentation>
+*/
+    public function getDynamicFieldNames() : array
     {
         return $this->dynamic_field_names;
     }
     
-    public function getDynamicFieldPossibleValues( $name )
+/**
+<documentation><description><p>Returns an array of possible values (strings) of the named dynamic field from the corresponding <code>a\MetadataSet</code> object.</p></description>
+<example>u\DebugUtility::dump( $m->getDynamicFieldPossibleValues( $dropdown_name ) );</example>
+<return-type>array</return-type>
+</documentation>
+*/
+    public function getDynamicFieldPossibleValues( $name ) : array
     {
         return $this->getMetadataSet()->getDynamicMetadataFieldPossibleValueStrings( $name );
     }
     
+/**
+<documentation><description><p>Returns an array of all <code>DynamicField</code> objects contained in the <code>Metadata</code> object.</p></description>
+<example>u\DebugUtility::dump( $m->getDynamicFields() );</example>
+<return-type></return-type>
+</documentation>
+*/
     public function getDynamicFields()
     {
         return $this->dynamic_fields;
     }
     
-    public function getDynamicFieldValues( $name )
+/**
+<documentation><description><p>Returns an array of values (strings) of the named field.</p></description>
+<example>u\DebugUtility::dump( $m->getDynamicFieldValues( $multiselect_name ) );</example>
+<return-type>array</return-type>
+</documentation>
+*/
+    public function getDynamicFieldValues( $name ) : array
     {
         $name = trim( $name );
         
@@ -112,22 +209,46 @@ class Metadata extends Property
         return $field->getFieldValue()->getValues();
     }
     
+/**
+<documentation><description><p>Returns <code>endDate</code>.</p></description>
+<example>echo "End date: ", $m->getEndDate(), BR;</example>
+<return-type>mixed</return-type>
+</documentation>
+*/
     public function getEndDate()
     {
         return $this->end_date;
     }
     
-    public function getHostAsset()
+/**
+<documentation><description><p>Returns the host asset.</p></description>
+<example>$m->getHostAsset()->edit()->dump();</example>
+<return-type>Asset</return-type>
+</documentation>
+*/
+    public function getHostAsset() : a\Asset
     {
         return $this->host_asset;
     }
     
+/**
+<documentation><description><p>Returns <code>keywords</code>.</p></description>
+<example>echo "Keywords: ", $m->getKeywords(), BR;</example>
+<return-type>mixed</return-type>
+</documentation>
+*/
     public function getKeywords()
     {
         return $this->keywords;
     }
     
-    public function getMetadataSet()
+/**
+<documentation><description><p>Returns the <code>a\MetadataSet</code> object.</p></description>
+<example>$ms = $m->getMetadataSet();</example>
+<return-type>Asset</return-type>
+</documentation>
+*/
+    public function getMetadataSet() : a\Asset
     {
         if( $this->metadata_set == NULL )
         {
@@ -139,37 +260,84 @@ class Metadata extends Property
         return $this->metadata_set;
     }
     
+/**
+<documentation><description><p>Returns <code>metaDescription</code>.</p></description>
+<example>echo "Description: ", $m->getMetaDescription(), BR;</example>
+<return-type>mixed</return-type>
+</documentation>
+*/
     public function getMetaDescription()
     {
         return $this->meta_description;
     }
     
+/**
+<documentation><description><p>Returns <code>reviewDate</code>.</p></description>
+<example>echo "Review date: ", $m->getReviewDate(), BR;</example>
+<return-type>mixed</return-type>
+</documentation>
+*/
     public function getReviewDate()
     {
         return $this->review_date;
     }
     
+/**
+<documentation><description><p>Returns <code>startDate</code>.</p></description>
+<example>echo "Start date: ", $m->getStartDate(), BR;</example>
+<return-type>mixed</return-type>
+</documentation>
+*/
     public function getStartDate()
     {
         return $this->start_date;
     }
     
+/**
+<documentation><description><p>Returns <code>summary</code>.</p></description>
+<example>echo "Summary: ", $m->getSummary(), BR;</example>
+<return-type>mixed</return-type>
+</documentation>
+*/
     public function getSummary()
     {
         return $this->summary;
     }
     
+/**
+<documentation><description><p>Returns <code>teaser</code>.</p></description>
+<example>echo "Teaser: ", $m->getTeaser(), BR;</example>
+<return-type>mixed</return-type>
+</documentation>
+*/
     public function getTeaser()
     {
         return $this->teaser;
     }
     
+/**
+<documentation><description><p>Returns <code>title</code>.</p></description>
+<example>echo "Title: ", $m->getTitle(), BR;</example>
+<return-type>mixed</return-type>
+</documentation>
+*/
     public function getTitle()
     {
         return $this->title;
     }
     
-    public function hasDynamicField( $name )
+/**
+<documentation><description><p>Returns a bool, indicating whether the <code>DynamicField</code> bearing that name exists.</p></description>
+<example>if( $m->hasDynamicField( $text_name ) )
+{
+    // do something
+}
+</example>
+<return-type>bool</return-type>
+<exception>EmptyNameException</exception>
+</documentation>
+*/
+    public function hasDynamicField( $name ) : bool
     {
         if( $name == '' )
             throw new e\EmptyNameException(
@@ -181,84 +349,182 @@ class Metadata extends Property
         return in_array( $name, $this->dynamic_field_names );
     }
     
+/**
+<documentation><description><p>Returns a bool, indicating whether the <code>author</code> field is required.</p></description>
+<example>echo "Author: ", $m->isAuthorFieldRequired() ? "required" : "not required", BR;</example>
+<return-type>bool</return-type>
+</documentation>
+*/
     public function isAuthorFieldRequired() : bool
     {
         $this->checkMetadataSet();
         return $this->metadata_set->getAuthorFieldRequired();      
     }
     
+/**
+<documentation><description><p>An alias of <code>isMetaDescriptionFieldRequired</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+</documentation>
+*/
     public function isDescriptionFieldRequired() : bool
     {
         $this->checkMetadataSet();
         return $this->metadata_set->getDescriptionFieldRequired();      
     }
     
+/**
+<documentation><description><p>An alias of <code>isDynamicMetadataFieldRequired</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+</documentation>
+*/
     public function isDynamicFieldRequired( string $name ) : bool
     {
-        return isDynamicMetadataFieldRequired( $name );      
+        return $this->isDynamicMetadataFieldRequired( $name );      
     }
     
+/**
+<documentation><description><p>Returns a bool, indicating whether the named <code>dynamicField</code> is required.</p></description>
+<example>if( !$m->isDynamicMetadataFieldRequired( $text_name ) )
+    $text_df->setValue( NULL );</example>
+<return-type>bool</return-type>
+</documentation>
+*/
     public function isDynamicMetadataFieldRequired( string $name ) : bool
     {
         $this->checkMetadataSet();
         return $this->metadata_set->isDynamicMetadataFieldRequired( $name );      
     }
     
+/**
+<documentation><description><p>Returns a bool, indicating whether the <code>displayName</code> field is required.</p></description>
+<example>echo "Display name: ", $m->isDisplayNameFieldRequired() ? "required" : "not required", BR;</example>
+<return-type>bool</return-type>
+</documentation>
+*/
     public function isDisplayNameFieldRequired() : bool
     {
         $this->checkMetadataSet();
         return $this->metadata_set->getDisplayNameFieldRequired();      
     }
     
+/**
+<documentation><description><p>Returns a bool, indicating whether the <code>endDate</code> field is required.</p></description>
+<example>echo "End date: ", $m->isEndDateFieldRequired() ? "required" : "not required", BR;</example>
+<return-type>bool</return-type>
+</documentation>
+*/
     public function isEndDateFieldRequired() : bool
     {
         $this->checkMetadataSet();
         return $this->metadata_set->getEndDateFieldRequired();      
     }
     
+/**
+<documentation><description><p>Returns a bool, indicating whether the <code>endDate</code> field is required.</p></description>
+<example>echo "Expiration folder: ", $m->isExpirationFolderFieldRequired() ? "required" : "not required", BR;</example>
+<return-type>bool</return-type>
+</documentation>
+*/
     public function isExpirationFolderFieldRequired() : bool
     {
         $this->checkMetadataSet();
         return $this->metadata_set->getExpirationFolderFieldRequired();      
     }
     
+/**
+<documentation><description><p>Returns a bool, indicating whether the <code>keywords</code> field is required.</p></description>
+<example>echo "Keywords: ", $m->isKeywordsFieldRequired() ? "required" : "not required", BR;</example>
+<return-type>bool</return-type>
+</documentation>
+*/
     public function isKeywordsFieldRequired() : bool
     {
         $this->checkMetadataSet();
         return $this->metadata_set->getKeywordsFieldRequired();      
     }
+
+/**
+<documentation><description><p>Returns a bool, indicating whether the <code>metaDescription</code> field is required.</p></description>
+<example>echo "Description: ", $m->isMetaDescriptionFieldRequired() ? "required" : "not required", BR;</example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function isMetaDescriptionFieldRequired() : bool
+    {
+        $this->checkMetadataSet();
+        return $this->metadata_set->getDescriptionFieldRequired();      
+    }
     
+/**
+<documentation><description><p>Returns a bool, indicating whether the <code>reviewDate</code> field is required.</p></description>
+<example>echo "Review date: ", $m->isReviewDateFieldRequired() ? "required" : "not required", BR;</example>
+<return-type>bool</return-type>
+</documentation>
+*/
     public function isReviewDateFieldRequired() : bool
     {
         $this->checkMetadataSet();
         return $this->metadata_set->getReviewDateFieldRequired();      
     }
     
+/**
+<documentation><description><p>Returns a bool, indicating whether the <code>startDate</code> field is required.</p></description>
+<example>echo "Start date: ", $m->isStartDateFieldRequired() ? "required" : "not required", BR;</example>
+<return-type>bool</return-type>
+</documentation>
+*/
     public function isStartDateFieldRequired() : bool
     {
         $this->checkMetadataSet();
         return $this->metadata_set->getStartDateFieldRequired();      
     }
     
+/**
+<documentation><description><p>Returns a bool, indicating whether the <code>summary</code> field is required.</p></description>
+<example>echo "Summary: ", $m->isSummaryFieldRequired() ? "required" : "not required", BR;</example>
+<return-type>bool</return-type>
+</documentation>
+*/
     public function isSummaryFieldRequired() : bool
     {
         $this->checkMetadataSet();
         return $this->metadata_set->getSummaryFieldRequired();      
     }
     
+/**
+<documentation><description><p>Returns a bool, indicating whether the <code>teaser</code> field is required.</p></description>
+<example>echo "Teaser: ", $m->isTeaserFieldRequired() ? "required" : "not required", BR;</example>
+<return-type>bool</return-type>
+</documentation>
+*/
     public function isTeaserFieldRequired() : bool
     {
         $this->checkMetadataSet();
         return $this->metadata_set->getTeaserFieldRequired();      
     }
     
+/**
+<documentation><description><p>Returns a bool, indicating whether the <code>title</code> field is required.</p></description>
+<example>echo "Title: ", $m->isTitleFieldRequired() ? "required" : "not required", BR;</example>
+<return-type>bool</return-type>
+</documentation>
+*/
     public function isTitleFieldRequired() : bool
     {
         $this->checkMetadataSet();
         return $this->metadata_set->getTitleFieldRequired();      
     }
     
-    public function setAuthor( $author )
+/**
+<documentation><description><p>Sets <code>author</code> and returns the calling object.</p></description>
+<example>$m->setAuthor( "Wing" )->getHostAsset()->edit();</example>
+<return-type>Property</return-type>
+<exception>RequiredFieldException</exception>
+</documentation>
+*/
+    public function setAuthor( $author=NULL ) : Property
     {
         $author = trim( $author );
     
@@ -274,12 +540,19 @@ class Metadata extends Property
         return $this;
     }
     
-    public function setDisplayName( $display_name )
+/**
+<documentation><description><p>Sets <code>displayName</code> and returns the calling object.</p></description>
+<example>$m->setDisplayName( "Block" )->getHostAsset()->edit();</example>
+<return-type>Property</return-type>
+<exception>RequiredFieldException</exception>
+</documentation>
+*/
+    public function setDisplayName( $display_name=NULL ) : Property
     {
         $display_name = trim( $display_name );
     
         $this->checkMetadataSet();
-                
+
         if( $this->metadata_set->getDisplayNameFieldRequired() && $display_name == '' )
         {
             throw new e\RequiredFieldException(
@@ -290,12 +563,27 @@ class Metadata extends Property
         return $this;
     }
     
-    public function setDynamicField( $field, $values )
+/**
+<documentation><description><p>An alias of <code>setDynamicFieldValue</code>.</p></description>
+<example></example>
+<return-type>Property</return-type>
+</documentation>
+*/
+    public function setDynamicField( string $field, $values ) : Property
     {
         return $this->setDynamicFieldValue( $field, $values );
     }
     
-    public function setDynamicFieldValue( $field, $values ) // string or string array
+/**
+<documentation><description><p>Uses the set of values, sets the <code>DynamicField</code> object bearing that name, and returns the calling object.
+<code>$values</code> can be a string (containing a single value) or an array of strings.</p></description>
+<example>$values = array( "Swimming", "Reading" );
+$m->setDynamicFieldValue( $checkbox_name, $values );</example>
+<return-type>Property</return-type>
+<exception>RequiredFieldException, NoSuchValueException</exception>
+</documentation>
+*/
+    public function setDynamicFieldValue( string $field, $values ) : Property // string or string array
     {
         if( !is_array( $values ) )
         {
@@ -398,12 +686,26 @@ class Metadata extends Property
         return $this;
     }
     
-    public function setDynamicFieldValues( $field, $values )
+/**
+<documentation><description><p>An alias of <code>setDynamicFieldValue</code>.</p></description>
+<example></example>
+<return-type>Property</return-type>
+</documentation>
+*/
+    public function setDynamicFieldValues( $field, $values ) : Property
     {
         return $this->setDynamicField( $field, $values );
     }
     
-    public function setEndDate( $end_date )
+/**
+<documentation><description><p>Sets <code>endDate</code> and returns the calling object.
+The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</code>. For example, <code>"2014-02-21T12:00:00"</code>.</p></description>
+<example>$m->setEndDate( "2017-12-31T12:00:00" )->getHostAsset()->edit();</example>
+<return-type>Property</return-type>
+<exception>RequiredFieldException</exception>
+</documentation>
+*/
+    public function setEndDate( $end_date=NULL ) : Property
     {
         $end_date = trim( $end_date );
     
@@ -421,8 +723,15 @@ class Metadata extends Property
         $this->end_date = $end_date;
         return $this;
     }
-    
-    public function setKeywords( $keywords )
+   
+/**
+<documentation><description><p>Sets <code>keywords</code> and returns the calling object.</p></description>
+<example>$m->setKeywords( "Test, More Test" )->getHostAsset()->edit();</example>
+<return-type>Property</return-type>
+<exception>RequiredFieldException</exception>
+</documentation>
+*/
+    public function setKeywords( $keywords=NULL ) : Property
     {
         $keywords = trim( $keywords );
     
@@ -438,7 +747,14 @@ class Metadata extends Property
         return $this;
     }
     
-    public function setMetaDescription( $meta_description )
+/**
+<documentation><description><p>Sets <code>metaDescription</code> and returns the calling object.</p></description>
+<example>$m->setMetaDescription( "This is just a test" )->getHostAsset()->edit();</example>
+<return-type>Property</return-type>
+<exception>RequiredFieldException</exception>
+</documentation>
+*/
+    public function setMetaDescription( $meta_description=NULL ) : Property
     {
         $meta_description = trim( $meta_description );
     
@@ -454,7 +770,15 @@ class Metadata extends Property
         return $this;
     }
     
-    public function setReviewDate( $review_date )
+/**
+<documentation><description><p>Sets <code>reviewDate</code> and returns the calling object.
+The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</code>. For example, <code>"2014-02-21T12:00:00"</code>.</p></description>
+<example>$m->setReviewDate( "2016-12-31T12:00:00" )->getHostAsset()->edit();</example>
+<return-type>Property</return-type>
+<exception>RequiredFieldException</exception>
+</documentation>
+*/
+    public function setReviewDate( $review_date=NULL ) : Property
     {
         $review_date = trim( $review_date );
     
@@ -473,7 +797,15 @@ class Metadata extends Property
         return $this;
     }
     
-    public function setStartDate( $start_date )
+/**
+<documentation><description><p>ets <code>startDate</code> and returns the calling object.
+The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</code>. For example, <code>"2014-02-21T12:00:00"</code>.</p></description>
+<example>$m->setStartDate( "2016-01-01T00:00:00" )->getHostAsset()->edit();</example>
+<return-type>Property</return-type>
+<exception>RequiredFieldException</exception>
+</documentation>
+*/
+    public function setStartDate( $start_date=NULL ) : Property
     {
         $start_date = trim( $start_date );
     
@@ -492,7 +824,14 @@ class Metadata extends Property
         return $this;
     }
     
-    public function setSummary( $summary )
+/**
+<documentation><description><p>Sets <code>summary</code> and returns the calling object.</p></description>
+<example>$m->setSummary( "This is just a test" )->getHostAsset()->edit();</example>
+<return-type>Property</return-type>
+<exception>RequiredFieldException</exception>
+</documentation>
+*/
+    public function setSummary( $summary=NULL ) : Property
     {
         $summary = trim( $summary );
     
@@ -508,7 +847,14 @@ class Metadata extends Property
         return $this;
     }
     
-    public function setTeaser( $teaser )
+/**
+<documentation><description><p>Sets <code>teaser</code> and returns the calling object.</p></description>
+<example>$m->setTeaser( "This is just a test" )->getHostAsset()->edit();</example>
+<return-type>Property</return-type>
+<exception>RequiredFieldException</exception>
+</documentation>
+*/
+    public function setTeaser( $teaser=NULL ) : Property
     {
         $teaser = trim( $teaser );
     
@@ -524,7 +870,14 @@ class Metadata extends Property
         return $this;
     }
     
-    public function setTitle( $title )
+/**
+<documentation><description><p>Sets <code>title</code> and returns the calling object.</p></description>
+<example>$m->setTitle( "This is just a test" )->getHostAsset()->edit();</example>
+<return-type>Property</return-type>
+<exception>RequiredFieldException</exception>
+</documentation>
+*/
+    public function setTitle( $title=NULL ) : Property
     {
         $title = trim( $title );
     
@@ -540,19 +893,25 @@ class Metadata extends Property
         return $this;
     }
     
-    public function toStdClass()
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example>u\DebugUtility::dump( $m->toStdClass() );</example>
+<return-type>stdClass</return-type>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
-        $obj                  = new \stdClass();
-        $obj->author          = $this->author;
-        $obj->displayName     = $this->display_name;
-        $obj->endDate         = $this->end_date;
-        $obj->keywords        = $this->keywords;
-        $obj->metaDescription = $this->meta_description;
-        $obj->reviewDate      = $this->review_date;
-        $obj->startDate       = $this->start_date;
-        $obj->summary         = $this->summary;
-        $obj->teaser          = $this->teaser;
-        $obj->title           = $this->title;
+        $obj                       = new \stdClass();
+        $obj->author               = $this->author;
+        $obj->displayName          = $this->display_name;
+        $obj->endDate              = $this->end_date;
+        $obj->keywords             = $this->keywords;
+        $obj->metaDescription      = $this->meta_description;
+        $obj->reviewDate           = $this->review_date;
+        $obj->startDate            = $this->start_date;
+        $obj->summary              = $this->summary;
+        $obj->teaser               = $this->teaser;
+        $obj->title                = $this->title;
 
         $count = count( $this->dynamic_fields );
         
@@ -580,7 +939,13 @@ class Metadata extends Property
         return $obj;
     }
     
-    public static function getWiredFieldMethodName( $field_name )
+/**
+<documentation><description><p>Returns the <code>get</code> method name corresponding to the supplied wired field.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public static function getWiredFieldMethodName( string $field_name ) : string
     {
         if( self::isWiredField( $field_name ) )
         {
@@ -589,9 +954,15 @@ class Metadata extends Property
         return NULL;
     }
 
-    public static function isWiredField( $field_name )
+/**
+<documentation><description><p>Returns a bool, indicating whether the supplied name is associated with a wired field.</p></description>
+<example></example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public static function isWiredField( string $field_name ) : bool
     {
-        return in_array( $field_name, self::$wired_fields );
+        return in_array( $field_name, a\MetadataSet::$wired_fields );
     }
     
     private function checkMetadataSet()
@@ -621,12 +992,12 @@ class Metadata extends Property
             $this->dynamic_field_names[] = $field->name;
         }
     }
-    
+/*    
     private static $wired_fields = array(
         'author', 'displayName', 'endDate', 'keywords', 'metaDescription',
         'reviewDate', 'startDate', 'summary', 'teaser', 'title'
     );
-    
+*/    
     private $author;
     private $display_name;
     private $end_date;

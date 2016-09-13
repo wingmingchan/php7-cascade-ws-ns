@@ -100,30 +100,6 @@ class File extends Linkable
 /**
 <documentation><description><p></p></description>
 <example></example>
-<return-type>mixed</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getExpirationFolderId()
-    {
-        return $this->getProperty()->expirationFolderId;
-    }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
-<return-type>mixed</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getExpirationFolderPath()
-    {
-        return $this->getProperty()->expirationFolderPath;
-    }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -287,21 +263,7 @@ class File extends Linkable
         $this->getProperty()->data = $data;
         return $this;
     }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
-<return-type>Asset</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function setExpirationFolder( Folder $f ) : Asset
-    {
-        $this->getProperty()->expirationFolderId   = $f->getId();
-        $this->getProperty()->expirationFolderPath = $f->getPath();
-        return $this;
-    }
-        
+       
 /**
 <documentation><description><p></p></description>
 <example></example>

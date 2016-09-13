@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/13/2016 Fixed bugs in setExpirationFolder.
   * 9/16/2015 Fixed a bug in setMetadata.
   * 5/28/2015 Added namespaces.
   * 7/1/2014 Removed copy.
@@ -256,19 +257,32 @@ abstract class Linkable extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets the <code>expirationFolderId</code> and <code>expirationFolderPath</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setExpirationFolder( Folder $f )
+    public function setExpirationFolder( Folder $f=NULL ) : Asset
     {
-        $this->getProperty()->expirationFolderId   = $f->getId();
-        $this->getProperty()->expirationFolderPath = $f->getPath();
+        $ms = $this->getMetadataSet();
+        
+        if( $ms->getExpirationFolderFieldRequired() && $f === NULL )
+            throw new e\NullAssetException( c\M::NULL_FOLDER );
+        
+        if( $f === NULL )
+        {
+            $this->getProperty()->expirationFolderId  = NULL;
+            $this->getProperty()->expirationFolderPath = NULL;
+        }
+        else
+        {
+            $this->getProperty()->expirationFolderId   = $f->getId();
+            $this->getProperty()->expirationFolderPath = $f->getPath();
+        }
         return $this;
     }
-    
+        
 /**
 <documentation><description><p></p></description>
 <example></example>
