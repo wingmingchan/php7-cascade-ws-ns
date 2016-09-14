@@ -20,10 +20,26 @@ use cascade_ws_exception as e;
 use cascade_ws_property  as p;
 use cascade_ws_constants as c;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+<p>The <code>Block</code> class is the superclass of <code>TextBlock</code>, <code>DataDefinitionBlock</code> and so on.
+It is an abstract class and defines most of the methods shared by all types of blocks.</p>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/text_block.php">text_block.php</a></li></ul></postscript>
+</documentation>
+*/
 abstract class Block extends ContainedAsset
 {
     const DEBUG = false;
 
+/**
+<documentation><description><p>The constructor, overriding the parent method to process metadata.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     protected function __construct( 
         aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
@@ -32,10 +48,10 @@ abstract class Block extends ContainedAsset
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Edits and returns the calling object.</p></description>
+<example>$tb->setText( $text )->edit();</example>
+<return-type>Asset</return-type>
+<exception>EditingFailureException</exception>
 </documentation>
 */
     public function edit(
@@ -67,55 +83,55 @@ abstract class Block extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Returns <code>createdBy</code>.</p></description>
+<example>echo $tb->getCreatedBy() . BR;</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
 */
-    public function getCreatedBy()
+    public function getCreatedBy() : string
     {
         return $this->getProperty()->createdBy;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>createdDate</code>.</p></description>
+<example>echo $tb->getCreatedDate() . BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getCreatedDate()
+    public function getCreatedDate() : string
     {
         return $this->getProperty()->createdDate;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the named <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-field.php"><code>p\DynamicField</code></a> object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Property</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDynamicField( $name )
+    public function getDynamicField( $name ) : p\Property
     {
         return $this->metadata->getDynamicField( $name );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <code>p\DynamicField</code> objects.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDynamicFields()
+    public function getDynamicFields() : array
     {
         return $this->metadata->getDynamicFields();
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>expirationFolderId</code>.</p></description>
 <example></example>
 <return-type>mixed</return-type>
 <exception></exception>
@@ -127,7 +143,7 @@ abstract class Block extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>expirationFolderPath</code>.</p></description>
 <example></example>
 <return-type>mixed</return-type>
 <exception></exception>
@@ -139,9 +155,9 @@ abstract class Block extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>expirationFolderRecycled</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
@@ -151,9 +167,9 @@ abstract class Block extends ContainedAsset
     }
         
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>lastModifiedBy</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
@@ -163,9 +179,9 @@ abstract class Block extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>lastModifiedDate</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
@@ -175,25 +191,25 @@ abstract class Block extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/metadata.php"><code>p\Metadata</code></a> object.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMetadata()
+    public function getMetadata() : p\Property
     {
         return $this->metadata;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the <code>MetadataSet</code> object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMetadataSet()
+    public function getMetadataSet() : Asset
     {
         $service = $this->getService();
         
@@ -204,55 +220,55 @@ abstract class Block extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>metadataSetId</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMetadataSetId()
+    public function getMetadataSetId() : string
     {
         return $this->getProperty()->metadataSetId;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>metadataSetPath</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMetadataSetPath()
+    public function getMetadataSetPath() : string
     {
         return $this->getProperty()->metadataSetPath;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the metadata as an <code>\stdClass</code> object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>stdClass</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMetadataStdClass()
+    public function getMetadataStdClass() : \stdClass
     {
         return $this->metadata->toStdClass();
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a bool, indicating whether the named <code>p\DynamicField</code> exists.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function hasDynamicField( $name ) : bool
+    public function hasDynamicField( string $name ) : bool
     {
         return $this->metadata->hasDynamicField( $name );
     }
     
 /**
-<documentation><description><p>Sets the <code>expirationFolderId</code> and <code>expirationFolderPath</code>.</p></description>
+<documentation><description><p>Sets the <code>expirationFolderId</code> and <code>expirationFolderPath</code>, and returns the calling object.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -279,7 +295,7 @@ abstract class Block extends ContainedAsset
     }
         
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets the metadata, calls <code>edit</code>, and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -294,9 +310,9 @@ abstract class Block extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets the metadata set, calls <code>edit</code>, and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
@@ -316,13 +332,27 @@ abstract class Block extends ContainedAsset
         return $this;
     }
     
-    public static function getBlock( aohs\AssetOperationHandlerService $service, $id_string ) : Asset
+/**
+<documentation><description><p>Returns a <code>Block</code> object bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a block.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function getBlock( aohs\AssetOperationHandlerService $service, string $id_string ) : Asset
     {
         return self::getAsset( $service, 
             self::getBlockType( $service, $id_string ), $id_string );
     }
 
-    public static function getBlockType( aohs\AssetOperationHandlerService $service, $id_string ) : string
+/**
+<documentation><description><p>eturns the type of the block bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a block.</p></description>
+<example></example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function getBlockType( aohs\AssetOperationHandlerService $service, string $id_string ) : string
     {
         $types      
             = array( 

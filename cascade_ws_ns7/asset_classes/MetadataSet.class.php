@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/14/2016 Added removeField.
   * 9/9/2016 Added $wired_fields. Added default values to getMetadata.
   * 9/6/2016 Added isDynamicMetadataFieldRequired.
   * 12/29/2015 Added expirationFolderFieldRequired and expirationFolderFieldVisibility for 8.
@@ -749,7 +750,7 @@ Note that the object is populated with default values in dynamic fields.</p></de
 <exception></exception>
 </documentation>
 */
-    public function removeDynamicMetadataFieldDefinition( $name ) : Asset
+    public function removeDynamicMetadataFieldDefinition( string $name ) : Asset
     {
         if( !in_array( $name, $this->field_names ) )
         {
@@ -782,6 +783,18 @@ Note that the object is populated with default values in dynamic fields.</p></de
         $this->processDynamicMetadataFieldDefinition();
 
         return $this;
+    }
+    
+/**
+<documentation><description><p>An alias of <code>removeDynamicMetadataFieldDefinition</code>.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function removeField( string $name ) : Asset
+    {
+        return $this->removeDynamicMetadataFieldDefinition( $name );
     }
     
 /**

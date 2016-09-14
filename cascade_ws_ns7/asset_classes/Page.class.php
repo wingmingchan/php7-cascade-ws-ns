@@ -4,7 +4,6 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
-  * 9/6/2016 Added expiration folder-related code.
   * 6/20/2016 Added searchTextByPattern and searchWYSIWYGByPattern.
   * 6/2/2016 Added aliases.
   * 6/1/2016 Added isBlockChooser, isCalendarNode, isCheckboxNode, isDatetimeNode, isDropdownNode,
