@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/15/2016 Added quotes to string default values in parameters.
   * 9/12/2016 Added code to getClassName to deal with scalar types.
   * 9/9/2016 Changed the code of showMethodInfo.
   * 9/1/2016 Fixed a bug. Added static properties to class info.
@@ -669,6 +670,11 @@ method signatures.</p></description>
                             }
                             else
                             {
+                            	if( $param_type == "string" && $default_value != "" && 
+                            	    !StringUtility::startsWith( $default_value, '"' ) )
+                            	{
+                            		$default_value = '"' . $default_value . '"';
+                            	}
                                 $method_info .= " = $default_value";
                             }
                         }

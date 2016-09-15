@@ -1,9 +1,10 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>, Peter Thomas <thomaspe.upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/15/2016 Added outputDate, outputDuration and setTimeSpaceLimits.
   * 8/26/2016 Added constant NAME_SPACE.
   * 8/24/2016 Added documentation comments and changed the output to SCRIPT_FILENAME.
   * 3/17/2016 Minor bug fix.
@@ -64,6 +65,52 @@ the method call is from line 15 of the test program named <code>debug-utility.ph
     {
         self::getCallingInfo( $class, $line );
         echo $class . "::" . $line . ": " . StringUtility::getCoalescedString( $msg ) . BR;
+    }
+
+/**
+<documentation><description><p>Outputs the current date, using <code>$format</code> as a format string.</p></description>
+<example>u\DebugUtility::outputDate();</example>
+<return-type>void</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function outputDate( string $format="l jS \of F Y g:i.s a" )
+    {
+        date_default_timezone_set( 'US/Eastern' );   
+        echo S_P . "Script complete on " . date( $format ) . " &#x1f44d;" . E_P;
+    }
+    
+/**
+<documentation><description><p>Initializes the variable <code>end_time</code>, and displays the difference between <code>$start_time</code>
+and <code>end_time</code>.</p></description>
+<example>$start_time = time();
+// code here
+u\DebugUtility::outputDuration( $start_time );</example>
+<return-type>void</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function outputDuration( $start_time )
+    {
+        $end_time = time();
+        
+        if( isset( $start_time ) )
+            echo S_P, "Total time taken: " . ( $end_time - $start_time ) . " seconds" . E_P;
+    }
+
+/**
+<documentation><description><p>Outputs the current date, using <code>$format</code> as a format string.</p></description>
+<example>u\DebugUtility::setTimeSpaceLimits();</example>
+<return-type>void</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function setTimeSpaceLimits( int $time_limit=10000, string $space_limit="2048M" )
+    {
+        // to prevent time-out
+        set_time_limit ( 10000 );
+        // to prevent using up memory when traversing a large site
+        ini_set( 'memory_limit', $space_limit );
     }
 
     private static function getCallingInfo( &$class, &$line ) 

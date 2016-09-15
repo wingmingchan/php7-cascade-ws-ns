@@ -108,7 +108,10 @@ abstract class Block extends ContainedAsset
     
 /**
 <documentation><description><p>Returns the named <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-field.php"><code>p\DynamicField</code></a> object.</p></description>
-<example></example>
+<example>if( $tb->hasDynamicField( $field_name ) )
+{
+    $df = $tb->getDynamicField( $field_name );
+}</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -119,13 +122,13 @@ abstract class Block extends ContainedAsset
     }
     
 /**
-<documentation><description><p>Returns an array of <code>p\DynamicField</code> objects.</p></description>
+<documentation><description><p>Returns an array of <code>p\DynamicField</code> objects or <code>NULL</code>.</p></description>
 <example></example>
-<return-type>array</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDynamicFields() : array
+    public function getDynamicFields()
     {
         return $this->metadata->getDynamicFields();
     }
@@ -265,6 +268,18 @@ abstract class Block extends ContainedAsset
     public function hasDynamicField( string $name ) : bool
     {
         return $this->metadata->hasDynamicField( $name );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the named <code>p\DynamicField</code> exists.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function hasDynamicFields() : bool
+    {
+        return $this->metadata->hasDynamicFields();
     }
     
 /**

@@ -205,8 +205,8 @@ The <code>$possible_values</code> should be a string containing values, with sem
 <exception></exception>
 </documentation>
 */
-    public function addField( $field_name, $type, $label, 
-        $required=false, $visibility=c\T::VISIBLE, $possible_values="" ) : Asset
+    public function addField( string $field_name, string $type, string $label, 
+        bool $required=false, string $visibility=c\T::VISIBLE, string $possible_values="" ) : Asset
     {
         return $this->addDynamicFieldDefinition( $field_name, $type, $label, $required, $visibility, $possible_values );
     }
@@ -222,7 +222,7 @@ and returns the calling object.</p></description>
 <exception>EmptyValueException</exception>
 </documentation>
 */
-    public function appendValue( $name, $value ) : Asset
+    public function appendValue( string $name, string $value ) : Asset
     {
         $value = trim( $value );
         
@@ -405,7 +405,7 @@ If the field is a text field, this method returns an empty string.</p></descript
 <exception>NoSuchMetadataFieldDefinitionException</exception>
 </documentation>
 */
-    public function getDynamicMetadataFieldPossibleValueStrings( $name )
+    public function getDynamicMetadataFieldPossibleValueStrings( string $name )
     {
         if( !$this->hasDynamicMetadataFieldDefinition( $name ) )
             throw new e\NoSuchMetadataFieldDefinitionException( 

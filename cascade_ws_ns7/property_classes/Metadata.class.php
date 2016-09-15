@@ -139,7 +139,7 @@ class Metadata extends Property
 <exception>EmptyNameException, NoSuchFieldException</exception>
 </documentation>
 */
-    public function getDynamicField( $name ) : Property
+    public function getDynamicField( string $name ) : Property
     {
         $name = trim( $name );
         
@@ -154,7 +154,7 @@ class Metadata extends Property
         }
         
         throw new e\NoSuchFieldException(
-                S_SPAN . "The dynamic field $name does not exist" . E_SPAN );
+            S_SPAN . "The dynamic field $name does not exist" . E_SPAN );
     }
 
 /**
@@ -174,7 +174,7 @@ class Metadata extends Property
 <return-type>array</return-type>
 </documentation>
 */
-    public function getDynamicFieldPossibleValues( $name ) : array
+    public function getDynamicFieldPossibleValues( string $name ) : array
     {
         return $this->getMetadataSet()->getDynamicMetadataFieldPossibleValueStrings( $name );
     }
@@ -196,7 +196,7 @@ class Metadata extends Property
 <return-type>array</return-type>
 </documentation>
 */
-    public function getDynamicFieldValues( $name ) : array
+    public function getDynamicFieldValues( string $name ) : array
     {
         $name = trim( $name );
         
@@ -327,6 +327,18 @@ class Metadata extends Property
     }
     
 /**
+<documentation><description><p>An alias of <code>getDynamicFieldValues</code>.</p></description>
+<example></example>
+<return-type>array</return-type>
+<exception>EmptyNameException</exception>
+</documentation>
+*/
+    public function getValues( string $name ) : array
+    {
+        return $this->getDynamicFieldValues( $name );
+    }
+    
+/**
 <documentation><description><p>Returns a bool, indicating whether the <code>DynamicField</code> bearing that name exists.</p></description>
 <example>if( $m->hasDynamicField( $text_name ) )
 {
@@ -337,7 +349,7 @@ class Metadata extends Property
 <exception>EmptyNameException</exception>
 </documentation>
 */
-    public function hasDynamicField( $name ) : bool
+    public function hasDynamicField( string $name ) : bool
     {
         if( $name == '' )
             throw new e\EmptyNameException(
@@ -349,6 +361,17 @@ class Metadata extends Property
         return in_array( $name, $this->dynamic_field_names );
     }
     
+/**
+<documentation><description><p>An alias of <code>isPossibleValue</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function hasPossibleValue( string $field_name, string $value ) : bool
+    {
+        return $this->isPossibleValue( $field_name, $value );      
+    }
+
 /**
 <documentation><description><p>Returns a bool, indicating whether the <code>author</code> field is required.</p></description>
 <example>echo "Author: ", $m->isAuthorFieldRequired() ? "required" : "not required", BR;</example>
@@ -456,7 +479,23 @@ class Metadata extends Property
         $this->checkMetadataSet();
         return $this->metadata_set->getDescriptionFieldRequired();      
     }
-    
+
+/**
+<documentation><description><p>Returns a bool, indicating whether the <code>$value</code> is a possible value of the named field.</p></description>
+<example>if( $m->isPossibleValue( "exclude-from-menu", "Yes" ) )
+{
+    $m->setDynamicFieldValue( "exclude-from-menu", "Yes" );
+    $page->edit();
+}</example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function isPossibleValue( string $field_name, string $value ) : bool
+    {
+        $values = $this->getDynamicFieldValues( $field_name );
+        return in_array( $value, $values );      
+    }
+
 /**
 <documentation><description><p>Returns a bool, indicating whether the <code>reviewDate</code> field is required.</p></description>
 <example>echo "Review date: ", $m->isReviewDateFieldRequired() ? "required" : "not required", BR;</example>
@@ -524,7 +563,7 @@ class Metadata extends Property
 <exception>RequiredFieldException</exception>
 </documentation>
 */
-    public function setAuthor( $author=NULL ) : Property
+    public function setAuthor( string $author=NULL ) : Property
     {
         $author = trim( $author );
     
@@ -547,7 +586,7 @@ class Metadata extends Property
 <exception>RequiredFieldException</exception>
 </documentation>
 */
-    public function setDisplayName( $display_name=NULL ) : Property
+    public function setDisplayName( string $display_name=NULL ) : Property
     {
         $display_name = trim( $display_name );
     
@@ -692,7 +731,7 @@ $m->setDynamicFieldValue( $checkbox_name, $values );</example>
 <return-type>Property</return-type>
 </documentation>
 */
-    public function setDynamicFieldValues( $field, $values ) : Property
+    public function setDynamicFieldValues( string $field, $values ) : Property
     {
         return $this->setDynamicField( $field, $values );
     }
@@ -705,7 +744,7 @@ The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</
 <exception>RequiredFieldException</exception>
 </documentation>
 */
-    public function setEndDate( $end_date=NULL ) : Property
+    public function setEndDate( string $end_date=NULL ) : Property
     {
         $end_date = trim( $end_date );
     
@@ -731,7 +770,7 @@ The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</
 <exception>RequiredFieldException</exception>
 </documentation>
 */
-    public function setKeywords( $keywords=NULL ) : Property
+    public function setKeywords( string $keywords=NULL ) : Property
     {
         $keywords = trim( $keywords );
     
@@ -754,7 +793,7 @@ The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</
 <exception>RequiredFieldException</exception>
 </documentation>
 */
-    public function setMetaDescription( $meta_description=NULL ) : Property
+    public function setMetaDescription( string $meta_description=NULL ) : Property
     {
         $meta_description = trim( $meta_description );
     
@@ -778,7 +817,7 @@ The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</
 <exception>RequiredFieldException</exception>
 </documentation>
 */
-    public function setReviewDate( $review_date=NULL ) : Property
+    public function setReviewDate( string $review_date=NULL ) : Property
     {
         $review_date = trim( $review_date );
     
@@ -805,7 +844,7 @@ The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</
 <exception>RequiredFieldException</exception>
 </documentation>
 */
-    public function setStartDate( $start_date=NULL ) : Property
+    public function setStartDate( string $start_date=NULL ) : Property
     {
         $start_date = trim( $start_date );
     
@@ -831,7 +870,7 @@ The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</
 <exception>RequiredFieldException</exception>
 </documentation>
 */
-    public function setSummary( $summary=NULL ) : Property
+    public function setSummary( string $summary=NULL ) : Property
     {
         $summary = trim( $summary );
     
@@ -854,7 +893,7 @@ The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</
 <exception>RequiredFieldException</exception>
 </documentation>
 */
-    public function setTeaser( $teaser=NULL ) : Property
+    public function setTeaser( string $teaser=NULL ) : Property
     {
         $teaser = trim( $teaser );
     
@@ -877,7 +916,7 @@ The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</
 <exception>RequiredFieldException</exception>
 </documentation>
 */
-    public function setTitle( $title=NULL ) : Property
+    public function setTitle( string $title=NULL ) : Property
     {
         $title = trim( $title );
     
