@@ -4,6 +4,8 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/16/2016 Added $wired_fields and copyWiredFields.
+  * 9/15/2016 Added hasDynamicFields.
   * 9/6/2016 Added all isXRequired methods.
   * 1/8/2016 Added code to deal with host asset.
   * 5/28/2015 Added namespaces.
@@ -69,6 +71,11 @@ class Metadata extends Property
 {
     const DEBUG = false;
     const DUMP  = false;
+    
+    public static $wired_fields = array(
+        "author", "displayName", "endDate", "keywords", "metaDescription", 
+        "reviewDate","startDate", "summary", "teaser", "title"
+    );
 
 /**
 <documentation><description><p>The constructor.</p></description>
@@ -124,10 +131,10 @@ class Metadata extends Property
 /**
 <documentation><description><p>Returns <code>displayName</code>.</p></description>
 <example>echo "Display name: ", $m->getDisplayName(), BR</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 </documentation>
 */
-    public function getDisplayName() : string
+    public function getDisplayName()
     {
         return $this->display_name;
     }
@@ -359,6 +366,23 @@ class Metadata extends Property
             return false;
     
         return in_array( $name, $this->dynamic_field_names );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the <code>MetadataSet</code> object contains
+<code>DynamicMetadataFieldDefinition</code> objects.</p></description>
+<example>if( $m->hasDynamicFields() )
+{
+    // do something
+}
+</example>
+<return-type>bool</return-type>
+<exception>EmptyNameException</exception>
+</documentation>
+*/
+    public function hasDynamicFields() : bool
+    {
+        return count( $this->dynamic_field_names ) > 0;
     }
     
 /**
@@ -823,7 +847,8 @@ The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</
     
         $this->checkMetadataSet();
                 
-        if( $this->metadata_set->getReviewDateFieldRequired() && ( $review_date == '' || $review_date == NULL ) )
+        if( $this->metadata_set->getReviewDateFieldRequired() && 
+            ( $review_date == '' || $review_date == NULL ) )
         {
             throw new e\RequiredFieldException(
                 S_SPAN . "The reviewDate field is required." . E_SPAN );
@@ -850,7 +875,8 @@ The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</
     
         $this->checkMetadataSet();
                 
-        if( $this->metadata_set->getStartDateFieldRequired() && ( $start_date == '' || $start_date == NULL ) )
+        if( $this->metadata_set->getStartDateFieldRequired()
+            && ( $start_date == '' || $start_date == NULL ) )
         {
             throw new e\RequiredFieldException(
                 S_SPAN . "The startDate field is required." . E_SPAN );
@@ -979,6 +1005,36 @@ The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</
     }
     
 /**
+<documentation><description><p>Copies all the values of the wired fields
+from the old metadata to the new metadata. Note that if a field is required in the new
+metadata and there is no value in the corresponding field of the old metadata, then the
+string "NULL" will be used as the value.</p></description>
+<example>p\Metadata::copyWiredFields( $old_m, $new_m );</example>
+<return-type>void</return-type>
+</documentation>
+*/
+    public static function copyWiredFields( Metadata $old_m, Metadata $new_m )
+    {
+        foreach( self::$wired_fields as $field )
+        {
+        	$get_method_name = u\StringUtility::getMethodName( $field );
+        	$set_method_name = u\StringUtility::getMethodName( $field, "set" );
+        	$is_method_name  = u\StringUtility::getMethodName( $field, "is" ) .
+        	    "FieldRequired";
+        	
+        	$field_value    = $old_m->$get_method_name();
+        	$field_required = $new_m->$is_method_name();
+        	
+        	if( $field_required && ( is_null( $field_value ) || $field_value == "" ) )
+        	{
+        	    $field_value = u\StringUtility::getCoalescedString( NULL );
+        	}
+        	    
+        	$new_m->$set_method_name( $field_value );
+        }
+    }
+
+/**
 <documentation><description><p>Returns the <code>get</code> method name corresponding to the supplied wired field.</p></description>
 <example></example>
 <return-type>string</return-type>
@@ -1031,6 +1087,7 @@ The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</
             $this->dynamic_field_names[] = $field->name;
         }
     }
+    
 /*    
     private static $wired_fields = array(
         'author', 'displayName', 'endDate', 'keywords', 'metaDescription',
