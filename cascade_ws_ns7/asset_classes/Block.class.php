@@ -23,7 +23,8 @@ use cascade_ws_constants as c;
 /**
 <documentation>
 <description><h2>Introduction</h2>
-<p>The <code>Block</code> class is the superclass of <code>TextBlock</code>, <code>DataDefinitionBlock</code> and so on.
+<p>The <code>Block</code> class is the superclass of <code>TextBlock</code>,
+<code>DataDefinitionBlock</code> and so on.
 It is an abstract class and defines most of the methods shared by all types of blocks.</p>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/text_block.php">text_block.php</a></li></ul></postscript>
@@ -34,7 +35,8 @@ abstract class Block extends ContainedAsset
     const DEBUG = false;
 
 /**
-<documentation><description><p>The constructor, overriding the parent method to process metadata.</p></description>
+<documentation><description><p>The constructor, overriding the parent method to process
+metadata.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -66,7 +68,8 @@ abstract class Block extends ContainedAsset
         //$this->getProperty()->metadata   = $this->metadata->toStdClass();
         
         $asset->{ $p = $this->getPropertyName() }           = $this->getProperty();
-        $asset->{ $p = $this->getPropertyName() }->metadata = $this->metadata->toStdClass();
+        $asset->{ $p = $this->getPropertyName() }->metadata =
+            $this->metadata->toStdClass();
 
         if( self::DEBUG ){ u\DebugUtility::dump( $asset ); }
 
@@ -107,7 +110,8 @@ abstract class Block extends ContainedAsset
     }
     
 /**
-<documentation><description><p>Returns the named <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-field.php"><code>p\DynamicField</code></a> object.</p></description>
+<documentation><description><p>Returns the named
+<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-field.php"><code>p\DynamicField</code></a> object.</p></description>
 <example>if( $tb->hasDynamicField( $field_name ) )
 {
     $df = $tb->getDynamicField( $field_name );
@@ -116,14 +120,23 @@ abstract class Block extends ContainedAsset
 <exception></exception>
 </documentation>
 */
-    public function getDynamicField( $name ) : p\Property
+    public function getDynamicField( string $name ) : p\Property
     {
         return $this->metadata->getDynamicField( $name );
     }
     
 /**
-<documentation><description><p>Returns an array of <code>p\DynamicField</code> objects or <code>NULL</code>.</p></description>
-<example></example>
+<documentation><description><p>Returns an array of <code>p\DynamicField</code> objects
+or <code>NULL</code>.</p></description>
+<example>if( $tb->hasDynamicFields() )
+{
+    u\DebugUtility::dump( $tb->getDynamicFields() );
+}
+else
+{
+    echo "There are no dynamic fields", BR;
+}
+</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -135,7 +148,8 @@ abstract class Block extends ContainedAsset
     
 /**
 <documentation><description><p>Returns <code>expirationFolderId</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString(
+    $tb->getExpirationFolderId() ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -147,7 +161,8 @@ abstract class Block extends ContainedAsset
     
 /**
 <documentation><description><p>Returns <code>expirationFolderPath</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString(
+    $tb->getExpirationFolderPath() ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -159,7 +174,8 @@ abstract class Block extends ContainedAsset
     
 /**
 <documentation><description><p>Returns <code>expirationFolderRecycled</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::boolToString(
+    $tb->getExpirationFolderRecycled() ), BR;</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -171,7 +187,7 @@ abstract class Block extends ContainedAsset
         
 /**
 <documentation><description><p>Returns <code>lastModifiedBy</code>.</p></description>
-<example></example>
+<example>echo $tb->getLastModifiedBy() . BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -183,7 +199,7 @@ abstract class Block extends ContainedAsset
     
 /**
 <documentation><description><p>Returns <code>lastModifiedDate</code>.</p></description>
-<example></example>
+<example>echo $tb->getLastModifiedDate() . BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -195,7 +211,7 @@ abstract class Block extends ContainedAsset
     
 /**
 <documentation><description><p>Returns the <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/metadata.php"><code>p\Metadata</code></a> object.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $tb->getMetadata()->toStdClass() );</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -207,7 +223,7 @@ abstract class Block extends ContainedAsset
     
 /**
 <documentation><description><p>Returns the <code>MetadataSet</code> object.</p></description>
-<example></example>
+<example>$tb->getMetadataSet()->dump();</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
@@ -224,7 +240,7 @@ abstract class Block extends ContainedAsset
     
 /**
 <documentation><description><p>Returns <code>metadataSetId</code>.</p></description>
-<example></example>
+<example>echo $tb->getMetadataSetId(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -236,7 +252,7 @@ abstract class Block extends ContainedAsset
     
 /**
 <documentation><description><p>Returns <code>metadataSetPath</code>.</p></description>
-<example></example>
+<example>echo $tb->getMetadataSetPath(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -248,7 +264,7 @@ abstract class Block extends ContainedAsset
     
 /**
 <documentation><description><p>Returns the metadata as an <code>\stdClass</code> object.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $tb->getMetadataStdClass() );</example>
 <return-type>stdClass</return-type>
 <exception></exception>
 </documentation>
@@ -260,7 +276,10 @@ abstract class Block extends ContainedAsset
     
 /**
 <documentation><description><p>Returns a bool, indicating whether the named <code>p\DynamicField</code> exists.</p></description>
-<example></example>
+<example>if( $tb->hasDynamicField( $field_name ) )
+{
+    $df = $tb->getDynamicField( $field_name );
+}</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -272,7 +291,10 @@ abstract class Block extends ContainedAsset
     
 /**
 <documentation><description><p>Returns a bool, indicating whether the named <code>p\DynamicField</code> exists.</p></description>
-<example></example>
+<example>if( $tb->hasDynamicFields() )
+{
+    u\DebugUtility::dump( $tb->getDynamicFields() );
+}</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -284,9 +306,11 @@ abstract class Block extends ContainedAsset
     
 /**
 <documentation><description><p>Sets the <code>expirationFolderId</code> and <code>expirationFolderPath</code>, and returns the calling object.</p></description>
-<example></example>
+<example>$tb->setExpirationFolder(
+    $cascade->getAsset( a\Folder::TYPE, "2401bc368b7ffe834c5fe91e0027a274" )
+)->edit()->dump();</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>NullAssetException</exception>
 </documentation>
 */
     public function setExpirationFolder( Folder $f=NULL ) : Asset
@@ -326,7 +350,10 @@ abstract class Block extends ContainedAsset
     
 /**
 <documentation><description><p>Sets the metadata set, calls <code>edit</code>, and returns the calling object.</p></description>
-<example></example>
+<example>$tb->setMetadataSet(
+    $cascade->getAsset(
+        a\MetadataSet::TYPE, "cc1e51068b7ffe8364375ac78eca378c" )
+)->dump();</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
@@ -354,7 +381,8 @@ abstract class Block extends ContainedAsset
 <exception></exception>
 </documentation>
 */
-    public static function getBlock( aohs\AssetOperationHandlerService $service, string $id_string ) : Asset
+    public static function getBlock( 
+        aohs\AssetOperationHandlerService $service, string $id_string ) : Asset
     {
         return self::getAsset( $service, 
             self::getBlockType( $service, $id_string ), $id_string );
@@ -367,7 +395,8 @@ abstract class Block extends ContainedAsset
 <exception></exception>
 </documentation>
 */
-    public static function getBlockType( aohs\AssetOperationHandlerService $service, string $id_string ) : string
+    public static function getBlockType(
+        aohs\AssetOperationHandlerService $service, string $id_string ) : string
     {
         $types      
             = array( 
