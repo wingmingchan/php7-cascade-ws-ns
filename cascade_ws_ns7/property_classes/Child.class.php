@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/17/2016 Added initialization of recycled.
   * 12/15/2015 Fixed a bug in getAsset.
   * 6/16/2015 Fixed a bug in toStdClass.
   * 5/28/2015 Added namespaces.
@@ -41,6 +42,8 @@ class Child extends Property
             
             if( isset( $c->recycled ) )
                 $this->recycled = $c->recycled;
+            else
+            	$this->recycled = false;
         }
         else
         {
