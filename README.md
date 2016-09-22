@@ -36,7 +36,7 @@ DynamicMetadataFieldDefinition, PossibleValue, MetadataSet, DynamicField, FieldV
 </ul>
 
 
-<hr />
+<h2>Resources</h2>
 <ol>
 <li>For more information, visit http://www.upstate.edu/cascade-admin/web-services/index.php</li>
 <li>Online tutorials: http://www.upstate.edu/cascade-admin/web-services/courses/ws-online-tutorials.php</li>
