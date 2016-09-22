@@ -1057,7 +1057,14 @@ string "NULL" will be used as the value.</p></description>
 */
     public static function isWiredField( string $field_name ) : bool
     {
-        return in_array( $field_name, a\MetadataSet::$wired_fields );
+    	// check the array in MetadataSet
+    	$result = in_array( $field_name, a\MetadataSet::$wired_fields );
+    	
+    	// check the array in this class
+    	if( !$result )
+    		$result = in_array( $field_name, self::$wired_fields );
+    		
+        return $result;
     }
     
     private function checkMetadataSet()
