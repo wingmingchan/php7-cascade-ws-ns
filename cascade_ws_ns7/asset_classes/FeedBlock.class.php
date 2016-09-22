@@ -9,17 +9,53 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
-</description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<p>A <code>FeedBlock</code> object represents a feed block asset. This class is a sub-class of <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/block.php"><code>Block</code></a>.</p>
+<h2>Structure of <code>feedBlock</code></h2>
+<pre>feedBlock
+  id
+  name
+  parentFolderId
+  parentFolderPath
+  path
+  lastModifiedDate
+  lastModifiedBy
+  createdDate
+  createdBy
+  siteId
+  siteName
+  metadata
+    author
+    displayName
+    endDate
+    keywords
+    metaDescription
+    reviewDate
+    startDate
+    summary
+    teaser
+    title
+    dynamicFields (NULL or an stdClass)
+      dynamicField (an stdClass or or array of stdClass)
+        name
+        fieldValues (NULL, stdClass or array of stdClass)
+          fieldValue
+            value
+  metadataSetId
+  metadataSetPath
+  expirationFolderId
+  expirationFolderPath
+  expirationFolderRecycled
+  feedURL
+</pre></description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/feed_block.php">feed_block.php</a></li></ul></postscript>
 </documentation>
 */
 class FeedBlock extends Block
@@ -28,25 +64,26 @@ class FeedBlock extends Block
     const TYPE  = c\T::FEEDBLOCK;
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>feedURL</code>.</p></description>
+<example>echo "Feed URL: " . $fb->getFeedURL() . BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getFeedURL()
+    public function getFeedURL() : string
     {
         return $this->getProperty()->feedURL;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Sets <code>feedURL</code>, and returns the calling
+object.</p></description>
+<example>$fb->setFeedURL( $url )->edit()->dump();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setFeedURL( $url )
+    public function setFeedURL( $url ) : Asset
     {
         if( trim( $url ) == '' )
         {

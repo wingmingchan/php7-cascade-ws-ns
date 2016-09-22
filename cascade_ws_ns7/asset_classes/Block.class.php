@@ -27,7 +27,9 @@ use cascade_ws_constants as c;
 <code>DataDefinitionBlock</code> and so on.
 It is an abstract class and defines most of the methods shared by all types of blocks.</p>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/text_block.php">text_block.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/block.php">block.php</a></li>
+<li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/text_block.php">text_block.php</a></li>
+</ul></postscript>
 </documentation>
 */
 abstract class Block extends ContainedAsset
@@ -335,7 +337,7 @@ else
         
 /**
 <documentation><description><p>Sets the metadata, calls <code>edit</code>, and returns the calling object.</p></description>
-<example></example>
+<example>$tb->setMetadata( $new_m );</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -349,7 +351,8 @@ else
     }
     
 /**
-<documentation><description><p>Sets the metadata set, calls <code>edit</code>, and returns the calling object.</p></description>
+<documentation><description><p>Sets the metadata set, calls <code>edit</code>,
+and returns the calling object.</p></description>
 <example>$tb->setMetadataSet(
     $cascade->getAsset(
         a\MetadataSet::TYPE, "cc1e51068b7ffe8364375ac78eca378c" )
@@ -376,7 +379,7 @@ else
     
 /**
 <documentation><description><p>Returns a <code>Block</code> object bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a block.</p></description>
-<example></example>
+<example>$block = a\Block::getBlock( $service, $id )->dump();</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
@@ -390,7 +393,7 @@ else
 
 /**
 <documentation><description><p>eturns the type of the block bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a block.</p></description>
-<example></example>
+<example>echo a\Block::getBlockType( $service, $id ), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
