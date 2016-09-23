@@ -45,6 +45,7 @@ use cascade_ws_property as p;
   baseAssetId
   baseAssetPath
   baseAssetRecycled (bool)
+  description
   placementFolderId
   placementFolderPath
   placementFolderRecycled (bool)
