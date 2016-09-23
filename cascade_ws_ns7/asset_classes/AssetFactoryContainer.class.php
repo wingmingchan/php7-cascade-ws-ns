@@ -29,6 +29,7 @@ use cascade_ws_property  as p;
   siteId
   siteName
   applicableGroups
+  description
   children
     child
       id
