@@ -20,17 +20,62 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
-</description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<p>A <code>Folder</code> object represents a folder asset. This class is a sub-class of <a href="/web-services/api/asset-classes/container"><code>Container</code></a>.</p>
+<h2>Structure of <code>folder</code></h2>
+<pre>folder
+  id
+  name
+  parentFolderId
+  parentFolderPath
+  path
+  lastModifiedDate
+  lastModifiedBy
+  createdDate
+  createdBy
+  siteId
+  siteName
+  metadata
+    author
+    displayName
+    endDate
+    keywords
+    metaDescription
+    reviewDate
+    startDate
+    summary
+    teaser
+    title
+    dynamicFields (NULL or an stdClass)
+      dynamicField (an stdClass or or array of stdClass)
+        name
+        fieldValues (NULL, stdClass or array of stdClass)
+          fieldValue
+            value
+  metadataSetId
+  metadataSetPath
+  expirationFolderId
+  expirationFolderPath
+  expirationFolderRecycled
+  shouldBePublished
+  shouldBeIndexed
+  lastPublishedDate
+  lastPublishedBy
+  children
+    child (NULL, stdClass or array of stdClass)
+      id
+      path
+      type
+      recycled
+</pre></description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/folder.php">folder.php</a></li></ul></postscript>
 </documentation>
 */
 class Folder extends Container
@@ -40,7 +85,7 @@ class Folder extends Container
     const TYPE  = c\T::FOLDER;
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>The constructor, overriding the parent method to process metadata.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -56,23 +101,24 @@ class Folder extends Container
     
     // Adds a workflow definition to the settings
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Adds the workflow definition to the workflow settings,
+and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function addWorkflow( WorkflowDefinition $wf )
+    public function addWorkflow( WorkflowDefinition $wf ) : Asset
     {
         $this->getWorkflowSettings()->addWorkflowDefinition( $wf->getIdentifier() );
         return $this;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Overrides the parent method to take care of metadata, and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>EditingFailureException</exception>
 </documentation>
 */
     public function edit(
@@ -102,21 +148,25 @@ class Folder extends Container
         {
             throw new e\EditingFailureException( 
                 c\M::EDIT_ASSET_FAILURE . 
-                "<span style='color:red;font-weight:bold;'>Path: " . $folder->path . "</span>" .
+                "<span style='color:red;font-weight:bold;'>Path: " . 
+                $folder->path . "</span>" .
                 $service->getMessage() );
         }
         return $this->reloadProperty();
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets the two boolean flags and returns the object.
+Note that the <code>edit</code> method is not called because the workflow settings
+of a folder is a separate object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException, EditingFailureException</exception>
 </documentation>
 */
     public function editWorkflowSettings( 
-        $apply_inherit_workflows_to_children, $apply_require_workflow_to_children )
+        bool $apply_inherit_workflows_to_children, 
+        bool $apply_require_workflow_to_children ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $apply_inherit_workflows_to_children ) )
             throw new e\UnacceptableValueException( 
@@ -139,57 +189,59 @@ class Folder extends Container
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>createdBy</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getCreatedBy()
+    public function getCreatedBy() : string
     {
         return $this->getProperty()->createdBy;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>createdDate</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getCreatedDate()
+    public function getCreatedDate() : string
     {
         return $this->getProperty()->createdDate;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the <a
+href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-field.php"><code>p\DynamicField</code></a> object bearing that name.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>EmptyNameException, NoSuchFieldException</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDynamicField( $name )
+    public function getDynamicField( string $name ) : p\Property
     {
         return $this->metadata->getDynamicField( $name );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>NULL</code> or an array of
+<code>p\DynamicField</code> objects.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDynamicFields()
+    public function getDynamicFields() : array
     {
         return $this->metadata->getDynamicFields();
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>expirationFolderId</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -199,9 +251,9 @@ class Folder extends Container
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>expirationFolderPath</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -211,57 +263,57 @@ class Folder extends Container
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>expirationFolderRecycled</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getExpirationFolderRecycled()
+    public function getExpirationFolderRecycled() : bool
     {
         return $this->getProperty()->expirationFolderRecycled;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <code>id</code> strings of folder children.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getFolderChildrenIds()
+    public function getFolderChildrenIds() : array
     {
         return $this->getContainerChildrenIds();
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>lastModifiedBy</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getLastModifiedBy()
+    public function getLastModifiedBy() : string
     {
         return $this->getProperty()->lastModifiedBy;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>lastModifiedDate</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getLastModifiedDate()
+    public function getLastModifiedDate() : string
     {
         return $this->getProperty()->lastModifiedDate;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>lastPublishedBy</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -271,9 +323,9 @@ class Folder extends Container
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>lastPublishedDate</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -283,25 +335,26 @@ class Folder extends Container
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the <a
+href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/metadata.php"><code>Metadata</code></a> object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Property</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMetadata()
+    public function getMetadata() : p\Property
     {
         return $this->metadata;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the associated <code>MetadataSet</code> object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMetadataSet()
+    public function getMetadataSet() : Asset
     {
         $service = $this->getService();
         //echo $this->metadataSetId . BR;
@@ -313,45 +366,45 @@ class Folder extends Container
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>metadataSetId</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMetadataSetId()
+    public function getMetadataSetId() : string
     {
         return $this->getProperty()->metadataSetId;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>metadataSetPath</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMetadataSetPath()
+    public function getMetadataSetPath() : string
     {
         return $this->getProperty()->metadataSetPath;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the metadata property (an <code>\stdClass</code> object).</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>stdClass</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMetadataStdClass()
+    public function getMetadataStdClass() : \stdClass
     {
         return $this->metadata->toStdClass();
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>parentFolderId</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -361,9 +414,9 @@ class Folder extends Container
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>parentFolderPath</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -373,37 +426,38 @@ class Folder extends Container
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>shouldBeIndexed</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getShouldBeIndexed()
+    public function getShouldBeIndexed() : bool
     {
         return $this->getProperty()->shouldBeIndexed;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>shouldBePublished</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getShouldBePublished()
+    public function getShouldBePublished() : bool
     {
         return $this->getProperty()->shouldBePublished;
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>eturns the a <a
+href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/workflow-settings.php"><code>p\WorkflowSettings</code></a> object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>WorkflowSettings</return-type>
+<exception>Exception</exception>
 </documentation>
 */
-    public function getWorkflowSettings()
+    public function getWorkflowSettings() : p\WorkflowSettings
     {
         if( $this->workflow_settings == NULL )
         {
@@ -427,25 +481,25 @@ class Folder extends Container
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a bool, indicating whether the <code>DynamicField</code> bearing that name exists.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function hasDynamicField( $name )
+    public function hasDynamicField( string $name ) : bool
     {
         return $this->metadata->hasDynamicField( $name );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a bool, indicating whether the folder is publishable.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function isPublishable()
+    public function isPublishable() : bool
     {
         $path = $this->getPath();
         if( self::DEBUG ) { u\DebugUtility::out( $path ); }
@@ -456,19 +510,21 @@ class Folder extends Container
         }
         else
         {
-            $parent = $this->getAsset( $this->getService(), Folder::TYPE, $this->getParentContainerId() );
+            $parent = $this->getAsset(
+                $this->getService(), Folder::TYPE, $this->getParentContainerId() );
             return $parent->isPublishable() && $this->getShouldBePublished();
         }
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Publishes the folder and returns the
+calling object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function publish( Destination $destination=NULL )
+    public function publish( Destination $destination=NULL ) : Asset
     {
         if( isset( $destination ) )
         {
@@ -483,7 +539,8 @@ class Folder extends Container
 
             if( isset( $destination ) )
                 $service->publish( 
-                    $service->createId( $this->getType(), $this->getId() ), $destination_std );
+                    $service->createId( $this->getType(), $this->getId() ),
+                    $destination_std );
             else
                 $service->publish( 
                     $service->createId( $this->getType(), $this->getId() ) );
@@ -492,8 +549,8 @@ class Folder extends Container
     }
     
 /**
-<documentation><description><p>Sets the <code>expirationFolderId</code> and <code>expirationFolderPath</code>.</p></description>
-<example></example>
+<documentation><description><p>Sets the <code>expirationFolderId</code> and <code>expirationFolderPath</code>, and returns teh calling object.</p></description>
+<example>Asset</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
@@ -519,13 +576,14 @@ class Folder extends Container
     }
         
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets the <code>metadata</code> property, calls
+<code>edit</code>, and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setMetadata( p\Metadata $m )
+    public function setMetadata( p\Metadata $m ) : Asset
     {
         $this->metadata = $m;
         $this->edit();
@@ -534,13 +592,15 @@ class Folder extends Container
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>metadataSetId</code> and
+<code>metadataSetPath</code>, calls <code>edit</code>, and returns
+the calling object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setMetadataSet( MetadataSet $ms )
+    public function setMetadataSet( MetadataSet $ms ) : Asset
     {
         if( $ms == NULL )
         {
@@ -556,13 +616,14 @@ class Folder extends Container
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>shouldBeIndexed</code>
+and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setShouldBeIndexed( $bool )
+    public function setShouldBeIndexed( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException( "The value $bool must be a boolean" );
@@ -572,13 +633,14 @@ class Folder extends Container
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>shouldBePublished</code> and returns the
+calling object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setShouldBePublished( $bool )
+    public function setShouldBePublished( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException( "The value $bool must be a boolean" );
@@ -588,13 +650,14 @@ class Folder extends Container
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Unpublishes the folder and returns the
+calling object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function unpublish()
+    public function unpublish() : Asset
     {
         $this->getService()->unpublish( $this->getIdentifier() );
         return $this;
