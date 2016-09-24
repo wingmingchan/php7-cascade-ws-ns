@@ -216,7 +216,7 @@ then the id's returned are id's of all children of the type asset factory contai
             throw new e\WrongAssetTypeException( 
                 "The asset is not a type of ContainedAsset object" );
             
-        return $asset->isInContainer( $this );
+        return $asset->isChildOf( $this );
     }
             
 /**

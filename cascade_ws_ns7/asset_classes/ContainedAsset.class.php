@@ -4,6 +4,9 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/24/2016 Changed isInContainer to isChildOf.
+    Turned isInContainer to an alias of isDescendantOf.
+    Added isContainedBy.
   * 8/30/2016 Fixed a bug in getParentContainerId.
   * 4/25/2016 Added isDescendantOf.
   * 5/28/2015 Added namespaces.
@@ -105,6 +108,36 @@ abstract class ContainedAsset extends Asset
     }
     
 /**
+<documentation><description><p>Returns a bool, indicating whether the asset is a direct child of the named container.</p></description>
+<example>if( $page->isInContainer( $test2 ) )
+    $page->move( $test1, false );</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isChildOf( Container $c ) : bool
+    {
+        if( $this->getType() == c\T::SITE )
+        {
+            throw new e\WrongAssetTypeException( c\M::SITE_NO_PARENT_CONTAINER );
+        }
+        return $c->getId() == $this->getParentContainerId();
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isDescendantOf</code>.</p></description>
+<example>if( $page->isInContainer( $test2 ) )
+    $page->move( $test1, false );</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isContainedBy( Container $container ) : bool
+    {
+        return $this->isDescendantOf( $container );
+    }
+    
+/**
 <documentation><description><p>Returns a bool, indicating whether this asset is a descendant of the named container.</p></description>
 <example>echo u\StringUtility::boolToString( $dd->isDescendantOf( $msc ) ), BR;</example>
 <return-type>bool</return-type>
@@ -113,24 +146,24 @@ abstract class ContainedAsset extends Asset
 */
     public function isDescendantOf( Container $container ) : bool
     {
+        if( $this->getType() == c\T::SITE )
+        {
+            throw new e\WrongAssetTypeException( c\M::SITE_NO_PARENT_CONTAINER );
+        }
         return $container->isAncestorOf( $this );
     }
     
 /**
-<documentation><description><p>Returns a bool, indicating whether the asset is a direct child of the named container.</p></description>
+<documentation><description><p>An alias of <code>isDescendantOf</code>.</p></description>
 <example>if( $page->isInContainer( $test2 ) )
     $page->move( $test1, false );</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function isInContainer( Container $c ) : bool
+    public function isInContainer( Container $container ) : bool
     {
-        if( $this->getType() == c\T::SITE )
-        {
-            throw new e\WrongAssetTypeException( c\M::SITE_NO_PARENT_CONTAINER );
-        }
-        return $c->getId() == $this->getParentContainerId();
+        return $this->isDescendantOf( $container );
     }
     
 /**
