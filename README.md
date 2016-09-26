@@ -29,8 +29,9 @@ u\ReflectionUtility::showFunctionSignature( "str_replace", true );
 
 <h2>Progress</h2>
 <ul>
-<li>Updated Asset, Audit, ContainedAsset, AssetFactory, Container, AssetFactoryContainer,
-DynamicMetadataFieldDefinition, PossibleValue, MetadataSet, DynamicField, FieldValue, Metadata, Block, FeedBlock, IndexBlock, TextBlock, AssetTree, and associated test code.</li>
+<li>Updated Asset, AssetFactory, AssetFactoryContainer, AssetTree, Audit, Block, ContainedAsset, Container, DynamicField, 
+DynamicMetadataFieldDefinition, FeedBlock, FieldValue, IndexBlock, 
+Metadata, MetadataSet, PossibleValue, TextBlock, and associated test code.</li>
 <li>Added methods to a few classes for Cascade 8.</li>
 <li>All utility classes have been updated.</li>
 </ul>
