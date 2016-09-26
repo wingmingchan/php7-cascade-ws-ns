@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  *  9/26/2016 Added EXPIRATION_FOLDER_RECYCLED.
   *  8/14/2016 Added INFORMATION_NOT_AVAILABLE.
   *  8/13/2016 Added more HTML constants used in ReflectionUtility.
   *  6/2/2016 Added constants related to types of structured data nodes.
@@ -107,6 +108,7 @@ class L // output labels for displaying purposes
     const DATE                    = "Date: ";
     const EXPIRATION_FOLDER_ID    = "Expiration folder ID: ";
     const EXPIRATION_FOLDER_PATH  = "Expiration folder path: ";
+    const EXPIRATION_FOLDER_RECYCLED  = "Expiration folder recycled: ";
     const FROM                    = "From: ";
     const ID                      = "ID: ";
     const LAST_MODIFIED_BY        = "Last modified by: ";
