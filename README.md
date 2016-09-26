@@ -7,7 +7,7 @@ constantly remains complete with all new features I am adding, and users can use
 take advantage of the new features. I expect that this upgrade process will last for a few months.</p>
 
 <h2>Purpose of the Upgrade</h2>
-<p>The library is upgraded to PHP 7 due to two main reasons:</p>
+<p>The library is being upgraded to PHP 7 due to two main reasons:</p>
 <ul>
 <li>When using parameter types and return types, I can have tighter control over client code</li>
 <li>I can use the type information, together with the ReflectionUtility class, to generate documentation pages; for an example of a generated page, see http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/asset.php</li>
