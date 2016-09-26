@@ -99,10 +99,8 @@ class Folder extends Container
         $this->processMetadata();
     }
     
-    // Adds a workflow definition to the settings
 /**
-<documentation><description><p>Adds the workflow definition to the workflow settings,
-and returns the calling object.</p></description>
+<documentation><description><p>An alias of <code>addWorkflowDefinition</code>.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -110,13 +108,26 @@ and returns the calling object.</p></description>
 */
     public function addWorkflow( WorkflowDefinition $wf ) : Asset
     {
-        $this->getWorkflowSettings()->addWorkflowDefinition( $wf->getIdentifier() );
+        return $this->addWorkflowDefinition( $wf );
+    }
+    
+/**
+<documentation><description><p>Adds the workflow definition to the workflow settings,
+and returns the calling object. Note that this method does not called <code>editWorkflowSettings</code>.</p></description>
+<example>$f->addWorkflow( $wd )->editWorkflowSettings( true, true );</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function addWorkflowDefinition( WorkflowDefinition $wf ) : Asset
+    {
+        $this->getWorkflowSettings()->addWorkflowDefinition( $wf );
         return $this;
     }
     
 /**
 <documentation><description><p>Overrides the parent method to take care of metadata, and returns the calling object.</p></description>
-<example></example>
+<example>$folder->edit();</example>
 <return-type>Asset</return-type>
 <exception>EditingFailureException</exception>
 </documentation>
@@ -159,7 +170,7 @@ and returns the calling object.</p></description>
 <documentation><description><p>Sets the two boolean flags and returns the object.
 Note that the <code>edit</code> method is not called because the workflow settings
 of a folder is a separate object.</p></description>
-<example></example>
+<example>$f->editWorkflowSettings( true, true );</example>
 <return-type>Asset</return-type>
 <exception>UnacceptableValueException, EditingFailureException</exception>
 </documentation>
@@ -190,7 +201,7 @@ of a folder is a separate object.</p></description>
     
 /**
 <documentation><description><p>Returns <code>createdBy</code>.</p></description>
-<example></example>
+<example>echo $f->getCreatedBy() . BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -202,7 +213,7 @@ of a folder is a separate object.</p></description>
     
 /**
 <documentation><description><p>Returns <code>createdDate</code>.</p></description>
-<example></example>
+<example>echo $f->getCreatedDate() . BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -215,7 +226,12 @@ of a folder is a separate object.</p></description>
 /**
 <documentation><description><p>Returns the <a
 href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-field.php"><code>p\DynamicField</code></a> object bearing that name.</p></description>
-<example></example>
+<example>$field_name = 'exclude-from-left';
+echo "Dumping dynamic field $field_name" . S_PRE;
+
+if( $f->hasDynamicField( $field_name ) )
+    u\DebugUtility::dump( $f->getDynamicField( $field_name ) );
+echo E_PRE . HR;</example>
 <return-type>EmptyNameException, NoSuchFieldException</return-type>
 <exception></exception>
 </documentation>
@@ -228,7 +244,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
 /**
 <documentation><description><p>Returns <code>NULL</code> or an array of
 <code>p\DynamicField</code> objects.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $f->getDynamicFields() );</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -240,7 +256,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
     
 /**
 <documentation><description><p>Returns <code>expirationFolderId</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $f->getExpirationFolderId() ) . BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -252,7 +268,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
     
 /**
 <documentation><description><p>Returns <code>expirationFolderPath</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $f->getExpirationFolderPath() ) . BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -264,7 +280,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
     
 /**
 <documentation><description><p>Returns <code>expirationFolderRecycled</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::boolToString( $f->getExpirationFolderRecycled() ) . BR;</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -276,7 +292,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
     
 /**
 <documentation><description><p>Returns an array of <code>id</code> strings of folder children.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $f->getFolderChildrenIds() );</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -288,7 +304,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
 
 /**
 <documentation><description><p>Returns <code>lastModifiedBy</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $f->getLastModifiedBy() ) .   BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -300,7 +316,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
     
 /**
 <documentation><description><p>Returns <code>lastModifiedDate</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $f->getLastModifiedDate() ) .   BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -312,7 +328,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
     
 /**
 <documentation><description><p>Returns <code>lastPublishedBy</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $f->getLastPublishedBy() ) .   BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -324,7 +340,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
     
 /**
 <documentation><description><p>Returns <code>lastPublishedDate</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $f->getLastPublishedDate() ) .   BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -337,7 +353,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
 /**
 <documentation><description><p>Returns the <a
 href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/metadata.php"><code>Metadata</code></a> object.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $f->getMetadata()->toStdClass() );</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -349,7 +365,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
     
 /**
 <documentation><description><p>Returns the associated <code>MetadataSet</code> object.</p></description>
-<example></example>
+<example>$f->getMetadataSet()->dump();</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
@@ -367,7 +383,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
     
 /**
 <documentation><description><p>Returns <code>metadataSetId</code>.</p></description>
-<example></example>
+<example>echo $f->getMetadataSetId() . BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -379,7 +395,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
     
 /**
 <documentation><description><p>Returns <code>metadataSetPath</code>.</p></description>
-<example></example>
+<example>echo $f->getMetadataSetPath() . BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -391,7 +407,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
     
 /**
 <documentation><description><p>Returns the metadata property (an <code>\stdClass</code> object).</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $f->getMetadataStdClass() );</example>
 <return-type>stdClass</return-type>
 <exception></exception>
 </documentation>
@@ -403,7 +419,8 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
     
 /**
 <documentation><description><p>Returns <code>parentFolderId</code>.</p></description>
-<example></example>
+<example>echo "Parent folder ID: ", u\StringUtility::getCoalescedString(
+    $f->getParentFolderId() ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -415,7 +432,8 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
     
 /**
 <documentation><description><p>Returns <code>parentFolderPath</code>.</p></description>
-<example></example>
+<example>echo "Parent folder path: ", u\StringUtility::getCoalescedString(
+    $f->getParentFolderPath() ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -427,7 +445,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
 
 /**
 <documentation><description><p>Returns <code>shouldBeIndexed</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::boolToString( $f->getShouldBeIndexed() ) . BR;</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -439,7 +457,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
     
 /**
 <documentation><description><p>Returns <code>shouldBePublished</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::boolToString( $f->getShouldBePublished() ) . BR;</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -452,7 +470,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
 /**
 <documentation><description><p>eturns the a <a
 href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/workflow-settings.php"><code>p\WorkflowSettings</code></a> object.</p></description>
-<example></example>
+<example>$ws = $f->getWorkflowSettings();</example>
 <return-type>WorkflowSettings</return-type>
 <exception>Exception</exception>
 </documentation>
@@ -482,7 +500,25 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/wor
     
 /**
 <documentation><description><p>Returns a bool, indicating whether the <code>DynamicField</code> bearing that name exists.</p></description>
-<example></example>
+<example>if( !$f->hasWorkflowDefinition( $wd ) )
+{
+    $f->addWorkflow( $wd )->editWorkflowSettings( true, true );
+}</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function hasWorkflowDefinition( WorkflowDefinition $wf ) : bool
+    {
+        return $this->getWorkflowSettings()->hasWorkflowDefinition(
+        	$wf->getId()
+        );
+    }
+
+/**
+<documentation><description><p>Returns a bool, indicating whether the <code>DynamicField</code> bearing that name exists.</p></description>
+<example>if( $f->hasDynamicField( $field_name ) )
+    u\DebugUtility::dump( $f->getDynamicField( $field_name ) );</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -491,10 +527,11 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/wor
     {
         return $this->metadata->hasDynamicField( $name );
     }
-    
+   
 /**
 <documentation><description><p>Returns a bool, indicating whether the folder is publishable.</p></description>
-<example></example>
+<example>echo "Is folder publishable: ", u\StringUtility::boolToString(
+    $f->isPublishable() ), BR;</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -519,7 +556,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/wor
 /**
 <documentation><description><p>Publishes the folder and returns the
 calling object.</p></description>
-<example></example>
+<example>$folder->publish();</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
@@ -549,8 +586,34 @@ calling object.</p></description>
     }
     
 /**
+<documentation><description><p>An alias of <code>removeWorkflowDefinition</code>.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function removeWorkflow( WorkflowDefinition $wf ) : Asset
+    {
+        return $this->removeWorkflowDefinition( $wf );
+    }
+    
+/**
+<documentation><description><p>Removes the workflow definition from the workflow settings,
+and returns the calling object. Note that this method does not called <code>editWorkflowSettings</code>.</p></description>
+<example>$f->removeWorkflow( $wd )->editWorkflowSettings( true, true );</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function removeWorkflowDefinition( WorkflowDefinition $wf ) : Asset
+    {
+        $this->getWorkflowSettings()->removeWorkflowDefinition( $wf );
+        return $this;
+    }
+    
+/**
 <documentation><description><p>Sets the <code>expirationFolderId</code> and <code>expirationFolderPath</code>, and returns teh calling object.</p></description>
-<example>Asset</example>
+<example></example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
@@ -578,7 +641,7 @@ calling object.</p></description>
 /**
 <documentation><description><p>Sets the <code>metadata</code> property, calls
 <code>edit</code>, and returns the calling object.</p></description>
-<example></example>
+<example>$folder->setMetadataSet( $new_ms )->setMetadata( $new_m );</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
@@ -595,7 +658,7 @@ calling object.</p></description>
 <documentation><description><p>Sets <code>metadataSetId</code> and
 <code>metadataSetPath</code>, calls <code>edit</code>, and returns
 the calling object.</p></description>
-<example></example>
+<example>$folder->setMetadataSet( $new_ms )->setMetadata( $new_m );</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
@@ -618,7 +681,8 @@ the calling object.</p></description>
 /**
 <documentation><description><p>Sets <code>shouldBeIndexed</code>
 and returns the calling object.</p></description>
-<example></example>
+<example>$f->setShouldBeIndexed( true )->setShouldBePublished( true )->
+    edit()->dump();</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
@@ -635,7 +699,8 @@ and returns the calling object.</p></description>
 /**
 <documentation><description><p>Sets <code>shouldBePublished</code> and returns the
 calling object.</p></description>
-<example></example>
+<example>$f->setShouldBeIndexed( true )->setShouldBePublished( true )->
+    edit()->dump();</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
@@ -652,7 +717,7 @@ calling object.</p></description>
 /**
 <documentation><description><p>Unpublishes the folder and returns the
 calling object.</p></description>
-<example></example>
+<example>$f->unpublish();</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
