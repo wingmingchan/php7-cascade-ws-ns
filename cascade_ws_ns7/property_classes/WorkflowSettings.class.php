@@ -4,20 +4,64 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/26/2016 Changed signatures of addWorkflowDefinition, added remove methods and aliases.
   * 6/23/2015 Added getInheritedWorkflowDefinitions, setInheritWorkflows.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_asset as a;
+use cascade_ws_asset     as a;
 
-class WorkflowSettings extends Property
+/**
+<documentation><description><h2>Introduction</h2>
+<p>A <code>WorkflowSettings</code> object represents a <code>workflowSettings</code> property associated with an asset (e.g., a folder).</p>
+<h2>Structure of <code>workflowSettings</code></h2>
+<pre>workflowSettings
+  identifier (identifier of the associated asset; e.g., a folder)
+    id
+    path
+      path
+      siteId
+      siteName
+    type (e.g., folder)
+    recycled
+  workflowDefinitions
+    assetIdentifier
+      id
+      path
+        path
+        siteId
+        siteName
+      type (workflowdefinition)
+      recycled
+  inheritWorkflows
+  requireWorkflow
+  inheritedWorkflowDefinitions
+    assetIdentifier
+      id
+      path
+        path
+        siteId
+        siteName
+      type (workflowdefinition)
+      recycled
+</pre>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/workflow_settings.php">workflow_settings.php</a></li></ul></postscript>
+</documentation>
+*/class WorkflowSettings extends Property
 {
-    public function __construct( 
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+<exception>EmptyValueException</exception>
+</documentation>
+*/    public function __construct( 
         \stdClass $wfs_std=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
         $data1=NULL, 
@@ -40,7 +84,8 @@ class WorkflowSettings extends Property
         
         $this->workflow_definitions = array();
         
-        if( isset( $wfs_std->workflowDefinitions ) && isset( $wfs_std->workflowDefinitions->assetIdentifier ) )
+        if( isset( $wfs_std->workflowDefinitions ) && 
+            isset( $wfs_std->workflowDefinitions->assetIdentifier ) )
         {
             $asset_identifiers = $wfs_std->workflowDefinitions->assetIdentifier;
             
@@ -72,49 +117,97 @@ class WorkflowSettings extends Property
             
             foreach( $asset_identifiers as $asset_identifier )
             {
-                $this->inherited_workflow_definitions[] = new Identifier( $asset_identifier );
+                $this->inherited_workflow_definitions[] = 
+                    new Identifier( $asset_identifier );
             }
         }
         $this->service = $service;
     }
     
-    public function addWorkflowDefinition( Identifier $id )
+/**
+<documentation><description>Adds the workflow definition to the array of <code>workflowDefinitions</code>,
+and returns the calling object.</description>
+<example>if( !$ws->hasWorkflowDefinition( $wd_id ) )
+    $ws->addWorkflowDefinition( $wd );</example>
+<return-type>Property</return-type>
+<exception>Exception</exception>
+</documentation>
+*/
+    public function addWorkflowDefinition( a\WorkflowDefinition $wd ) : Property
     {
-        if( $id->getType() != c\T::WORKFLOWDEFINITION )
-        {
-            throw new \Exception(
-                S_SPAN . "The identifier is unacceptable." . E_SPAN );
-        }
-        if( $this->hasWorkflowDefinition( $id->getId() ) )
+        if( $this->hasWorkflowDefinition( $wd->getId() ) )
         {
             return $this;
         }
         
-        $this->workflow_definitions[] = $id;
+        $this->workflow_definitions[] = new Identifier(
+        	$wd->getIdentifier()
+        );
         return $this;
     }
     
-    public function getInheritedWorkflowDefinitions()
+/**
+<documentation><description>Returns an array of <code>Identifier</code> of inherited workflow defintions.</description>
+<example>u\DebugUtility::dump( $ws->getInheritedWorkflowDefinitions() );</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getInheritedWorkflowDefinitions() : array
     {
         return $this->inherited_workflow_definitions;
     }
     
-    public function getInheritWorkflows()
+/**
+<documentation><description>Returns <code>inheritWorkflows</code>.</description>
+<example>u\DebugUtility::out( u\StringUtility::boolToString( $ws->getInheritWorkflows() ) );</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getInheritWorkflows() : bool
     {
         return $this->inherit_workflows;
     }
     
-    public function getRequireWorkflows()
+/**
+<documentation><description>Returns <code>requireWorkflow</code>.</description>
+<example>u\DebugUtility::out( u\StringUtility::boolToString( $ws->getRequireWorkflow() ) );</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getRequireWorkflow() : bool
     {
         return $this->require_workflow;
     }
     
-    public function getWorkflowDefinitions()
+/**
+<documentation><description>Returns an array of <code>Identifier</code> objects.</description>
+<example>u\DebugUtility::dump( $ws->getWorkflowDefinitions() );</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getWorkflowDefinitions() : array
     {
         return $this->workflow_definitions;
     }
     
-    public function hasWorkflowDefinition( $id )
+/**
+<documentation><description>Returns a bool, indicating whether the id (string) is a valid
+id of a workflow definition in <code>workflowDefinitions</code>.</description>
+<example>// toggle
+if( $ws->hasWorkflowDefinition( $wd_id ) )
+    $ws->removeWorkflowDefinition( $wd );
+else
+    $ws->addWorkflowDefinition( $wd );
+</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function hasWorkflowDefinition( string $id ) : bool
     {
         foreach( $this->workflow_definitions as $def )
         {
@@ -126,9 +219,41 @@ class WorkflowSettings extends Property
         return false;
     }
     
-    // remove workflow?
+/**
+<documentation><description>Removes the workflow definition from the array of
+<code>workflowDefinitions</code>, and returns the calling object.</description>
+<example>$ws->removeWorkflowDefinition( $wd );</example>
+<return-type>Property</return-type>
+<exception>Exception</exception>
+</documentation>
+*/
+    public function removeWorkflowDefinition( a\WorkflowDefinition $wd ) : Property
+    {
+        $temp = array();
+        
+        foreach( $this->workflow_definitions as $def )
+        {
+            if( $def->getId() != $wd->getId() )
+            {
+                $temp[] = $def;
+            }
+        }
+        
+        $this->workflow_definitions = $temp;
+        
+        return $this;
+    }
     
-    public function setInheritWorkflows( $bool )
+    
+/**
+<documentation><description>Sets <code>inheritWorkflows</code>, updates
+<code>inheritedWorkflowDefinitions</code> if necessary, and returns the calling object.</description>
+<example>$ws->setInheritWorkflows( false )->setRequireWorkflow( false );</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setInheritWorkflows( bool $bool ) : Property
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException(
@@ -168,7 +293,15 @@ class WorkflowSettings extends Property
         return $this;
     }
     
-    public function setRequireWorkflow( $bool )
+/**
+<documentation><description>Sets <code>requireWorkflow</code>, and returns the
+calling object.</description>
+<example>$ws->setInheritWorkflows( false )->setRequireWorkflow( false );</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setRequireWorkflow( bool $bool ) : Property
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException(
@@ -178,7 +311,13 @@ class WorkflowSettings extends Property
         return $this;
     }
     
-    public function toStdClass()
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example>u\DebugUtility::dump( $ws->toStdClass() );</example>
+<return-type>stdClass</return-type>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj = new \stdClass();
         $obj->identifier = $this->identifier->toStdClass();
@@ -221,7 +360,8 @@ class WorkflowSettings extends Property
                 
                 foreach( $this->inherited_workflow_definitions as $def )
                 {
-                    $obj->inheritedWorkflowDefinitions->assetIdentifier[] = $def->toStdClass();
+                    $obj->inheritedWorkflowDefinitions->assetIdentifier[] =
+                        $def->toStdClass();
                 }
             }
         }
@@ -229,7 +369,15 @@ class WorkflowSettings extends Property
         return $obj;
     }
 
-    public function unsetInheritWorkflows()
+/**
+<documentation><description>Sets <code>inheritWorkflows</code> to <code>false</code>,
+empties <code>inheritedWorkflowDefinitions</code>, and returns the calling object.</description>
+<example>$ws->unsetInheritWorkflows();</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function unsetInheritWorkflows() : Property
     {
         $this->inherit_workflows = false;
         $this->inherited_workflow_definitions = array();
