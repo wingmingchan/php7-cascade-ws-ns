@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/26/2016 Fixed a bug in toListString.
   * 8/26/2016 Added constant NAME_SPACE.
   * 3/8/2016 Fixed a bug related to namespace.
   * 5/28/2015 Added namespaces.
@@ -22,9 +23,30 @@ use cascade_ws_property as p;
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
-</description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<p>An asset tree is a tree data structure created to hold information of a container (the root of the tree) and everything within (information about all children in the root container). The container in question can be the Base Folder of a site, any folder within the Base Folder, or any types of containers or sub-containers. An <code>AssetTree</code> object can be created to represent an asset tree. There are two ways to create an <code>AssetTree</code> object:</p>
+<ul>
+<li>By calling the constructor of the class by passing in a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/container.php"><code>Container</code></a> object:
+<pre class="code">$tree = new AssetTree( $folder );
+</pre>
+</li>
+<li>By calling the <code>Container::getAssetTree</code> method:
+<pre class="code">$tree = $folder-&gt;getAssetTree();
+</pre>
+</li>
+</ul>
+<p>In fact, there is yet another way to get asset trees of a site (a site can have many different asset trees). An <code>AssetTree</code> can be obtained through a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/site.php"><code>Site</code></a> object by calling <code>Site::getBaseFolderAssetTree</code> or similar methods:</p>
+<pre class="code">$tree = $site-&gt;getBaseFolderAssetTree();
+</pre>
+<p>Although <code>AssetTree</code> is a very simple class, with the help of asset classes and global functions, it can be used to do a lot of different things. The most powerful method defined in this class is <code>AssetTree::traverse</code>. It can be used to manipulate any asset in a container in any way.</p>
+<h2>Structure of an Asset tree</h2>
+<p>Internally, an asset tree stores two entities: a root, and an array of children. The root is the <code>Container</code> object passed into the constructor. The children array can store two types of objects: <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/child.php"><code>Child</code></a> objects and <code>AssetTree</code> objects. A <code>Child</code> object can represent any non-container asset, like pages, blocks, data definitions, metadata sets and so on. An <code>AssetTree</code> object represent a sub-container. Since an <code>AssetTree</code> can have other <code>AssetTree</code> objects, recursion is built into the class, both in the constructor and all other methods.</p>
+<h2>What Can the <code>AssetTree</code> Class Do?</h2>
+<p>The <code>AssetTree</code> class is good at two things:</p>
+<ul>
+<li>Generating reports: Everything inside the root container represented by an <code>AssetTree</code> object is visited when the <code>AssetTree::traverse</code> method is called. When a child is visited, the information it holds can be examined, and if necessary, stored. Therefore, we can use this mechanism to gather information of all descendants in the root container.</li>
+<li>Modifying assets: When a child is visited, we can actually modify it. Parameters can be passed in and used to modify any descendants in the root container.</li>
+</ul></description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/asset_tree.php">asset_tree.php</a></li></ul></postscript>
 </documentation>
 */
 class AssetTree
@@ -33,7 +55,7 @@ class AssetTree
     const NAME_SPACE = "cascade_ws_asset";
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>The constructor.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -75,9 +97,9 @@ class AssetTree
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns a bool, indicating whether the root container contains any children.</p></description>
+<example>echo "Has children: ", u\StringUtility::boolToString( $at->hasChildren() ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
@@ -87,50 +109,58 @@ class AssetTree
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns a string containing properly embedded <code>&lt;ul&gt;</code> and <code>&lt;li&gt;</code> elements, showing the structure of the container and its contents.</p></description>
+<example>echo $at->toListString();</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function toListString() : string
+    public function toListString( bool $root=true ) : string
     {
-        $list_string = S_UL . S_LI;
+        // if this is the start point, add <ul>
+        if( $root )
+            $list_string = S_UL . S_LI;
+        else
+            $list_string = S_LI;
         
         $list_string .= $this->root->getType() . " " .
             $this->root->getPath() . " " .
             $this->root->getId();
             
+        // the root has children
         if( $this->has_children )
         {
-            if( get_class( $this->children[ 0 ] ) != get_class() )
-                $list_string .= S_UL;
+            $list_string .= S_UL;
             
             foreach( $this->children as $child )
             {
+                // non-AssetTree objects
                 if( get_class( $child ) == 'cascade_ws_property\Child' )
                 {
                     $list_string .= $child->toLiString();
                 }
+                // AssetTree objects within container
                 else
                 {
-                    $list_string .= $child->toListString();
+                    $list_string .= $child->toListString( false );
                 }
             }
             
-            if( get_class( $this->children[ 0 ] ) != get_class() )
-                $list_string .= E_UL;
+            $list_string .= E_UL;
         }
         
-        $list_string .= E_LI . E_UL;
+        $list_string .= E_LI;
         
+        if( $root )
+            $list_string .= E_UL;
+            
         return $list_string;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns an XML representation of the entire tree.</p></description>
+<example>echo S_PRE, u\XmlUtility::replaceBrackets( $at->toXml() ), E_PRE;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
@@ -161,13 +191,26 @@ class AssetTree
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Traverses an asset tree and returns the calling object.
+See <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-tree/traversing-asset-tree.php">Traversing an Asset Tree</a>.</p></description>
+<example>$results = array();
+    
+$at->traverse(
+    array( a\Page::TYPE => array( "assetTreeCount" ) ),
+    NULL,
+    $results
+);
+
+u\DebugUtility::dump( $results );
+</example>
+<return-type>AssetTree</return-type>
 <exception></exception>
 </documentation>
 */
-    public function traverse( $function_array, $params=NULL, &$results=NULL ) : AssetTree
+    public function traverse(
+        array $function_array, 
+        array $params=NULL, 
+        array &$results=NULL ) : AssetTree
     {
         $service = $this->root->getService();
         
@@ -209,7 +252,9 @@ class AssetTree
     private function applyFunctionsToChild( 
         aohs\AssetOperationHandlerService $service, 
         p\Child $child, 
-        $function_array, $params=NULL, &$results=NULL )
+        array $function_array, 
+        array  $params=NULL, 
+        array &$results=NULL )
     {
         $type = $child->getType();
         
@@ -229,21 +274,22 @@ class AssetTree
                 // class static method
                 if( strpos( $functions[ $i ], "::" ) !== false )
                 {
-                    $method_array = u\StringUtility::getExplodedStringArray( ":", $functions[ $i ] );
+                    $method_array = u\StringUtility::getExplodedStringArray(
+                        ":", $functions[ $i ] );
                     $class_name   = $method_array[ 0 ];
                     $class_name   = Asset::NAME_SPACE . "\\" . $class_name;
                     $method_name  = $method_array[ 1 ];
                     
                     if( !method_exists( $class_name, $method_name ) )
                     {
-                        throw new e\NoSuchFunctionException( "The function " . $functions[ $i ] .
-                            " does not exist." );
+                        throw new e\NoSuchFunctionException( 
+                            "The function " . $functions[ $i ] . " does not exist." );
                     }
                 }
                 else if( !function_exists( $functions[ $i ] ) )
                 {
-                    throw new e\NoSuchFunctionException( "The function " . $functions[ $i ] .
-                        " does not exist." );
+                    throw new e\NoSuchFunctionException( 
+                        "The function " . $functions[ $i ] . " does not exist." );
                 }
             }
             
@@ -257,7 +303,8 @@ class AssetTree
 
                 if( strpos( $functions[ $i ], "::" ) !== false )
                 {
-                    $method_array = u\StringUtility::getExplodedStringArray( ":", $functions[ $i ] );
+                    $method_array = u\StringUtility::getExplodedStringArray(
+                        ":", $functions[ $i ] );
                     $class_name   = $method_array[ 0 ];
                     $class_name   = Asset::NAME_SPACE . "\\" . $class_name;
                     $method_name  = $method_array[ 1 ];
