@@ -29,7 +29,7 @@ u\ReflectionUtility::showFunctionSignature( "str_replace", true );
 
 <h2>Progress</h2>
 <ul>
-<li>Updated Asset, AssetFactory, AssetFactoryContainer, AssetTree, Audit, Block, ContainedAsset, Container, DynamicField, 
+<li>Updated Asset, AssetFactory, AssetFactoryContainer, AssetTree, Audit, Block, Child, ContainedAsset, Container, DynamicField, 
 DynamicMetadataFieldDefinition, FeedBlock, FieldValue, IndexBlock, 
 Metadata, MetadataSet, PossibleValue, TextBlock, WorkflowSettings, and associated test code.</li>
 <li>Added methods to a few classes for Cascade 8.</li>
