@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/27/2016 Fixed a bug in initialize.
   * 8/25/2016 Added $array_names and emptyArrays to fix a bug.
   * 5/28/2015 Added namespaces.
   * 6/2/2014 Added arrays for asset expiration.
@@ -19,9 +20,9 @@ use cascade_ws_property  as p;
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>The <code>MessageArrays</code> class is a class containing a number of public static arrays used to store message information used by the <a href="http://www.upstate.edu/cascade-admin/web-services/api/cascade.php"><code>Cascade</code></a> class.</p>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript></postscript>
 </documentation>
 */
 class MessageArrays
@@ -118,6 +119,13 @@ class MessageArrays
     	}
     }
     
+/**
+<documentation><description><p>Initizes all arrays.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function initialize( aohs\AssetOperationHandlerService $service )
     {
     	self::emptyArrays();
@@ -131,7 +139,7 @@ class MessageArrays
                 $messages = $service->getListedMessages();
                 $temp_msg = array();
         
-                if( !( $messages->message == NULL ) )
+                if( isset( $messages->message ) )
                 {
                     if( !is_array( $messages->message ) )
                     {
