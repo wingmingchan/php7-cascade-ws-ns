@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/28/2016 Added isPassedByReference call to getSignature.
   * 9/15/2016 Added quotes to string default values in parameters.
   * 9/12/2016 Added code to getClassName to deal with scalar types.
   * 9/9/2016 Changed the code of showMethodInfo.
@@ -640,9 +641,12 @@ method signatures.</p></description>
                 $param_type = ( method_exists( $param, "getType" )  ? 
                     $param->getType() : "" );
                     
+                $is_reference = $param->isPassedByReference();
+                    
                 $method_info .=
-                    ( $param_type != ""  ? " " . $param_type : "" ). 
-                    " $" . $param->getName();
+                    ( $param_type != ""  ? " " . $param_type : "" ) .
+                    ( $is_reference ? " &amp;" : " " ) .
+                    "$" . $param->getName();
                 
                 if( method_exists( $method, "getDeclaringClass" ) && $param->isOptional() )
                 {
