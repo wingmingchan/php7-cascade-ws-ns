@@ -591,8 +591,7 @@ representing either an existing content type container, or a content type contai
 /**
 <documentation><description><p>Returns an <code>IndexBlock</code> object,
 representing either an existing index block of type "content-type", or an index block newly created by the method.</p></description>
-<example>
-$cib = $cascade->createContentTypeIndexBlock(
+<example>$cib = $cascade->createContentTypeIndexBlock(
     $block_folder,
     $block_name,
     $ct
@@ -642,9 +641,8 @@ $cib = $cascade->createContentTypeIndexBlock(
     
 /**
 <documentation><description><p>Returns a <code>DatabaseTransport</code> object,
-representing either an existing database     , or a database      newly created by the method.</p></description>
-<example>
-$db_     =
+representing either an existing database transport, or a database transport newly created by the method.</p></description>
+<example>$db_transport =
     $cascade->createDatabaseTransport(
         $cascade->getAsset( 
             TransportContainer::TYPE, 'Test Transport Container', $site_name ),
@@ -740,11 +738,10 @@ Note that the <code>$xml</code> string is sent to Cascade without data checking.
 <documentation><description><p>Returns a <code>DataDefinitionBlock</code> object,
 representing either an existing data definition block, or a data definition block newly created by the method.
 Also see <code>createXhtmlBlock( Folder $parent, $name, $text="" )</code>.</p></description>
-<example>$block = 
-    $cascade->createDataDefinitionBlock(
-        $block_folder,
-        'simple-text-block',
-        $data_definition );</example>
+<example>$block = $cascade->createDataDefinitionBlock(
+    $block_folder,
+    'simple-text-block',
+    $data_definition );</example>
 <return-type>Asset</return-type>
 <exception>CreationErrorException</exception>
 </documentation>
@@ -800,12 +797,11 @@ representing either an existing data definition container, or a data definition 
 /**
 <documentation><description><p>Returns a <code>Page</code> object,
 representing either an existing page associated with a data definition, or a page newly created by the method.</p></description>
-<example>$dd_page = 
-    $cascade->createDataDefinitionPage(
-        $base_folder,
-        'test',
-        $ct
-    )</example>
+<example>$dd_page = $cascade->createDataDefinitionPage(
+    $base_folder,
+    'test',
+    $ct
+)</example>
 <return-type>Asset</return-type>
 <exception>CreationErrorException</exception>
 </documentation>
@@ -940,12 +936,11 @@ representing either an existing Facebook connector, or a Facebook connector newl
 /**
 <documentation><description><p>Returns a <code>FeedBlock</code> object,
 representing either an existing feed block, or a feed block newly created by the method.</p></description>
-<example>$fb =
-    $cascade->createFeedBlock(
-        $block_folder,
-        'upstate-news',
-        'http://web.upstate.edu/feed/?title=news'
-    );</example>
+<example>$fb = $cascade->createFeedBlock(
+    $block_folder,
+    'upstate-news',
+    'http://web.upstate.edu/feed/?title=news'
+);</example>
 <return-type>Asset</return-type>
 <exception>CreationErrorException</exception>
 </documentation>
@@ -1014,15 +1009,14 @@ information. If both do, <code>$text</code> takes precedence.</p></description>
     }
     
 /**
-<documentation><description><p>Returns a <code>FileSystemTransport</code> object, representing either an existing file system     , or a file system      newly
+<documentation><description><p>Returns a <code>FileSystemTransport</code> object, representing either an existing file system transport, or a file system transport newly
 created by the method.</p></description>
-<example>$fs_     =
-    $cascade->createFileSystemTransport(
-        $cascade->getAsset( 
-            TransportContainer::TYPE, 'Test Transport Container', $site_name ),
-        'FS Transport',
-        'test'          // directory
-    );</example>
+<example>$fs_transport = $cascade->createFileSystemTransport(
+    $cascade->getAsset( 
+        TransportContainer::TYPE, 'Test Transport Container', $site_name ),
+    'FS Transport',
+    'test'          // directory
+);</example>
 <return-type>Asset</return-type>
 <exception>CreationErrorException</exception>
 </documentation>
@@ -1055,10 +1049,9 @@ to retrieve the Base Folder of a site, the <code>$parent</code> can be <code>NUL
 In this case, the <code>$name</code> must the string <code>"/"</code> and the site name
 must be non-empty. When a non-<code>NULL</code> parent folder is passed in, the name must
 be non-empty, but the site name can be empty.</p></description>
-<example>$folder = $cascade->
-    createFolder(
-        $base_folder, // parent folder
-        $folder_name );</example>
+<example>$folder = $cascade->createFolder(
+    $base_folder, // parent folder
+    $folder_name );</example>
 <return-type>Asset</return-type>
 <exception>CreationErrorException</exception>
 </documentation>
@@ -1092,7 +1085,11 @@ be non-empty, but the site name can be empty.</p></description>
 /**
 <documentation><description><p>Returns a <code>IndexBlock</code> object, representing
 either an existing index block of type "folder", or an index block newly created by the method.</p></description>
-<example></example>
+<example>$block = $cascade->createFolderIndexBlock(
+    $block_folder,
+    $block_name,
+    $cascade->getAsset( a\Folder::TYPE, '/', $site_name )
+);</example>
 <return-type>Asset</return-type>
 <exception>CreationErrorException</exception>
 </documentation>
@@ -1161,9 +1158,9 @@ either an existing index block of type "folder", or an index block newly created
     }
     
 /**
-<documentation><description><p>Returns a <code>FtpTransport</code> object, representing either an existing ftp     , or an ftp      newly created by the method.</p></description>
-<example>$ftp_     = $cascade->createFtpTransport(
-    $    _parent, // parent container
+<documentation><description><p>Returns a <code>FtpTransport</code> object, representing either an existing ftp transport, or an ftp transport newly created by the method.</p></description>
+<example>$ftp_transport = $cascade->createFtpTransport(
+    $transport_parent, // parent container
     'webapp-ftp',      // name
     'cascade',         // host
     '123',             // port
@@ -1749,7 +1746,7 @@ either an existing index block of type "folder", or an index block newly created
     }
     
 /**
-<documentation><description><p>Returns a <code>TransportContainer</code> object, representing either an existing      container, or a      container newly created by the method.</p></description>
+<documentation><description><p>Returns a <code>TransportContainer</code> object, representing either an existing transport container, or a transport container newly created by the method.</p></description>
 <example>$transport_parent = $cascade->createTransportContainer(
     $cascade->getAsset( TransportContainer::TYPE, '/', $site_name ),
     'Test Transport Container'
