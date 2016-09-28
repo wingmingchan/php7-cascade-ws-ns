@@ -4,6 +4,8 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/28/2016 Changed the code of getRoleAssetById to call getAsset directly.
+    Added hasUser.
   * 9/8/2016 Changed signature of denyAccess, grantAccess, moving $asset to the front.
   * 9/2/2016 Changed checkOut so that a reference of a string can be passed in to store
     the id of the working copy.
@@ -74,18 +76,18 @@ found. In these cases, the methods return <code>NULL</code>.</p>
 might have hundreds of sites, I do not want to create <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/site.php"><code>Site</code></a>
 objects directly inside a <code>Cascade</code> object. Instead, when the
 <code>Cascade</code> object is created, it only stores site information in
-<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a>
+<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>Identifier</code></a>
 objects, which are much smaller than <code>Site</code> objects. When <code>Site</code>
-objects are needed, they can be obtained by calling <code>p\Identifier::getAsset()</code>
+objects are needed, they can be obtained by calling <code>Identifier::getAsset()</code>
 or <code>Cascade::getAsset</code>. Therefore, the <code>Cascade::getSites</code> method
-only returns an array of <code>p\Identifier</code> objects. On the other hand, when a
+only returns an array of <code>Identifier</code> objects. On the other hand, when a
 single site is needed, <code>Cascade::getSite( $site_name )</code> does return a
 <code>Site</code> object.</p>
 <p>When we need to visit every site and do some simple thing to each of them, we may want
 to continue what we want to do even if the operation fails in a site or two. Since
 <code>Asset::getAsset</code> throws an exception when the asset in question does not
 exist, we may want to just ignore the exception and move on. One simple technique can be
-used to achieve this. We can use a <code>try&#8230;catch</code> block inside
+used to achieve this. We can use a <code>try...catch</code> block inside
 <code>foreach</code>:</p>
 <pre class="code">require_once('cascade_ws_ns/auth_chanw.php');
 
@@ -153,6 +155,7 @@ This may not cover all users, but at least it covers users that belong to some g
 there is no way to read all of them if the maximum number exceeds 250.</p>
 <p>This class also provides a few methods working with role names (not the numeric ID's).
 For example, we can retrieve a <code>Role</code> object by using <code>Cascade::getRoleAssetByName( string $role_name )</code>.</p>
+<p class="text_red">Note that since the search functionality of Cascade 8.0.1 is broken, all methods depending on search fail. This problem can only be fixed when the new search functionality is implemented in a future version of Cascade.</p>
 <h2>Working With Audits</h2>
 <p>This class provides a <code>getAudits</code> methods that returns an array of
 <a href="http://www.upstate.edu/cascade-admin/web-services/api/audit.php"><code>Audit</code></a> object.</p>
@@ -429,7 +432,7 @@ and returns <code>$cascade</code>. Set <code>$seconds</code> to a large enough p
 <documentation><description><p>Returns an <code>AssetFactory</code> object,
 representing either an existing asset factory, or an asset factory newly created by the method.
 <code>$type</code> is the asset type associated with the asset factory, and <code>$mode</code> is the workflow mode.</p></description>
-<example>$cascade->createAssetFactory(
+<example>$af = $cascade->createAssetFactory(
     $cascade->getAsset( a\AssetFactoryContainer::TYPE, "3789d91a8b7f08ee2347507a434b94d3" ),
     "Upload 1000x500 Image",
     a\File::TYPE
@@ -439,7 +442,8 @@ representing either an existing asset factory, or an asset factory newly created
 </documentation>
 */
     public function createAssetFactory( 
-        AssetFactoryContainer $parent, string $name, string $type, string $mode=c\T::NONE ) : Asset
+        AssetFactoryContainer $parent, string $name, 
+        string $type, string $mode=c\T::NONE ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -453,13 +457,14 @@ representing either an existing asset factory, or an asset factory newly created
         $asset->assetFactory->workflowMode        = $mode;
         
         return $this->createAsset(
-            $asset, AssetFactory::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, AssetFactory::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns an <code>AssetFactoryContainer</code> object,
 representing either an existing asset factory container, or an asset factory container newly created by the method.</p></description>
-<example>$cascade->createAssetFactoryContainer(
+<example>$afc = $cascade->createAssetFactoryContainer(
     $cascade->getAsset( a\AssetFactoryContainer::TYPE, "980a7cff8b7f0856015997e40fe58068" ),
     "Upload"
 )->dump();</example>
@@ -467,7 +472,8 @@ representing either an existing asset factory container, or an asset factory con
 <exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createAssetFactoryContainer( AssetFactoryContainer $parent, string $name ) : Asset
+    public function createAssetFactoryContainer(
+        AssetFactoryContainer $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -480,13 +486,14 @@ representing either an existing asset factory container, or an asset factory con
         $asset->$property->siteName            = $parent->getSiteName();
         
         return $this->createAsset(
-            $asset, AssetFactoryContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, AssetFactoryContainer::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>ConnectorContainer</code> object,
 representing either an existing connector container, or a connector container newly created by the method.</p></description>
-<example>$cascade->createConnectorContainer(
+<example>$cc = $cascade->createConnectorContainer(
     $cascade->getAsset( a\ConnectorContainer::TYPE, "980a826b8b7f0856015997e424411695" ),
     "Test"
 )->dump();</example>
@@ -494,7 +501,8 @@ representing either an existing connector container, or a connector container ne
 <exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createConnectorContainer( ConnectorContainer $parent, string $name ) : Asset
+    public function createConnectorContainer(
+        ConnectorContainer $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -507,13 +515,14 @@ representing either an existing connector container, or a connector container ne
         $asset->$property->siteName            = $parent->getSiteName();
         
         return $this->createAsset(
-            $asset, ConnectorContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, ConnectorContainer::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>ContentType</code> object,
 representing either an existing content type, or a content type newly created by the method.</p></description>
-<example>$cascade->createContentType(
+<example>$ct = $cascade->createContentType(
     $cascade->getAsset( a\ContentTypeContainer::TYPE, "980a7c9f8b7f0856015997e4dbf4ab28" ),
     "Test",
     $cascade->getAsset( a\PageConfigurationSet::TYPE, "5f1e42b08b7f08ee226116ffc4f6aac7" ),
@@ -546,13 +555,14 @@ representing either an existing content type, or a content type newly created by
             $asset->contentType->dataDefinitionPath   = $dd->getPath();
         
         return $this->createAsset(
-            $asset, ContentType::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, ContentType::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>ContentTypeContainer</code> object,
 representing either an existing content type container, or a content type container newly created by the method.</p></description>
-<example>$cascade->createContentTypeContainer(
+<example>$ctc = $cascade->createContentTypeContainer(
     $cascade->getAsset( a\ContentTypeContainer::TYPE, "980a7c9f8b7f0856015997e4dbf4ab28" ),
     "Test Container"
 )->dump();</example>
@@ -560,7 +570,8 @@ representing either an existing content type container, or a content type contai
 <exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createContentTypeContainer( ContentTypeContainer $parent, string $name ) : Asset
+    public function createContentTypeContainer(
+        ContentTypeContainer $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -573,13 +584,20 @@ representing either an existing content type container, or a content type contai
         $asset->$property->siteName            = $parent->getSiteName();
         
         return $this->createAsset(
-            $asset, ContentTypeContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, ContentTypeContainer::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns an <code>IndexBlock</code> object,
 representing either an existing index block of type "content-type", or an index block newly created by the method.</p></description>
-<example></example>
+<example>
+$cib = $cascade->createContentTypeIndexBlock(
+    $block_folder,
+    $block_name,
+    $ct
+);
+</example>
 <return-type>Asset</return-type>
 <exception>CreationErrorException</exception>
 </documentation>
@@ -588,7 +606,7 @@ representing either an existing index block of type "content-type", or an index 
         Folder $parent, 
         string $name, 
         ContentType $ct=NULL,
-        $max_rendered_assets=0 ) : Asset
+        int $max_rendered_assets=0 ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -618,13 +636,25 @@ representing either an existing index block of type "content-type", or an index 
         $asset->indexBlock->pageXML               =c\T::NORENDER;
         
         return $this->createAsset(
-            $asset, IndexBlock::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, IndexBlock::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>DatabaseTransport</code> object,
-representing either an existing database transport, or a database transport newly created by the method.</p></description>
-<example></example>
+representing either an existing database     , or a database      newly created by the method.</p></description>
+<example>
+$db_     =
+    $cascade->createDatabaseTransport(
+        $cascade->getAsset( 
+            TransportContainer::TYPE, 'Test Transport Container', $site_name ),
+        'DB Transport',
+        'upstate',       // server
+        '123',           // port
+        'test',          // username
+        'cascade',       // database name
+        'unknown'        //      site id
+    );</example>
 <return-type>Asset</return-type>
 <exception>CreationErrorException</exception>
 </documentation>
@@ -668,19 +698,24 @@ representing either an existing database transport, or a database transport newl
         $asset->databaseTransport->transportSiteId     = trim( $transport );
         
         return $this->createAsset(
-            $asset, DatabaseTransport::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, DatabaseTransport::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>DataDefinition</code> object,
 representing either an existing data definition, or a data definition newly created by the method.
 Note that the <code>$xml</code> string is sent to Cascade without data checking.</p></description>
-<example></example>
+<example>$dd = $cascade->createDataDefinition(
+    $parent,
+    'Simple Text',
+    $xml );</example>
 <return-type>Asset</return-type>
 <exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createDataDefinition( DataDefinitionContainer $parent, string $name, string $xml ) : Asset
+    public function createDataDefinition(
+        DataDefinitionContainer $parent, string $name, string $xml ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -697,19 +732,25 @@ Note that the <code>$xml</code> string is sent to Cascade without data checking.
         $asset->dataDefinition->xml                 = $xml;
         
         return $this->createAsset(
-            $asset, DataDefinition::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, DataDefinition::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>DataDefinitionBlock</code> object,
 representing either an existing data definition block, or a data definition block newly created by the method.
 Also see <code>createXhtmlBlock( Folder $parent, $name, $text="" )</code>.</p></description>
-<example></example>
+<example>$block = 
+    $cascade->createDataDefinitionBlock(
+        $block_folder,
+        'simple-text-block',
+        $data_definition );</example>
 <return-type>Asset</return-type>
 <exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createDataDefinitionBlock( Folder $parent, string $name, DataDefinition $d ) : Asset
+    public function createDataDefinitionBlock(
+        Folder $parent, string $name, DataDefinition $d ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -722,18 +763,24 @@ Also see <code>createXhtmlBlock( Folder $parent, $name, $text="" )</code>.</p></
         $asset->xhtmlDataDefinitionBlock->structuredData   = $d->getStructuredData();
         
         return $this->createAsset(
-            $asset, DataDefinitionBlock::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, DataDefinitionBlock::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>DataDefinitionContainer</code> object,
 representing either an existing data definition container, or a data definition container newly created by the method.</p></description>
-<example></example>
+<example>$parent = $cascade->createDataDefinitionContainer(
+    $cascade->getAsset( 
+        DataDefinitionContainer::TYPE, '/', $site_name ),
+    'Test Data Definition Container'
+);</example>
 <return-type>Asset</return-type>
 <exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createDataDefinitionContainer( DataDefinitionContainer $parent, string $name ) : Asset
+    public function createDataDefinitionContainer(
+        DataDefinitionContainer $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -746,18 +793,25 @@ representing either an existing data definition container, or a data definition 
         $asset->$property->siteName            = $parent->getSiteName();
         
         return $this->createAsset(
-            $asset, DataDefinitionContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, DataDefinitionContainer::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>Page</code> object,
 representing either an existing page associated with a data definition, or a page newly created by the method.</p></description>
-<example></example>
+<example>$dd_page = 
+    $cascade->createDataDefinitionPage(
+        $base_folder,
+        'test',
+        $ct
+    )</example>
 <return-type>Asset</return-type>
 <exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createDataDefinitionPage( Folder $parent, string $name, ContentType $ct ) : Asset
+    public function createDataDefinitionPage(
+        Folder $parent, string $name, ContentType $ct ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -771,13 +825,18 @@ representing either an existing page associated with a data definition, or a pag
         $asset->page->structuredData   = $ct->getDataDefinition()->getStructuredData();
             
         return $this->createAsset(
-            $asset, Page::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, Page::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>Destination</code> object,
 representing either an existing destination, or a destination newly created by the method.</p></description>
-<example></example>
+<example>$destination = $cascade->createDestination(
+    $destination_parent,
+    'Web-Service-Test-Web',
+    $ftp_    
+);</example>
 <return-type>Asset</return-type>
 <exception>CreationErrorException</exception>
 </documentation>
@@ -804,18 +863,32 @@ representing either an existing destination, or a destination newly created by t
         $asset->destination->siteName            = $parent->getSiteName();
         
         return $this->createAsset(
-            $asset, Destination::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, Destination::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>FacebookConnector</code> object,
 representing either an existing Facebook connector, or a Facebook connector newly created by the method.</p></description>
-<example></example>
+<example>$connector = $cascade->createFacebookConnector(
+    $parent,
+    'facebook',
+    $cascade->getAsset( 
+        Destination::TYPE, 
+        'Test Destination Container/Web-Service-Test-Web', $site_name ),
+    'P',  // page name
+    'f',  // prefix
+    $cascade->getAsset( 
+        ContentType::TYPE, 
+        'Test Content Type Container/Three Columns', $site_name ),
+    'RWD' // configuration
+);</example>
 <return-type>Asset</return-type>
 <exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createFacebookConnector( ConnectorContainer $parent, string $name, Destination $d,
+    public function createFacebookConnector(
+        ConnectorContainer $parent, string $name, Destination $d,
         string $pg_value, string $px_value,
         ContentType $ct, string $page_config ) : Asset
     {
@@ -860,18 +933,25 @@ representing either an existing Facebook connector, or a Facebook connector newl
         
         if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $asset ); }
         return $this->createAsset(
-            $asset, FacebookConnector::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, FacebookConnector::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>FeedBlock</code> object,
 representing either an existing feed block, or a feed block newly created by the method.</p></description>
-<example></example>
+<example>$fb =
+    $cascade->createFeedBlock(
+        $block_folder,
+        'upstate-news',
+        'http://web.upstate.edu/feed/?title=news'
+    );</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createFeedBlock( Folder $parent, $name, $url ) : Asset
+    public function createFeedBlock(
+        Folder $parent, string $name, string $url ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(                 
@@ -888,7 +968,8 @@ representing either an existing feed block, or a feed block newly created by the
         $asset->feedBlock->feedURL          = $url;
         
         return $this->createAsset(
-            $asset, FeedBlock::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, FeedBlock::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
@@ -897,12 +978,17 @@ existing file, or a file newly created by the method. <code>$text</code> is the 
 information to be inserted into the file, and <code>$data</code> is the binary data.
 Either <code>$text</code> or <code>$data</code> must contain non-empty and non-<code>NULL</code>
 information. If both do, <code>$text</code> takes precedence.</p></description>
-<example></example>
+<example>$file = $cascade->createFile( 
+    $files_folder,            // parent
+    $file_name,               // filename
+    file_get_contents( $url ) // text
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createFile( Folder $parent, $name, $text="", $data=NULL ) : Asset
+    public function createFile(
+        Folder $parent, string $name, string $text="", $data=NULL ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(                 
@@ -923,19 +1009,26 @@ information. If both do, <code>$text</code> takes precedence.</p></description>
             $asset->file->data = $data;
         
         return $this->createAsset(
-            $asset, File::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, File::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
-<documentation><description><p>Returns a <code>FileSystemTransport</code> object, representing either an existing file system transport, or a file system transport newly
+<documentation><description><p>Returns a <code>FileSystemTransport</code> object, representing either an existing file system     , or a file system      newly
 created by the method.</p></description>
-<example></example>
+<example>$fs_     =
+    $cascade->createFileSystemTransport(
+        $cascade->getAsset( 
+            TransportContainer::TYPE, 'Test Transport Container', $site_name ),
+        'FS Transport',
+        'test'          // directory
+    );</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
     public function createFileSystemTransport(
-        TransportContainer $parent, $name, $directory ) : Asset
+        TransportContainer $parent, string $name, string $directory ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(
@@ -951,7 +1044,8 @@ created by the method.</p></description>
         $asset->fileSystemTransport->directory           = $directory;
         
         return $this->createAsset(
-            $asset, FileSystemTransport::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, FileSystemTransport::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
@@ -961,12 +1055,16 @@ to retrieve the Base Folder of a site, the <code>$parent</code> can be <code>NUL
 In this case, the <code>$name</code> must the string <code>"/"</code> and the site name
 must be non-empty. When a non-<code>NULL</code> parent folder is passed in, the name must
 be non-empty, but the site name can be empty.</p></description>
-<example></example>
+<example>$folder = $cascade->
+    createFolder(
+        $base_folder, // parent folder
+        $folder_name );</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createFolder( Folder $parent=NULL, $name="", $site_name="" ) : Asset
+    public function createFolder(
+        Folder $parent=NULL, string $name="", string $site_name="" ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(
@@ -996,11 +1094,12 @@ be non-empty, but the site name can be empty.</p></description>
 either an existing index block of type "folder", or an index block newly created by the method.</p></description>
 <example></example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createFolderIndexBlock( Folder $parent, $name, Folder $f=NULL,
-        $max_rendered_assets=0 ) : Asset
+    public function createFolderIndexBlock(
+        Folder $parent, string $name, Folder $f=NULL,
+        int $max_rendered_assets=0 ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(
@@ -1042,10 +1141,12 @@ either an existing index block of type "folder", or an index block newly created
 <code>createXsltFormat</code>. The <code>$type</code> must be either <code>ScriptFormat::TYPE</code> or <code>XsltFormat::TYPE</code>.</p></description>
 <example></example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>WrongAssetTypeException</exception>
 </documentation>
 */
-    public function createFormat( Folder $parent, $name, $type, $script="", $xml="" ) : Asset
+    public function createFormat(
+        Folder $parent, string $name, string $type, 
+        string $script="", string $xml="" ) : Asset
     {
         $type = trim( $type );
         
@@ -1060,14 +1161,22 @@ either an existing index block of type "folder", or an index block newly created
     }
     
 /**
-<documentation><description><p>Returns a <code>FtpTransport</code> object, representing either an existing ftp transport, or an ftp transport newly created by the method.</p></description>
-<example></example>
+<documentation><description><p>Returns a <code>FtpTransport</code> object, representing either an existing ftp     , or an ftp      newly created by the method.</p></description>
+<example>$ftp_     = $cascade->createFtpTransport(
+    $    _parent, // parent container
+    'webapp-ftp',      // name
+    'cascade',         // host
+    '123',             // port
+    'test',            // username
+    'test'             // password
+)->setDoPASV( true )->edit();</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
     public function createFtpTransport( 
-        TransportContainer $parent, $name, $server, $port, $username, $password ) : Asset
+        TransportContainer $parent, string $name, 
+        string $server, string $port, string $username, string $password ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(
@@ -1095,17 +1204,23 @@ either an existing index block of type "folder", or an index block newly created
         $asset->ftpTransport->port                = trim( $port );
         
         return $this->createAsset(
-            $asset, FtpTransport::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, FtpTransport::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>GoogleAnalyticsConnector</code> object, representing either an existing Google Analytics connector, or a Google Analytics connector newly created by the method.</p></description>
-<example></example>
+<example>$connector = $cascade->createGoogleAnalyticsConnector(
+    $parent,
+    'analytics',
+    '123456'
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createGoogleAnalyticsConnector( ConnectorContainer $parent, $name, $profile_id ) : Asset
+    public function createGoogleAnalyticsConnector(
+        ConnectorContainer $parent, string $name, string $profile_id ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(
@@ -1129,17 +1244,18 @@ either an existing index block of type "folder", or an index block newly created
 
         if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $asset ); }
         return $this->createAsset(
-            $asset, GoogleAnalyticsConnector::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, GoogleAnalyticsConnector::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>Group</code> object, representing either an existing group, or a group newly created by the method.</p></description>
-<example></example>
+<example>$new_group = $cascade->createGroup( $group_name, $role_name );</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createGroup( $group_name, $role_name='Default' ) : Asset
+    public function createGroup( string $group_name, string $role_name='Default' ) : Asset
     {
         if( trim( $group_name ) == "" )
             throw new e\CreationErrorException( 
@@ -1156,11 +1272,12 @@ either an existing index block of type "folder", or an index block newly created
 <documentation><description><p>This method combines <code>createContentTypeIndexBlock</code> and <code>createFolderIndexBlock</code>. The type of index block created depends on the value of <code>$type</code>.</p></description>
 <example></example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createIndexBlock( Folder $parent, $name, $type, ContentType $ct=NULL, Folder $f=NULL,
-        $max_rendered_assets=0 ) : Asset
+    public function createIndexBlock(
+        Folder $parent, string $name, string $type, ContentType $ct=NULL, 
+        Folder $f=NULL, int $max_rendered_assets=0 ) : Asset
     {
         if( $type == c\T::CONTENTTYPEINDEX )
             return $this->createContentTypeIndexBlock( 
@@ -1172,12 +1289,15 @@ either an existing index block of type "folder", or an index block newly created
 
 /**
 <documentation><description><p>Returns a <code>MetadataSet</code> object, representing either an existing metadata set, or a metadata set newly created by the method.</p></description>
-<example></example>
+<example>$new_ms  = $cascade->createMetadataSet(
+    $new_container, // parent
+    $ms_name );</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createMetadataSet( MetadataSetContainer $parent, $name ) : Asset
+    public function createMetadataSet(
+        MetadataSetContainer $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1195,12 +1315,15 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns a <code>MetadataSetContainer</code> object, representing either an existing metadata set container, or a metadata set container newly created by the method.</p></description>
-<example></example>
+<example>$new_container = $cascade->createMetadataSetContainer(
+    $cascade->getAsset( MetadataSetContainer::TYPE, '/', $site_name ),
+    $container_name );</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createMetadataSetContainer( MetadataSetContainer $parent, $name ) : Asset
+    public function createMetadataSetContainer(
+        MetadataSetContainer $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1221,10 +1344,11 @@ either an existing index block of type "folder", or an index block newly created
 <documentation><description><p>This method combines <code>createDataDefinitionPage</code> and <code>createXhtmlPage</code>. The resulting page type depends on whether the content type passed in has a data definition.</p></description>
 <example></example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createPage( Folder $parent, $name, ContentType $ct, $xhtml="" ) : Asset
+    public function createPage(
+        Folder $parent, string $name, ContentType $ct, $xhtml="" ) : Asset
     {
         if( $ct->getDataDefinition() != NULL )
             return $this->createDataDefinitionPage( $parent, $name, $ct );
@@ -1234,16 +1358,23 @@ either an existing index block of type "folder", or an index block newly created
 
 /**
 <documentation><description><p>Returns a <code>PageConfigurationSet</code> object, representing either an existing configuration set, or a configuration set newly created by the method.</p></description>
-<example></example>
+<example>$pcs = $cascade->createPageConfigurationSet(
+    $parent,     // parent container
+    'RWD',       // configuration set name
+    'RWD',       // default configuration name
+    $template,   // template
+    '.php',      // file extension
+    T::HTML      // serialization type
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException, WrongSerializationTypeException</exception>
 </documentation>
 */
     public function createPageConfigurationSet( 
         PageConfigurationSetContainer $parent, 
-        $name,        // configuration set name
-        $config_name, // default configuration name
-        Template $t, $extension, $type ) : Asset
+        string $name,        // configuration set name
+        string $config_name, // default configuration name
+        Template $t, string $extension, string $type ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1283,12 +1414,17 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns a <code>PageConfigurationSetContainer</code> object, representing either an existing page configuration set container, or a page configuration set container newly created by the method.</p></description>
-<example></example>
+<example>$parent = $cascade->createPageConfigurationSetContainer(
+    $cascade->getAsset( 
+        PageConfigurationSetContainer::TYPE, '/', $site_name ),
+    'Test Configuration Set Container'
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createPageConfigurationSetContainer( PageConfigurationSetContainer $parent, $name ) : Asset
+    public function createPageConfigurationSetContainer(
+        PageConfigurationSetContainer $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1307,12 +1443,15 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns a <code>PublishSet</code> object, representing either an existing publish set, or a publish set newly created by the method.</p></description>
-<example></example>
+<example>$ps = $cascade->createPublishSet(
+    $parent,
+    'Test Publish Set'
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createPublishSet( PublishSetContainer $parent, $name ) : Asset
+    public function createPublishSet( PublishSetContainer $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1324,17 +1463,23 @@ either an existing index block of type "folder", or an index block newly created
         $asset->publishSet->siteName            = $parent->getSiteName();
         
         return $this->createAsset(
-            $asset, PublishSet::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, PublishSet::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
 
 /**
 <documentation><description><p>Returns a <code>PublishSetContainer</code> object, representing either an existing publish set container, or a publish set container newly created by the method.</p></description>
-<example></example>
+<example>$parent = $cascade->createPublishSetContainer(
+    $cascade->getAsset( 
+    PublishSetContainer::TYPE, '/', $site_name ),
+    'Test Publish Set Container'
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createPublishSetContainer( PublishSetContainer $parent, $name ) : Asset
+    public function createPublishSetContainer(
+        PublishSetContainer $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1347,17 +1492,22 @@ either an existing index block of type "folder", or an index block newly created
         $asset->$property->siteName            = $parent->getSiteName();
         
         return $this->createAsset(
-            $asset, PublishSetContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, PublishSetContainer::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>Reference</code> object, representing either an existing reference, or a reference newly created by the method. <code>$a</code> is the object representing an asset (a page, file, or folder) to be referenced.</p></description>
-<example></example>
+<example>$cascade->createReference( 
+    $cascade->getAsset( Page::TYPE, 'test', $site_name ), // asset to be referenced
+    $cascade->getAsset( Folder::TYPE, '/', $site_name ),  // parent folder
+    "test-ref"                                            // reference name
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createReference( Asset $a, Folder $parent, $name ) : Asset
+    public function createReference( Asset $a, Folder $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1371,17 +1521,18 @@ either an existing index block of type "folder", or an index block newly created
         $asset->reference->referencedAssetId   = $a->getId();
         
         return $this->createAsset(
-            $asset, Reference::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, Reference::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>Role</code> object, representing either an existing role, or a role newly created by the method. The type should be either "site" or "global".</p></description>
-<example></example>
+<example>$role = $cascade->createRole( $role_name, Site::TYPE );</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createRole( $name, $type ) : Asset
+    public function createRole( string $name, string $type ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1404,12 +1555,17 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns a <code>ScriptFormat</code> object, representing either an existing Velocity format, or a Velocity format newly created by the method.</p></description>
-<example></example>
+<example>$script = $cascade->createScriptFormat(
+    $parent_folder,
+    'global-information',
+    $script
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createScriptFormat( Folder $parent, $name, $script ) : Asset
+    public function createScriptFormat(
+        Folder $parent, string $name, string $script ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1432,12 +1588,17 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns a <code>Site</code> object, representing either an existing site, or a site newly created by the method.</p></description>
-<example></example>
+<example>$new_site  = $cascade->createSite( 
+    $site_name,
+    $url,
+    T::FIFTEEN // expiration
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createSite( $name, $url, $recycle_bin_expiration ) : Asset
+    public function createSite(
+        string $name, string $url, string $recycle_bin_expiration ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1465,12 +1626,17 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns a <code>SiteDestinationContainer</code> object, representing either an existing site destination container, or a site destination container newly created by the method.</p></description>
-<example></example>
+<example>$destination_parent = $cascade->createSiteDestinationContainer(
+    $cascade->getAsset( 
+        SiteDestinationContainer::TYPE, '/', $site_name ),
+    'Test Destination Container'
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createSiteDestinationContainer( SiteDestinationContainer $parent, $name ) : Asset
+    public function createSiteDestinationContainer(
+        SiteDestinationContainer $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1489,12 +1655,16 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns a <code>Symlink</code> object, representing either an existing symlink, or a symlink newly created by the method.</p></description>
-<example></example>
+<example>$g = $cascade->createSymlink( 
+    $cascade->getAsset( Folder::TYPE, '/', $site_name ), // parent folder
+    "google",                                            // symlink name
+    "http://www.google.com"                              // url
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createSymlink( Folder $parent, $name, $url ) : Asset
+    public function createSymlink( Folder $parent, string $name, string $url ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1517,12 +1687,16 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns a <code>Template</code> object, representing either an existing template, or a template newly created by the method.</p></description>
-<example></example>
+<example>$t = $cascade->createTemplate(
+    $parent_folder,
+    'three-columns',
+    $xml
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createTemplate( Folder $parent, $name, $xml ) : Asset
+    public function createTemplate( Folder $parent, string $name, string $xml ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1545,12 +1719,15 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns a <code>TextBlock</code> object, representing either an existing text block, or a text block newly created by the method.</p></description>
-<example></example>
+<example>$block = $cascade->createTextBlock(
+    $parent_folder,
+    'title',
+    $code );</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createTextBlock( Folder $parent, $name, $text ) : Asset
+    public function createTextBlock( Folder $parent, string $name, string $text ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1572,13 +1749,17 @@ either an existing index block of type "folder", or an index block newly created
     }
     
 /**
-<documentation><description><p>Returns a <code>TransportContainer</code> object, representing either an existing transport container, or a transport container newly created by the method.</p></description>
-<example></example>
+<documentation><description><p>Returns a <code>TransportContainer</code> object, representing either an existing      container, or a      container newly created by the method.</p></description>
+<example>$transport_parent = $cascade->createTransportContainer(
+    $cascade->getAsset( TransportContainer::TYPE, '/', $site_name ),
+    'Test Transport Container'
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createTransportContainer( TransportContainer $parent, $name ) : Asset
+    public function createTransportContainer(
+        TransportContainer $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1591,19 +1772,33 @@ either an existing index block of type "folder", or an index block newly created
         $asset->$property->siteName            = $parent->getSiteName();
         
         return $this->createAsset(
-            $asset, TransportContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, TransportContainer::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>TwitterConnector</code> object, representing either an existing Twitter connector, or a Twitter connector newly created by the method.</p></description>
-<example></example>
+<example>$connector = $cascade->createTwitterConnector(
+    $parent,
+    'twitter',
+    $cascade->getAsset( 
+        Destination::TYPE, 
+        'Test Destination Container/Web-Service-Test-Web', $site_name ),
+    'H',  // hash tag
+    't',  // prefix
+    $cascade->getAsset( 
+        ContentType::TYPE, 
+        'Test Content Type Container/RWD', $site_name ),
+    'RWD' // configuration
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createTwitterConnector( ConnectorContainer $parent, $name, Destination $d,
-        $ht_value, $px_value,
-        ContentType $ct, $page_config ) : Asset
+    public function createTwitterConnector(
+        ConnectorContainer $parent, string $name, Destination $d,
+        string $ht_value, string $px_value,
+        ContentType $ct, string $page_config ) : Asset
     {
         if( self::DEBUG ) { u\DebugUtility::out( "Hash tag: $ht_value Prefix: $px_value" ); }
         if( trim( $name ) == "" )
@@ -1654,12 +1849,18 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns a <code>User</code> object, representing either an existing user, or a user newly created by the method. Note that the role passed in should be a global role.</p></description>
-<example></example>
+<example>$user = $cascade->createUser(
+    $username,
+    $password,
+    $new_group,
+    $cascade->getRoleAssetByName( $global_role )
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createUser( $user_name, $password, Group $group, Role $global_role ) : Asset
+    public function createUser(
+        string $user_name, string $password, Group $group, Role $global_role ) : Asset
     {
         if( trim( $user_name ) == "" )
             throw new e\CreationErrorException( 
@@ -1681,13 +1882,22 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns a <code>WordPressConnector</code> object, representing either an existing WordPress connector, or a WordPress connector newly created by the method.</p></description>
-<example></example>
+<example>$connector = $cascade->createWordPressConnector(
+    $parent,
+    'wordpress',
+    'www.upstate.edu',
+    $cascade->getAsset( 
+        ContentType::TYPE, 
+        'Test Content Type Container/Three Columns', $site_name ),
+    'Desktop' // configuration
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createWordPressConnector( ConnectorContainer $parent, $name, $url,
-        ContentType $ct, $page_config ) : Asset
+    public function createWordPressConnector(
+        ConnectorContainer $parent, string $name, string $url,
+        ContentType $ct, string $page_config ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1713,18 +1923,25 @@ either an existing index block of type "folder", or an index block newly created
         
         if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $asset ); }
         return $this->createAsset(
-            $asset, WordPressConnector::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, WordPressConnector::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>WorkflowDefinition</code> object, representing either an existing workflow definition, or a workflow definition newly created by the method.</p></description>
-<example></example>
+<example>$wd = $cascade->createWorkflowDefinition(
+    $parent,
+    'Automatic File Publish',
+    WorkflowDefinition::NAMING_BEHAVIOR_AUTO, // naming behavior
+    $xml
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException, UnacceptableValueException</exception>
 </documentation>
 */
     public function createWorkflowDefinition( 
-        WorkflowDefinitionContainer $parent, $name, $naming_behavior, $xml ) : Asset
+        WorkflowDefinitionContainer $parent, string $name, 
+        string $naming_behavior, string $xml ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1747,17 +1964,22 @@ either an existing index block of type "folder", or an index block newly created
         $asset->workflowDefinition->copy                = true;
         
         return $this->createAsset(
-            $asset, WorkflowDefinition::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, WorkflowDefinition::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>WorkflowDefinitionContainer</code> object, representing either an existing workflow definition container, or a workflow definition container newly created by the method.</p></description>
-<example></example>
+<example>$parent = $cascade->createWorkflowDefinitionContainer(
+    $cascade->getAsset( WorkflowDefinitionContainer::TYPE, '/', $site_name ),
+    'Test Workflow Definition Container'
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createWorkflowDefinitionContainer( WorkflowDefinitionContainer $parent, $name ) : Asset
+    public function createWorkflowDefinitionContainer(
+        WorkflowDefinitionContainer $parent, string $name ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1770,17 +1992,22 @@ either an existing index block of type "folder", or an index block newly created
         $asset->$property->siteName            = $parent->getSiteName();
         
         return $this->createAsset(
-            $asset, WorkflowDefinitionContainer::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, WorkflowDefinitionContainer::TYPE, $this->getPath( $parent, $name ),
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>DataDefinitionBlock</code> object, representing either an existing XHTML block, or an XHTML block newly created by the method.</p></description>
-<example></example>
+<example>$xhtml_block = $cascade->createXhtmlBlock(
+    $block_folder,
+    'xhtml-block',
+    $code );</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createXhtmlBlock( Folder $parent, $name, $xhtml="" ) : Asset
+    public function createXhtmlBlock(
+        Folder $parent, string $name, string $xhtml="" ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1795,17 +2022,19 @@ either an existing index block of type "folder", or an index block newly created
             $asset->xhtmlDataDefinitionBlock->xhtml        = $xhtml;
             
         return $this->createAsset(
-            $asset, DataDefinitionBlock::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, DataDefinitionBlock::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>This method combines <code>createXhtmlBlock</code> and <code>createDataDefinitionBlock</code>. The resulting block type depends on whether the data definition passed in is <code>NULL</code>.</p></description>
 <example></example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createXhtmlDataDefinitionBlock( Folder $parent, $name, DataDefinition $d=NULL, $xhtml="" ) : Asset
+    public function createXhtmlDataDefinitionBlock(
+        Folder $parent, string $name, DataDefinition $d=NULL, string $xhtml="" ) : Asset
     {
         if( $d == NULL )
             return $this->createXhtmlBlock( $parent, $name, $xhtml );
@@ -1815,12 +2044,18 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns a <code>Page</code> object, representing either an existing page that is not associated with a data definition, or a page newly created by the method.</p></description>
-<example></example>
+<example>$xhtml_page = $cascade->createXhtmlPage(
+    $base_folder,
+    'index',
+    $code,
+    $ct
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createXhtmlPage( Folder $parent, $name, $xhtml="", ContentType $ct ) : Asset
+    public function createXhtmlPage(
+        Folder $parent, string $name, string $xhtml="", ContentType $ct ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1836,17 +2071,22 @@ either an existing index block of type "folder", or an index block newly created
             $asset->page->xhtml = $xhtml;
             
         return $this->createAsset(
-            $asset, Page::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, Page::TYPE, $this->getPath( $parent, $name ),
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns an <code>XmlBlock</code> object, representing either an existing XML block, or an XML block newly created by the method.</p></description>
-<example></example>
+<example>$cascade->createXmlBlock( 
+    $block_folder,  // parent folder
+    'test-xml',     // block name
+    "&lt;test/&gt;"       // xml content
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createXmlBlock( Folder $parent, $name, $xml ) : Asset
+    public function createXmlBlock( Folder $parent, string $name, string $xml ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1863,17 +2103,22 @@ either an existing index block of type "folder", or an index block newly created
         $asset->xmlBlock->xml              = $xml;
         
         return $this->createAsset(
-            $asset, XmlBlock::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, XmlBlock::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
 /**
 <documentation><description><p>Returns a <code>XsltFormat</code> object, representing either an existing XSLT format, or an XSLT format newly created by the method.</p></description>
-<example></example>
+<example>$format = $cascade->createXsltFormat(
+    $parent_folder,
+    'template-level-customizable',
+    $xml
+);</example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>CreationErrorException</exception>
 </documentation>
 */
-    public function createXsltFormat( Folder $parent, $name, $xml ) : Asset
+    public function createXsltFormat( Folder $parent, string $name, string $xml ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -1890,14 +2135,15 @@ either an existing index block of type "folder", or an index block newly created
         $asset->xsltFormat->xml              = $xml;
         
         return $this->createAsset(
-            $asset, XsltFormat::TYPE, $this->getPath( $parent, $name ), $parent->getSiteName() );
+            $asset, XsltFormat::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
     }
     
     /* ================= */
     
 /**
 <documentation><description><p>Deletes all messages and returns <code>$cascade</code>.</p></description>
-<example></example>
+<example>$cascade->deleteAllMessages();</example>
 <return-type>Cascade</return-type>
 <exception></exception>
 </documentation>
@@ -1911,12 +2157,12 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Deletes all messages without issues, and returns <code>$cascade</code>.</p></description>
-<example></example>
-<return-type></return-type>
+<example>$cascade->deleteAllMessagesWithoutIssues();</example>
+<return-type>Cascade</return-type>
 <exception></exception>
 </documentation>
 */
-    public function deleteAllMessagesWithoutIssues()
+    public function deleteAllMessagesWithoutIssues() : Cascade
     {
         MessageArrays::initialize( $this->service );
         return
@@ -1926,12 +2172,12 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Deletes the asset, unsets the variable, and returns <code>$cascade</code>.</p></description>
-<example></example>
-<return-type></return-type>
+<example>$cascade->deleteAsset( $block );</example>
+<return-type>Cascade</return-type>
 <exception>DeletionErrorException</exception>
 </documentation>
 */
-    public function deleteAsset( Asset $a )
+    public function deleteAsset( Asset $a ) : Cascade
     {
         $this->service->delete( $this->service->createId( $a->getType(), $a->getId() ) );
         
@@ -1945,12 +2191,12 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Deletes all asset expiration messages, and returns <code>$cascade</code>.</p></description>
-<example></example>
-<return-type></return-type>
+<example>$cascade->deleteExpirationMessages();</example>
+<return-type>Cascade</return-type>
 <exception></exception>
 </documentation>
 */
-    public function deleteExpirationMessages()
+    public function deleteExpirationMessages() : Cascade
     {
         MessageArrays::initialize( $this->service );
         return $this->deleteMessagesWithIds( 
@@ -1959,12 +2205,12 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Deletes all publish messages without issues, and returns <code>$cascade</code>.</p></description>
-<example></example>
-<return-type></return-type>
+<example>$cascade->deletePublishMessagesWithoutIssues();</example>
+<return-type>Cascade</return-type>
 <exception></exception>
 </documentation>
 */
-    public function deletePublishMessagesWithoutIssues()
+    public function deletePublishMessagesWithoutIssues() : Cascade
     {
         MessageArrays::initialize( $this->service );
         return $this->deleteMessagesWithIds( 
@@ -1973,12 +2219,12 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Deletes all summary messages without failures, and returns <code>$cascade</code>.</p></description>
-<example></example>
-<return-type></return-type>
+<example>$cascade->deleteSummaryMessagesNoFailures();</example>
+<return-type>Cascade</return-type>
 <exception></exception>
 </documentation>
 */
-    public function deleteSummaryMessagesNoFailures()
+    public function deleteSummaryMessagesNoFailures() : Cascade
     {
         MessageArrays::initialize( $this->service );
         return $this->deleteMessagesWithIds( 
@@ -1987,12 +2233,12 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Deletes all unpublish messages without issues, and returns <code>$cascade</code>.</p></description>
-<example></example>
-<return-type></return-type>
+<example>$cascade->deleteUnpublishMessagesWithoutIssues();</example>
+<return-type>Cascade</return-type>
 <exception></exception>
 </documentation>
 */
-    public function deleteUnpublishMessagesWithoutIssues()
+    public function deleteUnpublishMessagesWithoutIssues() : Cascade
     {
         MessageArrays::initialize( $this->service );
         return $this->deleteMessagesWithIds( 
@@ -2001,12 +2247,12 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Deletes all completed workflow messages, and returns <code>$cascade</code>.</p></description>
-<example></example>
-<return-type></return-type>
+<example>$cascade->deleteWorkflowMessagesIsComplete();</example>
+<return-type>Cascade</return-type>
 <exception></exception>
 </documentation>
 */
-    public function deleteWorkflowMessagesIsComplete()
+    public function deleteWorkflowMessagesIsComplete() : Cascade
     {
         MessageArrays::initialize( $this->service );
         return $this->deleteMessagesWithIds( 
@@ -2014,8 +2260,17 @@ either an existing index block of type "folder", or an index block newly created
     }
     
 /**
-<documentation><description><p>Removes the access rights of the <code>Group</code> or <code>User</code> to the asset, and returns <code>$cascade</code>. The <code>$a</code> object must be either a <code>Group</code> object or a <code>User</code> object.</p></description>
-<example></example>
+<documentation><description><p>Removes the access rights of the <code>Group</code> or
+<code>User</code> (denoted by the <code>$a</code> variable) to the asset (<code>$type</code>, <code>$id_path</code>, and <code>$site_name</code>), and returns <code>$cascade</code>. The <code>$a</code>
+object must be either a <code>Group</code> object or a <code>User</code>
+object.</p></description>
+<example>$cascade->denyAccess(
+    $cascade->getAsset( a\Group::TYPE, "hemonc" ),
+    a\Folder::TYPE,
+    "/",
+    "cascade-admin-webapp",
+    true );
+</example>
 <return-type>Cascade</return-type>
 <exception>WrongAssetTypeException</exception>
 </documentation>
@@ -2049,13 +2304,18 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Sets all level to <code>none</code>, and returns <code>$cascade</code>. Note that when <code>$applied_to_children</code> is supplied while the <code>$site_name</code> is not needed, a <code>NULL</code> value must be passed in as the third argument.</p></description>
-<example></example>
+<example>$cascade->denyAllAccess(
+    a\Folder::TYPE,
+    "/",
+    "cascade-admin-webapp",
+    true );
+</example>
 <return-type>Cascade</return-type>
 <exception></exception>
 </documentation>
 */
     public function denyAllAccess( string $type, string $id_path, 
-        string $site_name=NULL, $applied_to_children=false ) : Cascade
+        string $site_name=NULL, bool $applied_to_children=false ) : Cascade
     {
         if( self::DEBUG ) { u\DebugUtility::out( "Denying all access" ); }
         $ari = $this->getAccessRights( $type, $id_path, $site_name );
@@ -2066,12 +2326,19 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns the access rights information (an <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/access-rights-information.php"><code>p\AccessRightsInformation</code></a> object).</p></description>
-<example></example>
-<return-type></return-type>
+<example>$ari = $cascade->getAccessRights(
+    a\Folder::TYPE,
+    "/",
+    "cascade-admin-webapp" );
+    
+u\DebugUtility::dump( $ari->toStdClass() );
+</example>
+<return-type>Property</return-type>
 <exception>AccessRightsException</exception>
 </documentation>
 */
-    public function getAccessRights( $type, $id_path, $site_name=NULL )
+    public function getAccessRights(
+        string $type, string $id_path, string $site_name=NULL ) : p\Property
     {
         // to make sure the asset exists
         $this->getAsset( $type, $id_path, $site_name );
@@ -2092,25 +2359,25 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of messages (<a href="http://www.upstate.edu/cascade-admin/web-services/api/message.php"><code>Message</code></a> objects).</p></description>
-<example></example>
-<return-type></return-type>
+<example>$messages = $cascade->getAllMessages();</example>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getAllMessages()
+    public function getAllMessages() : array
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$all_messages;
     }
     
 /**
-<documentation><description><p>eturns an <code>Asset</code> object.</p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns an <code>Asset</code> object.</p></description>
+<example>$cascade->getAsset( a\Page::TYPE, "389b32a68b7ffe83164c931497b7bc24" )->dump();</example>
+<return-type>Asset</return-type>
 <exception>NullAssetException, NoSuchTypeException, Exception</exception>
 </documentation>
 */
-    public function getAsset( $type, $id_path, $site_name=NULL )
+    public function getAsset( $type, $id_path, $site_name=NULL ) : Asset
     {
         try
         {
@@ -2123,8 +2390,9 @@ either an existing index block of type "folder", or an index block newly created
     }
     
 /**
-<documentation><description><p>Returns an object representing the asset bearing the ID, or <code>NULL</code> if there is no asset bearing that ID.</p></description>
-<example></example>
+<documentation><description><p>Returns an object representing the asset bearing the ID,
+or <code>NULL</code> if there is no asset bearing that ID.</p></description>
+<example>$cascade->getAssetByIdString( "1f2373488b7ffe834c5fe91e2f1fb803" )->dump();</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -2142,7 +2410,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of <a href="http://www.upstate.edu/cascade-admin/web-services/api/audit.php"><code>Audit</code></a> objects. The <code>$type</code> string can be empty, or one of the types defined for auditing. The two <code>DateTime</code> objects can be used to filter the returned objects. <code>$start_time</code> must be before or identical to <code>$end_time</code>.</p></description>
-<example></example>
+<example>$audits = $page->getAudits();</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2156,7 +2424,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an <code>AssetTree</code> object, with the root set to be the Base Folder of the site.</p></description>
-<example></example>
+<example>$at = $cascade->getBaseFolderAssetTree( "cascade-admin" );</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -2168,17 +2436,18 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of groups (<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects).</p></description>
-<example></example>
-<return-type>mixed</return-type>
+<example>$groups = $cascade->getGroups();</example>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getGroups()
+    public function getGroups() : array
     {
-        if( $this->groups == NULL )
+        if( is_null( $this->groups ) )
         {
+            $this->groups             = array();
             $search_for               = new \stdClass();
-            $search_for->matchType    =c\T::MATCH_ANY;
+            $search_for->matchType    = c\T::MATCH_ANY;
             $search_for->searchGroups = true;
             $search_for->assetName    = '*';
     
@@ -2204,12 +2473,12 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of groups (<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects) bearing the name. If <code>$name</code> is not supplied, then this method becomes an alias of <code>getGroups()</code>. The name can be an ID of a group, or it can be a string containing wild-card characters.</p></description>
-<example></example>
-<return-type>mixed</return-type>
+<example>$groups = $cascade->getGroupsByName( "a*" );</example>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getGroupsByName( $name="" )
+    public function getGroupsByName( $name="" ) : array
     {
         if( $name == "" )
             return $this->getGroups();
@@ -2240,7 +2509,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns a <a href="http://www.upstate.edu/cascade-admin/web-services/api/message.php"><code>Message</code></a> object bearing the id.</p></description>
-<example></example>
+<example>$message = $cascade->getMessage( "6ca134da8b7f08ee67a11426bae0cc0a" );</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -2257,7 +2526,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns the id-<code>Message</code> object map.</p></description>
-<example></example>
+<example>$message = $cascade->getMessageIdObjMap()[ "6ca134da8b7f08ee67a11426bae0cc0a" ];</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2270,7 +2539,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns a <code><a href="http://www.upstate.edu/cascade-admin/web-services/api/preference.php">Preference</a></code> object, representing system preferences.</p></description>
-<example></example>
+<example>$pref = $cascade->getPreference();</example>
 <return-type>Preference</return-type>
 <exception></exception>
 </documentation>
@@ -2288,7 +2557,10 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of <code>Message</code> objects of type "Publish".</p></description>
-<example></example>
+<example>$messages = $cascade->getPublishMessages();
+    
+if( count( $messages ) > 0 )
+    $messages[ 0 ]->display();</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2301,12 +2573,12 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of <code>Message</code> objects of type "Publish" with issues.</p></description>
-<example></example>
+<example>$messages = $cascade->getPublishMessagesWithIssues();</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPublishMessagesWithIssues()
+    public function getPublishMessagesWithIssues() : array
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$publish_messages_with_issues;
@@ -2314,12 +2586,12 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of <code>Message</code> objects of type "Publish" without issues.</p></description>
-<example></example>
-<return-type></return-type>
+<example>$messages = $cascade->getPublishMessagesWithoutIssues();</example>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPublishMessagesWithoutIssues()
+    public function getPublishMessagesWithoutIssues() : array
     {
         MessageArrays::initialize( $this->service );
         return MessageArrays::$publish_messages_without_issues;
@@ -2327,28 +2599,19 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns the <code>Role</code> object bearing the numeric ID. This is equivalent to <code>$cascade-&gt;getAsset( Role::TYPE, $role_id )</code>.</p></description>
-<example></example>
+<example>$r = $cascade->getRoleAssetById( 210 )->dump();</example>
 <return-type>Asset</return-type>
 <exception>NullAssetException</exception>
 </documentation>
 */
     public function getRoleAssetById( string $role_id ) : Asset
     {
-        if( $this->roles == NULL )
-        {
-            $this->getRoles();
-        }
-        
-        if( !$this->hasRoleId( $role_id ) )
-            throw new e\NullAssetException( 
-                S_SPAN . c\M::WRONG_ROLE . E_SPAN );
-        
-        return $this->role_id_object_map[ $role_id ];
+        return $this->getAsset( Role::TYPE, $role_id );
     }
     
 /**
 <documentation><description><p>Returns the <code>Role</code> object bearing the name. Note that this method throws a <code>NullAssetException</code> object if the named role does not exist.</p></description>
-<example></example>
+<example>$r = $cascade->getRoleAssetByName( "Account Manager" )->dump();</example>
 <return-type>Asset</return-type>
 <exception>NullAssetException</exception>
 </documentation>
@@ -2390,7 +2653,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of all role numeric ID's.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $cascade->getRoleIds() );</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2406,7 +2669,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of all role names.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $cascade->getRoleNames() );</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2422,7 +2685,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of roles (<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects).</p></description>
-<example></example>
+<example>$roles = $cascade->getRoles();</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2432,8 +2695,12 @@ either an existing index block of type "folder", or an index block newly created
         // sleep for creation of new roles
         sleep( 5 );
     
-        $this->role_name_object_map = array();
-        $this->role_id_object_map   = array();
+        if( is_null( $this->roles ) )
+        {
+            $this->roles                = array();
+            $this->role_name_object_map = array();
+            $this->role_id_object_map   = array();
+        }
     
         $search_for              = new \stdClass();
         $search_for->matchType   =c\T::MATCH_ANY;
@@ -2447,7 +2714,6 @@ either an existing index block of type "folder", or an index block newly created
             if( !is_null( $this->service->getSearchMatches()->match ) )
             {
                 $roles = $this->service->getSearchMatches()->match;
-                $this->roles = array();
         
                 foreach( $roles as $role )
                 {
@@ -2477,7 +2743,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns the named site (a <code>Site</code> object). Note that this method throws <code>NoSuchSiteException</code> if the named site does not exists.</p></description>
-<example></example>
+<example>$site = $cascade->getSite( "cascade-admin" );</example>
 <return-type>Asset</return-type>
 <exception>NoSuchSiteException</exception>
 </documentation>
@@ -2500,7 +2766,13 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of site identifiers (<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects).</p></description>
-<example></example>
+<example>$sites = $cascade->getSites();
+    
+foreach( $sites as $site )
+{
+    echo $site->getPathPath(), BR;
+}
+</example>
 <return-type>array</return-type>
 <exception>Exception</exception>
 </documentation>
@@ -2533,7 +2805,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of <code>Message</code> objects of type "Summary".</p></description>
-<example></example>
+<example>$messages = $cascade->getSummaryMessages();</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2546,7 +2818,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of <code>Message</code> objects of type "Summary" without failures.</p></description>
-<example></example>
+<example>$messages = $cascade->getSummaryMessagesNoFailures();</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2559,7 +2831,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of <code>Message</code> objects of type "Summary" with failures.</p></description>
-<example></example>
+<example>$messages = $cascade->getSummaryMessagesWithFailures();</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2572,7 +2844,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of <code>Message</code> objects of type "Un-publish".</p></description>
-<example></example>
+<example>$messages = $cascade->getUnpublishMessages();</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2585,7 +2857,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of <code>Message</code> objects of type "Un-publish" with issues.</p></description>
-<example></example>
+<example>$messages = $cascade->getUnpublishMessagesWithIssues();</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2598,7 +2870,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of <code>Message</code> objects of type "Un-publish" without issues.</p></description>
-<example></example>
+<example>$messages = $cascade->getUnpublishMessagesWithoutIssues();</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2611,7 +2883,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of users (<code>p\Identifier</code> objects).</p></description>
-<example></example>
+<example>$users = $cascade->getUsers();</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2621,8 +2893,9 @@ either an existing index block of type "folder", or an index block newly created
         $user_name_array = array();
         
         // maximally returns 250 users
-        if( $this->users == NULL )
+        if( is_null( $this->users ) )
         {
+            $this->users             = array();
             $search_for              = new \stdClass();
             $search_for->matchType   =c\T::MATCH_ANY;
             $search_for->searchUsers = true;
@@ -2686,7 +2959,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of users (<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects) bearing the name. If <code>$name</code> is not supplied, then this method becomes an alias of <code>getUsers()</code>. The name can be an ID of a user, or it can be a string containing wild-card characters.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $cascade->getUsersByName( "chanw" ) );</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2722,7 +2995,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of <code>Message</code> objects of type "Workflow".</p></description>
-<example></example>
+<example>$messages = $cascade->getWorkflowMessages();</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2735,7 +3008,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of <code>Message</code> objects of type "Workflow" which are complete.</p></description>
-<example></example>
+<example>$messages = $cascade->getWorkflowMessagesIsComplete();</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2748,7 +3021,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns an array of <code>Message</code> objects of type "Workflow" which are non-complete.</p></description>
-<example></example>
+<example>$messages = $cascade->getWorkflowMessagesOther();</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2760,8 +3033,15 @@ either an existing index block of type "folder", or an index block newly created
     }
     
 /**
-<documentation><description><p>Grants access rights to a <code>Group</code> or a <code>User</code> to the asset, and <code>$cascade</code>. Note that the asset <code>$a</code> must be either a <code>Group</code> object or a <code>User</code> object. <code>$level</code> can be either <code>constants\T::READ</code> or <code>constants\T::WRITE</code>.</p></description>
-<example></example>
+<documentation><description><p>Grants access rights to a <code>Group</code> or a <code>User</code> (denoted by <code>$a</code>) to the asset (<code>$type</code>, <code>$id_path</code>, and <code>site_name</code>), and returns <code>$cascade</code>. Note that the asset <code>$a</code> must be either a <code>Group</code> object or a <code>User</code> object. <code>$level</code> can be either <code>c\T::READ</code> or <code>c\T::WRITE</code>.</p></description>
+<example>    $cascade->grantAccess(
+    $cascade->getAsset( a\User::TYPE, "tuw" ),
+    a\Folder::TYPE,
+    "/",
+    "cascade-admin-webapp",
+    true,
+    c\T::READ
+);</example>
 <return-type>Cascade</return-type>
 <exception></exception>
 </documentation>
@@ -2819,9 +3099,9 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Returns a bool, indicating whether the group exists.</p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<example>echo u\StringUtility::boolToString( $cascade->hasGroup( "hemonc" ) );</example>
+<return-type>bool</return-type>
+<exception>Exception</exception>
 </documentation>
 */
     public function hasGroup( string $group_name ) : bool
@@ -2831,17 +3111,21 @@ either an existing index block of type "folder", or an index block newly created
             $this->getAsset( Group::TYPE, $group_name );
             return true;
         }
-        catch( \Exception $e )
+        catch( e\NullAssetException $e )
         {
             echo S_PRE . $e . E_PRE;
             return false;
         }
+        catch( e\Exception $e )
+        {
+            throw $e;
+        }
     }
-    
+
 /**
 <documentation><description><p>Returns a bool, indicating whether the role bearing the numeric ID exists.</p></description>
-<example></example>
-<return-type></return-type>
+<example>echo u\StringUtility::boolToString( $cascade->hasRoleId( 210 ) );</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
@@ -2856,12 +3140,12 @@ either an existing index block of type "folder", or an index block newly created
 
 /**
 <documentation><description><p>Returns a bool, indicating whether the role bearing the name exists.</p></description>
-<example></example>
-<return-type></return-type>
+<example>echo u\StringUtility::boolToString( $cascade->hasRoleName( "Site-Manager" ) );</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function hasRoleName( string $role_name )
+    public function hasRoleName( string $role_name ) : bool
     {
         if( $this->roles == NULL )
         {
@@ -2871,10 +3155,39 @@ either an existing index block of type "folder", or an index block newly created
     }
     
 /**
+<documentation><description><p>Returns a bool, indicating whether the group exists.</p></description>
+<example>echo u\StringUtility::boolToString( $cascade->hasUser( "chanw" ) );</example>
+<return-type>bool</return-type>
+<exception>Exception</exception>
+</documentation>
+*/
+    public function hasUser( string $user_name ) : bool
+    {
+        try
+        {
+            $this->getAsset( User::TYPE, $user_name );
+            return true;
+        }
+        catch( e\NullAssetException $e )
+        {
+            echo S_PRE . $e . E_PRE;
+            return false;
+        }
+        catch( e\Exception $e )
+        {
+            throw $e;
+        }
+    }
+
+/**
 <documentation><description><p>oves the asset to the new container and <code>$cascade</code>.</p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<example>$page = $cascade->getAsset( 
+    a\Page::TYPE, "5f1f70828b7f08ee226116ffc5e5b1b9" );
+$cascade->moveAsset( $page,
+    $cascade->getAsset( 
+        a\Folder::TYPE, "8b5193ee8b7f08ee26d2e6f290705401" ) );</example>
+<return-type>Cascade</return-type>
+<exception>NullAssetException, RenamingFailureException</exception>
 </documentation>
 */
     public function moveAsset( Asset $a, Container $new_parent ) : Cascade
@@ -2907,8 +3220,8 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Renames the asset and returns <code>$cascade</code>.</p></description>
-<example></example>
-<return-type></return-type>
+<example>$cascade->renameAsset( $page, "my-new-page" );</example>
+<return-type>Cascade</return-type>
 <exception></exception>
 </documentation>
 */
@@ -2943,7 +3256,14 @@ either an existing index block of type "folder", or an index block newly created
 
 /**
 <documentation><description><p>Searches with <code>all</code> as the match type and returns an array of identifiers (<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects) or an empty array.</p></description>
-<example></example>
+<example>u\DebugUtility::dump(
+    $cascade->searchForAll(
+        "a*",
+        "Cascade",
+        "",
+        c\S::SEARCHPAGES
+    )
+);</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2958,7 +3278,12 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Searches with <code>any</code> as the match type and <code>$asset_content</code> as the content, and returns an array of identifiers (<code>p\Identifier</code> objects) or an empty array.</p></description>
-<example></example>
+<example>u\DebugUtility::dump(
+    $cascade->searchForAssetContent(
+        "Cascade",
+        c\S::SEARCHPAGES
+    )
+);</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2976,7 +3301,12 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Searches with <code>any</code> as the match type and <code>$asset_name</code> as the name, and returns an array of identifiers (<code>p\Identifier</code> objects) or an empty array.</p></description>
-<example></example>
+<example>u\DebugUtility::dump(
+    $cascade->searchForAssetName(
+        "a*",
+        c\S::SEARCHPAGES
+    )
+);</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -2993,7 +3323,12 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Searches with <code>any</code> as the match type and <code>$asset_metadata</code> as the metadata, and returns an array of identifiers (<code>p\Identifier</code> objects) or an empty array.</p></description>
-<example></example>
+<example>u\DebugUtility::dump(
+    $cascade->searchForAssetMetadata(
+        "Cascade",
+        c\S::SEARCHPAGES
+    )
+);</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -3011,7 +3346,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Calls <code>AssetOperationHandlerService::editAccessRights</code> by passing in all the supplied information, and returns <code>$cascade</code>.</p></description>
-<example></example>
+<example>$cascade->setAccessRights( $ari, true );</example>
 <return-type>Cascade</return-type>
 <exception>UnacceptableValueException</exception>
 </documentation>
@@ -3034,14 +3369,14 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Sets all level to the value <code>$level</code> (<code>constants\T::READ</code>, <code>constants\T::WRITE</code>, or <code>constants\T::NONE</code>), and returns <code>$cascade</code>.</p></description>
-<example></example>
+<example>$cascade->setAllLevel( a\Folder::TYPE, "/", "cascade-admin-webapp", c\T::NONE, true );</example>
 <return-type>Cascade</return-type>
 <exception></exception>
 </documentation>
 */
     public function setAllLevel( 
         string $type, string $id_path, string $site_name=NULL, 
-        string $level=C\T::NONE, bool $applied_to_children=false ) : Cascade
+        string $level=c\T::NONE, bool $applied_to_children=false ) : Cascade
     {
         $ari = $this->getAccessRights( $type, $id_path, $site_name );
         $ari->setAllLevel( $level );
@@ -3051,7 +3386,7 @@ either an existing index block of type "folder", or an index block newly created
     
 /**
 <documentation><description><p>Sets the named system preference with the supplied value, and returns <code>$cascade</code>.</p></description>
-<example></example>
+<example>$cascade->setPreference( a\Preference::ALLOW_TABLE_EDITING, "on" );</example>
 <return-type>Cascade</return-type>
 <exception></exception>
 </documentation>
