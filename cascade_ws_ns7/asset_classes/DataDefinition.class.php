@@ -183,8 +183,8 @@ process the definition XML.</p></description>
 /**
 <documentation><description><p>Displays <code>xml</code> and the attributes
 array, and returns the calling object.</p></description>
-<example></example>
-<return-type></return-type>
+<example>$dd->display();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
@@ -204,7 +204,7 @@ array, and returns the calling object.</p></description>
 /**
 <documentation><description><p>Displays the attributes array, and returns the
 calling object.</p></description>
-<example></example>
+<example>$dd->displayAttributes();</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
@@ -221,7 +221,7 @@ calling object.</p></description>
 /**
 <documentation><description><p>Displays <code>xml</code> and returns the calling object.
 The flag <code>$formatted</code> controls whether the XML should be formatted for HTML output.</p></description>
-<example></example>
+<example>$dd->displayXML();</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
@@ -274,7 +274,7 @@ The flag <code>$formatted</code> controls whether the XML should be formatted fo
 /**
 <documentation><description><p>Returns the attribute array associated with the field
 (identifier).</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $dd->getField( $identifier ) );</example>
 <return-type>array</return-type>
 <exception>NoSuchFieldException</exception>
 </documentation>
@@ -290,7 +290,7 @@ The flag <code>$formatted</code> controls whether the XML should be formatted fo
     
 /**
 <documentation><description><p>Returns the array of fully qualified identifiers.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $dd->getIdentifiers() );</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -303,7 +303,7 @@ The flag <code>$formatted</code> controls whether the XML should be formatted fo
 /**
 <documentation><description><p>Returns an <code>stdClass</code> object, representing the
 structured data associated with the data definition.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $dd->getStructuredData() );</example>
 <return-type>stdClass</return-type>
 <exception></exception>
 </documentation>
@@ -315,12 +315,12 @@ structured data associated with the data definition.</p></description>
     
 /**
 <documentation><description><p>Returns the <code>StructuredData</code> object.</p></description>
-<example></example>
-<return-type></return-type>
+<example>u\DebugUtility::dump( $dd->getStructuredDataObject() );</example>
+<return-type>Property</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getStructuredDataObject()
+    public function getStructuredDataObject() : p\Property
     {
         return new p\StructuredData(
             $this->structured_data, $this->getService(), $this->getId() );
@@ -340,7 +340,7 @@ structured data associated with the data definition.</p></description>
     
 /**
 <documentation><description><p>Returns <code>xml</code>.</p></description>
-<example></example>
+<example>$xml = $dd->getXml();</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -364,7 +364,13 @@ structured data associated with the data definition.</p></description>
     
 /**
 <documentation><description><p>Returns a bool, indicating whether a field exists in the data definition.</p></description>
-<example></example>
+<example>if( $dd->hasIdentifier( $identifier ) )
+{
+    u\DebugUtility::dump( $dd->getField( $identifier ) );
+    
+    echo ( $dd->isMultiple( $identifier ) ? 
+        'Multiple' : 'Not multiple' ) . BR;
+}</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -376,12 +382,18 @@ structured data associated with the data definition.</p></description>
     
 /**
 <documentation><description><p>Returns a bool, indicating whether the field is a multiple field.</p></description>
-<example></example>
-<return-type></return-type>
+<example>if( $dd->hasIdentifier( $identifier ) )
+{
+    u\DebugUtility::dump( $dd->getField( $identifier ) );
+    
+    echo ( $dd->isMultiple( $identifier ) ? 
+        'Multiple' : 'Not multiple' ) . BR;
+}</example>
+<return-type>bool</return-type>
 <exception>NoSuchFieldException</exception>
 </documentation>
 */
-    public function isMultiple( string $field_name )
+    public function isMultiple( string $field_name ) : bool
     {
         if( !in_array( $field_name, $this->identifiers ) )
         {
@@ -404,7 +416,8 @@ structured data associated with the data definition.</p></description>
 /**
 <documentation><description><p>Sets <code>xml</code> and returns the calling
 object.</p></description>
-<example></example>
+<example>$xml = $dd->getXml();
+$dd->setXML( $xml )->edit();</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
