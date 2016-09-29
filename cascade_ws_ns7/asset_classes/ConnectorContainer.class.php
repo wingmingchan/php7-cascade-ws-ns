@@ -17,9 +17,28 @@ use cascade_ws_property as p;
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>A <code>ConnectorContainer</code> object represents a connector container asset. This class is a sub-class of <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/container.php"><code>Container</code></a>.</p>
+<h2>Structure of <code>connectorContainer</code></h2>
+<pre>connectorContainer
+  id
+  name
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  children
+    child
+      id
+      path
+        path
+        siteId
+        siteName
+      type
+      recycled
+</pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/connector_container.php">connector_container.php</a></li></ul></postscript>
 </documentation>
 */
 class ConnectorContainer extends Container
