@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/29/2016 Added text color to $service->getMessage().
   * 8/30/2016 Added XML documentation.
   * 4/13/2016 Added more initialization of stdClass objects.
   * 3/8/2016 Added get_class to dump.
@@ -83,8 +84,8 @@ abstract class Asset
                 S_SPAN . "The " . 
                 c\T::$type_property_name_map[ $identifier->type ] . 
                 " cannot be retrieved. ID/Path: " . $id . ". " .
-                ( isset( $site_name ) ? "Site: " . $site_name . ". "  : "" ) . E_SPAN . BR .
-                $service->getMessage() );
+                ( isset( $site_name ) ? "Site: " . $site_name . ". "  : "" ) . E_SPAN .
+                BR . S_SPAN . $service->getMessage() . E_SPAN );
         }
             
         // store information
