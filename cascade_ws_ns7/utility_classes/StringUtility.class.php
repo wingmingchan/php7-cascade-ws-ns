@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/30/2016 Added getDatabasePHPCode.
   * 9/9/2016 Added $prefix to getMethodName.
   * 8/26/2016 Added constant NAME_SPACE.
   * 8/24/2016 Added documentation comments. Added boolToString and stringToBool.
@@ -29,9 +30,6 @@ class StringUtility
     const NAME_SPACE = "cascade_ws_utility";
 
 /**
-Returns a string value of the bool.
-@param bool $value The bool value
-@return string The string value of the bool
 <documentation><description><p>Returns a string value of the bool.</p></description>
 <example>echo u\StringUtility::boolToString( true ), BR;</example>
 <return-type>bool</return-type>
@@ -47,10 +45,6 @@ Returns a string value of the bool.
     }
     
 /**
-Returns a bool, indicating whether the $haystack ends with $needle.
-@param string $haystack The string to be examined
-@param string $needle The substring to be searched
-@return bool Whether $haystack ends with $needle
 <documentation><description><p>Returns a bool, indicating whether the <code>$haystack</code> ends with <code>$needle</code>.</p></description>
 <example>echo ( u\StringUtility::endsWith( "Hello", "lo" ) ? "yes" : "no" ), BR;</example>
 <return-type>bool</return-type>
@@ -63,9 +57,6 @@ Returns a bool, indicating whether the $haystack ends with $needle.
     }
     
 /**
-Returns a coalesed string.
-@param string $str_null The input string or NULL
-@return string Either the input string (when not NULL), or the string "NULL"
 <documentation><description><p>Returns a coalesed string. If the parameter is a string,
 then the string is returned. If <code>NULL</code> is passed in, then the string <code>NULL</code> is returned.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $m->getEndDate() ), BR;</example>
@@ -79,10 +70,26 @@ then the string is returned. If <code>NULL</code> is passed in, then the string 
     }
 
 /**
-Returns an array out of the string, using $delimiter as the delimiter.
-@param string $delimiter The delimiter string
-@param string $string The string to be split
-@return array The array of split strings
+<documentation><description><p>Returns the PHP code read from a URL.</p></description>
+<example>$code = file_get_contents( $url );
+eval( u\StringUtility::getDatabasePHPCode( $code ) );</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function getDatabasePHPCode( string $code ) : string
+    {
+    	// remove start and end tag
+        $code = str_replace( '<system-region name="DEFAULT">', '', $code );
+        $code = str_replace( '</system-region>', '', $code );
+        // replace &gt;
+        $code = str_replace( '&gt;', '>', $code );
+        $code = trim( $code );
+
+        return $code;
+    }
+
+/**
 <documentation><description><p>Returns an array out of the <code>$string</code>, using <code>$delimiter</code> as the delimiter.</p></description>
 <example>u\DebugUtility::dump( u\StringUtility::getExplodedStringArray( ";", "this;0;that;3;these" ) );</example>
 <return-type>array</return-type>
@@ -108,9 +115,6 @@ Returns an array out of the string, using $delimiter as the delimiter.
     }
     
 /**
-Returns a fully qualified identifier, with all the position information stripped.
-@param string $identifier The input fully qualified identifier
-@return string The fully qualified identifier with all the position information stripped
 <documentation><description><p>Returns a fully qualified identifier, with all the position information stripped.
 For example, <code>getFullyQualifiedIdentifierWithoutPositions( "this;0;that;3;these" )</code> returns <code>this;that;these</code>.</p></description>
 <example>echo u\StringUtility::getFullyQualifiedIdentifierWithoutPositions( "this;0;that;3;these" ), BR;</example>
@@ -137,9 +141,6 @@ For example, <code>getFullyQualifiedIdentifierWithoutPositions( "this;0;that;3;t
     }
     
 /**
-Returns a method name out of a property name.
-@param string $property_name The property name in camel case
-@return string Method name prefixed with get
 <documentation><description><p>Returns a method name out of a property name.
 For example, <code>getMethodName( "structuredData" )</code> returns <code>getStructuredData</code>.</p></description>
 <example>echo u\StringUtility::getMethodName( "structuredData" ), BR;</example>
@@ -153,9 +154,6 @@ For example, <code>getMethodName( "structuredData" )</code> returns <code>getStr
     }
     
 /**
-Returns the last part of a path string, the substring after the last slash.
-@param string $path The path string
-@return string The substring of the path after the last slash
 <documentation><description><p>Returns the last part of a path string, the substring after the last slash.
 For example, <code>getNameFromPath( "/web-services/api/utility-classes/debug-utility" )</code> returns <code>debug-utility</code>.</p></description>
 <example>echo u\StringUtility::getNameFromPath( "/web-services/api/utility-classes/debug-utility" ), BR;</example>
@@ -176,9 +174,6 @@ For example, <code>getNameFromPath( "/web-services/api/utility-classes/debug-uti
     
 
 /**
-Returns the initial part of a path string, the substring before the last slash.
-@param string $path The path string
-@return string The substring of the path before the last slash
 <documentation><description><p>Returns the initial part of a path string, the substring before the last slash.
 For example, <code>getParentPathFromPath( "/web-services/api/utility-classes/debug-utility" )</code> returns <code>web-services/api/utility-classes</code>,
 without leading nor trailing slashes.</p></description>
@@ -205,9 +200,6 @@ without leading nor trailing slashes.</p></description>
     }
     
 /**
-Returns the path part of a path string, removing the substring preceding ":".
-@param string $path The path string
-@return string The path part of a path string
 <documentation><description><p>Returns the path part of a path string, removing the substring preceding ":".
 For example, <code>removeSiteNameFromPath( "site://cascade-admin/web-services/api/utility-classes/debug-utility" )</code>
 returns <code>//cascade-admin/web-services/api/utility-classes/debug-utility</code>.</p></description>
@@ -225,10 +217,6 @@ returns <code>//cascade-admin/web-services/api/utility-classes/debug-utility</co
     }
     
 /**
-Returns a bool, indicating whether the $haystack starts with $needle.
-@param string $haystack The string to be examined
-@param string $needle The substring to be searched
-@return bool Whether $haystack starts with $needle
 <documentation><description><p>Returns a bool, indicating whether the <code>$haystack</code> starts with <code>$needle</code>.</p></description>
 <example>echo ( u\StringUtility::startsWith( "Hello", "He" ) ? "yes" : "no" ), BR;</example>
 <return-type>bool</return-type>
@@ -241,9 +229,6 @@ Returns a bool, indicating whether the $haystack starts with $needle.
     }
 
 /**
-Returns a bool value of the string.
-@param string $value The string value
-@return string The bool value of the string
 <documentation><description><p>Returns a bool value of the string.</p></description>
 <example>if( u\StringUtility::stringToBool( "true" ) )
     echo "Tis true", BR;</example>
