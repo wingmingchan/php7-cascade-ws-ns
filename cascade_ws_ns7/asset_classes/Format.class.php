@@ -9,20 +9,29 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+<p>The <code>Format</code> class is the superclass of <code>ScriptFormat</code> and <code>XsltFormat</code>. It is an abstract class and defines all methods shared by the two sub-classes.</p>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li>
+</ul></postscript>
+</documentation>
+*/
 abstract class Format extends ContainedAsset
 {
     const DEBUG = false;
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Eedits and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>EditingFailureException</exception>
 </documentation>
 */
     public function edit(
@@ -48,60 +57,78 @@ abstract class Format extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>createdBy</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getCreatedBy()
+    public function getCreatedBy() : string
     {
         return $this->getProperty()->createdBy;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>createdDate</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getCreatedDate()
+    public function getCreatedDate() : string
     {
         return $this->getProperty()->createdDate;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>lastModifiedBy</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getLastModifiedBy()
+    public function getLastModifiedBy() : string
     {
         return $this->getProperty()->lastModifiedBy;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>lastModifiedDate</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getLastModifiedDate()
+    public function getLastModifiedDate() : string
     {
         return $this->getProperty()->lastModifiedDate;
     }
     
-    public static function getFormat( $service, $id_string )
+/**
+<documentation><description><p>Returns a <code>Format</code> object bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a format.</p></description>
+<example></example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function getFormat(
+        aohs\AssetOperationHandlerService $service,
+        string $id_string ) : Asset
     {
         return self::getAsset( $service, 
             self::getFormatType( $service, $id_string ), $id_string );
     }
 
-    public static function getFormatType( $service, $id_string )
+/**
+<documentation><description><p>Returns the type of the format bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a format.</p></description>
+<example></example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function getFormatType(
+        aohs\AssetOperationHandlerService $service,
+        string $id_string ) : string
     {
         $types      
             = array( ScriptFormat::TYPE, XsltFormat::TYPE );
