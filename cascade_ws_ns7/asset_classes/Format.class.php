@@ -19,7 +19,7 @@ use cascade_ws_property  as p;
 <description><h2>Introduction</h2>
 <p>The <code>Format</code> class is the superclass of <code>ScriptFormat</code> and <code>XsltFormat</code>. It is an abstract class and defines all methods shared by the two sub-classes.</p>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/format.php">format.php</a></li>
 </ul></postscript>
 </documentation>
 */
@@ -28,8 +28,8 @@ abstract class Format extends ContainedAsset
     const DEBUG = false;
 
 /**
-<documentation><description><p>Eedits and returns the calling object.</p></description>
-<example></example>
+<documentation><description><p>Edits and returns the calling object.</p></description>
+<example>$f->setXML( $xml )->edit();</example>
 <return-type>Asset</return-type>
 <exception>EditingFailureException</exception>
 </documentation>
@@ -58,7 +58,7 @@ abstract class Format extends ContainedAsset
     
 /**
 <documentation><description><p>Returns <code>createdBy</code>.</p></description>
-<example></example>
+<example>echo "getCreatedBy: ", $f->getCreatedBy(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -70,7 +70,7 @@ abstract class Format extends ContainedAsset
     
 /**
 <documentation><description><p>Returns <code>createdDate</code>.</p></description>
-<example></example>
+<example>echo "getCreatedDate: ", $f->getCreatedDate(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -82,7 +82,7 @@ abstract class Format extends ContainedAsset
     
 /**
 <documentation><description><p>Returns <code>lastModifiedBy</code>.</p></description>
-<example></example>
+<example>echo "getLastModifiedBy: ", $f->getLastModifiedBy(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -94,7 +94,7 @@ abstract class Format extends ContainedAsset
     
 /**
 <documentation><description><p>Returns <code>lastModifiedDate</code>.</p></description>
-<example></example>
+<example>echo "getLastModifiedDate: ", $f->getLastModifiedDate(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -106,7 +106,7 @@ abstract class Format extends ContainedAsset
     
 /**
 <documentation><description><p>Returns a <code>Format</code> object bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a format.</p></description>
-<example></example>
+<example>$f = a\Format::getFormat( $service, "9fea0fa68b7ffe83164c9314f20b318a" );</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -121,7 +121,7 @@ abstract class Format extends ContainedAsset
 
 /**
 <documentation><description><p>Returns the type of the format bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a format.</p></description>
-<example></example>
+<example>echo a\Format::getFormatType( $service, "9fea17498b7ffe83164c931447df1bfb" );</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
