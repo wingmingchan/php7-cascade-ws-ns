@@ -9,18 +9,33 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+<p>The <code>Connector</code> class is the superclass of
+<code>FacebookConnector</code>, <code>GoogleAnalyticsConnector</code>,
+<code>TwitterConnector</code>, and <code>WordPressConnector</code>. It is an abstract
+class and defines methods commonly shared by its sub-classes. Note that there are methods
+defined here that are used by some, but not all, sub-classes. If a method is called
+through an object that should not be associated with the method in the first place, an
+exception will be thrown. For example, the <code>setDestination</code> method is not
+intended for <code>GoogleAnalyticsConnector</code> nor <code>WordPressConnector</code>
+objects. If the method is called by such an object, an exception will be thrown by this
+class.</p>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 abstract class Connector extends ContainedAsset
 {
     const DEBUG = false;
-
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>The constructor, overriding the parent method to process parameters.</p></description>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -35,13 +50,14 @@ abstract class Connector extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Adds a content type link to the connector, and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>NullAssetException, EmptyValueException, NoSuchPageConfigurationException, Exception</exception>
 </documentation>
 */
-    public function addContentTypeLink( ContentType $ct, $page_config_name )
+    public function addContentTypeLink(
+        ContentType $ct, string $page_config_name ) : Asset
     {
         if( $this->getPropertyName() == c\P::GOOGLEANALYTICSCONNECTOR )
         {
@@ -66,7 +82,8 @@ abstract class Connector extends ContainedAsset
         if( !$config_set->hasPageConfiguration( $page_config_name ) )
         {
             throw new e\NoSuchPageConfigurationException( 
-                S_SPAN ."The page configuration $page_config_name does not exist. " . E_SPAN );
+                S_SPAN ."The page configuration $page_config_name does not exist. " .
+                E_SPAN );
         }
         
         $config = $config_set->getPageConfiguration( $page_config_name );
@@ -107,10 +124,10 @@ abstract class Connector extends ContainedAsset
     }
         
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Edits and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>EditingFailureException</exception>
 </documentation>
 */
     public function edit(
@@ -130,17 +147,19 @@ abstract class Connector extends ContainedAsset
         {
             if( $count == 1 )
             {
-                $this->getProperty()->connectorContentTypeLinks->connectorContentTypeLink =
-                    $this->connector_content_type_links[ 0 ]->toStdClass();
+                $this->getProperty()->connectorContentTypeLinks->
+                    connectorContentTypeLink =
+                        $this->connector_content_type_links[ 0 ]->toStdClass();
             }
             else
             {
-                $this->getProperty()->connectorContentTypeLinks->connectorContentTypeLink = array();
+                $this->getProperty()->connectorContentTypeLinks->
+                    connectorContentTypeLink = array();
                 
                 foreach( $this->connector_content_type_links as $link )
                 {
-                    $this->getProperty()->connectorContentTypeLinks->connectorContentTypeLink[] =
-                        $link->toStdClass();
+                    $this->getProperty()->connectorContentTypeLinks->
+                        connectorContentTypeLink[] = $link->toStdClass();
                 }
             }
         }
@@ -181,97 +200,97 @@ abstract class Connector extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>auth1</code> (the username).</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getAuth1()
+    public function getAuth1() : string
     {
         return $this->getProperty()->auth1;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>auth2</code> (the password). The returned string is useless.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getAuth2()
+    public function getAuth2() : string
     {
         return $this->getProperty()->auth2;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/connector-content-type-link.php"><code>ConnectorContentTypeLink</code></a> objects.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getConnectorContentTypeLinks()
+    public function getConnectorContentTypeLinks() : array
     {
         return $this->connector_content_type_links;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array of <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/connector-parameter.php"><code>ConnectorParameter</code></a> objects.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getConnectorParameters()
+    public function getConnectorParameters() : array
     {
         return $this->connector_parameters;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>url</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getUrl()
+    public function getUrl() : string
     {
         return $this->getProperty()->url;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>verified</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getVerified()
+    public function getVerified() : bool
     {
         return $this->getProperty()->verified;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>verifiedDate</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getVerifiedDate()
+    public function getVerifiedDate() : string
     {
         return $this->getProperty()->verifiedDate;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a bool, indicating whether the content type is chosen in the connector. <code>$ct_path</code> is the <code>path</code> string of the content type.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function hasContentType( $ct_path )
+    public function hasContentType( string $ct_path ) : bool
     {
         if( $this->getPropertyName() == c\P::GOOGLEANALYTICSCONNECTOR )
         {
@@ -288,13 +307,13 @@ abstract class Connector extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Removes the content type from the connector and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>Exception</exception>
 </documentation>
 */
-    public function removeContentTypeLink( ContentType $ct )
+    public function removeContentTypeLink( ContentType $ct ) : Asset
     {
         if( $this->getPropertyName() == c\P::GOOGLEANALYTICSCONNECTOR )
         {
@@ -318,13 +337,13 @@ abstract class Connector extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>destination</code> and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setDestination( Destination $d )
+    public function setDestination( Destination $d ) : Asset
     {
         if( $this->getPropertyName() != c\P::TWITTERCONNECTOR &&
             $this->getPropertyName() != c\P::FACEBOOKCONNECTOR
@@ -356,9 +375,11 @@ abstract class Connector extends ContainedAsset
         }
         
         if( isset( $this->getProperty()->connectorContentTypeLinks ) &&
-            isset( $this->getProperty()->connectorContentTypeLinks->connectorContentTypeLink ) )
+            isset( $this->getProperty()->connectorContentTypeLinks->
+                connectorContentTypeLink ) )
         {
-            $links = $this->getProperty()->connectorContentTypeLinks->connectorContentTypeLink;
+            $links = $this->getProperty()->connectorContentTypeLinks->
+                connectorContentTypeLink;
             
             if( !is_array( $links ) )
             {
@@ -374,7 +395,8 @@ abstract class Connector extends ContainedAsset
                 }
                 else
                 {
-                    $this->connector_content_type_links[] = new p\ConnectorContentTypeLink( $link );
+                    $this->connector_content_type_links[] = 
+                        new p\ConnectorContentTypeLink( $link );
                 }
             }
         }
