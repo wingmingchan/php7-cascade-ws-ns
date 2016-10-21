@@ -1844,6 +1844,18 @@ either an existing index block of type "folder", or an index block newly created
             $parent->getSiteName() );
     }
     
+    public function createTwitterFeedBlock(
+        Folder $parent, 
+    	string $name
+    ) : Asset
+    {
+    	$asset = AssetTemplate::getTwitterFeedBlock();
+    	$asset->twitterFeedBlock->parentFolderPath = $parent->getPath();
+        $asset->twitterFeedBlock->siteName         = $parent->getSiteName();
+
+    	return $this->createAsset( $asset, TwitterFeedBlock::TYPE, $name );
+    }
+    
 /**
 <documentation><description><p>Returns a <code>User</code> object, representing either an existing user, or a user newly created by the method. Note that the role passed in should be a global role.</p></description>
 <example>$user = $cascade->createUser(

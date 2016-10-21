@@ -239,7 +239,8 @@ u\DebugUtility::dump( $id_child );</example>
 <exception></exception>
 </documentation>
 */
-    public function toXml( $indent, aohs\AssetOperationHandlerService $service ) : string
+    public function toXml( 
+        string $indent="", aohs\AssetOperationHandlerService $service ) : string
     {
         if( isset( $service ) )
         {

@@ -20,17 +20,79 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>A <code>DataDefinitionBlock</code> object represents an asset of type <code>xhtmlDataDefinitionBlock</code>. This class is a sub-class of <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/block.php"><code>Block</code></a>.</p>
+<p>This class can be used to manipulate both data definition blocks and xhtml blocks. The only test available to tell them apart is the <code>DataDefinitionBlock::hasStructuredData</code> method. When it returns true, the block is a data definition block; else it is an xhtml block. We cannot consider the <code>xhtml</code> property because it can be <code>NULL</code> for both block sub-types.</p>
+<p>I could have split this class into two: <code>DataDefinitionBlock</code> and <code>XhtmlBlock</code>. But this difference between with and without using a data definition also exists in a page, and I do not think I should split the <code>Page</code> class into two. Therefore, I use the same class to deal with these two types of <code>xhtmlDataDefinitionBlock</code>.</p>
+<h2>Structure of <code>xhtmlDataDefinitionBlock</code></h2>
+<pre>xhtmlDataDefinitionBlock
+  id
+  name
+  parentFolderId
+  parentFolderPath
+  path
+  lastModifiedDate
+  lastModifiedBy
+  createdDate
+  createdBy
+  siteId
+  siteName
+  metadata
+    author
+    displayName
+    endDate
+    keywords
+    metaDescription
+    reviewDate
+    startDate
+    summary
+    teaser
+    title
+    dynamicFields (NULL or an stdClass)
+      dynamicField (an stdClass or or array of stdClass)
+        name
+        fieldValues (NULL, stdClass or array of stdClass)
+          fieldValue
+            value
+  metadataSetId
+  metadataSetPath
+  expirationFolderId
+  expirationFolderPath
+  expirationFolderRecycled (bool)
+  structuredData
+    definitionId
+    definitionPath
+    structuredDataNodes
+      structuredDataNode (stdClass or array of stdClass)
+        type
+        identifier
+        structuredDataNodes
+        text
+        assetType
+        blockId
+        blockPath
+        fileId
+        filePath
+        pageId
+        pagePath
+        symlinkId
+        symlinkPath
+        recycled
+  xhtml
+</pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul>
+<li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/dd_block_multiple_fields.php">dd_block_multiple_fields.php</a></li>
+<li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/dd_block_multiple_text.php">dd_block_multiple_text.php</a></li>
+<li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/xhtml_block.php">xhtml_block.php</a></li>
+</ul></postscript>
 </documentation>
 */
 class DataDefinitionBlock extends Block
@@ -39,13 +101,11 @@ class DataDefinitionBlock extends Block
     const DUMP  = false;
     const TYPE  = c\T::DATABLOCK;
 
-    /**
-    * The constructor
-    * @param $service the AssetOperationHandlerService object
-    * @param $identifier the identifier object
-    */
 /**
-<documentation><description><p></p></description>
+<documentation><description>
+<p>Since this class can handle both data definition blocks and xhtml blocks, the majority of the methods handle data definition blocks and only a few handle xhtml blocks. If a method like <code>DataDefinitionBlock::setText</code>, which is used to set the text of a node, is called upon a xhtml block, an exception will be thrown. On the other hand, a method like <code>DataDefinitionBlock::setXHTML</code> is meaningful only for xhtml blocks. When called upon a data definition block, this method throws an exception.</p>
+<p>A note about cases in method names. Method names in PHP are not case-sensitive. Therefore, <code>getXHTML</code> is the same as <code>getXhtml</code>, and there is no way (and no need) to define aliases just by differing cases.</p>
+<p>The constructor, overriding the parent method to process <code>structuredData</code>.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -69,11 +129,11 @@ class DataDefinitionBlock extends Block
 /**
 <documentation><description><p></p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function appendSibling( $identifier )
+    public function appendSibling( string $identifier ) : Asset
     {
         $this->checkStructuredData();
         
@@ -86,11 +146,11 @@ class DataDefinitionBlock extends Block
 /**
 <documentation><description><p></p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function copyDataTo( $block )
+    public function copyDataTo( DataDefinitionBlock $block ) : Asset
     {
         $this->checkStructuredData();
         $block->setStructuredData( $this->getStructuredData() );
@@ -100,11 +160,12 @@ class DataDefinitionBlock extends Block
 /**
 <documentation><description><p></p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function createNInstancesForMultipleField( $number, $identifier )
+    public function createNInstancesForMultipleField(
+        int $number, string $identifier ) : Asset
     {
         $this->checkStructuredData();
         $number = intval( $number );
@@ -145,11 +206,11 @@ class DataDefinitionBlock extends Block
 /**
 <documentation><description><p></p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function displayDataDefinition()
+    public function displayDataDefinition() : Asset
     {
         $this->checkStructuredData();
         $this->structured_data->getDataDefinition()->displayXML();
@@ -159,11 +220,11 @@ class DataDefinitionBlock extends Block
 /**
 <documentation><description><p></p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function displayXhtml()
+    public function displayXhtml() : Asset
     {
         if( !$this->hasStructuredData() )
         {
@@ -177,7 +238,7 @@ class DataDefinitionBlock extends Block
 /**
 <documentation><description><p></p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
@@ -228,11 +289,11 @@ class DataDefinitionBlock extends Block
 /**
 <documentation><description><p></p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getAssetNodeType( $identifier )
+    public function getAssetNodeType( string $identifier ) : string
     {
         $this->checkStructuredData();
         return $this->structured_data->getAssetNodeType( $identifier );

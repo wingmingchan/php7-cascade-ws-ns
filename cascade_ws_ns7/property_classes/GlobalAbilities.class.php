@@ -199,27 +199,12 @@ class GlobalAbilities extends Abilities
     {
         return $this->force_logout;
     }
-/*
-    public function getNewSiteWizard()
-    {
-        return $this->new_site_wizard;
-    }
-*/
+
     public function getOptimizeDatabase()
     {
         return $this->optimize_database;
     }
-/*
-    public function getPathRepairTool()
-    {
-        return $this->path_repair_tool;
-    }
 
-    public function getRecycleBinChecker()
-    {
-        return $this->recycle_bin_checker;
-    }
-*/
     public function getSearchingIndexing()
     {
         return $this->searching_indexing;
@@ -234,12 +219,7 @@ class GlobalAbilities extends Abilities
     {
         return $this->view_system_info_and_logs;
     }
-/*
-    public function getSiteMigration()
-    {
-        return $this->site_migration;
-    }
-*/
+
     public function getViewAllGroups()
     {
         return $this->view_all_groups;
@@ -454,21 +434,7 @@ class GlobalAbilities extends Abilities
         $this->optimize_database = $bool;
         return $this;
     }
-/*
-    public function setPathRepairTool( $bool )
-    {
-        $this->checkBoolean( $bool );
-        $this->path_repair_tool = $bool;
-        return $this;
-    }
 
-    public function setRecycleBinChecker( $bool )
-    {
-        $this->checkBoolean( $bool );
-        $this->recycle_bin_checker = $bool;
-        return $this;
-    }
-*/
     public function setSearchingIndexing( $bool )
     {
         $this->checkBoolean( $bool );
@@ -489,14 +455,7 @@ class GlobalAbilities extends Abilities
         $this->view_system_info_and_logs = $bool;
         return $this;
     }
-/*
-    public function setSiteMigration( $bool )
-    {
-        $this->checkBoolean( $bool );
-        $this->site_migration = $bool;
-        return $this;
-    }
-*/
+
     public function setViewAllGroups( $bool )
     {
         $this->checkBoolean( $bool );
@@ -536,14 +495,12 @@ class GlobalAbilities extends Abilities
         $obj->viewSystemInfoAndLogs     = $this->view_system_info_and_logs;
         $obj->forceLogout               = $this->force_logout;
         $obj->accessSecurityArea        = $this->access_security_area;
-        //$obj->newSiteWizard             = $this->new_site_wizard;
         $obj->optimizeDatabase          = $this->optimize_database;
         $obj->syncLdap                  = $this->sync_ldap ;
         $obj->configureLogging          = $this->configure_logging;
         $obj->searchingIndexing         = $this->searching_indexing;
         $obj->accessConfiguration       = $this->access_configuration;
         $obj->editSystemPreferences     = $this->edit_system_preferences;
-        //$obj->siteMigration             = $this->site_migration;
         $obj->broadcastMessages         = $this->broadcast_messages;
         $obj->viewUsersInMemberGroups   = $this->view_users_in_member_groups;
         $obj->viewAllUsers              = $this->view_all_users;
@@ -561,8 +518,6 @@ class GlobalAbilities extends Abilities
         $obj->editUsersInMemberGroups   = $this->edit_users_in_member_groups;
         $obj->editAnyGroup              = $this->edit_any_group;
         $obj->editMemberGroups          = $this->edit_member_groups;
-        //$obj->recycleBinChecker         = $this->recycle_bin_checker;
-        //$obj->pathRepairTool            = $this->path_repair_tool;
         $obj->databaseExportTool        = $this->database_export_tool;
         $obj->changeIdentity            = $this->change_identity;
         $obj->accessAdminArea           = $this->access_admin_area;
@@ -584,14 +539,12 @@ class GlobalAbilities extends Abilities
     private $view_system_info_and_logs;
     private $force_logout;
     private $access_security_area;
-    //private $new_site_wizard;
     private $optimize_database;
     private $sync_ldap;
     private $configure_logging;
     private $searching_indexing;
     private $access_configuration;
     private $edit_system_preferences;
-    //private $site_migration;
     private $broadcast_messages;
     private $view_users_in_member_groups;
     private $view_all_users;
@@ -609,8 +562,6 @@ class GlobalAbilities extends Abilities
     private $edit_users_in_member_groups;
     private $edit_any_group;
     private $edit_member_groups;
-    //private $recycle_bin_checker;
-    //private $path_repair_tool;
     private $database_export_tool;
     private $change_identity;
 }

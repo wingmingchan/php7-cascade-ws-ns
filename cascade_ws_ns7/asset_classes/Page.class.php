@@ -703,11 +703,12 @@ class Page extends Linkable
 <exception></exception>
 </documentation>
 */
-    public function getMetadataSet()
+/*
+    public function getMetadataSet() : Asset
     {
         return $this->getContentType()->getMetadataSet();
     }
-    
+*/    
 /**
 <documentation><description><p></p></description>
 <example></example>
@@ -715,11 +716,12 @@ class Page extends Linkable
 <exception></exception>
 </documentation>
 */
+/*
     public function getMetadataSetId()
     {
         return $this->getContentType()->getMetadataSet()->getId();
     }
-    
+*/    
 /**
 <documentation><description><p></p></description>
 <example></example>
@@ -727,11 +729,13 @@ class Page extends Linkable
 <exception></exception>
 </documentation>
 */
+/*
     public function getMetadataSetPath()
     {
         return $this->getContentType()->getMetadataSet()->getPath();
     }
-    
+*/
+   
 /**
 <documentation><description><p></p></description>
 <example></example>
@@ -739,11 +743,12 @@ class Page extends Linkable
 <exception></exception>
 </documentation>
 */
+/*
     public function getMetadataStdClass()
     {
         return $this->getMetadata()->toStdClass();
     }
-    
+*/    
 /**
 <documentation><description><p></p></description>
 <example></example>
@@ -2009,11 +2014,11 @@ class Page extends Linkable
 /**
 <documentation><description><p></p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setMetadata( p\Metadata $m )
+    public function setMetadata( p\Metadata $m ) : Asset
     {
         $page = $this->getProperty();
         $page->metadata = $m->toStdClass();

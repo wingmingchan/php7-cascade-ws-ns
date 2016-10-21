@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 10/12/2016 Fixed errors in documentation.
   * 9/13/2016 Fixed bugs in setExpirationFolder.
   * 9/6/2016 Added expiration folder-related code.
   * 1/4/2016 Fixed a bug in publish.
@@ -232,8 +233,8 @@ echo "Dumping dynamic field $field_name" . S_PRE;
 if( $f->hasDynamicField( $field_name ) )
     u\DebugUtility::dump( $f->getDynamicField( $field_name ) );
 echo E_PRE . HR;</example>
-<return-type>EmptyNameException, NoSuchFieldException</return-type>
-<exception></exception>
+<return-type>Property</return-type>
+<exception>EmptyNameException, NoSuchFieldException</exception>
 </documentation>
 */
     public function getDynamicField( string $name ) : p\Property
@@ -245,11 +246,11 @@ echo E_PRE . HR;</example>
 <documentation><description><p>Returns <code>NULL</code> or an array of
 <code>p\DynamicField</code> objects.</p></description>
 <example>u\DebugUtility::dump( $f->getDynamicFields() );</example>
-<return-type>array</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDynamicFields() : array
+    public function getDynamicFields()
     {
         return $this->metadata->getDynamicFields();
     }
@@ -612,7 +613,7 @@ and returns the calling object. Note that this method does not called <code>edit
     }
     
 /**
-<documentation><description><p>Sets the <code>expirationFolderId</code> and <code>expirationFolderPath</code>, and returns teh calling object.</p></description>
+<documentation><description><p>Sets the <code>expirationFolderId</code> and <code>expirationFolderPath</code>, and returns the calling object.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception></exception>

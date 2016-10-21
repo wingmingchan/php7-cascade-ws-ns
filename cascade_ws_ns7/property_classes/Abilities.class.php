@@ -1348,7 +1348,7 @@ abstract class Abilities extends Property
                 S_SPAN . "The value $bool must be a boolean." . E_SPAN );
     }
 
-    // 49 members
+    // 50 members
     private $bypass_all_permissions_checks;
     private $upload_images_from_wysiwyg;
     private $multi_select_copy;

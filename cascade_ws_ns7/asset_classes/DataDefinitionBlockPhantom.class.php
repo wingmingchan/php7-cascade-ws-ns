@@ -4,6 +4,12 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/2/2016 Added aliases.
+  * 6/1/2016 Added isBlockChooser, isCalendarNode, isCheckboxNode, isDatetimeNode, isDropdownNode,
+  * isFileChooser, isLinkableChooser, isMultiLineNode, isMultiSelectorNode, isPageChooser,
+  * isRadioNode, isSymlinkChooser, isTextBox, and isWYSIWYGNode.
+  * 3/10/2016 Added hasPhantomNodes.
+  * 3/9/2016 Added mapData.
   * 1/8/2016 Added code to deal with host asset.
   * 5/28/2015 Added namespaces.
   * 2/24/2015 Added getPossibleValues.
@@ -14,15 +20,73 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>A <code>DataDefinitionBlock</code> object represents an asset of type <code>xhtmlDataDefinitionBlock</code>. This class is a sub-class of <a href="/web-services/api/asset-classes/block"><code>Block</code></a>.</p>
+<p>This class can be used to manipulate both data definition blocks and xhtml blocks. The only test available to tell them apart is the <code>DataDefinitionBlock::hasStructuredData</code> method. When it returns true, the block is a data definition block; else it is an xhtml block. We cannot consider the <code>xhtml</code> property because it can be <code>NULL</code> for both block sub-types.</p>
+<p>I could have split this class into two: <code>DataDefinitionBlock</code> and <code>XhtmlBlock</code>. But this difference between with and without using a data definition also exists in a page, and I do not think I should split the <code>Page</code> class into two. Therefore, I use the same class to deal with these two types of <code>xhtmlDataDefinitionBlock</code>.</p>
+<h2>Structure of <code>xhtmlDataDefinitionBlock</code></h2>
+<pre>xhtmlDataDefinitionBlock
+  id
+  name
+  parentFolderId
+  parentFolderPath
+  path
+  lastModifiedDate
+  lastModifiedBy
+  createdDate
+  createdBy
+  siteId
+  siteName
+  metadata
+    author
+    displayName
+    endDate
+    keywords
+    metaDescription
+    reviewDate
+    startDate
+    summary
+    teaser
+    title
+    dynamicFields (NULL or an stdClass)
+      dynamicField (an stdClass or or array of stdClass)
+        name
+        fieldValues (NULL, stdClass or array of stdClass)
+          fieldValue
+            value
+  metadataSetId
+  metadataSetPath
+  expirationFolderId
+  expirationFolderPath
+  expirationFolderRecycled (bool)
+  structuredData
+    definitionId
+    definitionPath
+    structuredDataNodes
+      structuredDataNode (stdClass or array of stdClass)
+        type
+        identifier
+        structuredDataNodes
+        text
+        assetType
+        blockId
+        blockPath
+        fileId
+        filePath
+        pageId
+        pagePath
+        symlinkId
+        symlinkPath
+        recycled
+  xhtml
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
 </documentation>
@@ -33,11 +97,6 @@ class DataDefinitionBlockPhantom extends Block
     const DUMP  = false;
     const TYPE  = c\T::DATABLOCK;
 
-    /**
-    * The constructor
-    * @param $service the AssetOperationHandlerService object
-    * @param $identifier the identifier object
-    */
 /**
 <documentation><description><p></p></description>
 <example></example>
@@ -526,6 +585,19 @@ class DataDefinitionBlockPhantom extends Block
     public function hasStructuredData()
     {
         return $this->structured_data != NULL;
+    }
+    
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isAsset( $identifier )
+    {
+        $this->checkStructuredData();
+        return $this->structured_data->isAssetNode( $identifier );
     }
     
 /**

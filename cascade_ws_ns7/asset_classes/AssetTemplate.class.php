@@ -58,21 +58,6 @@ class AssetTemplate
         return $asset;
     }
     
-    public static function getIndexBlock( $type ) : \stdClass
-    {
-        $block                       = new \stdClass ();
-        $block->name                 = "";
-        $block->parentFolderPath     = "";
-        $block->siteName             = "";
-        $block->indexBlockType       = $type;
-        $block->maxRenderedAssets    = 0;
-        $block->depthOfIndex         = 0;
-
-        $asset             = new \stdClass ();
-        $asset->indexBlock = $block;
-        return $asset;
-    }
-    
     public static function getContainer( $property ) : \stdClass
     {
         $c                      = new \stdClass ();
@@ -301,6 +286,21 @@ class AssetTemplate
         return $asset;
     }
     
+    public static function getIndexBlock( $type ) : \stdClass
+    {
+        $block                       = new \stdClass ();
+        $block->name                 = "";
+        $block->parentFolderPath     = "";
+        $block->siteName             = "";
+        $block->indexBlockType       = $type;
+        $block->maxRenderedAssets    = 0;
+        $block->depthOfIndex         = 0;
+
+        $asset             = new \stdClass ();
+        $asset->indexBlock = $block;
+        return $asset;
+    }
+    
     public static function getMetadata() : \stdClass
     {
         $m                  = new \stdClass ();
@@ -483,6 +483,24 @@ class AssetTemplate
 
         $asset                   = new \stdClass ();
         $asset->twitterConnector = $connector;
+        return $asset;
+    }
+    
+    public static function getTwitterFeedBlock() : \stdClass
+    {
+        $block                   = new \stdClass ();
+        $block->name             = "";
+        $block->siteName         = "";
+        $block->parentFolderPath = "";
+        $block->accountName      = "chanw64";
+        $block->searchString     = "Velocity";
+        $block->maxResults       = 1;
+        $block->useDefaultStyle  = true;
+        $block->excludeJQuery    = true;
+        $block->queryType        = "user-only";
+
+        $asset                   = new \stdClass ();
+        $asset->twitterFeedBlock = $block;
         return $asset;
     }
     
