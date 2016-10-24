@@ -4,6 +4,15 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 10/24/2016 Added hasPossibleValues; multiple bug fixes.
+  * 8/11/2016 Added getService in both this class and StructuredDataPhantom to work with phantom nodes.
+  * 6/20/2016 Changed the name searchWYSIWYG to searchWYSIWYGByPattern, added searchTextByPattern.
+  * 6/2/2016 Added aliases. Replaced most string literals with constants.
+  * 6/1/2016 Added isBlockChooser, isCalendarNode, isCheckboxNode, isDatetimeNode, isDropdownNode,
+  * isFileChooser, isLinkableChooser, isMultiLineNode, isMultiSelectorNode, isPageChooser,
+  * isRadioNode, isSymlinkChooser, isTextBox, and isWYSIWYGNode.
+  * 3/10/2016 Added hasPhantomNodes.
+  * 3/9/2016 Added removePhantomNodes and copyData.
   * 2/26/2016 Added mapData.
   * 1/8/2016 Added code to deal with host asset.
   * 9/15/2015 Added createNInstancesForMultipleField.
@@ -16,15 +25,40 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_asset as a;
+use cascade_ws_asset     as a;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>A <code>StructuredData</code> object represents a <code>structuredData</code> property found in a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/data-definition-block.php"><code>a\DataDefinitionBlock</code></a> object and a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/page.php"><code>a\Page</code></a> object.</p>
+<h2>Structure of <code>structuredData</code></h2>
+<pre>structuredData
+  definitionId
+  definitionPath
+  structuredDataNodes
+    structuredDataNode
+</pre>
+<h2>Design Issues</h2>
+<ul>
+<li>A <code>StructuredData</code> object contains a <code>a\DataDefinition</code> object so that it can pass it along to its children.</li>
+</ul>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/structured_data.php">structured_data.php</a></li></ul></postscript>
+</documentation>
+*/
 class StructuredDataPhantom extends Property
 {
     const DEBUG = false;
 
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         \stdClass $sd=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
@@ -56,16 +90,19 @@ class StructuredDataPhantom extends Property
             
             // store the data definition
             $this->data_definition = new a\DataDefinition( 
-                $service, $service->createId( a\DataDefinition::TYPE, $this->definition_id ) );
+                $service, $service->createId(
+                    a\DataDefinition::TYPE, $this->definition_id ) );
             // turn structuredDataNode into an array
-            if( isset( $sd->structuredDataNodes->structuredDataNode ) && !is_array( $sd->structuredDataNodes->structuredDataNode ) )
+            if( isset( $sd->structuredDataNodes->structuredDataNode ) && 
+                !is_array( $sd->structuredDataNodes->structuredDataNode ) )
             {
                 $child_nodes = array( $sd->structuredDataNodes->structuredDataNode );
             }
             elseif( isset( $sd->structuredDataNodes->structuredDataNode ) )
             {
                 $child_nodes = $sd->structuredDataNodes->structuredDataNode;
-                if( self::DEBUG ) { u\DebugUtility::out( "Number of nodes in std: " . count( $child_nodes ) ); }
+                if( self::DEBUG ) { u\DebugUtility::out(
+                    "Number of nodes in std: " . count( $child_nodes ) ); }
             }
             // convert stdClass to objects
             StructuredDataNodePhantom::processStructuredDataNodePhantom( 
@@ -80,7 +117,17 @@ class StructuredDataPhantom extends Property
         if( self::DEBUG ) { u\DebugUtility::out( "First node ID: " . $first_node_id ); }
     }
     
-    public function appendSibling( $first_node_id )
+/**
+<documentation><description><p>Appends a node to a set of nodes consisting a first node
+identified by the identifier, and returns the calling object. Note that node instances are in fact copies of the last instance.
+Therefore, if the last node contains data, then copies created will contain exactly the
+same data.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function appendSibling( string $first_node_id ) : Property
     {
         if( self::DEBUG ) { u\DebugUtility::out( "First node ID: " . $first_node_id ); }
         
@@ -120,7 +167,21 @@ class StructuredDataPhantom extends Property
         return $this;
     }
     
-    public function createNInstancesForMultipleField( $number, $identifier )
+/**
+<documentation><description><p>Creates exactly <code>$number</code> instances for the
+multiple field whose first node is <code>$identifier</code> and returns the object. This
+method ensures that a multiple field will have exactly N instances. If the object has more
+or has less instances than <code>$number</code>, then instances are either removed from or
+added to the field. Note that node instances are in fact copies of the last instance.
+Therefore, if the last node contains data, then copies created will contain exactly the
+same data.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>UnacceptableValueException, NodeException</exception>
+</documentation>
+*/
+    public function createNInstancesForMultipleField(
+        int $number, string $identifier ) : Property
     {
         $number = intval( $number );
         
@@ -158,7 +219,17 @@ class StructuredDataPhantom extends Property
         return $this;
     }
     
-    public function getAssetNodeType( $identifier )
+/**
+<documentation><description><p>Returns the type string of an asset node (an asset node is
+an instance of an asset field of type <code>page</code>, <code>file</code>,
+<code>block</code>, <code>symlink</code>, or
+<code>page,file,symlink</code>).</p></description>
+<example>echo $sd->getAssetNodeType( "group;block-chooser" ), BR;</example>
+<return-type>mixed</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function getAssetNodeType( string $identifier )
     {
         if( !in_array( $identifier, $this->identifiers ) )
         {
@@ -177,51 +248,114 @@ class StructuredDataPhantom extends Property
         return $node->getAssetType();
     }
     
-    public function getBlockId( $node_name )
+/**
+<documentation><description><p>Returns <code>blockId</code> of the named node.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $sd->getBlockId( $id ) ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getBlockId( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
             return $this->node_map[ $node_name ]->getBlockId();
     }
     
-    public function getBlockPath( $node_name )
+/**
+<documentation><description><p>Returns <code>blockPath</code> of the named node.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $sd->getBlockPath( $id ) ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getBlockPath( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
             return $this->node_map[ $node_name ]->getBlockPath();
     }
     
-    public function getDataDefinition()
+/**
+<documentation><description><p>Returns the <code>a\DataDefinition</code> object.</p></description>
+<example>$sd->getDataDefinition()->dump();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getDataDefinition() : a\Asset
     {
         return $this->data_definition;
     }
     
-    public function getDefinitionId()
+/**
+<documentation><description><p>Returns <code>definitionId</code>.</p></description>
+<example>echo $sd->getDefinitionId(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getDefinitionId() : string
     {
         return $this->definition_id;
     }
     
-    public function getDefinitionPath()
+/**
+<documentation><description><p>Returns <code>definitionPath</code>.</p></description>
+<example>echo $sd->getDefinitionPath(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getDefinitionPath() : string
     {
         return $this->definition_path;
     }
     
-    public function getFileId( $node_name )
+/**
+<documentation><description><p>Returns <code>fieldId</code> of the named node.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $sd->getFileId( $id ) ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getFileId( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
             return $this->node_map[ $node_name ]->getFileId();
     }
     
-    public function getFilePath( $node_name )
+/**
+<documentation><description><p>Returns <code>fieldPath</code> of the named node.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $sd->getFilePath( $id ) ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getFilePath( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
             return $this->node_map[ $node_name ]->getFilePath();
     }
     
-    public function getHostAsset()
+/**
+<documentation><description><p>Returns the host asset.</p></description>
+<example>$sd->getHostAsset()->dump();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getHostAsset() : a\Asset
     {
         return $this->host_asset;
     }
     
-    public function getIdentifierNodeMap()
+/**
+<documentation><description><p>Returns the map of identifiers pointing to <code>StructuredDataNode</code> objects.</p></description>
+<example>u\DebugUtility::dump( $sd->getIdentifierNodeMap() );</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getIdentifierNodeMap() : array
     {
         foreach( $this->children as $child )
         {
@@ -238,19 +372,46 @@ class StructuredDataPhantom extends Property
         return array_merge( $temp, StructuredDataNodePhantom::getPhantomIdentifiers() );
     }
     
-    public function getLinkableId( $node_name )
-    {
+/**
+<documentation><description><p>Returns the id of a <code>a\Linkable</code> node (a
+<code>Linkable</code> node is a chooser allowing users to choose either a page, a file, or
+a symlink; therefore, the id can be the <code>fileId</code>, <code>pageId</code>, or
+<code>symlinkId</code> of the node).</p></description>
+<example>echo u\StringUtility::getCoalescedString( $sd->getLinkableId( $id ) ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getLinkableId( string $node_name )    {
         if( isset( $this->node_map[ $node_name ] ) )
             return $this->node_map[ $node_name ]->getLinkableId();
     }
     
-    public function getLinkablePath( $node_name )
+/**
+<documentation><description><p>Returns the path of a <code>a\Linkable</code> node (a
+<code>a\Linkable</code> node is a chooser allowing users to choose either a page, a file,
+or a symlink; therefore, the path can be the <code>filePath</code>, <code>pagePath</code>,
+or <code>symlinkPath</code> of the node).</p></description>
+<example>echo u\StringUtility::getCoalescedString( $sd->getLinkablePath( $id ) ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getLinkablePath( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
             return $this->node_map[ $node_name ]->getLinkablePath();
     }
     
-    public function getNode( $identifier )
+/**
+<documentation><description><p>Returns <code>StructuredDataNode</code> object bearing this
+fully qualified identifier.</p></description>
+<example>u\DebugUtility::dump( $sd->getNode( $id )->toStdClass() );</example>
+<return-type>StructuredDataNode</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function getNode( string $identifier ) : StructuredDataNodePhantom
     {
         if( !in_array( $identifier, $this->identifiers ) )
         {
@@ -261,7 +422,15 @@ class StructuredDataPhantom extends Property
         return $this->node_map[ $identifier ];
     }
     
-    public function getNodeType( $identifier )
+/**
+<documentation><description><p>Returns the type string of a node. The returned value is
+one of the following: <code>group</code>, <code>asset</code>, and <code>text</code>.</p></description>
+<example>echo $sd->getNodeType( $id ), BR;</example>
+<return-type>string</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function getNodeType( string $identifier ) : string
     {
         if( !in_array( $identifier, $this->identifiers ) )
         {
@@ -272,12 +441,27 @@ class StructuredDataPhantom extends Property
         return $this->node_map[ $identifier ]->getType();
     }
     
-    public function getNumberOfChildren()
+/**
+<documentation><description><p>Returns the number of children.</p></description>
+<example>echo $sd->getNumberOfChildren(), BR;</example>
+<return-type>int</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getNumberOfChildren() : int
     {
         return count( $this->children );
     }
     
-    public function getNumberOfSiblings( $node_name )
+/**
+<documentation><description><p>Returns the number of instances of a multiple field, the
+supplied identifier being the one of the first instance.</p></description>
+<example>echo $sd->getNumberOfSiblings( "multiple-first;0" ), BR;</example>
+<return-type>int</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function getNumberOfSiblings( string $node_name ) : int
     {
         if( self::DEBUG ) { u\DebugUtility::out( "Node ID: " . $node_name ); }
         $par_id     = $this->node_map[ $node_name ]->getParentId();
@@ -308,42 +492,91 @@ class StructuredDataPhantom extends Property
         return StructuredDataNodePhantom::getLastIndex( $last_id ) + 1;
     }
     
-    public function getPageId( $node_name )
+/**
+<documentation><description><p>Returns <code>pageId</code> of the named node.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $sd->getPageId( $id ) ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getPageId( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
             return $this->node_map[ $node_name ]->getPageId();
     }
     
-    public function getPagePath( $node_name )
+/**
+<documentation><description><p>Returns <code>pagePath</code> of the named node.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $sd->getPagePath( $id ) ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getPagePath( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
             return $this->node_map[ $node_name ]->getPagePath();
     }
     
-    public function getPossibleValues( $node_name )
+/**
+<documentation><description><p>Returns an array of strings or NULL.</p></description>
+<example>u\DebugUtility::dump( $sd->getPossibleValues( "group;multiselect" ) );</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getPossibleValues( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
             return $this->node_map[ $node_name ]->getPossibleValues();
     }
     
-    public function getService()
+/**
+<documentation><description><p>Returns the <code>$service</code> object.</p></description>
+<example>u\DebugUtility::dump( $sd->getService() );</example>
+<return-type>AssetOperationHandlerService</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getService() : aohs\AssetOperationHandlerService
     {
         return $this->service;
     }
     
-    public function getSymlinkId( $node_name )
+/**
+<documentation><description><p>Returns <code>symlinkId</code> of the named node.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $sd->getSymlinkId( $id ) ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getSymlinkId( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
             return $this->node_map[ $node_name ]->getSymlinkId();
     }
     
-    public function getSymlinkPath( $node_name )
+/**
+<documentation><description><p>Returns <code>symlinkPath</code> of the named node.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $sd->getSymlinkPath( $id ) ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getSymlinkPath( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
             return $this->node_map[ $node_name ]->getSymlinkPath();
     }
     
-    public function getStructuredDataNodePhantom( $identifier )
+/**
+<documentation><description><p>An alias of <code>getNode( $identifier )</code>.</p></description>
+<example></example>
+<return-type>StructuredDataNode</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function getStructuredDataNode( string $identifier ) : StructuredDataNodePhantom
     {
         if( !in_array( $identifier, $this->identifiers ) )
         {
@@ -354,13 +587,31 @@ class StructuredDataPhantom extends Property
         return $this->node_map[ $identifier ];
     }
     
-    public function getText( $node_name )
+/**
+<documentation><description><p>Returns the text of a node.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $sd->getText( "group;calendar" ) ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getText( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
             return $this->node_map[ $node_name ]->getText();
     }
     
-    public function getTextNodeType( $identifier )
+/**
+<documentation><description><p>Returns the type string of an text node (an text node is an
+instance of a normal text field (including multi-line and WYSIWYG), which are not
+associated with a type string, or a text field of
+type <code>datetime</code>, <code>calendar</code>, <code>multi-selector</code>,
+<code>dropdown</code>, or <code>checkbox</code>).</p></description>
+<example>echo $sd->getTextNodeType( "group;calendar" ), BR;</example>
+<return-type>mixed</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function getTextNodeType( string $identifier )
     {
         if( !in_array( $identifier, $this->identifiers ) )
         {
@@ -379,17 +630,41 @@ class StructuredDataPhantom extends Property
         return $node->getTextType();
     }
     
-    public function getType()
+/**
+<documentation><description><p>Returns the type string. The returned value is either <code>Page::TYPE</code> or <code>DataDefinitionBlock::TYPE</code>.</p></description>
+<example>echo $sd->getType(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getType() : string
     {
         return $this->type;
     }
     
-    public function hasIdentifier( $identifier )
+/**
+<documentation><description><p>An alias of <code>hasNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function hasIdentifier( string $identifier ) : bool
     {
         return $this->hasNode( $identifier );
     }
     
-    public function hasNode( $identifier )
+/**
+<documentation><description><p>Returns a bool, indicating whether the identifier exists.</p></description>
+<example>if( $sd->hasNode( $id ) )
+{
+    echo $sd->getAssetNodeType( $id ), BR;
+}</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function hasNode( string $identifier ) : bool
     {
         return in_array( $identifier, $this->identifiers );
     }
@@ -405,16 +680,228 @@ class StructuredDataPhantom extends Property
         return $this->node_map[ $identifier ]->isAssetNode();
     }
     
-    public function isIdentifierOfFirstNode( $identifier )
+/**
+<documentation><description><p>An alias of <code>isBlockChooserNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isBlockChooser( string $identifier ) : bool
     {
-        if( $this->isMultiple( $identifier ) )
-        {
-            return u\StringUtility::endsWith( $identifier, ";0" );
-        }
-        return false;
+        return $this->isBlockChooserNode( $identifier );
     }
     
-    public function isGroupNode( $identifier )
+/**
+<documentation><description><p>Returns a bool, indicating whether the named node is a
+block chooser node, allowing users to choose a block.</p></description>
+<example>if( $sd->isBlockChooserNode( $id ) )
+{
+    echo u\StringUtility::getCoalescedString( $sd->getBlockId( $id ) ), BR;
+    echo u\StringUtility::getCoalescedString( $sd->getBlockPath( $id ) ), BR;
+}</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isBlockChooserNode( string $identifier ) : bool
+    {
+        if( !in_array( $identifier, $this->identifiers ) )
+        {
+            throw new e\NodeException( 
+                S_SPAN . "The node $identifier does not exist" . E_SPAN );
+        }
+        
+        return $this->node_map[ $identifier ]->isBlockChooser();
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isCalendarNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isCalendar( string $identifier ) : bool
+    {
+        return $this->isCalendarNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the named node is a
+calendar node.</p></description>
+<example>if( $sd->isCalendarNode( $id ) )
+    echo u\StringUtility::getCoalescedString( $sd->getText( $id ) ), BR;</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isCalendarNode( string $identifier ) : bool
+    {
+        if( !in_array( $identifier, $this->identifiers ) )
+        {
+            throw new e\NodeException( 
+                S_SPAN . "The node $identifier does not exist" . E_SPAN );
+        }
+        
+        return $this->node_map[ $identifier ]->isCalendarNode();
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isCheckboxNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isCheckbox( string $identifier ) : bool
+    {
+        return $this->isCheckboxNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the named node is a
+checkbox node.</p></description>
+<example>if( $sd->isCheckboxNode( $id ) )
+    echo u\StringUtility::getCoalescedString( $sd->getText( $id ) ), BR;
+</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isCheckboxNode( string $identifier ) : bool
+    {
+        if( !in_array( $identifier, $this->identifiers ) )
+        {
+            throw new e\NodeException( 
+                S_SPAN . "The node $identifier does not exist" . E_SPAN );
+        }
+        
+        return $this->node_map[ $identifier ]->isCheckboxNode();
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isDatetimeNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isDatetime( string $identifier ) : bool
+    {
+        return $this->isDatetimeNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the named node is a
+datetime node.</p></description>
+<example>if( $sd->isDatetimeNode( $id ) )
+    echo u\StringUtility::getCoalescedString( $sd->getText( $id ) ), BR;</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isDatetimeNode( string $identifier ) : bool
+    {
+        if( !in_array( $identifier, $this->identifiers ) )
+        {
+            throw new e\NodeException( 
+                S_SPAN . "The node $identifier does not exist" . E_SPAN );
+        }
+        
+        return $this->node_map[ $identifier ]->isDatetimeNode();
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isDropdownNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isDropdown( string $identifier ) : bool
+    {
+        return $this->isDropdownNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the named node is a
+dropdown node.</p></description>
+<example>if( $sd->isDropdownNode( $id ) )
+    echo u\StringUtility::getCoalescedString( $sd->getText( $id ) ), BR;</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isDropdownNode( string $identifier ) : bool
+    {
+        if( !in_array( $identifier, $this->identifiers ) )
+        {
+            throw new e\NodeException( 
+                S_SPAN . "The node $identifier does not exist" . E_SPAN );
+        }
+        
+        return $this->node_map[ $identifier ]->isDropdownNode();
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isFileChooserNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isFileChooser( string $identifier ) : bool
+    {
+        return $this->isFileChooserNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the named node is a file
+chooser node, allowing users to choose a file.</p></description>
+<example>if( $sd->isFileChooserNode( $id ) )
+{
+    echo u\StringUtility::getCoalescedString( $sd->getFileId( $id ) ), BR;
+}</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isFileChooserNode( string $identifier ) : bool
+    {
+        if( !in_array( $identifier, $this->identifiers ) )
+        {
+            throw new e\NodeException( 
+                S_SPAN . "The node $identifier does not exist" . E_SPAN );
+        }
+        
+        return $this->node_map[ $identifier ]->isFileChooser();
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isGroupNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isGroup( string $identifier ) : bool
+    {
+        return $this->isGroupNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the named node is a
+group node.</p></description>
+<example>if( $sd->isGroupNode( $id ) )
+{
+    echo "A group", BR;
+}</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isGroupNode( string $identifier ) : bool
     {
         if( !in_array( $identifier, $this->identifiers ) )
         {
@@ -425,7 +912,80 @@ class StructuredDataPhantom extends Property
         return $this->node_map[ $identifier ]->isGroupNode();
     }
     
-    public function isMultiLineNode( $identifier )
+/**
+<documentation><description><p>Returns a bool, indicating whether the named node is the
+first node of a set of multiple nodes.</p></description>
+<example>echo u\StringUtility::boolToString(
+    $sd->isIdentifierOfFirstNode( "multiple-second;1" ) );</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isIdentifierOfFirstNode( string $identifier ) : bool
+    {
+        if( $this->isMultiple( $identifier ) )
+        {
+            return u\StringUtility::endsWith( $identifier, ";0" );
+        }
+        return false;
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isLinkableChooserNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isLinkableChooser( string $identifier ) : bool
+    {
+        return $this->isLinkableChooserNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the named node is a
+linkable chooser node, allowing users to choose a file, a page, or a symlink.</p></description>
+<example>if( $sd->isLinkableChooserNode( $id ) )
+{
+    echo u\StringUtility::getCoalescedString( $sd->getLinkableId( $id ) ), BR;
+}</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isLinkableChooserNode( string $identifier ) : bool
+    {
+        if( !in_array( $identifier, $this->identifiers ) )
+        {
+            throw new e\NodeException( 
+                S_SPAN . "The node $identifier does not exist" . E_SPAN );
+        }
+        
+        return $this->node_map[ $identifier ]->isLinkableChooser();
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isMultiLineNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isMultiLine( string $identifier ) : bool
+    {
+        return $this->isMultiLineNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the node is a multi-line
+node (i.e., textarea).</p></description>
+<example>if( $sd->isMultiLineNode( $id ) )
+    echo u\StringUtility::getCoalescedString( $sd->getText( $id ) ), BR;</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isMultiLineNode( string $identifier ) : bool
     {
         if( !in_array( $identifier, $this->identifiers ) )
         {
@@ -436,7 +996,16 @@ class StructuredDataPhantom extends Property
         return $this->node_map[ $identifier ]->isMultiLineNode();
     }
     
-    public function isMultiple( $identifier )
+/**
+<documentation><description><p>Returns a bool, indicating whether the node is a multiple
+node.</p></description>
+<example>if( $sd->isMultiple( $id ) )
+    echo "Multiple", BR;</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isMultiple( string $identifier ) : bool
     {
         if( !in_array( $identifier, $this->identifiers ) )
         {
@@ -447,7 +1016,111 @@ class StructuredDataPhantom extends Property
         return $this->node_map[ $identifier ]->isMultiple();
     }
     
-    public function isRequired( $identifier )
+/**
+<documentation><description><p>An alias of <code>isMultiSelectorNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isMultiSelector( string $identifier ) : bool
+    {
+        return $this->isMultiSelectorNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the node is a multi-selector node.</p></description>
+<example>if( $sd->isMultiSelectorNode( $id ) )
+    echo "Multi selector", BR;</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isMultiSelectorNode( string $identifier ) : bool
+    {
+        if( !in_array( $identifier, $this->identifiers ) )
+        {
+            throw new e\NodeException( 
+                S_SPAN . "The node $identifier does not exist" . E_SPAN );
+        }
+        
+        return $this->node_map[ $identifier ]->isMultiSelectorNode();
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isPageChooserNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isPageChooser( string $identifier ) : bool
+    {
+        return $this->isPageChooserNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the named node is a page
+chooser node, allowing users to choose a page.</p></description>
+<example>if( $sd->isPageChooserNode( $id ) )
+    echo u\StringUtility::getCoalescedString( $sd->getPageId( $id ) ), BR;
+</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isPageChooserNode( string $identifier ) : bool
+    {
+        if( !in_array( $identifier, $this->identifiers ) )
+        {
+            throw new e\NodeException( 
+                S_SPAN . "The node $identifier does not exist" . E_SPAN );
+        }
+        
+        return $this->node_map[ $identifier ]->isPageChooser();
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isRadioNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isRadio( string $identifier ) : bool
+    {
+        return $this->isRadioNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the node is a radio node.</p></description>
+<example>if( $sd->isRadioNode( $id ) )
+    echo "Radio", BR;</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isRadioNode( string $identifier ) : bool
+    {
+        if( !in_array( $identifier, $this->identifiers ) )
+        {
+            throw new e\NodeException( 
+                S_SPAN . "The node $identifier does not exist" . E_SPAN );
+        }
+        
+        return $this->node_map[ $identifier ]->isRadioNode();
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the field value is required by the named field.</p></description>
+<example>if( $sd->isRequired( $id ) )
+    echo "Required", BR;
+</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isRequired( string $identifier ) : bool
     {
         if( !in_array( $identifier, $this->identifiers ) )
         {
@@ -458,7 +1131,114 @@ class StructuredDataPhantom extends Property
         return $this->node_map[ $identifier ]->isRequired();
     }
 
-    public function isTextNode( $identifier )
+/**
+<documentation><description><p>An alias of <code>isSymlinkChooserNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isSymlinkChooser( string $identifier ) : bool
+    {
+        return $this->isSymlinkChooserNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the named node is a symlink chooser node, allowing users to choose a symlink.</p></description>
+<example>if( $sd->isSymlinkChooserNode( $id ) )
+    echo u\StringUtility::getCoalescedString( $sd->getSymlinkId( $id ) ), BR;
+</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isSymlinkChooserNode( string $identifier ) : bool
+    {
+        if( !in_array( $identifier, $this->identifiers ) )
+        {
+            throw new e\NodeException( 
+                S_SPAN . "The node $identifier does not exist" . E_SPAN );
+        }
+        
+        return $this->node_map[ $identifier ]->isSymlinkChooser();
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isMultiLineNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isTextarea( string $identifier ) : bool
+    {
+        return $this->isMultiLineNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isMultiLineNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isTextareaNode( string $identifier ) : bool
+    {
+        return $this->isMultiLineNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isTextBoxNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isTextBox( string $identifier ) : bool
+    {
+        return $this->isTextBoxNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the node is a simple text box node.</p></description>
+<example>if( $sd->isTextBoxNode( $id ) )
+    echo "Text box", BR;</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isTextBoxNode( string $identifier ) : bool
+    {
+        if( !in_array( $identifier, $this->identifiers ) )
+        {
+            throw new e\NodeException( 
+                S_SPAN . "The node $identifier does not exist" . E_SPAN );
+        }
+        
+        return $this->node_map[ $identifier ]->isTextBox();
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isTextNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isText( string $identifier ) : bool
+    {
+        return $this->isTextNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>Returns returns a bool, indicating whether the named node is a text node (vs. group and asset).</p></description>
+<example>if( $sd->isTextNode( $id ) )
+    echo "Text node", BR;</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isTextNode( string $identifier ) : bool
     {
         if( !in_array( $identifier, $this->identifiers ) )
         {
@@ -469,7 +1249,27 @@ class StructuredDataPhantom extends Property
         return $this->node_map[ $identifier ]->isTextNode();
     }
     
-    public function isWYSIWYG( $identifier )
+/**
+<documentation><description><p>An alias of <code>isWYSIWYGNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isWYSIWYG( string $identifier ) : bool
+    {
+        return $this->isWYSIWYGNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the named field is a WYSIWYG text field.</p></description>
+<example>if( $sd->isWYSIWYGNode( $id ) )
+    echo "WYSIWYG node", BR;</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isWYSIWYGNode( string $identifier ) : bool
     {
         if( !in_array( $identifier, $this->identifiers ) )
         {
@@ -477,14 +1277,21 @@ class StructuredDataPhantom extends Property
                 S_SPAN . "The node $identifier does not exist" . E_SPAN );
         }
         
-        return $this->node_map[ $identifier ]->isWYSIWYG();
+        return $this->node_map[ $identifier ]->isWYSIWYGNode();
     }
     
     /*
     mapData left out intentionally.
     */
     
-    public function removeLastSibling( $first_node_id )
+/**
+<documentation><description><p>Removes the last node from a set of nodes, and returns the object. The identifier supplied must the the fully qualified identifier of the first node of the set.</p></description>
+<example>$sd->removeLastSibling( "multiple-first;0" )->getHostAsset()->edit();</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function removeLastSibling( string $first_node_id ) : Property
     {
         if( !$this->hasIdentifier( $first_node_id ) )
         {
@@ -515,7 +1322,8 @@ class StructuredDataPhantom extends Property
         return $this;
     }
     
-    public function replaceByPattern( $pattern, $replace, $include=NULL )
+    public function replaceByPattern(
+        string $pattern, string $replace, array $include=NULL ) : Property
     {
         $check = false;
         
@@ -554,7 +1362,19 @@ class StructuredDataPhantom extends Property
         return $this;
     }
     
-    public function replaceText( $search, $replace, $include=NULL )
+/**
+<documentation><description><p>Replaces the string found with the replacement string for
+normal text fields, and fields of type datetime and calendar, and returns the calling
+object. Inside the method <code>str_replace</code> is called. If an array of fully
+qualified identifiers is also passed in, then only those nodes will be affected.</p></description>
+<example>// affects all text nodes	
+$sd->replaceText( "Wonderful", "Amazing" )->getHostAsset()->edit();</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function replaceText(
+        string $search, string $replace, array $include=NULL ) : Property
     {
         $check = false;
         
@@ -593,7 +1413,16 @@ class StructuredDataPhantom extends Property
         return $this;
     }
     
-    public function searchText( $string )
+/**
+<documentation><description><p>Searches all the nodes of type <code>text</code> (excluding
+<code>asset</code> and <code>group</code>) for the string, and returns an array of fully
+qualified identifiers of nodes where the string is found. Inside the method <code>strpos</code> is used.</p></description>
+<example>u\DebugUtility::dump( $sd->searchText( "Amazing" ) );</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function searchText( string $string ) : array
     {
         $identifiers = array();
         
@@ -610,7 +1439,42 @@ class StructuredDataPhantom extends Property
         return $identifiers;
     }
     
-    public function searchWYSIWYG( $pattern )
+/**
+<documentation><description><p>Searches all the nodes of type <code>text</code> (excluding
+<code>asset</code> and <code>group</code>) for the pattern, and returns an array of fully
+qualified identifiers of nodes where the pattern is found. Inside the method <code>preg_match</code> is used.</p></description>
+<example>u\DebugUtility::dump( $sd->searchTextByPattern( "/" . "&lt;" . "p&gt;([^&lt;]+)&lt;\/p&gt;/" ) );</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function searchTextByPattern( string $pattern ) : array
+    {
+        $identifiers = array();
+        
+        foreach( $this->identifiers as $identifier )
+        {
+            $cur_node = $this->node_map[ $identifier ];
+        
+            // only one instance is enough, hence preg_match, not preg_match_all
+            if( $cur_node->getType() == c\T::TEXT &&
+                preg_match( $pattern, $cur_node->getText() ) == 1 )
+            {
+                $identifiers[] = $identifier;
+            }
+        }
+        return $identifiers;
+    }
+    
+/**
+<documentation><description><p>Searches all the WYSIWYG nodes for the pattern, and returns an array of fully qualified identifiers of nodes where the pattern is found. Inside the method <code>preg_match</code> is used.</p></description>
+<example>u\DebugUtility::dump( $sd->searchWYSIWYGByPattern( "/" . "&lt;" . 
+"p&gt;([^&lt;]+)&lt;\/p>/" ) );</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function searchWYSIWYGByPattern( string $pattern ) : array
     {
         $identifiers = array();
         
@@ -629,7 +1493,18 @@ class StructuredDataPhantom extends Property
         return $identifiers;
     }
     
-    public function setBlock( $node_name, a\Block $block=NULL )
+/**
+<documentation><description><p>Sets the node's <code>blockId</code> and <code>blockPath</code> properties, and returns the calling object.</p></description>
+<example>$sd->setBlock(
+    "group;block-chooser",
+    $cascade->getAsset(
+        a\DataBlock::TYPE, "1f21e3268b7ffe834c5fe91e2e0a7b2d" ) )->
+    getHostAsset()->edit();</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setBlock( string $node_name, a\Block $block=NULL ) : Property
     {
         if( self::DEBUG ) { u\DebugUtility::dump( $block ); }
         if( self::DEBUG ) { u\DebugUtility::out( $node_name ); }
@@ -639,49 +1514,139 @@ class StructuredDataPhantom extends Property
         return $this;
     }
     
-    public function setDataDefinition( a\DataDefinition $dd )
+/**
+<documentation><description><p>Sets <code>definitionId</code>, and <code>definitionPath</code>, and returns the calling object. Note that this method is meaningless unless the current structured data is replaced by a new structured data if a different data definition is involved.</p></description>
+<example>u\DebugUtility::dump( $sd->setDataDefinition(
+    $cascade->getAsset(
+        a\DataDefinition::TYPE, "1f24065d8b7ffe834c5fe91e95372ce1" ) )->
+    toStdClass() );</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setDataDefinition( a\DataDefinition $dd ) : Property
     {
         $this->definition_id   = $dd->getId();
         $this->definition_path = $dd->getPath();
         return $this;
     }
     
-    public function setFile( $node_name, a\File $file=NULL )
+/**
+<documentation><description><p>Sets the node's <code>fileId</code> and <code>filePath</code> properties, and returns the calling object.</p></description>
+<example>$sd->setBlock(
+    "group;block-chooser",
+    $cascade->getAsset(
+        a\DataBlock::TYPE, "1f21e3268b7ffe834c5fe91e2e0a7b2d" ) )->
+    setFile( "group;file-chooser" )-> 
+    setPage( "group;page-chooser" )-> 
+    setLinkable( "group;linkable-chooser" )-> 
+    setSymlink( "group;symlink-chooser" )->
+    getHostAsset()->edit();
+</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setFile( string $node_name, a\File $file=NULL ) : Property
     {
         if( isset( $this->node_map[ $node_name ] ) )
             $this->node_map[ $node_name ]->setFile( $file );
         return $this;
     }
     
-    public function setLinkable( $node_name, a\Linkable $linkable=NULL )
+/**
+<documentation><description><p>Sets the node's <code>fileId</code> and <code>filePath</code>, or <code>pageId</code> and <code>pagePath</code>,
+or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on what is passed in, and returns the calling object.</p></description>
+<example>$sd->setBlock(
+    "group;block-chooser",
+    $cascade->getAsset(
+        a\DataBlock::TYPE, "1f21e3268b7ffe834c5fe91e2e0a7b2d" ) )->
+    setFile( "group;file-chooser" )-> 
+    setPage( "group;page-chooser" )-> 
+    setLinkable( "group;linkable-chooser" )-> 
+    setSymlink( "group;symlink-chooser" )->
+    getHostAsset()->edit();
+</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setLinkable( string $node_name, a\Linkable $linkable=NULL ) : Property
     {
         if( isset( $this->node_map[ $node_name ] ) )
             $this->node_map[ $node_name ]->setLinkable( $linkable );
         return $this;
     }
     
-    public function setPage( $node_name, a\Page $page=NULL )
+/**
+<documentation><description><p>Sets the node's <code>pageId</code> and <code>pathPath</code> properties, and returns the calling object.</p></description>
+<example>$sd->setBlock(
+    "group;block-chooser",
+    $cascade->getAsset(
+        a\DataBlock::TYPE, "1f21e3268b7ffe834c5fe91e2e0a7b2d" ) )->
+    setFile( "group;file-chooser" )-> 
+    setPage( "group;page-chooser" )-> 
+    setLinkable( "group;linkable-chooser" )-> 
+    setSymlink( "group;symlink-chooser" )->
+    getHostAsset()->edit();
+</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setPage( string $node_name, a\Page $page=NULL ) : Property
     {
         if( isset( $this->node_map[ $node_name ] ) )
             $this->node_map[ $node_name ]->setPage( $page );
         return $this;
     }
     
-    public function setSymlink( $node_name, a\Symlink $symlink=NULL )
+/**
+<documentation><description><p>Sets the node's <code>symlinkId</code> and <code>symlinkPath</code> properties, and returns the calling object.</p></description>
+<example>$sd->setBlock(
+    "group;block-chooser",
+    $cascade->getAsset(
+        a\DataBlock::TYPE, "1f21e3268b7ffe834c5fe91e2e0a7b2d" ) )->
+    setFile( "group;file-chooser" )-> 
+    setPage( "group;page-chooser" )-> 
+    setLinkable( "group;linkable-chooser" )-> 
+    setSymlink( "group;symlink-chooser" )->
+    getHostAsset()->edit();
+</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setSymlink( string $node_name, a\Symlink $symlink=NULL ) : Property
     {
         if( isset( $this->node_map[ $node_name ] ) )
             $this->node_map[ $node_name ]->setSymlink( $symlink );
         return $this;
     }
     
-    public function setText( $node_name, $text )
+/**
+<documentation><description><p>Sets the node's <code>text</code>, and returns the calling object.</p></description>
+<example>$sd->setText( "group;text-box", "Some new text" )->
+    getHostAsset()->edit();</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setText( string $node_name, string $text=NULL ) : Property
     {
         if( isset( $this->node_map[ $node_name ] ) )
             $this->node_map[ $node_name ]->setText( $text );
         return $this;
     }
     
-    public function swapData( $node_name1, $node_name2 )
+/**
+<documentation><description><p>Swaps the data of two nodes, and returns the calling object.</p></description>
+<example>$sd->swapData( "multiple-first;0", "multiple-first;1" )->getHostAsset()->edit();</example>
+<return-type>Property</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function swapData( string $node_name1, string $node_name2 ) : Property
     {
         if( !$this->hasIdentifier( $node_name1 ) )
         {
@@ -762,7 +1727,14 @@ class StructuredDataPhantom extends Property
         return $this;
     }
     
-    public function toStdClass()
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example>u\DebugUtility::dump( $sd->toStdClass() );</example>
+<return-type>stdClass</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj = new \stdClass();
         
@@ -779,7 +1751,8 @@ class StructuredDataPhantom extends Property
         if( $child_count == 1 )
         {
             $obj->structuredDataNodes                     = new \stdClass();
-            $obj->structuredDataNodes->structuredDataNode = $this->children[0]->toStdClass();
+            $obj->structuredDataNodes->structuredDataNode =
+                $this->children[0]->toStdClass();
         }
         else
         {
@@ -788,13 +1761,14 @@ class StructuredDataPhantom extends Property
             
             for( $i = 0; $i < $child_count; $i++ )
             {
-                $obj->structuredDataNodes->structuredDataNode[] = $this->children[$i]->toStdClass();
+                $obj->structuredDataNodes->structuredDataNode[] =
+                    $this->children[$i]->toStdClass();
             }
         }
         return $obj;
     }
     
-    private function appendNodeToField( $field_name )
+    private function appendNodeToField( string $field_name ) : Property
     {
         if( self::DEBUG ) { u\DebugUtility::out( $field_name ); }
 
@@ -849,7 +1823,7 @@ class StructuredDataPhantom extends Property
         return $this;
     }
     
-    private function removeLastNodeFromField( $field_name )
+    private function removeLastNodeFromField( string $field_name ) : Property
     {
         if( !$this->data_definition->hasIdentifier( $field_name ) )
         {
@@ -892,7 +1866,8 @@ class StructuredDataPhantom extends Property
             $this->getNode( $par_id )->removeLastChildNode( $field_name );
         }
         
-        unset( $this->node_map[ $last_id ] );
+        if( isset( $last_id ) && isset( $this->node_map[ $last_id ] ) )
+            unset( $this->node_map[ $last_id ] );
         $this->identifiers = array_keys( $this->node_map );
 
         return $this;

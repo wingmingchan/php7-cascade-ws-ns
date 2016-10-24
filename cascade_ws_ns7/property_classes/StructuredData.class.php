@@ -758,9 +758,9 @@ of type B in the structured data.</p></description>
 <documentation><description><p>Returns a bool, indicating whether the named node is an
 asset node, allowing users to choose an asset.</p></description>
 <example>if( $sd->isAsset( "group;block-chooser" ) )
-    {
-        echo $sd->getAssetNodeType( "group;block-chooser" ), BR;
-    }</example>
+{
+    echo $sd->getAssetNodeType( "group;block-chooser" ), BR;
+}</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -1506,7 +1506,7 @@ identifiers is also passed in, then only those nodes will be affected.</p></desc
 <example>if( $sd->isWYSIWYGNode( $id ) )
 {
     $sd->replaceByPattern(
-        "/&lt;p&gt;([^&lt;]+)&lt;\/p&gt;/", 
+        "/" . "&lt;" . "p&gt;([^&lt;]+)&lt;\/p&gt;/", 
         "&lt;div class='text_red'&gt;$1&lt;/div&gt;", 
         array( $id )
     )->getHostAsset()->edit();
@@ -1633,7 +1633,7 @@ qualified identifiers of nodes where the string is found. Inside the method <cod
 <documentation><description><p>Searches all the nodes of type <code>text</code> (excluding
 <code>asset</code> and <code>group</code>) for the pattern, and returns an array of fully
 qualified identifiers of nodes where the pattern is found. Inside the method <code>preg_match</code> is used.</p></description>
-<example>u\DebugUtility::dump( $sd->searchTextByPattern( "/<p>([^<]+)<\/p>/" ) );</example>
+<example>u\DebugUtility::dump( $sd->searchTextByPattern( "/" . "&lt;" . "p&gt;([^&lt;]+)&lt;\/p&gt;/" ) );</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -1658,7 +1658,8 @@ qualified identifiers of nodes where the pattern is found. Inside the method <co
     
 /**
 <documentation><description><p>Searches all the WYSIWYG nodes for the pattern, and returns an array of fully qualified identifiers of nodes where the pattern is found. Inside the method <code>preg_match</code> is used.</p></description>
-<example>u\DebugUtility::dump( $sd->searchWYSIWYGByPattern( "/<p>([^<]+)<\/p>/" ) );</example>
+<example>u\DebugUtility::dump( $sd->searchWYSIWYGByPattern( "/" . "&lt;" . 
+"p&gt;([^&lt;]+)&lt;\/p>/" ) );</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>

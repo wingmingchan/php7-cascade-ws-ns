@@ -4,6 +4,11 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 10/17/2016 Bug fixes.
+  * 6/2/2016 Added aliases. Replaced most string literals with constants.
+  * 6/1/2016 Added isBlockChooser, isCalendarNode, isCheckboxNode, isDatetimeNode, isDropdownNode,
+  * isFileChooser, isLinkableChooser, isMultiLineNode, isMultiSelectorNode, isPageChooser,
+  * isRadioNode, isSymlinkChooser, isTextBox, and isWYSIWYGNode.
   * 12/23/2015 Fixed a bug in addChildNode.
   * 5/28/2015 Added namespaces.
   * 2/24/2015 Added getPossibleValues.
@@ -13,10 +18,10 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_asset as a;
+use cascade_ws_asset     as a;
 
 class StructuredDataNodePhantom extends Property
 {
@@ -25,13 +30,20 @@ class StructuredDataNodePhantom extends Property
     const DELIMITER          = a\DataDefinition::DELIMITER;
     const CHECKBOX_PREFIX    = '::CONTENT-XML-CHECKBOX::';
     const SELECTOR_PREFIX    = '::CONTENT-XML-SELECTOR::';
-    const TEXT_TYPE_CALENDAR = "calendar";
-    const TEXT_TYPE_CHECKBOX = "checkbox";
-    const TEXT_TYPE_DATETIME = "datetime";
-    const TEXT_TYPE_DROPDOWN = "dropdown";
-    const TEXT_TYPE_RADIO    = "radiobutton";
-    const TEXT_TYPE_SELECTOR = "multi-selector";
+    const TEXT_TYPE_CALENDAR = c\T::CALENDAR;
+    const TEXT_TYPE_CHECKBOX = c\T::CHECKBOX;
+    const TEXT_TYPE_DATETIME = c\T::DATETIME;
+    const TEXT_TYPE_DROPDOWN = c\T::DROPDOWN;
+    const TEXT_TYPE_RADIO    = c\T::RADIOBUTTON;
+    const TEXT_TYPE_SELECTOR = c\T::MULTISELECTOR;
     
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         \stdClass $node=NULL,
         aohs\AssetOperationHandlerService $service=NULL,
@@ -54,39 +66,58 @@ class StructuredDataNodePhantom extends Property
             $field_identifier = self::getFieldIdentifier( $this->identifier );
             $field            = $this->data_definition->getField( $field_identifier );
             
-            if( isset( $field[ 'multiple' ] ) )
+            // check if this is a multiple field
+            if( isset( $field[ c\T::MULTIPLE ] ) )
             {
-                $this->multiple = $field[ 'multiple' ];
+                $this->multiple = $field[ c\T::MULTIPLE ];
+            }
+            
+            // check if this is a radio
+            if( isset( $field[ c\T::TYPE ] ) )
+            {
+                $this->radio = ( $field[ c\T::TYPE ] == c\T::RADIOBUTTON );
             }
             
             // store the items for radio, multi-selectors, and so on
-            if( isset( $field[ 'items' ] ) )
+            if( isset( $field[ c\T::ITEMS ] ) )
             {
-                $this->items = $field[ 'items' ];
+                $this->items = $field[ c\T::ITEMS ];
             }
             
             // is it required?
-            if( isset( $field[ 'required' ] ) )
+            if( isset( $field[ c\T::REQUIRED ] ) )
             {
-                $this->required = $field[ 'required' ];
+                $this->required = $field[ c\T::REQUIRED ];
+            }
+            else
+            {
+            	$this->required = false;
             }
             
             // type mostly for setText
-            if( isset( $field[ 'type' ] ) )
+            if( isset( $field[ c\T::TYPE ] ) )
             {
-                $this->text_type = $field[ 'type' ];
+                $this->text_type = $field[ c\T::TYPE ];
             }
             
             // is it multi-line?
-            if( isset( $field[ 'multi-line' ] ) )
+            if( isset( $field[ c\T::MULTILINE ] ) )
             {
-                $this->multi_line = $field[ 'multi-line' ];
+                $this->multi_line = $field[ c\T::MULTILINE ];
+            }
+            else
+            {
+            	$this->multi_line = false;
             }
             
             // is it wysiwyg?
-            if( isset( $field[ 'wysiwyg' ] ) )
+            if( isset( $field[ c\T::WYSIWYG ] ) )
             {
-                $this->wysiwyg = $field[ 'wysiwyg' ];
+                $this->wysiwyg = $field[ c\T::WYSIWYG ];
+            }
+            else
+            {
+            	$this->wysiwyg = false;
             }
             
             // add the index if this is a multiple field
@@ -152,7 +183,14 @@ class StructuredDataNodePhantom extends Property
         }
     }
     
-    public function addChildNode( $node_id )
+/**
+<documentation><description><p>Adds a node to a multiple field bearing the identifier and returns the calling object. Note that the identifier must be a fully qualified identifier in the data definition (without any <code>;digit</code> in it). This means that the field cannot have any ancestors of multiple type. This methods is used by the <code>StructuredData</code> class.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function addChildNode( string $node_id ) : Property
     {
         if( self::DEBUG ) { u\DebugUtility::dump( $this->structured_data_nodes ); }
     
@@ -171,38 +209,30 @@ class StructuredDataNodePhantom extends Property
             throw new e\NodeException(
                 S_SPAN . "Cannot add a node to a non-multiple field." . E_SPAN );
         }
-        
-        //$child_count = count( $this->structured_data_nodes );
-        $last_pos    = self::getPositionOfLastNode( $this->structured_data_nodes, $node_id );
+
+        $last_pos    = self::getPositionOfLastNode( $this->structured_data_nodes, $field_id );
         if( self::DEBUG ) { u\DebugUtility::out( "Last position: " . $last_pos ); }
         
         // create a copy of the last sibling
         $cloned_node = $this->structured_data_nodes[ $last_pos ]->cloneNode();
         if( self::DEBUG ) { u\DebugUtility::dump( $cloned_node->toStdClass() ); }
 
-/*
-        // new node to be inserted in the middle
-        if( $child_count > $last_pos + 1 )
-        {
-            $before = array_slice( $this->structured_data_nodes, 0, $last_pos + 1 );
-            $after  = array_slice( $this->structured_data_nodes, $last_pos + 1 );
-            $this->structured_data_nodes = array_merge( $before, array( $cloned_node ), $after );
-        }
-        else // new node appended at the end
-        {
-*/
+
         $this->structured_data_nodes[] = $cloned_node;
-/*
-        }
-*/
-        
         $this->node_map = array_merge( 
             $this->node_map, array( $cloned_node->getIdentifier() => $cloned_node ) );
 
         return $this;
     }
     
-    public function cloneNode()
+/**
+<documentation><description><p>Returns a copy of the calling node. Since the identifier of the new node and all identifiers of the descendants of this new node must be recalculated, the node is created by the constructor, not by copying.</p></description>
+<example>u\DebugUtility::dump( $node->cloneNode()->toStdClass() );</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function cloneNode() : Property
     {
         // clone the calling node
         if( self::DEBUG ) { u\DebugUtility::out( "Parent ID: " . $this->parent_id ); }
@@ -223,7 +253,14 @@ class StructuredDataNodePhantom extends Property
         return $clone_obj;
     }
     
-    public function display()
+/**
+<documentation><description><p>Displays some basic information and returns the calling object.</p></description>
+<example>$node->display();</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function display() : Property
     {
         switch( $this->type )
         {
@@ -243,7 +280,14 @@ class StructuredDataNodePhantom extends Property
         return $this;
     }
     
-    public function dump()
+/**
+<documentation><description><p>Dumps and returns the calling object.</p></description>
+<example>$node->dump();</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function dump() : Property
     {
         echo S_PRE;
         var_dump( $this );
@@ -251,56 +295,133 @@ class StructuredDataNodePhantom extends Property
         return $this;
     }
     
+/**
+<documentation><description><p>Returns <code>assetType</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $node->getAssetType() );</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getAssetType()
     {
         return $this->asset_type;
     }
     
+/**
+<documentation><description><p>Returns <code>blockId</code>.</p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getBlockId()
     {
         return $this->block_id;
     }
     
+/**
+<documentation><description><p>Returns <code>blockPath</code>.</p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getBlockPath()
     {
         return $this->block_path;
     }
     
+/**
+<documentation><description><p>An alias of <code>getStructuredDataNodes()</code>.</p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getChildren()
     {
         return $this->getStructuredDataNodePhantoms();
     }
     
+/**
+<documentation><description><p>Returns the <code>a\DataDefinition</code> object.</p></description>
+<example>u\DebugUtility::dump( $node->getDataDefinition() );</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getDataDefinition()
     {
         return $this->data_definition;
     }
     
+/**
+<documentation><description><p>Returns <code>fileId</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $node->getFileId() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFileId()
     {
         return $this->file_id;
     }
     
+/**
+<documentation><description><p>Returns <code>filePath</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $node->getFilePath() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFilePath()
     {
         return $this->file_path;
     }
     
-    public function getIdentifier()
+/**
+<documentation><description><p>Returns the fully qualified identifier of this node.</p></description>
+<example>echo $node->getIdentifier(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getIdentifier() : string
     {
         return $this->identifier;
     }
     
-    public function getIdentifierNodeMap()
+/**
+<documentation><description><p>For a non-group node, the returned node map contains only one entry, namely, the identifier pointing to the object itself; for a group node, the returned node map contains the entry of the identifier of the group to itself, and all the entries of its children. The resulting node map facilitates easy and quick look-up of objects using their fully qualified identifiers.</p></description>
+<example>u\DebugUtility::dump( $node->getIdentifierNodeMap() );</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getIdentifierNodeMap() : array
     {
         return $this->node_map;
     }
     
+/**
+<documentation><description><p>For a node that can have items (like checkboxes, selectors, radio buttons, and dropdowns), the method returns all the items (possible values) concatenated as a string.</p></description>
+<example>u\DebugUtility::dump( $node->getItems() );</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getItems()
     {
         return $this->items;
     }
     
+/**
+<documentation><description><p>Returns the id of a <code>a\Linkable</code> node (a <code>a\Linkable</code> node is a chooser allowing users to choose either a page, a file, or a symlink; therefore, the id can be the <code>fileId</code>, <code>pageId</code>, or <code>symlinkId</code> of the node).</p></description>
+<example>echo u\StringUtility::getCoalescedString( $node->getLinkableId() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getLinkableId()
     {
         if( isset( $this->file_id ) )
@@ -311,6 +432,13 @@ class StructuredDataNodePhantom extends Property
             return $this->symlink_id;
     }
     
+/**
+<documentation><description><p>Returns the path of a <code>a\Linkable</code> node (a <code>a\Linkable</code> node is a chooser allowing users to choose either a page, a file, or a symlink; therefore, the path can be the <code>filePath</code>, <code>pagePath</code>, or <code>symlinkPath</code> of the node).</p></description>
+<example>echo u\StringUtility::getCoalescedString( $node->getLinkablePath() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getLinkablePath()
     {
         if( isset( $this->file_path ) )
@@ -321,21 +449,49 @@ class StructuredDataNodePhantom extends Property
             return $this->symlink_path;
     }
     
+/**
+<documentation><description><p>Returns <code>pageId</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $node->getPageId() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageId()
     {
         return $this->page_id;
     }
     
+/**
+<documentation><description><p>Returns <code>pagePath</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $node->getPagePath() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPagePath()
     {
         return $this->page_path;
     }
     
-    public function getParentId()
+/**
+<documentation><description><p>Returns the fully qualified identifier of the parent node, or the empty string if the node does not have a parent.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $node->getParentId() ), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getParentId() : string
     {
         return trim( $this->parent_id, self::DELIMITER );
     }
     
+/**
+<documentation><description><p>Returns an array of strings or NULL. Note that this method is meaningful only for text nodes of type radio buttons, dropdown, multiselect, and checkboxes.</p></description>
+<example>u\DebugUtility::dump( $node->getPossibleValues() );</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPossibleValues()
     {
         if( isset( $this->items ) && strlen( $this->items ) > 0 )
@@ -343,7 +499,14 @@ class StructuredDataNodePhantom extends Property
         return NULL;
     }
     
-    public function getRecycled()
+/**
+<documentation><description><p>Returns <code>recycled</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $node->getRecycled() );</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getRecycled() : bool
     {
         return $this->recycled;
     }
@@ -353,37 +516,86 @@ class StructuredDataNodePhantom extends Property
         return $this->structured_data_nodes;
     }
     
+/**
+<documentation><description><p>Returns <code>symlinkId</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $node->getSymlinkId() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSymlinkId()
     {
         return $this->symlink_id;
     }
     
+/**
+<documentation><description><p>Returns <code>symlinkPath</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $node->getSymlinkPath() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSymlinkPath()
     {
         return $this->symlink_path;
     }
     
+/**
+<documentation><description><p>Returns <code>text</code>.</p></description>
+<example>echo $node->getText(), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getText()
     {
         return $this->text;
     }
     
+/**
+<documentation><description><p>Returns the type string of the current node if it is a text node (an text node is an instance of a normal text field (including multi-line and WYSIWYG), or a text field of type <code>datetime</code>, <code>calendar</code>, <code>multi-selector</code>, <code>dropdown</code>, or <code>checkbox</code>), or <code>NULL</code> if it is not. This method should be used together with <code>isTextNode()</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $node->getTextNodeType() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTextNodeType()
     {
         return $this->text_type;
     }
     
+/**
+<documentation><description><p>An alias of <code>getTextNodeType()</code>.</p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getTextType()
     {
         return $this->getTextNodeType();
     }
     
-    public function getType()
+/**
+<documentation><description><p>Returns <code>type</code>. The returned value can be <code>text</code>, <code>asset</code>, or <code>group</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $node->getType() ), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getType() : string
     {
         return $this->type;
     }
     
-    public function hasItem( $item )
+/**
+<documentation><description><p>Returns a bool, indicating whether the item exists in the <code>items</code> string.</p></description>
+<example>echo u\StringUtility::boolToString( $node->hasItem( "Maybe" ) ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function hasItem( string $item ) : bool
     {
         if( $this->items == '' )
             return false;
@@ -392,68 +604,499 @@ class StructuredDataNodePhantom extends Property
         return in_array( $item, $items );
     }
     
-    public function isAssetNode()
+/**
+<documentation><description><p>An alias of <code>isAssetNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isAsset() : bool
     {
         return $this->type == c\T::ASSET;
     }
     
-    public function isGroupNode()
+/**
+<documentation><description><p>Returns a bool, indicating whether the current node is an asset node, allowing users to choose an asset.</p></description>
+<example>echo u\StringUtility::boolToString( $node->IsAsset() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isAssetNode() : bool
+    {
+        return $this->type == c\T::ASSET;
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isBlockChooserNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isBlockChooser() : bool
+    {
+        return $this->asset_type == c\T::BLOCK;
+    }
+
+/**
+<documentation><description><p>Returns a bool, indicating whether the current node is a block chooser node, allowing users to choose a block.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isBlockChooser() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isBlockChooserNode() : bool
+    {
+        return $this->asset_type == c\T::BLOCK;
+    }
+
+/**
+<documentation><description><p>An alias of <code>isCalendarNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isCalendar() : bool
+    {
+        return $this->text_type == c\T::CALENDAR;
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the current node is a calendar node.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isCalendar() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isCalendarNode() : bool
+    {
+        return $this->text_type == c\T::CALENDAR;
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isCheckboxNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isCheckbox() : bool
+    {
+        return $this->text_type == c\T::CHECKBOX;
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the current node is a checkbox node.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isCheckbox() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isCheckboxNode() : bool
+    {
+        return $this->text_type == c\T::CHECKBOX;
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isDatetimeNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isDatetime() : bool
+    {
+        return $this->text_type == c\T::DATETIME;
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the current node is a datatime node.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isDatetime() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isDatetimeNode() : bool
+    {
+        return $this->text_type == c\T::DATETIME;
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isDropdownNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isDropdown() : bool
+    {
+        return $this->text_type == c\T::DROPDOWN;
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the current node is a dropdown node.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isDropdown() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isDropdownNode() : bool
+    {
+        return $this->text_type == c\T::DROPDOWN;
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isFileChooserNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isFileChooser() : bool
+    {
+        return $this->asset_type == c\T::FILE;
+    }
+
+/**
+<documentation><description><p>Returns a bool, indicating whether the current node is a file chooser node, allowing users to choose a file.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isFileChooser() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isFileChooserNode() : bool
+    {
+        return $this->asset_type == c\T::FILE;
+    }
+
+/**
+<documentation><description><p>An alias of <code>isGroupNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isGroup() : bool
     {
         return $this->type == c\T::GROUP;
     }
     
-    public function isMultiLineNode()
+/**
+<documentation><description><p>Returns returns a bool, indicating whether the current node is a group node.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isGroup() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isGroupNode() : bool
     {
-        if( $this->multi_line )
-            return true;
-        else
-            return false;
+        return $this->type == c\T::GROUP;
     }
     
-    public function isMultiple()
+/**
+<documentation><description><p>An alias of <code>isLinkableChooserNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isLinkableChooser() : bool
     {
-        if( $this->multiple )
-            return true;
-        else
-            return false;
+        return $this->asset_type == c\T::PFS;
+    }
+
+/**
+<documentation><description><p>Returns a bool, indicating whether the current node is a linkable chooser node, allowing users to choose a file, a page, or a symlink.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isLinkableChooser() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isLinkableChooserNode() : bool
+    {
+        return $this->asset_type == c\T::PFS;
+    }
+
+/**
+<documentation><description><p>An alias of <code>isMultiLineNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isMultiLine() : bool
+    {
+        return $this->multi_line;
     }
     
-    public function isRequired()
+/**
+<documentation><description><p>Returns a bool, indicating whether the current node is a multi-line node (i.e., textarea).</p></description>
+<example>echo u\StringUtility::boolToString( $node->isMultiLine() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isMultiLineNode() : bool
+    {
+        return $this->multi_line;
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the current node is an instance of a multiple field.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isMultiple() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isMultiple() : bool
+    {
+        return isset( $this->multiple ) && $this->multiple ;
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isMultiSelectorNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isMultiSelector() : bool
+    {
+        return $this->text_type == c\T::MULTISELECTOR;
+    }
+
+/**
+<documentation><description><p>Returns a bool, indicating whether the current node is a multi-selector node.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isMultiSelector() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isMultiSelectorNode() : bool
+    {
+        return $this->text_type == c\T::MULTISELECTOR;
+    }
+
+/**
+<documentation><description><p>An alias of <code>isPageChooserNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isPageChooser() : bool
+    {
+        return $this->asset_type == c\T::PAGE;
+    }
+
+/**
+<documentation><description><p>Returns a bool, indicating whether the current node is a page chooser node, allowing users to choose a page.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isPageChooser() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isPageChooserNode() : bool
+    {
+        return $this->asset_type == c\T::PAGE;
+    }
+
+/**
+<documentation><description><p>An alias of <code>isRadioNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isRadio() : bool
+    {
+        return $this->radio;
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the current node is a radio node.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isRadio() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isRadioNode() : bool
+    {
+        return $this->radio;
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the field of the data definition corresponding to the current node requires a value.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isRequired() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isRequired() : bool
     {
         return $this->required;
     }
 
-    public function isTextNode()
+/**
+<documentation><description><p>An alias of <code>isSymlinkChooserNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isSymlinkChooser() : bool
+    {
+        return $this->asset_type == c\T::SYMLINK;
+    }
+
+/**
+<documentation><description><p>Returns a bool, indicating whether the current node is a symlink chooser node, allowing users to choose a symlink.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isSymlinkChooser() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isSymlinkChooserNode() : bool
+    {
+        return $this->asset_type == c\T::SYMLINK;
+    }
+
+/**
+<documentation><description><p>An alias of <code>isTextNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isText() : bool
     {
         return $this->type == c\T::TEXT;
     }
     
-    public function isWYSIWYG()
+/**
+<documentation><description><p>An alias of <code>isMultiLineNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isTextarea() : bool
     {
-        if( $this->wysiwyg )
-            return true;
-        else
-            return false;
+        return $this->multi_line;
     }
     
-    public function removeLastChildNode( $node_id )
+/**
+<documentation><description><p>An alias of <code>isMultiLineNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isTextareaNode() : bool
+    {
+        return $this->multi_line;
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isTextBoxNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isTextBox() : bool
+    {
+        if( !$this->isTextNode() || $this->multi_line || $this->wysiwyg ||
+            $this->text_type == c\T::DATETIME || $this->text_type == c\T::CALENDAR || 
+            $this->text_type == c\T::MULTISELECTOR || $this->text_type == c\T::DROPDOWN ||
+            $this->text_type == c\T::CHECKBOX || $this->radio
+        )
+            return false;
+        return true;
+    }
+    
+/**
+<documentation><description><p>Returns returns a bool, indicating whether the current node is a simple text box node.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isTextBox() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isTextBoxNode() : bool
+    {
+        return $this->isTextBox();
+    }
+    
+/**
+<documentation><description><p>Returns returns a bool, indicating whether the current node is a text node.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isText() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isTextNode() : bool
+    {
+        return $this->type == c\T::TEXT;
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isWYSIWYGNode()</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isWYSIWYG() : bool
+    {
+        return $this->wysiwyg;
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the current node is a WYSIWYG node.</p></description>
+<example>echo u\StringUtility::boolToString( $node->isWYSIWYG() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isWYSIWYGNode() : bool
+    {
+        return $this->wysiwyg;
+    }
+    
+/**
+<documentation><description><p>Removes the last instance of a multiple field bearing the identifier and returns the calling object. Note that the identifier must be a fully qualified identifier in the data definition (without any <code>;digit</code> in it). This means that the field cannot have any ancestors of multiple type. This methods is used by the <code>StructuredData</code> class.</p></description>
+<example>$node->removeLastChildNode( "group;group-multiple-second" );</example>
+<return-type>Property</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function removeLastChildNode( string $node_id ) : Property
     {
         if( $this->structured_data_nodes == NULL )
         {
-            throw new e\NodeException(
-                S_SPAN . "Cannot remove a node from a node that has no children." . E_SPAN );
+            throw new e\NodeException( 
+                S_SPAN . "Cannot remove a node from a node that has no children." . 
+                E_SPAN );
         }
         
         // remove digits and semi-colons
         $field_id = self::getFieldIdentifier( $node_id );
         if( self::DEBUG ) { u\DebugUtility::out( "Field ID: " . $field_id ); }
         if( !$this->data_definition->isMultiple( $field_id ) )
-            throw new e\NodeException(
-                S_SPAN . "Cannot remove a node from a non-multiple field." . E_SPAN );
+            throw new e\NodeException( 
+                S_SPAN . "Cannot remove a node from a non-multiple field" . E_SPAN );
 
-        $last_pos     = self::getPositionOfLastNode( $this->structured_data_nodes, $node_id );
-        $first_pos    = self::getPositionOfFirstNode( $this->structured_data_nodes, $node_id );
-        if( self::DEBUG ) { u\DebugUtility::out( "First position: " . $first_pos . BR . "Last position: " . $last_pos ); }
+        $last_pos     = self::getPositionOfLastNode( 
+            $this->structured_data_nodes, $node_id );
+        $first_pos    = self::getPositionOfFirstNode( 
+            $this->structured_data_nodes, $node_id );
+            
+        if( self::DEBUG ) { u\DebugUtility::out( 
+            "First position: " . $first_pos . BR . "Last position: " . $last_pos ); }
+            
         $last_node_id = $this->structured_data_nodes[ $last_pos ]->getIdentifier();
         if( self::DEBUG ) { u\DebugUtility::out( "Last node ID: " . $last_node_id ); }
             
@@ -480,7 +1123,15 @@ class StructuredDataNodePhantom extends Property
         return $this;
     }
 
-    public function setBlock( a\Block $block=NULL )
+/**
+<documentation><description><p>Sets <code>blockId</code> and <code>blockPath</code> and returns the calling object.</p></description>
+<example>$node->setBlock( 
+    $cascade->getAsset( a\DataBlock::TYPE, "1f21ae208b7ffe834c5fe91e80fa13e6" ) );</example>
+<return-type>Property</return-type>
+<exception>NodeException, EmptyValueException</exception>
+</documentation>
+*/
+    public function setBlock( a\Block $block=NULL ) : Property
     {
         if( self::DEBUG ) { u\DebugUtility::out( "setBlock called: " . $block->getId() ); }
 
@@ -511,7 +1162,14 @@ class StructuredDataNodePhantom extends Property
         return $this;
     }
     
-    public function setFile( a\File $file=NULL )
+/**
+<documentation><description><p>Sets <code>fileId</code> and <code>filePath</code> and returns the calling object.</p></description>
+<example>$node->setFile();</example>
+<return-type>Property</return-type>
+<exception>NodeException, EmptyValueException</exception>
+</documentation>
+*/
+    public function setFile( a\File $file=NULL ) : Property
     {
         // required
         if( $this->required && $file == NULL )
@@ -540,7 +1198,14 @@ class StructuredDataNodePhantom extends Property
         return $this;
     }
     
-    public function setLinkable( a\Linkable $linkable=NULL )
+/**
+<documentation><description><p>Sets either <code>fileId</code> and <code>filePath</code>, or <code>pageId</code> and <code>pagePath</code>, or <code>symlinkId</code> and <code>symlinkPath</code>, depending on the type of the linkable, and returns the calling object.</p></description>
+<example>$node->setLinkable();</example>
+<return-type>Property</return-type>
+<exception>NodeException, EmptyValueException</exception>
+</documentation>
+*/
+    public function setLinkable( a\Linkable $linkable=NULL ) : Property
     {
         // required
         if( $this->required && $linkable == NULL )
@@ -600,7 +1265,14 @@ class StructuredDataNodePhantom extends Property
         return $this;
     }
     
-    public function setPage( a\Page $page=NULL )
+/**
+<documentation><description><p>Sets <code>pageId</code> and <code>pagePath</code> and returns the calling object.</p></description>
+<example>$node->setPage();</example>
+<return-type>Property</return-type>
+<exception>NodeException, EmptyValueException</exception>
+</documentation>
+*/
+    public function setPage( a\Page $page=NULL ) : Property
     {
         // required
         if( $this->required && $page == NULL )
@@ -629,7 +1301,14 @@ class StructuredDataNodePhantom extends Property
         return $this;
     }
     
-    public function setSymlink( a\Symlink $symlink=NULL )
+/**
+<documentation><description><p>Sets <code>symlinkId</code> and <code>symlinkPath</code> and returns the calling object.</p></description>
+<example>$node->setSymlink();</example>
+<return-type>Property</return-type>
+<exception>NodeException, EmptyValueException</exception>
+</documentation>
+*/
+    public function setSymlink( a\Symlink $symlink=NULL ) : Property
     {
         // required
         if( $this->required && $symlink == NULL )
@@ -658,7 +1337,14 @@ class StructuredDataNodePhantom extends Property
         return $this;
     }
     
-    public function setText( $text )
+/**
+<documentation><description><p>Sets <code>text</code> and returns the calling object.</p></description>
+<example>$node->setText( "10-17-2016" );</example>
+<return-type>Property</return-type>
+<exception>NodeException, EmptyValueException, NoSuchValueException, UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setText( string $text=NULL ) : Property
     {
         $text = trim( $text );
         
@@ -679,7 +1365,7 @@ class StructuredDataNodePhantom extends Property
         {
             if( $this->text_type == self::TEXT_TYPE_DATETIME )
             {
-                if( !is_numeric( $text) )
+                if( !is_null( $text ) && $text != "" && !is_numeric( $text) )
                     throw new e\UnacceptableValueException( 
                         S_SPAN . "$text is not an acceptable datetime value." . E_SPAN );
                     
@@ -687,59 +1373,64 @@ class StructuredDataNodePhantom extends Property
             }
             else if( $this->text_type == self::TEXT_TYPE_CALENDAR ) // month-day-year
             {
-                $date_array = explode( '-', $text );
-                
-                // must have three parts
-                if( count( $date_array ) != 3 )
-                {
-                    throw new e\UnacceptableValueException( 
-                        S_SPAN . "$text is not an acceptable date value." . E_SPAN );
-                }
-                
-                list( $month, $day, $year ) = $date_array;
-                
-                // convert strings to integers
-                $month = intval( $month );
-                $day   = intval( $day );
-                $year  = intval( $year );
-                
-                // check the date
-                if( !checkdate( $month, $day, $year ) )
-                {
-                    throw new e\UnacceptableValueException( 
-                        S_SPAN . "$text is not an acceptable date value." . E_SPAN );
-                }
-                
-                // compare years, Cascade only has a range of 20 years
-                $today     = getdate();
-                $this_year = $today[ 'year' ];
-                
-                if( abs( $this_year - $year ) > 10 )
-                {
-                    throw new e\UnacceptableValueException( 
-                        S_SPAN . "$text is not an acceptable date value." . E_SPAN );
-                }
-                
-                // convert integers back to strings
-                if( $month < 10 )
-                {
-                    $month_string = '0' . $month;
-                }
-                else
-                {
-                    $month_string = $month;
-                }
-                
-                if( $day < 10 )
-                {
-                    $day_string = '0' . $day;
-                }
-                else
-                {
-                    $day_string = $day;
-                }
-                
-                $this->text = $month_string . '-' . $day_string . '-' . $year;
+            	if( !is_null( $text ) && $text != "" )
+            	{
+					$date_array = explode( '-', $text );
+				
+					// must have three parts
+					if( count( $date_array ) != 3 )
+					{
+						throw new e\UnacceptableValueException( 
+							S_SPAN . "$text is not an acceptable date value." . E_SPAN );
+					}
+				
+					list( $month, $day, $year ) = $date_array;
+				
+					// convert strings to integers
+					$month = intval( $month );
+					$day   = intval( $day );
+					$year  = intval( $year );
+				
+					// check the date
+					if( !checkdate( $month, $day, $year ) )
+					{
+						throw new e\UnacceptableValueException( 
+							S_SPAN . "$text is not an acceptable date value." . E_SPAN );
+					}
+				
+					// compare years, Cascade only has a range of 20 years
+					$today     = getdate();
+					$this_year = $today[ 'year' ];
+				
+					if( abs( $this_year - $year ) > 10 )
+					{
+						throw new e\UnacceptableValueException( 
+							S_SPAN . "$text is not an acceptable date value." . E_SPAN );
+					}
+				
+					// convert integers back to strings
+					if( $month < 10 )
+					{
+						$month_string = '0' . $month;
+					}
+					else
+					{
+						$month_string = $month;
+					}
+				
+					if( $day < 10 )
+					{
+						$day_string = '0' . $day;
+					}
+					else
+					{
+						$day_string = $day;
+					}
+				
+					$this->text = $month_string . '-' . $day_string . '-' . $year;
+				}
+				else
+					$this->text = $text;
             }
             else
             {
@@ -769,8 +1460,11 @@ class StructuredDataNodePhantom extends Property
             {
                 if( $this->text_type == self::TEXT_TYPE_CHECKBOX )
                 {
+                	$text = str_replace( self::CHECKBOX_PREFIX, "", $text );
+                	
                     // unacceptable input
-                    if( $text != $this->items && $text != '' && $text != self::CHECKBOX_PREFIX )
+                    if( $text != $this->items && $text != '' && 
+                        $text != self::CHECKBOX_PREFIX )
                     {
                         throw new e\NoSuchValueException(
                             S_SPAN . "The value $text does not exist." . E_SPAN );
@@ -817,7 +1511,8 @@ class StructuredDataNodePhantom extends Property
                             else if( !in_array( $input, $item_array ) )
                             {
                                 throw new e\NoSuchValueException( 
-                                    S_SPAN . "The value $input does not exist." . E_SPAN );
+                                    S_SPAN . "The value $input does not exist." . 
+                                    E_SPAN );
                             }
                             else
                             {
@@ -834,7 +1529,8 @@ class StructuredDataNodePhantom extends Property
                     if( count( $input_array ) > 1 )
                     {
                         throw new e\UnacceptableValueException( 
-                            S_SPAN . "Radio button does not allow more than one value." . E_SPAN );
+                            S_SPAN . "Radio button does not allow more than one value." .
+                            E_SPAN );
                     }
                 
                     if( $text != "" && !in_array( $text, $item_array ) )
@@ -873,7 +1569,8 @@ class StructuredDataNodePhantom extends Property
                             else if( !in_array( $input, $item_array ) )
                             {
                                 throw new e\UnacceptableValueException( 
-                                    S_SPAN . "The value $input does not exist." . E_SPAN );
+                                    S_SPAN . "The value $input does not exist." . E_SPAN
+                                );
                             }
                             else
                             {
@@ -891,16 +1588,33 @@ class StructuredDataNodePhantom extends Property
                 }
             }
         }
+        
+        return $this;
     }
 
-    public function swapChildren( $pos1, $node1, $pos2, $node2 )
+/**
+<documentation><description><p>Swaps the two children, and returns the calling object. This method is used by <code>StructuredData</code>. <code>$node1</code> and <code>$node2</code> are actually new nodes created by the constructor of <code>structureDataNode</code>. There is not really any swapping. The two positions are in fact assigned two new nodes.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function swapChildren(
+        int $pos1, StructuredDataNode $node1,
+        int $pos2, StructuredDataNode$node2 ) : Property
     {
         $this->structured_data_nodes[ $pos1 ] = $node1;
         $this->structured_data_nodes[ $pos2 ] = $node2;
         return $this;
     }
     
-    public function toStdClass()
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example>u\DebugUtility::dump( $node->toStdClass() );</example>
+<return-type>stdClass</return-type>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj       = new \stdClass();
         $obj->type = $this->type;
@@ -961,7 +1675,13 @@ class StructuredDataNodePhantom extends Property
         return $obj;
     }
     
-    public static function getFieldIdentifier( $node_id )
+/**
+<documentation><description><p>Returns the fully qualified identifier of corresponding field.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public static function getFieldIdentifier( string $node_id ) : string
     {
         /* this code looks unnecessarily long; just to make sure 
            only digits surrounded by ; are removed
@@ -976,7 +1696,13 @@ class StructuredDataNodePhantom extends Property
         return $field_id;
     }
 
-    public static function getLastIndex( $node_id )
+/**
+<documentation><description><p>Returns the last index.</p></description>
+<example></example>
+<return-type>int</return-type>
+</documentation>
+*/
+    public static function getLastIndex( string $node_id ) : int
     {
         $matches = array();
         $result = preg_match( '/;(\d+)$/', $node_id, $matches );
@@ -988,19 +1714,32 @@ class StructuredDataNodePhantom extends Property
         return -1;
     }
     
-    public static function getPositionOfFirstNode( $array, $field_id )
+/**
+<documentation><description><p>Returns the position of the first instance of a set of nodes.</p></description>
+<example></example>
+<return-type>int</return-type>
+</documentation>
+*/
+    public static function getPositionOfFirstNode( array $array, string $field_id ) : int
     {
         $child_count = count( $array );
         
         for( $i = 0; $i < $child_count; $i++ )
         {
-            if( strpos( $array[ $i ]->getIdentifier(), $field_id . a\DataDefinition::DELIMITER ) !== false )
+            if( strpos( $array[ $i ]->getIdentifier(), $field_id .
+                a\DataDefinition::DELIMITER ) !== false )
                 break;
         }
         return $i;
     }
     
-    public static function getPositionOfLastNode( $array, $node_id )
+/**
+<documentation><description><p>Returns the position of the last instance of a set of nodes.</p></description>
+<example></example>
+<return-type>int</return-type>
+</documentation>
+*/
+    public static function getPositionOfLastNode( array $array, string $node_id ) : int
     {
         $child_count = count( $array );
         if( self::DEBUG ) { u\DebugUtility::out( "Child count: " . $child_count ); }
@@ -1009,7 +1748,8 @@ class StructuredDataNodePhantom extends Property
         
         for( $i = $child_count - 1; $i > 0; $i-- )
         {
-            if( self::DEBUG ) { u\DebugUtility::out( "Child ID: " . $array[ $i ]->getIdentifier() ); }            
+            if( self::DEBUG ) { u\DebugUtility::out( "Child ID: " .
+                $array[ $i ]->getIdentifier() ); }            
             if( strpos( $array[ $i ]->getIdentifier(), $shared_id ) !== false )
             {
                 if( self::DEBUG ) { u\DebugUtility::out( "Found in $i" ); }  
@@ -1020,7 +1760,8 @@ class StructuredDataNodePhantom extends Property
     }
     
     public static function processStructuredDataNodePhantom( 
-        $parent_id, &$node_array, $node_std, $data_definition )
+        string $parent_id, array &$node_array,
+        $node_std, a\DataDefinition $data_definition=NULL )
     {
         if( self::DEBUG ) { u\DebugUtility::out( "Parent ID: " . $parent_id ); }  
         
@@ -1079,7 +1820,8 @@ class StructuredDataNodePhantom extends Property
             if( $is_multiple )
             {
                 // an old one, keep counting
-                if( isset( $previous_identifier ) && $previous_identifier == $current_identifier ) 
+                if( isset( $previous_identifier ) && 
+                    $previous_identifier == $current_identifier ) 
                 {
                     $cur_index++;
                 }
@@ -1106,7 +1848,13 @@ class StructuredDataNodePhantom extends Property
         }
     }
     
-    public static function removeLastIndex( $node_id )
+/**
+<documentation><description><p>Returns the fully qualified identifier without the last index.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public static function removeLastIndex( string $node_id ) : string
     {
         return preg_replace( '/;(\d)+$/', '', $node_id );
     }
@@ -1137,6 +1885,7 @@ class StructuredDataNodePhantom extends Property
     private $text_type; // type of text, radiobutton, dropdown, and so on
     private $index;     // index of a multiple field
     private $items;     // items string of radio, checkbox, dropdown & selector
+    private $radio;     // whether this is a radio
     private $wysiwyg;   // whether this is a wysiwyg
     private $data_definition;
     private $node_map;
