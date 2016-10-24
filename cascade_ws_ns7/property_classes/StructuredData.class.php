@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 10/24/2016 Added hasPossibleValues; multiple bug fixes.
   * 8/11/2016 Added getService in both this class and StructuredDataPhantom to work with phantom nodes.
   * 6/20/2016 Changed the name searchWYSIWYG to searchWYSIWYGByPattern, added searchTextByPattern.
   * 6/2/2016 Added aliases. Replaced most string literals with constants.
@@ -44,7 +45,7 @@ use cascade_ws_asset     as a;
 <li>A <code>StructuredData</code> object contains a <code>a\DataDefinition</code> object so that it can pass it along to its children.</li>
 </ul>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/structured_data.php">structured_data.php</a></li></ul></postscript>
 </documentation>
 */
 class StructuredData extends Property
@@ -89,7 +90,8 @@ class StructuredData extends Property
             
             // store the data definition
             $this->data_definition = new a\DataDefinition( 
-                $service, $service->createId( a\DataDefinition::TYPE, $this->definition_id ) );
+                $service, $service->createId(
+                    a\DataDefinition::TYPE, $this->definition_id ) );
             // turn structuredDataNode into an array
             if( isset( $sd->structuredDataNodes->structuredDataNode ) && 
                 !is_array( $sd->structuredDataNodes->structuredDataNode ) )
@@ -99,7 +101,8 @@ class StructuredData extends Property
             elseif( isset( $sd->structuredDataNodes->structuredDataNode ) )
             {
                 $child_nodes = $sd->structuredDataNodes->structuredDataNode;
-                if( self::DEBUG ) { u\DebugUtility::out( "Number of nodes in std: " . count( $child_nodes ) ); }
+                if( self::DEBUG ) { u\DebugUtility::out(
+                    "Number of nodes in std: " . count( $child_nodes ) ); }
             }
             // convert stdClass to objects
             StructuredDataNode::processStructuredDataNodes( 
@@ -109,6 +112,9 @@ class StructuredData extends Property
         $this->node_map    = $this->getIdentifierNodeMap();
         $this->identifiers = array_keys( $this->node_map );
         $this->host_asset  = $data2;
+        
+        //$data2->dump();
+        
         $this->service     = $service;
         
         if( self::DEBUG ) { u\DebugUtility::out( "First node ID: " . $first_node_id ); }
@@ -116,7 +122,9 @@ class StructuredData extends Property
     
 /**
 <documentation><description><p>Appends a node to a set of nodes consisting a first node
-identified by the identifier, and returns the calling object.</p></description>
+identified by the identifier, and returns the calling object. Note that node instances are in fact copies of the last instance.
+Therefore, if the last node contains data, then copies created will contain exactly the
+same data.</p></description>
 <example></example>
 <return-type>Property</return-type>
 <exception>NodeException</exception>
@@ -170,8 +178,8 @@ identified by the identifier, and returns the calling object.</p></description>
 multiple field whose first node is <code>$identifier</code> and returns the object. This
 method ensures that a multiple field will have exactly N instances. If the object has more
 or has less instances than <code>$number</code>, then instances are either removed from or
-added to the field. Note that node instances are in fact copies of the first instance.
-Therefore, if the first node contains data, then copies created will contain exactly the
+added to the field. Note that node instances are in fact copies of the last instance.
+Therefore, if the last node contains data, then copies created will contain exactly the
 same data.</p></description>
 <example></example>
 <return-type>Property</return-type>
@@ -228,7 +236,7 @@ same data.</p></description>
 an instance of an asset field of type <code>page</code>, <code>file</code>,
 <code>block</code>, <code>symlink</code>, or
 <code>page,file,symlink</code>).</p></description>
-<example></example>
+<example>echo $sd->getAssetNodeType( "group;block-chooser" ), BR;</example>
 <return-type>mixed</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -254,7 +262,7 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
     
 /**
 <documentation><description><p>Returns <code>blockId</code> of the named node.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $sd->getBlockId( $id ) ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -267,7 +275,7 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
     
 /**
 <documentation><description><p>Returns <code>blockPath</code> of the named node.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $sd->getBlockPath( $id ) ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -280,19 +288,19 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
     
 /**
 <documentation><description><p>Returns the <code>a\DataDefinition</code> object.</p></description>
-<example></example>
+<example>$sd->getDataDefinition()->dump();</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDataDefinition() : Asset
+    public function getDataDefinition() : a\Asset
     {
         return $this->data_definition;
     }
     
 /**
 <documentation><description><p>Returns <code>definitionId</code>.</p></description>
-<example></example>
+<example>echo $sd->getDefinitionId(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -304,7 +312,7 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
     
 /**
 <documentation><description><p>Returns <code>definitionPath</code>.</p></description>
-<example></example>
+<example>echo $sd->getDefinitionPath(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -316,7 +324,7 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
     
 /**
 <documentation><description><p>Returns <code>fieldId</code> of the named node.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $sd->getFileId( $id ) ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -329,7 +337,7 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
     
 /**
 <documentation><description><p>Returns <code>fieldPath</code> of the named node.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $sd->getFilePath( $id ) ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -342,19 +350,19 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
     
 /**
 <documentation><description><p>Returns the host asset.</p></description>
-<example></example>
+<example>$sd->getHostAsset()->dump();</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getHostAsset() : Asset
+    public function getHostAsset() : a\Asset
     {
         return $this->host_asset;
     }
     
 /**
 <documentation><description><p>Returns the map of identifiers pointing to <code>StructuredDataNode</code> objects.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $sd->getIdentifierNodeMap() );</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -372,7 +380,7 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
     
 /**
 <documentation><description><p>Returns the array of all fully qualified identifiers.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $sd->getIdentifiers() )</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -387,7 +395,7 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
 <code>Linkable</code> node is a chooser allowing users to choose either a page, a file, or
 a symlink; therefore, the id can be the <code>fileId</code>, <code>pageId</code>, or
 <code>symlinkId</code> of the node).</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $sd->getLinkableId( $id ) ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -403,7 +411,7 @@ a symlink; therefore, the id can be the <code>fileId</code>, <code>pageId</code>
 <code>a\Linkable</code> node is a chooser allowing users to choose either a page, a file,
 or a symlink; therefore, the path can be the <code>filePath</code>, <code>pagePath</code>,
 or <code>symlinkPath</code> of the node).</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $sd->getLinkablePath( $id ) ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -417,7 +425,7 @@ or <code>symlinkPath</code> of the node).</p></description>
 /**
 <documentation><description><p>Returns <code>StructuredDataNode</code> object bearing this
 fully qualified identifier.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $sd->getNode( $id )->toStdClass() );</example>
 <return-type>StructuredDataNode</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -436,7 +444,7 @@ fully qualified identifier.</p></description>
 /**
 <documentation><description><p>Returns the type string of a node. The returned value is
 one of the following: <code>group</code>, <code>asset</code>, and <code>text</code>.</p></description>
-<example></example>
+<example>echo $sd->getNodeType( $id ), BR;</example>
 <return-type>string</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -454,7 +462,7 @@ one of the following: <code>group</code>, <code>asset</code>, and <code>text</co
     
 /**
 <documentation><description><p>Returns the number of children.</p></description>
-<example></example>
+<example>echo $sd->getNumberOfChildren(), BR;</example>
 <return-type>int</return-type>
 <exception></exception>
 </documentation>
@@ -467,7 +475,7 @@ one of the following: <code>group</code>, <code>asset</code>, and <code>text</co
 /**
 <documentation><description><p>Returns the number of instances of a multiple field, the
 supplied identifier being the one of the first instance.</p></description>
-<example></example>
+<example>echo $sd->getNumberOfSiblings( "multiple-first;0" ), BR;</example>
 <return-type>int</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -506,7 +514,7 @@ supplied identifier being the one of the first instance.</p></description>
     
 /**
 <documentation><description><p>Returns <code>pageId</code> of the named node.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $sd->getPageId( $id ) ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -519,7 +527,7 @@ supplied identifier being the one of the first instance.</p></description>
     
 /**
 <documentation><description><p>Returns <code>pagePath</code> of the named node.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $sd->getPagePath( $id ) ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -532,7 +540,7 @@ supplied identifier being the one of the first instance.</p></description>
     
 /**
 <documentation><description><p>Returns an array of strings or NULL.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $sd->getPossibleValues( "group;multiselect" ) );</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -545,7 +553,7 @@ supplied identifier being the one of the first instance.</p></description>
     
 /**
 <documentation><description><p>Returns the <code>$service</code> object.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $sd->getService() );</example>
 <return-type>AssetOperationHandlerService</return-type>
 <exception></exception>
 </documentation>
@@ -557,7 +565,7 @@ supplied identifier being the one of the first instance.</p></description>
     
 /**
 <documentation><description><p>Returns <code>symlinkId</code> of the named node.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $sd->getSymlinkId( $id ) ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -570,7 +578,7 @@ supplied identifier being the one of the first instance.</p></description>
     
 /**
 <documentation><description><p>Returns <code>symlinkPath</code> of the named node.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $sd->getSymlinkPath( $id ) ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -601,7 +609,7 @@ supplied identifier being the one of the first instance.</p></description>
     
 /**
 <documentation><description><p>Returns the text of a node.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $sd->getText( "group;calendar" ) ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -618,7 +626,7 @@ instance of a normal text field (including multi-line and WYSIWYG), which are no
 associated with a type string, or a text field of
 type <code>datetime</code>, <code>calendar</code>, <code>multi-selector</code>,
 <code>dropdown</code>, or <code>checkbox</code>).</p></description>
-<example></example>
+<example>echo $sd->getTextNodeType( "group;calendar" ), BR;</example>
 <return-type>mixed</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -644,7 +652,7 @@ type <code>datetime</code>, <code>calendar</code>, <code>multi-selector</code>,
     
 /**
 <documentation><description><p>Returns the type string. The returned value is either <code>Page::TYPE</code> or <code>DataDefinitionBlock::TYPE</code>.</p></description>
-<example></example>
+<example>echo $sd->getType(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -655,7 +663,7 @@ type <code>datetime</code>, <code>calendar</code>, <code>multi-selector</code>,
     }
     
 /**
-<documentation><description><p>An alias of <code>hasNode( $identifier )</code>.</p></description>
+<documentation><description><p>An alias of <code>hasNode</code>.</p></description>
 <example></example>
 <return-type>bool</return-type>
 <exception></exception>
@@ -668,7 +676,10 @@ type <code>datetime</code>, <code>calendar</code>, <code>multi-selector</code>,
     
 /**
 <documentation><description><p>Returns a bool, indicating whether the identifier exists.</p></description>
-<example></example>
+<example>if( $sd->hasNode( $id ) )
+{
+    echo $sd->getAssetNodeType( $id ), BR;
+}</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -710,6 +721,28 @@ of type B in the structured data.</p></description>
     }
     
 /**
+<documentation><description><p>Returns a bool, indicating whether this node has possible values.</p></description>
+<example>if( $sd->hasPossibleValues( $id ) )
+    u\DebugUtility::dump( $sd->getPossibleValues( $id ) );
+</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function hasPossibleValues( string $identifier ) : bool
+    {
+        if( isset( $this->node_map[ $identifier ] ) && 
+            $this->node_map[ $identifier ]->getType() == "text" )
+        {
+            $type = $this->node_map[ $identifier ]->getTextNodeType();
+            
+            return $type == c\T::CHECKBOX || $type == c\T::DROPDOWN ||
+                $type == c\T::RADIOBUTTON || $type == c\T::MULTISELECTOR;
+        }
+        return false;
+    }
+    
+/**
 <documentation><description><p>An alias of <code>isAssetNode</code>.</p></description>
 <example></example>
 <return-type>bool</return-type>
@@ -724,7 +757,10 @@ of type B in the structured data.</p></description>
 /**
 <documentation><description><p>Returns a bool, indicating whether the named node is an
 asset node, allowing users to choose an asset.</p></description>
-<example></example>
+<example>if( $sd->isAsset( "group;block-chooser" ) )
+    {
+        echo $sd->getAssetNodeType( "group;block-chooser" ), BR;
+    }</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -755,7 +791,11 @@ asset node, allowing users to choose an asset.</p></description>
 /**
 <documentation><description><p>Returns a bool, indicating whether the named node is a
 block chooser node, allowing users to choose a block.</p></description>
-<example></example>
+<example>if( $sd->isBlockChooserNode( $id ) )
+{
+    echo u\StringUtility::getCoalescedString( $sd->getBlockId( $id ) ), BR;
+    echo u\StringUtility::getCoalescedString( $sd->getBlockPath( $id ) ), BR;
+}</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -786,7 +826,8 @@ block chooser node, allowing users to choose a block.</p></description>
 /**
 <documentation><description><p>Returns a bool, indicating whether the named node is a
 calendar node.</p></description>
-<example></example>
+<example>if( $sd->isCalendarNode( $id ) )
+    echo u\StringUtility::getCoalescedString( $sd->getText( $id ) ), BR;</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -817,7 +858,9 @@ calendar node.</p></description>
 /**
 <documentation><description><p>Returns a bool, indicating whether the named node is a
 checkbox node.</p></description>
-<example></example>
+<example>if( $sd->isCheckboxNode( $id ) )
+    echo u\StringUtility::getCoalescedString( $sd->getText( $id ) ), BR;
+</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -848,7 +891,8 @@ checkbox node.</p></description>
 /**
 <documentation><description><p>Returns a bool, indicating whether the named node is a
 datetime node.</p></description>
-<example></example>
+<example>if( $sd->isDatetimeNode( $id ) )
+    echo u\StringUtility::getCoalescedString( $sd->getText( $id ) ), BR;</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -879,7 +923,8 @@ datetime node.</p></description>
 /**
 <documentation><description><p>Returns a bool, indicating whether the named node is a
 dropdown node.</p></description>
-<example></example>
+<example>if( $sd->isDropdownNode( $id ) )
+    echo u\StringUtility::getCoalescedString( $sd->getText( $id ) ), BR;</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -910,7 +955,10 @@ dropdown node.</p></description>
 /**
 <documentation><description><p>Returns a bool, indicating whether the named node is a file
 chooser node, allowing users to choose a file.</p></description>
-<example></example>
+<example>if( $sd->isFileChooserNode( $id ) )
+{
+    echo u\StringUtility::getCoalescedString( $sd->getFileId( $id ) ), BR;
+}</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -941,7 +989,10 @@ chooser node, allowing users to choose a file.</p></description>
 /**
 <documentation><description><p>Returns a bool, indicating whether the named node is a
 group node.</p></description>
-<example></example>
+<example>if( $sd->isGroupNode( $id ) )
+{
+    echo "A group", BR;
+}</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -960,7 +1011,8 @@ group node.</p></description>
 /**
 <documentation><description><p>Returns a bool, indicating whether the named node is the
 first node of a set of multiple nodes.</p></description>
-<example></example>
+<example>echo u\StringUtility::boolToString(
+    $sd->isIdentifierOfFirstNode( "multiple-second;1" ) );</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -989,7 +1041,10 @@ first node of a set of multiple nodes.</p></description>
 /**
 <documentation><description><p>Returns a bool, indicating whether the named node is a
 linkable chooser node, allowing users to choose a file, a page, or a symlink.</p></description>
-<example></example>
+<example>if( $sd->isLinkableChooserNode( $id ) )
+{
+    echo u\StringUtility::getCoalescedString( $sd->getLinkableId( $id ) ), BR;
+}</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -1020,7 +1075,8 @@ linkable chooser node, allowing users to choose a file, a page, or a symlink.</p
 /**
 <documentation><description><p>Returns a bool, indicating whether the node is a multi-line
 node (i.e., textarea).</p></description>
-<example></example>
+<example>if( $sd->isMultiLineNode( $id ) )
+    echo u\StringUtility::getCoalescedString( $sd->getText( $id ) ), BR;</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -1039,7 +1095,8 @@ node (i.e., textarea).</p></description>
 /**
 <documentation><description><p>Returns a bool, indicating whether the node is a multiple
 node.</p></description>
-<example></example>
+<example>if( $sd->isMultiple( $id ) )
+    echo "Multiple", BR;</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -1069,7 +1126,8 @@ node.</p></description>
     
 /**
 <documentation><description><p>Returns a bool, indicating whether the node is a multi-selector node.</p></description>
-<example></example>
+<example>if( $sd->isMultiSelectorNode( $id ) )
+    echo "Multi selector", BR;</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -1100,7 +1158,9 @@ node.</p></description>
 /**
 <documentation><description><p>Returns a bool, indicating whether the named node is a page
 chooser node, allowing users to choose a page.</p></description>
-<example></example>
+<example>if( $sd->isPageChooserNode( $id ) )
+    echo u\StringUtility::getCoalescedString( $sd->getPageId( $id ) ), BR;
+</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -1130,7 +1190,8 @@ chooser node, allowing users to choose a page.</p></description>
     
 /**
 <documentation><description><p>Returns a bool, indicating whether the node is a radio node.</p></description>
-<example></example>
+<example>if( $sd->isRadioNode( $id ) )
+    echo "Radio", BR;</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -1148,7 +1209,9 @@ chooser node, allowing users to choose a page.</p></description>
     
 /**
 <documentation><description><p>Returns a bool, indicating whether the field value is required by the named field.</p></description>
-<example></example>
+<example>if( $sd->isRequired( $id ) )
+    echo "Required", BR;
+</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -1178,7 +1241,9 @@ chooser node, allowing users to choose a page.</p></description>
     
 /**
 <documentation><description><p>Returns a bool, indicating whether the named node is a symlink chooser node, allowing users to choose a symlink.</p></description>
-<example></example>
+<example>if( $sd->isSymlinkChooserNode( $id ) )
+    echo u\StringUtility::getCoalescedString( $sd->getSymlinkId( $id ) ), BR;
+</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -1232,7 +1297,8 @@ chooser node, allowing users to choose a page.</p></description>
     
 /**
 <documentation><description><p>Returns a bool, indicating whether the node is a simple text box node.</p></description>
-<example></example>
+<example>if( $sd->isTextBoxNode( $id ) )
+    echo "Text box", BR;</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -1262,7 +1328,8 @@ chooser node, allowing users to choose a page.</p></description>
     
 /**
 <documentation><description><p>Returns returns a bool, indicating whether the named node is a text node (vs. group and asset).</p></description>
-<example></example>
+<example>if( $sd->isTextNode( $id ) )
+    echo "Text node", BR;</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -1292,7 +1359,8 @@ chooser node, allowing users to choose a page.</p></description>
     
 /**
 <documentation><description><p>Returns a bool, indicating whether the named field is a WYSIWYG text field.</p></description>
-<example></example>
+<example>if( $sd->isWYSIWYGNode( $id ) )
+    echo "WYSIWYG node", BR;</example>
 <return-type>bool</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -1310,7 +1378,7 @@ chooser node, allowing users to choose a page.</p></description>
     
 /**
 <documentation><description><p>Returns a new <code>StructuredData</code> object, containing all the data licensed by the data definition. The method can be used to remove phantom nodes of type B.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $sd->mapData()->toStdClass() );</example>
 <return-type>StructuredData</return-type>
 <exception></exception>
 </documentation>
@@ -1345,7 +1413,7 @@ chooser node, allowing users to choose a page.</p></description>
     
 /**
 <documentation><description><p>Removes the last node from a set of nodes, and returns the object. The identifier supplied must the the fully qualified identifier of the first node of the set.</p></description>
-<example></example>
+<example>$sd->removeLastSibling( "multiple-first;0" )->getHostAsset()->edit();</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -1435,7 +1503,14 @@ chooser node, allowing users to choose a page.</p></description>
 text fields, and fields of type datetime and calendar, and returns the calling object.
 Inside the method <code>preg_replace</code> is called. If an array of fully qualified
 identifiers is also passed in, then only those nodes will be affected.</p></description>
-<example></example>
+<example>if( $sd->isWYSIWYGNode( $id ) )
+{
+    $sd->replaceByPattern(
+        "/&lt;p&gt;([^&lt;]+)&lt;\/p&gt;/", 
+        "&lt;div class='text_red'&gt;$1&lt;/div&gt;", 
+        array( $id )
+    )->getHostAsset()->edit();
+}</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -1471,10 +1546,7 @@ identifiers is also passed in, then only those nodes will be affected.</p></desc
             {
                 $new_text = preg_replace( $pattern, $replace, $current_text );
                 
-                $this->setText(
-                    $identifier,
-                    $new_text
-                );
+                $this->setText( $identifier, $new_text );
             }
         }
         return $this;
@@ -1485,7 +1557,8 @@ identifiers is also passed in, then only those nodes will be affected.</p></desc
 normal text fields, and fields of type datetime and calendar, and returns the calling
 object. Inside the method <code>str_replace</code> is called. If an array of fully
 qualified identifiers is also passed in, then only those nodes will be affected.</p></description>
-<example></example>
+<example>// affects all text nodes	
+$sd->replaceText( "Wonderful", "Amazing" )->getHostAsset()->edit();</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -1534,7 +1607,7 @@ qualified identifiers is also passed in, then only those nodes will be affected.
 <documentation><description><p>Searches all the nodes of type <code>text</code> (excluding
 <code>asset</code> and <code>group</code>) for the string, and returns an array of fully
 qualified identifiers of nodes where the string is found. Inside the method <code>strpos</code> is used.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $sd->searchText( "Amazing" ) );</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -1560,7 +1633,7 @@ qualified identifiers of nodes where the string is found. Inside the method <cod
 <documentation><description><p>Searches all the nodes of type <code>text</code> (excluding
 <code>asset</code> and <code>group</code>) for the pattern, and returns an array of fully
 qualified identifiers of nodes where the pattern is found. Inside the method <code>preg_match</code> is used.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $sd->searchTextByPattern( "/<p>([^<]+)<\/p>/" ) );</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -1585,7 +1658,7 @@ qualified identifiers of nodes where the pattern is found. Inside the method <co
     
 /**
 <documentation><description><p>Searches all the WYSIWYG nodes for the pattern, and returns an array of fully qualified identifiers of nodes where the pattern is found. Inside the method <code>preg_match</code> is used.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $sd->searchWYSIWYGByPattern( "/<p>([^<]+)<\/p>/" ) );</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -1611,7 +1684,11 @@ qualified identifiers of nodes where the pattern is found. Inside the method <co
     
 /**
 <documentation><description><p>Sets the node's <code>blockId</code> and <code>blockPath</code> properties, and returns the calling object.</p></description>
-<example></example>
+<example>$sd->setBlock(
+    "group;block-chooser",
+    $cascade->getAsset(
+        a\DataBlock::TYPE, "1f21e3268b7ffe834c5fe91e2e0a7b2d" ) )->
+    getHostAsset()->edit();</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -1627,8 +1704,11 @@ qualified identifiers of nodes where the pattern is found. Inside the method <co
     }
     
 /**
-<documentation><description><p>Sets the data definition, and returns the calling object.</p></description>
-<example></example>
+<documentation><description><p>Sets <code>definitionId</code>, and <code>definitionPath</code>, and returns the calling object. Note that this method is meaningless unless the current structured data is replaced by a new structured data if a different data definition is involved.</p></description>
+<example>u\DebugUtility::dump( $sd->setDataDefinition(
+    $cascade->getAsset(
+        a\DataDefinition::TYPE, "1f24065d8b7ffe834c5fe91e95372ce1" ) )->
+    toStdClass() );</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -1642,7 +1722,16 @@ qualified identifiers of nodes where the pattern is found. Inside the method <co
     
 /**
 <documentation><description><p>Sets the node's <code>fileId</code> and <code>filePath</code> properties, and returns the calling object.</p></description>
-<example></example>
+<example>$sd->setBlock(
+    "group;block-chooser",
+    $cascade->getAsset(
+        a\DataBlock::TYPE, "1f21e3268b7ffe834c5fe91e2e0a7b2d" ) )->
+    setFile( "group;file-chooser" )-> 
+    setPage( "group;page-chooser" )-> 
+    setLinkable( "group;linkable-chooser" )-> 
+    setSymlink( "group;symlink-chooser" )->
+    getHostAsset()->edit();
+</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -1657,7 +1746,16 @@ qualified identifiers of nodes where the pattern is found. Inside the method <co
 /**
 <documentation><description><p>Sets the node's <code>fileId</code> and <code>filePath</code>, or <code>pageId</code> and <code>pagePath</code>,
 or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on what is passed in, and returns the calling object.</p></description>
-<example></example>
+<example>$sd->setBlock(
+    "group;block-chooser",
+    $cascade->getAsset(
+        a\DataBlock::TYPE, "1f21e3268b7ffe834c5fe91e2e0a7b2d" ) )->
+    setFile( "group;file-chooser" )-> 
+    setPage( "group;page-chooser" )-> 
+    setLinkable( "group;linkable-chooser" )-> 
+    setSymlink( "group;symlink-chooser" )->
+    getHostAsset()->edit();
+</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -1671,7 +1769,16 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
     
 /**
 <documentation><description><p>Sets the node's <code>pageId</code> and <code>pathPath</code> properties, and returns the calling object.</p></description>
-<example></example>
+<example>$sd->setBlock(
+    "group;block-chooser",
+    $cascade->getAsset(
+        a\DataBlock::TYPE, "1f21e3268b7ffe834c5fe91e2e0a7b2d" ) )->
+    setFile( "group;file-chooser" )-> 
+    setPage( "group;page-chooser" )-> 
+    setLinkable( "group;linkable-chooser" )-> 
+    setSymlink( "group;symlink-chooser" )->
+    getHostAsset()->edit();
+</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -1685,7 +1792,16 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
     
 /**
 <documentation><description><p>Sets the node's <code>symlinkId</code> and <code>symlinkPath</code> properties, and returns the calling object.</p></description>
-<example></example>
+<example>$sd->setBlock(
+    "group;block-chooser",
+    $cascade->getAsset(
+        a\DataBlock::TYPE, "1f21e3268b7ffe834c5fe91e2e0a7b2d" ) )->
+    setFile( "group;file-chooser" )-> 
+    setPage( "group;page-chooser" )-> 
+    setLinkable( "group;linkable-chooser" )-> 
+    setSymlink( "group;symlink-chooser" )->
+    getHostAsset()->edit();
+</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -1699,12 +1815,13 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
     
 /**
 <documentation><description><p>Sets the node's <code>text</code>, and returns the calling object.</p></description>
-<example></example>
+<example>$sd->setText( "group;text-box", "Some new text" )->
+    getHostAsset()->edit();</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setText( string $node_name, string $text ) : Property
+    public function setText( string $node_name, string $text=NULL ) : Property
     {
         if( isset( $this->node_map[ $node_name ] ) )
             $this->node_map[ $node_name ]->setText( $text );
@@ -1713,7 +1830,7 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
     
 /**
 <documentation><description><p>Swaps the data of two nodes, and returns the calling object.</p></description>
-<example></example>
+<example>$sd->swapData( "multiple-first;0", "multiple-first;1" )->getHostAsset()->edit();</example>
 <return-type>Property</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -1803,7 +1920,7 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
     
 /**
 <documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $sd->toStdClass() );</example>
 <return-type>stdClass</return-type>
 <exception></exception>
 </documentation>
@@ -1979,7 +2096,7 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
                         {
                             $target->setPage( $id, 
                                 $source->getService()->getAsset(
-                                    $source->getService()->createId( a\Page, $page_id ) ) );
+                                	a\Page::TYPE, $page_id ) );
                         }
                         break;
                     case c\T::FILE:
@@ -1989,7 +2106,7 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
                         {
                             $target->setFile( $id, 
                                 $source->getService()->getAsset(
-                                    $source->getService()->createId( a\File, $file_id ) ) );
+                                	a\File::TYPE, $file_id ) );
                         }
                         break;
                     case c\T::BLOCK:
@@ -2008,7 +2125,7 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
                         {
                             $target->setSymlink( $id,
                                 $source->getService()->getAsset(
-                                    $source->getService()->createId( a\Symlink, $symlink_id ) ) );
+                                	a\Symlink::TYPE, $symlink_id ) );
                         }
                         break;
                     case c\T::PFS:
@@ -2016,7 +2133,10 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
                     
                         if( isset( $linkable_id ) )
                         {
-                            $target->setLinkable( $id, a\Linkable::getLinkable( $source->getService(), $linkable_id ) );
+                            $target->setLinkable(
+                                $id, 
+                                a\Linkable::getLinkable(
+                                    $source->getService(), $linkable_id ) );
                         }
                         break;
                 }
