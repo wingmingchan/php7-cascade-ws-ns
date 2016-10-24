@@ -164,7 +164,7 @@ class Preference
 <documentation><description><p></p></description>
 <example></example>
 <return-type></return-type>
-<exception></exception>
+<exception>NullServiceException</exception>
 </documentation>
 */
     public function __construct( 

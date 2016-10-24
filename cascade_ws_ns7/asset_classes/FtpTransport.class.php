@@ -29,6 +29,16 @@ class FtpTransport extends Transport
     const TYPE  = c\T::FTPTRANSPORT;
     
 /**
+<documentation><description><p>The constructor.</p></description>
+</documentation>
+*/
+    public function __construct( 
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    {
+        parent::__construct( $service, $identifier );
+    }
+
+/**
 <documentation><description><p></p></description>
 <example></example>
 <return-type></return-type>

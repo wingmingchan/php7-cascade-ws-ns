@@ -28,6 +28,16 @@ abstract class Format extends ContainedAsset
     const DEBUG = false;
 
 /**
+<documentation><description><p>The constructor.</p></description>
+</documentation>
+*/
+    protected function __construct( 
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    {
+        parent::__construct( $service, $identifier );
+    }
+
+/**
 <documentation><description><p>Edits and returns the calling object.</p></description>
 <example>$f->setXML( $xml )->edit();</example>
 <return-type>Asset</return-type>

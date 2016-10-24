@@ -25,5 +25,15 @@ use cascade_ws_property as p;
 class DataDefinitionContainer extends Container
 {
     const TYPE = c\T::DATADEFINITIONCONTAINER;
+    
+/**
+<documentation><description><p>The constructor.</p></description>
+</documentation>
+*/
+    public function __construct( 
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    {
+        parent::__construct( $service, $identifier );
+    }
 }
 ?>

@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 10/24/2016 Added construtor.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_asset;
@@ -63,6 +64,16 @@ class FeedBlock extends Block
     const DEBUG = false;
     const TYPE  = c\T::FEEDBLOCK;
     
+/**
+<documentation><description><p>The constructor.</p></description>
+</documentation>
+*/
+    public function __construct( 
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    {
+        parent::__construct( $service, $identifier );
+    }
+
 /**
 <documentation><description><p>Returns <code>feedURL</code>.</p></description>
 <example>echo "Feed URL: " . $fb->getFeedURL() . BR;</example>

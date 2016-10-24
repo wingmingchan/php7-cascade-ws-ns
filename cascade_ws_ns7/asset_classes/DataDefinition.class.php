@@ -150,11 +150,6 @@ class DataDefinition extends ContainedAsset
     const TYPE      = c\T::DATADEFINITION;
     const DELIMITER = ';';
 
-    /**
-    * The constructor
-    * @param $service the AssetOperationHandlerService object
-    * @param $identifier the identifier object
-    */
 /**
 <documentation><description><p>The constructor, overriding the parent method to parse and
 process the definition XML.</p></description>

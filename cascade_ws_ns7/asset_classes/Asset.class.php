@@ -50,7 +50,8 @@ abstract class Asset
 <exception>NullServiceException, NullIdentifierException, NullAssetException</exception>
 </documentation>
 */
-    protected function __construct( aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    protected function __construct(
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
         if( $service == NULL )
             throw new e\NullServiceException( c\M::NULL_SERVICE );

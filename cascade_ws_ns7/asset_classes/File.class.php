@@ -32,6 +32,16 @@ class File extends Linkable
 {
     const DEBUG = false;
     const TYPE  = c\T::FILE;
+
+/**
+<documentation><description><p>The constructor.</p></description>
+</documentation>
+*/
+    public function __construct( 
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    {
+        parent::__construct( $service, $identifier );
+    }
     
 /**
 <documentation><description><p></p></description>

@@ -19,6 +19,16 @@ abstract class Transport extends ContainedAsset
     const DEBUG = false;
 
 /**
+<documentation><description><p>The constructor.</p></description>
+</documentation>
+*/
+    protected function __construct( 
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    {
+        parent::__construct( $service, $identifier );
+    }
+
+/**
 <documentation><description><p></p></description>
 <example></example>
 <return-type></return-type>

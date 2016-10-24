@@ -22,5 +22,16 @@ use cascade_ws_property as p;
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
 </documentation>
 */
-class DataBlock extends DataDefinitionBlock{}
+class DataBlock extends DataDefinitionBlock
+{
+/**
+<documentation><description><p>The constructor.</p></description>
+</documentation>
+*/
+    public function __construct( 
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    {
+        parent::__construct( $service, $identifier );
+    }
+}
 ?>

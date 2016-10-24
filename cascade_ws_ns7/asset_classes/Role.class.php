@@ -34,7 +34,8 @@ class Role extends Asset
 <exception></exception>
 </documentation>
 */
-    public function __construct( aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    public function __construct(
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
         parent::__construct( $service, $identifier );
         

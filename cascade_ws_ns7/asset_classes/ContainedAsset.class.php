@@ -38,6 +38,16 @@ abstract class ContainedAsset extends Asset
     const DEBUG = false;
 
 /**
+<documentation><description><p>The constructor.</p></description>
+</documentation>
+*/
+    protected function __construct( 
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    {
+        parent::__construct( $service, $identifier );
+    }
+
+/**
 <documentation><description><p>Returns the parent container or <code>NULL</code>.</p></description>
 <example>u\DebugUtility::dump( $bf->getParentContainer() );</example>
 <return-type>mixed</return-type>

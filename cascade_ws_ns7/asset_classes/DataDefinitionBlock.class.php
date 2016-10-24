@@ -1359,7 +1359,9 @@ class DataDefinitionBlock extends Block
     {
         $this->structured_data = new p\StructuredData( 
             $this->getProperty()->structuredData, 
-            $this->getService(), $this );
+            $this->getService(), 
+            $this->getProperty()->structuredData->definitionId,
+            $this );
     }
 
     private $structured_data;

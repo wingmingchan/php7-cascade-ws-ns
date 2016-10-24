@@ -66,6 +66,16 @@ class Symlink extends Linkable
     const TYPE  = c\T::SYMLINK;
     
 /**
+<documentation><description><p>The constructor.</p></description>
+</documentation>
+*/
+    public function __construct( 
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    {
+        parent::__construct( $service, $identifier );
+    }
+
+/**
 <documentation><description><p>Returns <code>linkURL</code>.</p></description>
 <example>echo "Link URL: ", $s->getLinkURL() . BR;</example>
 <return-type>string</return-type>

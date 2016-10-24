@@ -28,6 +28,16 @@ class FacebookConnector extends Connector
     const TYPE     = c\T::FACEBOOKCONNECTOR;
     const PREFIX   = "Prefix";
     const PAGENAME = "Page Name";
+
+/**
+<documentation><description><p>The constructor.</p></description>
+</documentation>
+*/
+    public function __construct( 
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    {
+        parent::__construct( $service, $identifier );
+    }
     
 /**
 <documentation><description><p></p></description>

@@ -43,6 +43,16 @@ class ScriptFormat extends Format
     const TYPE  = c\T::VELOCITYFORMAT;
     
 /**
+<documentation><description><p>The constructor.</p></description>
+</documentation>
+*/
+    public function __construct( 
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    {
+        parent::__construct( $service, $identifier );
+    }
+
+/**
 <documentation><description><p>Displays the script and returns the calling object.</p></description>
 <example>$f->displayScript();</example>
 <return-type>Asset</return-type>

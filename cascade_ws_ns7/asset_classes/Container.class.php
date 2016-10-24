@@ -40,7 +40,8 @@ abstract class Container extends ContainedAsset
 <exception></exception>
 </documentation>
 */
-    protected function __construct( aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    protected function __construct(
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
         parent::__construct( $service, $identifier );
         

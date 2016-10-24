@@ -44,6 +44,16 @@ class XsltFormat extends Format
     const TYPE  = c\T::XSLTFORMAT;
     
 /**
+<documentation><description><p>The constructor.</p></description>
+</documentation>
+*/
+    public function __construct( 
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    {
+        parent::__construct( $service, $identifier );
+    }
+
+/**
 <documentation><description><p>Displays the <code>xml</code> and returns the calling object.</p></description>
 <example>$f->displayXML();</example>
 <return-type>Asset</return-type>

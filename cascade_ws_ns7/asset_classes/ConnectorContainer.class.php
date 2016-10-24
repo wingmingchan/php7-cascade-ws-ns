@@ -44,5 +44,15 @@ use cascade_ws_property as p;
 class ConnectorContainer extends Container
 {
     const TYPE = c\T::CONNECTORCONTAINER;
+    
+/**
+<documentation><description><p>The constructor.</p></description>
+</documentation>
+*/
+    public function __construct( 
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    {
+        parent::__construct( $service, $identifier );
+    }
 }
 ?>

@@ -25,5 +25,15 @@ use cascade_ws_property as p;
 class TransportContainer extends Container
 {
     const TYPE = c\T::TRANSPORTCONTAINER;
+
+/**
+<documentation><description><p>The constructor.</p></description>
+</documentation>
+*/
+    public function __construct( 
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    {
+        parent::__construct( $service, $identifier );
+    }
 }
 ?>

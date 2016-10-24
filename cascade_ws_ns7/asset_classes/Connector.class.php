@@ -25,7 +25,7 @@ abstract class Connector extends ContainedAsset
 <exception></exception>
 </documentation>
 */
-    public function __construct( 
+    protected function __construct( 
         aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
         parent::__construct( $service, $identifier );

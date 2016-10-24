@@ -49,6 +49,16 @@ class AssetFactoryContainer extends Container
     const TYPE  = c\T::ASSETFACTORYCONTAINER;
     
 /**
+<documentation><description><p>The constructor.</p></description>
+</documentation>
+*/
+    public function __construct( 
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    {
+        parent::__construct( $service, $identifier );
+    }
+
+/**
 <documentation><description><p>Adds the group name to <code>applicableGroups</code> and returns the calling object.</p></description>
 <example>$afc->addGroup( $group )->edit();</example>
 <return-type>Asset</return-type>

@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 10/24/2016 Added construtor.
   * 9/22/2016 Added default param values to all set methods.
   * 5/28/2015 Added namespaces.
   * 7/15/2014 Added getContentType and getFolder.
@@ -94,6 +95,16 @@ class IndexBlock extends Block
     const DEBUG = false;
     const TYPE  = c\T::INDEXBLOCK;
  
+/**
+<documentation><description><p>The constructor.</p></description>
+</documentation>
+*/
+    public function __construct( 
+        aohs\AssetOperationHandlerService $service, \stdClass $identifier )
+    {
+        parent::__construct( $service, $identifier );
+    }
+
 /**
 <documentation><description><p>Returns <code>appendCallingPageData</code>.</p></description>
 <example>echo "Append calling page data: " . 

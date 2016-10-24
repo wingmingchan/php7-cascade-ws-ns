@@ -45,7 +45,8 @@ class Template extends ContainedAsset
         $this->page_regions     = array();
         $this->page_region_map  = array();
         
-        if( !is_null( $this->getProperty()->pageRegions ) && !is_null( $this->getProperty()->pageRegions->pageRegion ) )
+        if( !is_null( $this->getProperty()->pageRegions ) && 
+            !is_null( $this->getProperty()->pageRegions->pageRegion ) )
             self::processPageRegions( $this->getProperty()->pageRegions->pageRegion, 
                 $this->page_regions, $this->page_region_map, $this->getService() );
             
