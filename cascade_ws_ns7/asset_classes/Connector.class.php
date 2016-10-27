@@ -9,17 +9,25 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+<p>The <code>Connector</code> class is the superclass of <code>FacebookConnector</code>, <code>GoogleAnalyticsConnector</code>, <code>TwitterConnector</code>, and <code>WordPressConnector</code>. It is an abstract class and defines methods commonly shared by its sub-classes. Note that there are methods defined here that are used by some, but not all, sub-classes. If a method is called through an object that should not be associated with the method in the first place, an exception will be thrown. For example, the <code>setDestination</code> method is not intended for <code>GoogleAnalyticsConnector</code> nor <code>WordPressConnector</code> objects. If the method is called by such an object, an exception will be thrown by this class.</p>
+</description>
+<postscript></postscript>
+</documentation>
+*/
 abstract class Connector extends ContainedAsset
 {
     const DEBUG = false;
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>The constructor, overriding the parent method to process parameters.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -35,13 +43,19 @@ abstract class Connector extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Adds a content type link to the connector, and returns the
+calling object.</p></description>
+<example>$connector->addContentTypeLink(
+    $cascade->getAsset( a\ContentType::TYPE, "1378b3e38b7f08ee1890c1e4df869132" ),
+    "XML"
+)->edit();
+</example>
+<return-type>Asset</return-type>
+<exception>NullAssetException, EmptyValueException, NoSuchPageConfigurationException, Exception</exception>
 </documentation>
 */
-    public function addContentTypeLink( ContentType $ct, $page_config_name )
+    public function addContentTypeLink(
+        ContentType $ct, string $page_config_name ) : Asset
     {
         if( $this->getPropertyName() == c\P::GOOGLEANALYTICSCONNECTOR )
         {
@@ -107,9 +121,9 @@ abstract class Connector extends ContainedAsset
     }
         
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Edits and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
@@ -181,9 +195,9 @@ abstract class Connector extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>auth1</code> (the username).</p></description>
+<example>echo u\StringUtility::getCoalescedString( $connector->getAuth1() ), BR;</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -193,8 +207,8 @@ abstract class Connector extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Returns <code>auth2</code> (the password). The returned string is useless.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $connector->getAuth2() ), BR;</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -205,20 +219,20 @@ abstract class Connector extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>eturns an array of <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/connector-content-type-link.php"><code>p\ConnectorContentTypeLink</code></a> objects.</p></description>
+<example>u\DebugUtility::dump( $connector->getConnectorContentTypeLinks() );</example>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getConnectorContentTypeLinks()
+    public function getConnectorContentTypeLinks() : array
     {
         return $this->connector_content_type_links;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Returns an array of <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/connector-parameter.php"><code>p\ConnectorParameter</code></a> objects.</p></description>
+<example>u\DebugUtility::dump( $connector->getConnectorParameters() );</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -229,9 +243,9 @@ abstract class Connector extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>url</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $connector->getUrl() ), BR;</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -241,21 +255,21 @@ abstract class Connector extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>verified</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $connector->getVerified() ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getVerified()
+    public function getVerified() : bool
     {
         return $this->getProperty()->verified;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>verifiedDate</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $connector->getVerifiedDate() ), BR;</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -265,13 +279,15 @@ abstract class Connector extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns a bool, indicating whether the content type is
+chosen in the connector. <code>$ct_path</code> is the <code>path</code> string of the content type.</p></description>
+<example>echo u\StringUtility::boolToString(
+    $connector->hasContentType( "_common_assets:RWD One Region" ) ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function hasContentType( $ct_path )
+    public function hasContentType( string $ct_path ) : bool
     {
         if( $this->getPropertyName() == c\P::GOOGLEANALYTICSCONNECTOR )
         {
@@ -288,13 +304,14 @@ abstract class Connector extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Removes the content type from the connector, and returns
+the calling object.</p></description>
+<example>$connector->removeContentTypeLink( $ct );</example>
+<return-type>Asset</return-type>
+<exception>Exception</exception>
 </documentation>
 */
-    public function removeContentTypeLink( ContentType $ct )
+    public function removeContentTypeLink( ContentType $ct ) : Asset
     {
         if( $this->getPropertyName() == c\P::GOOGLEANALYTICSCONNECTOR )
         {
@@ -318,13 +335,13 @@ abstract class Connector extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Sets <code>destination</code> and returns the calling object.</p></description>
+<example>$connector->setDestination( $destination )->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setDestination( Destination $d )
+    public function setDestination( Destination $d ) : Asset
     {
         if( $this->getPropertyName() != c\P::TWITTERCONNECTOR &&
             $this->getPropertyName() != c\P::FACEBOOKCONNECTOR
