@@ -19,7 +19,9 @@ use cascade_ws_property  as p;
 <description><h2>Introduction</h2>
 <p>The <code>Connector</code> class is the superclass of <code>FacebookConnector</code>, <code>GoogleAnalyticsConnector</code>, <code>TwitterConnector</code>, and <code>WordPressConnector</code>. It is an abstract class and defines methods commonly shared by its sub-classes. Note that there are methods defined here that are used by some, but not all, sub-classes. If a method is called through an object that should not be associated with the method in the first place, an exception will be thrown. For example, the <code>setDestination</code> method is not intended for <code>GoogleAnalyticsConnector</code> nor <code>WordPressConnector</code> objects. If the method is called by such an object, an exception will be thrown by this class.</p>
 </description>
-<postscript></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/connector.php">connector.php</a></li>
+
+</ul></postscript>
 </documentation>
 */
 abstract class Connector extends ContainedAsset
