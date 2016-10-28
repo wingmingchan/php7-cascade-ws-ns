@@ -10,16 +10,46 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_asset as a;
+use cascade_ws_asset     as a;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+<p>A <code>PageRegion</code> object represents a <code>pageRegion</code> property that can
+be found in a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/template.php"><code>a\Template</code></a> object or a <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/page-configuration.php"><code>PageConfiguration</code></a> object. Since both a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/page-configuration-set.php"><code>a\PageConfigurationSet</code></a> object and a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/page.php"><code>a\Page</code></a> object contain <code>PageConfiguration</code> objects, both contain <code>PageRegion</code> objects. A page region is used to associate a block and/or a format to a template, a configuration, or a page.</p>
+<h2>Structure of <code>pageRegion</code></h2>
+<pre>pageRegions
+  pageRegion (NULL, stdClass or array of stdClass)
+    id
+    name
+    blockId
+    blockPath
+    blockRecycled
+    noBlock
+    formatId
+    formatPath
+    formatRecycled
+    noFormat
+</pre>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/page-region.php">page-region.php</a></li></ul></postscript>
+</documentation>
+*/
 class PageRegion extends Property
 {
     const DEBUG = false;
     const DUMP  = false;
     
+/**
+<documentation><description>The constructor.</description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         \stdClass $region=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
@@ -55,7 +85,15 @@ class PageRegion extends Property
         }
     }
     
-    public function display()
+/**
+<documentation><description>Displays some basic information of the page region,
+and returns the calling object.</description>
+<example>$region->display();</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function display() : Property
     {
         echo "ID: " . $this->id . BR .
              "Name: " . $this->name . BR;
@@ -63,6 +101,14 @@ class PageRegion extends Property
         return $this;
     }
     
+/**
+<documentation><description>Returns the <code>a\Block</code> object of the region, or <code>NULL</code>.</description>
+<example>$block = $region->getBlock();
+echo u\StringUtility::boolToString( is_null( $block ) ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getBlock()
     {
         if( self::DEBUG ) { u\DebugUtility::out( "Name: " . $this->name . BR . "Block ID: " . $this->block_id );; }
@@ -79,24 +125,53 @@ class PageRegion extends Property
         return NULL;
     }
     
+/**
+<documentation><description>Returns <code>blockId</code>.</description>
+<example>echo u\StringUtility::getCoalescedString( $region->getBlockId() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getBlockId()
     {
         return $this->block_id;
     }
     
+/**
+<documentation><description>Returns <code>blockPath</code>.</description>
+<example>echo u\StringUtility::getCoalescedString( $region->getBlockPath() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getBlockPath()
     {
         return $this->block_path;
     }
     
-    public function getBlockRecycled()
+/**
+<documentation><description>Returns <code>blockRecycled</code>.</description>
+<example>echo u\StringUtility::boolToString( $region->getBlockRecycled() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getBlockRecycled() : bool
     {
         return $this->block_recycled;
     }
     
+/**
+<documentation><description>Returns the <code>a\Format</code> object of the region, or <code>NULL</code>.</description>
+<example>$format = $region->getFormat();</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFormat()
     {
-        if( isset( $this->format_id ) && $this->format_id != "" && isset( $this->service ) )
+        if( isset( $this->format_id ) && $this->format_id != "" &&
+            isset( $this->service ) )
         {
             if( self::DEBUG ) {  u\DebugUtility::out( __FUNCTION__ . BR . "Type of format: " . $this->getType( $this->format_id ) . BR . "Format ID: " . $this->format_id ); }
             
@@ -108,42 +183,106 @@ class PageRegion extends Property
         return NULL;
     }
     
+/**
+<documentation><description>Returns <code>formatId</code>.</description>
+<example>echo u\StringUtility::getCoalescedString( $region->getFormatId() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFormatId()
     {
         return $this->format_id;
     }
     
+/**
+<documentation><description>Returns <code>formatPath</code>.</description>
+<example>echo u\StringUtility::getCoalescedString( $region->getFormatPath() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFormatPath()
     {
         return $this->format_path;
     }
     
-    public function getFormatRecycled()
+/**
+<documentation><description>Returns <code>formatRecycled</code>.</description>
+<example>echo u\StringUtility::boolToString( $region->getFormatRecycled() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getFormatRecycled() : bool
     {
         return $this->format_recycled;
     }
     
-    public function getId()
+/**
+<documentation><description>Returns <code>id</code>.</description>
+<example>echo $region->getId(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getId() : string
     {
         return $this->id;
     }
     
+/**
+<documentation><description>Returns <code>name</code>.</description>
+<example>echo $region->getName(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getName()
     {
         return $this->name;
     }
     
-    public function getNoBlock()
+/**
+<documentation><description>Returns <code>noBlock</code>.</description>
+<example>echo u\StringUtility::boolToString( $region->getNoBlock() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getNoBlock() : bool
     {
         return $this->no_block;
     }
     
+/**
+<documentation><description>Returns <code>noFormat</code>.</description>
+<example>echo u\StringUtility::boolToString( $region->getNoFormat() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getNoFormat()
     {
         return $this->no_format;
     }
     
-    public function setBlock( a\Block $b=NULL, $block_recycled=false, $no_block=false )
+/**
+<documentation><description>Attaches the block to the region, and returns the object.
+If the block is NULL, then the block associated with the region at the page level will be
+removed. Note that at the page level, a block cannot be removed if it is associated with
+the region at the configuration level. Use the <code>noBlock</code> property to
+disassociate the block from the region.</description>
+<example>$region->setBlock(
+    $cascade->getAsset(
+        a\TextBlock::TYPE, "0bc94b1f8b7ffe83006a5cefe3ab1dac" ) );
+</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setBlock( 
+        a\Block $b=NULL, bool $block_recycled=false, bool $no_block=false ) : Property
     {
         if( !c\BooleanValues::isBoolean( $block_recycled ) )
             throw new e\UnacceptableValueException(
@@ -177,7 +316,22 @@ class PageRegion extends Property
         return $this;
     }
     
-    public function setFormat( a\Format $f=NULL, $format_recycled=false, $no_format=false )
+/**
+<documentation><description>Attaches the format to the region and returns the object.
+If the format is NULL, then the format associated with the region at the page level will
+be removed. Note that at the page level, a format cannot be removed if it is associated
+with the region at the configuration level. Use the <code>noFormat</code> property to
+disassociate the format from the region.</description>
+<example>$region->setFormat(
+    $cascade->getAsset(
+        a\ScriptFormat::TYPE, "0bcf8ce48b7ffe83006a5cef7d7c12f5" ) );
+</example>
+<return-type>Property</return-type>
+<exception>UnacceptableValueException, NullAssetException</exception>
+</documentation>
+*/
+    public function setFormat( 
+        a\Format $f=NULL, bool $format_recycled=false, bool $no_format=false ) : Property
     {
         if( !c\BooleanValues::isBoolean( $format_recycled ) )
             throw new e\UnacceptableValueException(
@@ -211,7 +365,16 @@ class PageRegion extends Property
         return $this;
     }
     
-    public function setNoBlock( $value )
+/**
+<documentation><description>Sets <code>noBlock</code> and returns the calling
+object.</description>
+<example>$region->setNoBlock( true );
+</example>
+<return-type>Property</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setNoBlock( bool $value ) : Property
     {
         if( !c\BooleanValues::isBoolean( $value ) )
             throw new e\UnacceptableValueException(
@@ -220,7 +383,15 @@ class PageRegion extends Property
         return $this;
     }
     
-    public function setNoFormat( $value )
+/**
+<documentation><description>Sets <code>noFormat</code> and returns the calling
+object.</description>
+<example>$region->setNoFormat( true );</example>
+<return-type>Property</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setNoFormat( bool $value ) : Property
     {
         if( !c\BooleanValues::isBoolean( $value ) )
             throw new e\UnacceptableValueException(
@@ -230,7 +401,15 @@ class PageRegion extends Property
         return $this;
     }
     
-    public function toStdClass()
+/**
+<documentation><description>Converts the object back to an <code>\stdClass</code>
+object.</description>
+<example>u\DebugUtility::dump( $region->toStdClass() );</example>
+<return-type>stdClass</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj                 = new \stdClass();
         $obj->id             = $this->id;
@@ -247,7 +426,7 @@ class PageRegion extends Property
         return $obj;
     }
     
-    private function getType( $id_string )
+    private function getType( string $id_string )
     {
         if( self::DEBUG) { u\DebugUtility::out( "string: " . $id_string ); }
 
