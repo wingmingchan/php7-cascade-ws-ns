@@ -21,9 +21,46 @@ use cascade_ws_property  as p;
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>A <code>PageConfigurationSet</code> object represents a page configuration set asset.</p>
+<h2>Structure of <code>pageConfigurationSet</code></h2>
+<pre>pageConfigurationSet
+  id
+  name
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  pageConfigurations
+    pageConfiguration
+      id
+      name
+      defaultConfiguration
+      templateId
+      templatePath
+      formatId
+      formatPath
+      formatRecycled
+      pageRegions
+        pageRegion
+          id
+          name
+          blockId
+          blockPath
+          blockRecycled
+          noBlock
+          formatId
+          formatPath
+          formatRecycled
+          noFormat
+      outputExtension
+      serializationType
+      includeXMLDeclaration
+      publishable
+</pre>
+<p>There is an important issue related to page regions of a configuration. A configuration contains a page region only if the page region is attached with either a block or a format or both. If a region is not attached with a block or a format, then it will not show up in the configuration; namely, it does not exist. To test whether a certain region exists in a configuration, do that test through the associated <code>Template</code> object.</p>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page_configuration_set.php">page_configuration_set.php</a></li></ul></postscript>
 </documentation>
 */
 class PageConfigurationSet extends ContainedAsset
@@ -32,7 +69,8 @@ class PageConfigurationSet extends ContainedAsset
     const TYPE  = c\T::CONFIGURATIONSET;
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>The constructor, overriding the parent method to process
+the page configurations.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -47,25 +85,32 @@ class PageConfigurationSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>An alias of <code>addPageConfiguration</code>.</p></description>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function addConfiguration( $name, Template $t, $extension, $type )
+    public function addConfiguration(
+        string $name, Template $t, string $extension, string $type ) : Asset
     {
         return $this->addPageConfiguration( $name, $t, $extension, $type );
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Adds a configuration to the configuration set, calls
+<code>edit</code>, and returns the calling object.</p></description>
+<example>$pcs->addPageConfiguration( 
+    'XML', // name
+    $cascade->getAsset( a\Template::TYPE, 'fd27b6798b7f08560159f3f08e013f23' ),
+    '.xml',
+    T::XML
+);</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException, WrongSerializationTypeException</exception>
 </documentation>
 */
-    public function addPageConfiguration( $name, Template $t, $extension, $type )
+    public function addPageConfiguration(
+        string $name, Template $t, string $extension, string $type ) : Asset
     {
         if( trim( $extension ) == "" )
             throw new e\EmptyValueException( 
@@ -93,25 +138,26 @@ class PageConfigurationSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>An alias of <code>deletePageConfiguration</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function deleteConfiguration( $name )
+    public function deleteConfiguration( string $name ) : Asset
     {
         return $this->deletePageConfiguration( $name );        
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Deletes the named page configuration from the set, calls
+<code>edit</code>, and returns the calling object.</p></description>
+<example>$pcs->deletePageConfiguration( 'XML' )->dump();</example>
+<return-type>Asset</return-type>
+<exception>Exception</exception>
 </documentation>
 */
-    public function deletePageConfiguration( $name )
+    public function deletePageConfiguration( string $name ) : Asset
     {
         if( $this->getDefaultConfiguration() == $name )
         {
@@ -135,10 +181,10 @@ class PageConfigurationSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Edits and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
-<exception></exception>
+<exception>EditingFailureException</exception>
 </documentation>
 */
     public function edit(
@@ -174,30 +220,30 @@ class PageConfigurationSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>An alias of <code>getPageConfiguration</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Property</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getConfiguration( $name )
+    public function getConfiguration( string $name ) : p\Property
     {
         return $this->getPageConfiguration( $name );
     }
-
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns the default page configuration (a <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/page-configuration.php"><code>p\PageConfiguration</code></a> object).</p></description>
+<example>$default_config =  $pcs->getDefaultConfiguration();</example>
+<return-type>Property</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDefaultConfiguration()
+    public function getDefaultConfiguration() : p\Property
     {
+        // there must one
         foreach( $this->page_configurations as $page_configuration )
         {
-            if( $page_configuration->getDefaultConfiguration() )
+            if( $page_configuration->getDefaultConfiguration() ) // bool
             {
                 return $page_configuration;
             }
@@ -205,37 +251,43 @@ class PageConfigurationSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>includeXMLDeclaration</code> of the named
+page configuration.</p></description>
+<example>echo u\StringUtility::boolToString(
+    $pcs->getIncludeXMLDeclaration( "PDF" ) ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getIncludeXMLDeclaration( $config )
+    public function getIncludeXMLDeclaration( string $config ) : bool
     {
         return $this->page_configuration_map[ $config ]->getIncludeXMLDeclaration();
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>outputExtension</code> of the named page
+configuration.</p></description>
+<example>echo u\StringUtility::boolToString(
+    $pcs->getOutputExtension( "PDF" ) ), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getOutputExtension( $config )
+    public function getOutputExtension( string $config ) : string
     {
         return $this->page_configuration_map[ $config ]->getOutputExtension();
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Returns the named <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/page-configuration.php"><code>p\PageConfiguration</code></a> object.</p></description>
+<example>u\DebugUtility::dump( $pcs->getPageConfiguration( 
+    $default_config->getName() )->
+    getPageRegionNames() );</example>
+<return-type>Property</return-type>
+<exception>NoSuchPageConfigurationException</exception>
 </documentation>
 */
-    public function getPageConfiguration( $name )
+    public function getPageConfiguration( string $name ) : p\Property
     {
         $this->checkPageConfiguration( $name );
         $count = $this->page_configurations;
@@ -248,25 +300,25 @@ class PageConfigurationSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns an array of the names of page configurations in the set.</p></description>
+<example>u\DebugUtility::dump( $pcs->getPageConfigurationNames() );</example>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPageConfigurationNames()
+    public function getPageConfigurationNames() : array
     {
         return $this->page_configuration_names;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns an array of <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/page-configuration.php"><code>p\PageConfiguration</code></a> objects.</p></description>
+<example>u\DebugUtility::dump( $pcs->getPageConfigurations() );</example>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPageConfigurations()
+    public function getPageConfigurations() : array
     {
         $config_array = array();
         $config_count = count( $this->page_configurations );
@@ -280,13 +332,13 @@ class PageConfigurationSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Returns the <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/template.php"><code>Template</code></a> object associated with the named page configuration.</p></description>
+<example>$pcs->getPageConfigurationTemplate( "PDF" )->dump();</example>
+<return-type>Asset</return-type>
+<exception>NoSuchPageConfigurationException</exception>
 </documentation>
 */
-    public function getPageConfigurationTemplate( $name )
+    public function getPageConfigurationTemplate( string $name ) : Asset
     {
         $this->checkPageConfiguration( $name );
         $count = $this->page_configurations;
@@ -302,100 +354,117 @@ class PageConfigurationSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Returns the names of page regions of the named page
+configuration. Note that this array is non-empty only if there is at least one page region
+attached with a block and/or a format. If no blocks and formats are attached to any
+regions, this array will be empty.</p></description>
+<example>u\DebugUtility::dump( $pcs->getPageRegionNames( "PDF" ) );</example>
+<return-type>array</return-type>
+<exception>NoSuchPageConfigurationException</exception>
 </documentation>
 */
-    public function getPageRegionNames( $name )
+    public function getPageRegionNames( string $name ) : array
     {
         $this->checkPageConfiguration( $name );
+        $config = $this->page_configuration_map[ $name ];
+        u\DebugUtility::dump( $config->toStdClass() );
+        
         return $this->page_configuration_map[ $name ]->getPageRegionNames();
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the named <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/page-region.php"><code>p\PageRegion</code></a> object of the named page configuration. Note that this method returns a <code>p\PageRegion</code> only if the region is attached with a block and/or a format. If the region is not attached with anything, then the region does not exist. This includes the <code>DEFAULT</code> region.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Property</return-type>
+<exception>NoSuchPageConfigurationException, NoSuchPageRegionException</exception>
 </documentation>
 */
-    public function getPageRegion( $name, $region_name )
+    public function getPageRegion( string $name, string $region_name ) : p\Property
     {
         $this->checkPageConfiguration( $name );
         return $this->page_configuration_map[ $name ]->getPageRegion( $region_name );
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>publishable</code> of the named page configuration.</p></description>
+<example>if( $pcs->getPublishable( $default_config->getName() ) )
+{
+    echo "The default config is publishable" . BR;
+}</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPublishable( $name )
+    public function getPublishable( string $name ) : bool
     {
         return $this->page_configuration_map[ $name ]->getPublishable();
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>serializationType</code> of the named page configuration.</p></description>
+<example>echo $pcs->getSerializationType( "PDF" ), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSerializationType( $name )
+    public function getSerializationType( string $name ) : string
     {
         return $this->page_configuration_map[ $name ]->getSerializationType();
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>An alias of <code>hasPageConfiguration</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function hasConfiguration( $name )
+    public function hasConfiguration( string $name ) : bool
     {
         return $this->hasPageConfiguration( $name );
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns a bool, indicating whether the named configuration exists in the set.</p></description>
+<example>echo u\StringUtility::boolToString( $pcs->hasPageConfiguration( "XML" ) ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function hasPageConfiguration( $name )
+    public function hasPageConfiguration( string $name ) : bool
     {
         return in_array( $name, $this->page_configuration_names );
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Returns a bool, indicating whether the named region exists in the named page configuration. Note that this method returns true only if the region is
+attached with a block and/or a format. If the region is not attached with anything, then
+the region does not exist. This includes the <code>DEFAULT</code> region.</p></description>
+<example>echo u\StringUtility::boolToString( $pcs->hasPageRegion( "Mobile", "DEFAULT" ) ), BR;</example>
+<return-type>bool</return-type>
+<exception>NoSuchPageConfigurationException</exception>
 </documentation>
 */
-    public function hasPageRegion( $name, $region_name )
+    public function hasPageRegion( string $name, string $region_name ) : bool
     {
         $this->checkPageConfiguration( $name );
         return $this->page_configuration_map[ $name ]->hasPageRegion( $region_name );
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Attaches the block to the named region of the named page
+configuration, and returns the calling object. Note that when a region is not attached with anything, that region does not exist in the configuration. To test whether a region exist, do the text through the associated <code>Template</code> object.</p></description>
+<example>$pcs->setConfigurationPageRegionBlock( 'Mobile', 'DEFAULT',
+    $cascade->getAsset( 
+        a\DataBlock::TYPE, 
+        'c23e62358b7f0856002a5e11909ccae3' )
+)->edit();</example>
+<return-type>Asset</return-type>
+<exception>NoSuchPageConfigurationException</exception>
 </documentation>
 */
-    public function setConfigurationPageRegionBlock( $name, $region_name, $block )
+    public function setConfigurationPageRegionBlock(
+        string $name, string $region_name, Block $block ) : Asset
     {
         $this->checkPageConfiguration( $name );
         $config = $this->page_configuration_map[ $name ];
@@ -404,27 +473,36 @@ class PageConfigurationSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Attaches the format to the named region of the named page
+configuration, and returns the calling object.</p></description>
+<example>$pcs->setConfigurationPageRegionFormat( 'Mobile', 'DEFAULT',
+    $cascade->getAsset( 
+        a\XsltFormat::TYPE, 
+        '404872688b7f0856002a5e11bb8c8642' )
+)->edit();</example>
+<return-type>Asset</return-type>
+<exception>NoSuchPageConfigurationException</exception>
 </documentation>
 */
-    public function setConfigurationPageRegionFormat( $name, $region_name, $format )
+    public function setConfigurationPageRegionFormat(
+        string $name, string $region_name, Format $format ) : Asset
     {
         $this->checkPageConfiguration( $name );
-        $this->page_configuration_map[ $name ]->setPageRegionFormat( $region_name, $format );
+        $config = $this->page_configuration_map[ $name ];
+        $config->setPageRegionFormat( $region_name, $format );
         return $this;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets the named page configuration as the default
+configuration, unsets all other page configurations, and returns the calling
+object.</p></description>
+<example>$pcs->setDefaultConfiguration( "Mobile" )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NoSuchPageConfigurationException</exception>
 </documentation>
 */
-    public function setDefaultConfiguration( $name )
+    public function setDefaultConfiguration( string $name ) : Asset
     {
         $this->checkPageConfiguration( $name );
         
@@ -443,13 +521,18 @@ class PageConfigurationSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Attaches the format to the named page configuration
+and returns the calling object.</p></description>
+<example>$pcs->setFormat( "Mobile",
+    $cascade->getAsset( 
+        a\XsltFormat::TYPE, 
+        '404872688b7f0856002a5e11bb8c8642' )
+)->edit();</example>
+<return-type>Asset</return-type>
+<exception>NoSuchPageConfigurationException</exception>
 </documentation>
 */
-    public function setFormat( $name, Format $format )
+    public function setFormat( string $name, Format $format ) : Asset
     {
         $this->checkPageConfiguration( $name );
         $this->page_configuration_map[ $name ]->setFormat( $format );
@@ -457,13 +540,14 @@ class PageConfigurationSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>includeXMLDeclaration</code> of the named page
+configuration, and returns the calling object.</p></description>
+<example>$pcs->setIncludeXMLDeclaration( "Mobile", true )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NoSuchPageConfigurationException</exception>
 </documentation>
 */
-    public function setIncludeXMLDeclaration( $name, $i )
+    public function setIncludeXMLDeclaration( string $name, bool $i ) : Asset
     {
         $this->checkPageConfiguration( $name );
         $this->page_configuration_map[ $name ]->setIncludeXMLDeclaration( $i );
@@ -471,13 +555,17 @@ class PageConfigurationSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>outputExtension</code> of the named page
+configuration, and returns the calling object.</p></description>
+<example>$pcs->setOutputExtension( "Mobile", ".php" )->
+    setPublishable( "Mobile", true )->
+    setSerializationType( "Mobile", "XML" )->
+    edit();</example>
+<return-type>Asset</return-type>
+<exception>NoSuchPageConfigurationException</exception>
 </documentation>
 */
-    public function setOutputExtension( $name, $ext )
+    public function setOutputExtension( string $name, string $ext ) : Asset
     {
         $this->checkPageConfiguration( $name );
         $this->page_configuration_map[ $name ]->setOutputExtension( $ext );
@@ -485,13 +573,17 @@ class PageConfigurationSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>publishable</code> of the named page
+configuration, and returns the calling object.</p></description>
+<example>$pcs->setOutputExtension( "Mobile", ".php" )->
+    setPublishable( "Mobile", true )->
+    setSerializationType( "Mobile", "XML" )->
+    edit();</example>
+<return-type>Asset</return-type>
+<exception>NoSuchPageConfigurationException</exception>
 </documentation>
 */
-    public function setPublishable( $name, $p )
+    public function setPublishable( string $name, bool $p ) : Asset
     {
         $this->checkPageConfiguration( $name );
         $this->page_configuration_map[ $name ]->setPublishable( $p );
@@ -499,20 +591,24 @@ class PageConfigurationSet extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>serializationType</code> of the named page
+configuration, and returns the calling object.</p></description>
+<example>$pcs->setOutputExtension( "Mobile", ".php" )->
+    setPublishable( "Mobile", true )->
+    setSerializationType( "Mobile", "XML" )->
+    edit();</example>
+<return-type>Asset</return-type>
+<exception>NoSuchPageConfigurationException</exception>
 </documentation>
 */
-    public function setSerializationType( $name, $type )
+    public function setSerializationType( string $name, string $type ) : Asset
     {
         $this->checkPageConfiguration( $name );
         $this->page_configuration_map[ $name ]->setSerializationType( $type );
         return $this;
     }
     
-    private function checkPageConfiguration( $name )
+    private function checkPageConfiguration( string $name )
     {
         if( !in_array( $name, $this->page_configuration_names ) )
         {
@@ -542,7 +638,8 @@ class PageConfigurationSet extends ContainedAsset
         
         foreach( $array as $page_configuration )
         {
-            $p = new p\PageConfiguration( $page_configuration, $this->getService(), NULL );
+            $p = new p\PageConfiguration(
+                $page_configuration, $this->getService(), NULL );
             $this->page_configurations[] = $p;
             $this->page_configuration_names[] = $page_configuration->name;
             $this->page_configuration_map[ $page_configuration->name ] = $p;
