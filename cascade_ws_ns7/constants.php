@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  *  11/1/2016 Added PAGE_METADATA_SET.
   *  9/26/2016 Added EXPIRATION_FOLDER_RECYCLED.
   *  8/14/2016 Added INFORMATION_NOT_AVAILABLE.
   *  8/13/2016 Added more HTML constants used in ReflectionUtility.
@@ -157,6 +158,7 @@ class M // messages for exceptions
     const DIFFERENT_DATA_DEFINITIONS     = "The two data definitions are different. ";
     const EDIT_ASSET_FAILURE             = "Failed to edit the asset. ";
     const EDIT_WORKFLOW_SETTINGS_FAILURE = "Failed to edit the workflow settings. ";
+    const EMPTY_ACCOUNT_NAME             = "The account name cannot be empty. ";
     const EMPTY_ASSET_CONTENT            = "The asset content cannot be empty. ";
     const EMPTY_ASSET_FACTORY_NAME       = "The asset factory name cannot be empty. ";
     const EMPTY_ASSET_FACTORY_CONTAINER_NAME = "The asset factory container name cannot be empty. ";
@@ -252,6 +254,7 @@ class M // messages for exceptions
     const NULL_TRANSPORT                 = "The transport cannot be NULL. ";
     const NULL_USER                      = "The user cannot be NULL. ";
     const NULL_WORKFLOW_DEFINITION       = "The workflow definition cannot be NULL. ";
+    const PAGE_METADATA_SET              = "The metadata set of a page cannot be changed. ";
     const READ_WORKFLOW_FAILURE          = "Failed to read the workflow. ";
     const RENAME_ASSET_FAILURE           = "Failed to move/rename the asset. ";
     const ROOT_FOLDER_NOT_SET            = "The root folder has not been set. ";
@@ -683,6 +686,8 @@ class T // types
     const TUESDAY                          = "Tuesday";
     const TWITTER_CONNECTOR                = 'twitterconnector';
     const TWITTERCONNECTOR                 = 'twitterconnector';
+    const TWITTERFEEDBLOCK                 = 'block_TWITTER_FEED';
+    const TWITTER_FEED_BLOCK               = 'block_TWITTER_FEED';
     const TYPE                             = 'type';
     const UN_PUBLISH                       = "unpublish";
     const UNPUBLISH                        = "unpublish";
