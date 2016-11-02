@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 11/1/2016 Added exception in setMetadataSet for pages; turned setPageContentType to protected.
   * 9/13/2016 Fixed bugs in setExpirationFolder.
   * 9/16/2015 Fixed a bug in setMetadata.
   * 5/28/2015 Added namespaces.
@@ -12,10 +13,10 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
@@ -89,7 +90,7 @@ abstract class Linkable extends ContainedAsset
         
 /**
 <documentation><description><p>Returns <code>createdBy</code>.</p></description>
-<example></example>
+<example>echo $page->getCreatedBy(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -101,7 +102,7 @@ abstract class Linkable extends ContainedAsset
     
 /**
 <documentation><description><p>Returns <code>createdDate</code>.</p></description>
-<example></example>
+<example>echo $page->getCreatedDate(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -114,7 +115,7 @@ abstract class Linkable extends ContainedAsset
 /**
 <documentation><description><p><p>Returns the <a
 href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-field.php"><code>p\DynamicField</code></a> object bearing that name.</p></p></description>
-<example></example>
+<example>u\DebugUtility::dump( $page->getDynamicField( "exclude-from-menu" ) );</example>
 <return-type>Property</return-type>
 <exception>EmptyNameException, NoSuchFieldException</exception>
 </documentation>
@@ -127,7 +128,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
 /**
 <documentation><description><p><p>Returns <code>NULL</code> or an array of
 <code>p\DynamicField</code> objects.</p></p></description>
-<example></example>
+<example>u\DebugUtility::dump( $page->getDynamicFields() );</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -139,7 +140,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
     
 /**
 <documentation><description><p>Returns <code>expirationFolderId</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $page->getExpirationFolderId() ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -151,7 +152,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
     
 /**
 <documentation><description><p>Returns <code>expirationFolderPath</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $page->getExpirationFolderPath() ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -163,7 +164,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
     
 /**
 <documentation><description><p>Returns <code>expirationFolderRecycled</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::boolToString( $page->getExpirationFolderRecycled() ), BR;</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -175,7 +176,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
     
 /**
 <documentation><description><p>Returns <code>lastModifiedBy</code>.</p></description>
-<example></example>
+<example>echo $page->getLastModifiedBy(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -187,7 +188,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
     
 /**
 <documentation><description><p>Returns <code>lastModifiedDate</code>.</p></description>
-<example></example>
+<example>echo $page->getLastModifiedDate(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -200,7 +201,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dyn
 /**
 <documentation><description><p>Returns the <a
 href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/metadata.php"><code>Metadata</code></a> object.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $page->getMetadata() );</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -212,7 +213,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
     
 /**
 <documentation><description><p>Returns the associated <code>MetadataSet</code> object.</p></description>
-<example></example>
+<example>$page->getMetadataSet()->dump();</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
@@ -229,31 +230,31 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
     
 /**
 <documentation><description><p>Returns <code>metadataSetId</code>.</p></description>
-<example></example>
-<return-type>string</return-type>
+<example>echo u\StringUtility::getCoalescedString( $page->getMetadataSetId() ), BR;</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMetadataSetId() : string
+    public function getMetadataSetId() // null for pages
     {
         return $this->getProperty()->metadataSetId;
     }
     
 /**
 <documentation><description><p>Returns <code>metadataSetPath</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString( $page->getMetadataSetPath() ), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMetadataSetPath() : string
+    public function getMetadataSetPath() // null for pages
     {
         return $this->getProperty()->metadataSetPath;
     }
     
 /**
 <documentation><description><p>Returns the metadata property (an <code>\stdClass</code> object).</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $page->getMetadataStdClass() );</example>
 <return-type>stdClass</return-type>
 <exception></exception>
 </documentation>
@@ -265,7 +266,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
     
 /**
 <documentation><description><p><p>Returns a bool, indicating whether the <code>DynamicField</code> bearing that name exists.</p></description>
-<example></example>
+<example>echo u\StringUtility::boolToString( $page->hasDynamicField( "exclude-from-menu" ) ), BR;</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -277,7 +278,11 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
     
 /**
 <documentation><description><p>Sets the <code>expirationFolderId</code> and <code>expirationFolderPath</code>, and returns the calling object.</p></description>
-<example></example>
+<example>$page->setExpirationFolder(
+	$cascade->getAsset(
+	    a\Folder::TYPE, "39d53a118b7ffe834c5fe91e7e2e0cd9" )
+)->edit();
+</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
@@ -305,7 +310,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
 /**
 <documentation><description><p>Sets the <code>metadata</code> property, calls
 <code>edit</code>, and returns the calling object.</p></description>
-<example></example>
+<example>$page->setMetadata( $new_m );</example>
 <return-type>Asset</return-type>
 <exception></exception>
 </documentation>
@@ -324,7 +329,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
 the calling object.</p></description>
 <example></example>
 <return-type>Asset</return-type>
-<exception></exception>
+<exception>WrongAssetTypeException</exception>
 </documentation>
 */
     public function setMetadataSet( MetadataSet $m ) : Asset
@@ -333,6 +338,12 @@ the calling object.</p></description>
         {
             throw new e\NullAssetException( 
                 S_SPAN . c\M::NULL_ASSET . E_SPAN );
+        }
+        
+        if( $this->getType() == Page::TYPE )
+        {
+        	throw new e\WrongAssetTypeException(
+        	    S_SPAN . c\M::PAGE_METADATA_SET . E_SPAN );
         }
     
         $this->getProperty()->metadataSetId   = $m->getId();
@@ -347,10 +358,10 @@ the calling object.</p></description>
 <documentation><description><p>Sets the content type for a page and returns the calling object. Do not use this method on a <code>File</code> or <code>Symlink</code> object.</p></description>
 <example></example>
 <return-type>Asset</return-type>
-<exception>WrongAssetTypeException</exception>
+<exception>WrongAssetTypeException, NullAssetException</exception>
 </documentation>
 */
-    public function setPageContentType( ContentType $c ) : Asset
+    protected function setPageContentType( ContentType $c ) : Asset
     {
         if( $this->getType() != Page::TYPE )
         {
@@ -369,7 +380,7 @@ the calling object.</p></description>
     
 /**
 <documentation><description><p>Returns a <code>Linkable</code> object bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a linkable.</p></description>
-<example></example>
+<example>a\Linkable::getLinkable( $service, "06a23e5b8b7ffe830820c9fac501387b" )->dump();</example>
 <return-type>Asset</return-type>
 <exception>WrongAssetTypeException</exception>
 </documentation>
@@ -383,7 +394,7 @@ the calling object.</p></description>
 
 /**
 <documentation><description><p>eturns the type of the linkable bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a linkable. Note that if the supplied id does not match any asset, the string "The id does not match any asset type." will be returned.</p></description>
-<example></example>
+<example>echo a\Linkable::getLinkableType( $service, "06a23e5b8b7ffe830820c9fac501387b" ), BR;</example>
 <return-type>string</return-type>
 <exception>WrongAssetTypeException</exception>
 </documentation>
