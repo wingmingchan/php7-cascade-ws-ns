@@ -1,6 +1,6 @@
 # php7-cascade-ws-ns
 My Cascade web service library, using namespaces, written in PHP 7 for Cascade 8. 
-<p>Last modified: 11/1/2016, 1:30 PM</p>
+<p>Last modified: 11/2/2016, 9:40 AM</p>
 <p>This version of the library makes use of features in PHP 7. Since I have just started making changes,
 most files are identical to those in the older version. Everything is posted here so that the library 
 constantly remains complete with all new features I am adding, and users can use this version to
@@ -29,7 +29,7 @@ u\ReflectionUtility::showFunctionSignature( "str_replace", true );
 
 <h2>Progress</h2>
 <ul>
-<li>Updated Asset, AssetFactory, AssetFactoryContainer, AssetTree, Audit, Block, Cascade, Child, Connector, ConnectorContainer, ContainedAsset, Container, DataDefinition, DataDefinitionBlock, DynamicField, DynamicMetadataFieldDefinition, FeedBlock, FieldValue, Folder, Format, IndexBlock, Metadata, MetadataSet, PageConfiguration, PageConfigurationSet, PageRegion, PossibleValue, Preference, ScriptFormat, StructuredData, StructuredDataNode, Template, TextBlock, WorkflowSettings, XsltFormat, and associated test code.</li>
+<li>Updated Asset, AssetFactory, AssetFactoryContainer, AssetTree, Audit, Block, Cascade, Child, Connector, ConnectorContainer, ContainedAsset, Container, DataDefinition, DataDefinitionBlock, DynamicField, DynamicMetadataFieldDefinition, FeedBlock, FieldValue, Folder, Format, IndexBlock, Linkable, Metadata, MetadataSet, PageConfiguration, PageConfigurationSet, PageRegion, PossibleValue, Preference, ScriptFormat, StructuredData, StructuredDataNode, Template, TextBlock, WorkflowSettings, XsltFormat, and associated test code.</li>
 <li>Added methods to a few classes for Cascade 8.</li>
 <li>All utility classes have been updated.</li>
 </ul>
