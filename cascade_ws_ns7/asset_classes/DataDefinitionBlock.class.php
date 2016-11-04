@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 11/2/2016 Added searchTextByPattern and searchWYSIWYGByPattern.
   * 10/25/2016 Added hasPossibleValues, isMultipleField and isMultipleNode.
   * 6/2/2016 Added aliases.
   * 6/1/2016 Added isBlockChooser, isCalendarNode, isCheckboxNode, isDatetimeNode, isDropdownNode,
@@ -1285,7 +1286,8 @@ qualified identifiers is also passed in, then only those nodes will be affected.
     }
     
 /**
-<documentation><description><p>Searches all text nodes, and returns an array of fully qualified identifiers of nodes where the string is found.</p></description>
+<documentation><description><p>Searches all text nodes for the string, and returns an
+array of fully qualified identifiers of nodes where the string is found.</p></description>
 <example>u\DebugUtility::dump( $block->searchText( "Amazing" ) );</example>
 <return-type>array</return-type>
 <exception>WrongBlockTypeException</exception>
@@ -1297,6 +1299,34 @@ qualified identifiers is also passed in, then only those nodes will be affected.
         return $this->structured_data->searchText( $string );
     }
     
+/**
+<documentation><description><p>Searches all text nodes for the pattern, and returns an
+array of fully qualified identifiers of nodes where the pattern is found.</p></description>
+<example></example>
+<return-type>array</return-type>
+<exception>WrongBlockTypeException</exception>
+</documentation>
+*/
+    public function searchTextByPattern( string $pattern ) : array
+    {
+        $this->checkStructuredData();
+        return $this->structured_data->searchTextByPattern( $pattern );
+    }
+    
+/**
+<documentation><description><p>Searches all WYSIWYG nodes for the pattern, and returns an
+array of fully qualified identifiers of nodes where the pattern is found.</p></description>
+<example></example>
+<return-type>array</return-type>
+<exception>WrongPageTypeException</exception>
+</documentation>
+*/
+    public function searchWYSIWYGByPattern( string $pattern ) : array
+    {
+        $this->checkStructuredData();
+        return $this->structured_data->searchWYSIWYGByPattern( $pattern );
+    }
+
 /**
 <documentation><description><p>Returns a bool, indicating whether the string is found in the xhtml block.</p></description>
 <example>echo u\StringUtility::boolToString( $xhtml->searchXhtml( "hello" ) ), BR;</example>
