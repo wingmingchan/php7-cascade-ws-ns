@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 11/4/2016 Added default value to createChildStd.
   * 9/22/2016 Added getStructuredDataStdClass.
   * 6/2/2016 Replaced most string literals with constants.
   * 5/5/2016 Added getStructuredDataStdClass, getStructuredDataObject.
@@ -570,8 +571,15 @@ $dd->setXML( $xml )->edit();</example>
                 if( self::DEBUG ) { u\DebugUtility::out( "Child type in group: $child_type" ); }
                 
                 $child_identifier = $child[ c\T::IDENTIFIER ]->__toString();
-                $child_std = $this->createChildStd( $child, $child_type, $child_identifier );
+                $child_std = $this->createChildStd(
+                    $child, $child_type, $child_identifier );
+                
+                //if( isset( $this->attributes[ $child_identifier ][ 'default' ] ) )
+                	//echo "Default is set", BR;
+                
                 $obj->structuredDataNodes->structuredDataNode = $child_std;
+                
+                
             }
         }
         else
@@ -650,12 +658,20 @@ $dd->setXML( $xml )->edit();</example>
             }
         }
         
+        $child_attributes = $child->attributes();
+        
         if( $child_type == c\T::ASSET )
         {
-            $child_attributes     = $child->attributes();
+            //$child_attributes     = $child->attributes();
             $asset_type           = $child_attributes[ c\T::TYPE ]->__toString();
             $child_std->assetType = $asset_type;
         }
+        
+        if( isset( $child_attributes[ 'default' ] ) )
+        {
+    		$child_std->text = $child_attributes[ 'default' ]->__toString();
+    	}
+
         return $child_std;
     }
     
