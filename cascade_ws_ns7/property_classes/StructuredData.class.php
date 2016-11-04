@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 11/3/2016 Added code to copyData to bypass phantom values.
   * 10/24/2016 Added hasPossibleValues; multiple bug fixes.
   * 8/11/2016 Added getService in both this class and StructuredDataPhantom to work with phantom nodes.
   * 6/20/2016 Changed the name searchWYSIWYG to searchWYSIWYGByPattern, added searchTextByPattern.
@@ -622,11 +623,11 @@ supplied identifier being the one of the first instance.</p></description>
     
 /**
 <documentation><description><p>Returns the type string of an text node (an text node is an
-instance of a normal text field (including multi-line and WYSIWYG), which are not
-associated with a type string, or a text field of
+instance of a normal text field (including multi-line and WYSIWYG), which are
+associated with <code>NULL</code>, or a text field of
 type <code>datetime</code>, <code>calendar</code>, <code>multi-selector</code>,
 <code>dropdown</code>, or <code>checkbox</code>).</p></description>
-<example>echo $sd->getTextNodeType( "group;calendar" ), BR;</example>
+<example>echo u\StringUtility::getCoalescedString( $sd->getTextNodeType( $id ) ), BR;</example>
 <return-type>mixed</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -2077,10 +2078,17 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
         
         if( $source->isTextNode( $id ) || $source->isWYSIWYG( $id ) )
         {
-            $target->setText( $id, $source->getText( $id ) );
+        	try
+        	{
+                $target->setText( $id, $source->getText( $id ) );
                 
-            if( $target->getText( $id ) == NULL )
-                $target->setText( $id, "" );
+                if( $target->getText( $id ) == NULL )
+                    $target->setText( $id, "" );
+            }
+            catch( e\NoSuchValueException $e )
+            {
+            	// do nothing to skip phantom values
+            }
         }
         elseif( $source->isAssetNode( $id ) )
         {
