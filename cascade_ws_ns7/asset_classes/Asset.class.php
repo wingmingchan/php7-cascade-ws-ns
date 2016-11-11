@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 11/11/2016 Added default value for $type to getAudits.
   * 9/29/2016 Added text color to $service->getMessage().
   * 8/30/2016 Added XML documentation.
   * 4/13/2016 Added more initialization of stdClass objects.
@@ -262,7 +263,9 @@ abstract class Asset
 <exception>NoSuchTypeException, Exception</exception>
 </documentation>
 */
-    public function getAudits( string $type="", \DateTime $start_time=NULL, \DateTime $end_time=NULL ) : array
+    public function getAudits(
+        string $type=c\T::EDIT, \DateTime $start_time=NULL, 
+        \DateTime $end_time=NULL ) : array
     {
         if( !is_string( $type ) || !c\AuditTypes::isAuditType( $type ) )
         {
