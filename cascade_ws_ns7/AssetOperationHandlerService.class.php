@@ -90,6 +90,10 @@ The constructor.
         {
             throw new e\ServerException( S_SPAN . $e->getMessage() . E_SPAN );
         }
+        catch( \Error $er )
+        {
+            throw new e\ServerException( S_SPAN . $er->getMessage() . E_SPAN );
+        }
     }
     
 /**
@@ -220,11 +224,11 @@ $service->checkOut( $id );
         $this->storeResults( $this->reply->checkOutReturn );
         
         if( $this->reply->checkOutReturn->success == "true" &&
-        	isset( $this->reply->checkOutReturn->workingCopyIdentifier ) &&
-        	!is_null( $this->reply->checkOutReturn->workingCopyIdentifier->id )  )
-        	return $this->reply->checkOutReturn->workingCopyIdentifier->id;
+            isset( $this->reply->checkOutReturn->workingCopyIdentifier ) &&
+            !is_null( $this->reply->checkOutReturn->workingCopyIdentifier->id )  )
+            return $this->reply->checkOutReturn->workingCopyIdentifier->id;
         else
-        	return "";
+            return "";
     }
     
 /**
@@ -275,7 +279,7 @@ $img_name    = 'nadkarna.jpg';
 // create the asset
 $asset       = new \stdClass();
 $asset->file = $service->createFileWithParentIdSiteNameNameData( 
-	$parent_id, $site_name, $img_name, $img_binary );
+    $parent_id, $site_name, $img_name, $img_binary );
 $service->create( $asset );    
 </example>
 <return-type>mixed</return-type></documentation>
@@ -302,7 +306,8 @@ Creates an id object for an asset.
 <example>$block_id = $service->createId( a\TextBlock::TYPE, "_cascade/blocks/code/text-block", "cascade-admin" );</example>
 <return-type>stdClass</return-type></documentation>
 */
-    public function createId( string $type, string $id_path, string $site_name = NULL ) : \stdClass
+    public function createId(
+        string $type, string $id_path, string $site_name=NULL ) : \stdClass
     {
         if( !( is_string( $type ) && ( is_string( $id_path ) || is_int( $id_path ) ) ) )
             throw new e\UnacceptableValueException( "Only strings are accepted in createId." );
@@ -547,6 +552,7 @@ Creates an asset object, bridging this class and the Asset classes.
 @throw Exception if the asset cannot be retrieved
 <documentation><description><p>Creates an asset object, bridging this class and the Asset classes.</p></description>
 <example>$page = $service->getAsset( a\Page::TYPE, $page_id )</example>
+<exception>NoSuchTypeException<exception>
 <return-type>Asset</return-type></documentation>
 */
     public function getAsset( string $type, string $id_path, string $site_name=NULL ) : a\Asset
@@ -1121,7 +1127,7 @@ Reads the workflow information associated with the given identifier.
 <documentation><description><p>Reads the workflow information associated with the given identifier.</p></description>
 <example>$path = '/projects/web-services/reports/creating-format';
 $service->readWorkflowInformation( 
-	$service->createId( a\Page::TYPE, $path, "cascade-admin" ) );</example>
+    $service->createId( a\Page::TYPE, $path, "cascade-admin" ) );</example>
 <return-type>void</return-type></documentation>
 */
     public function readWorkflowInformation( \stdClass $identifier ) 
@@ -1140,7 +1146,7 @@ Reads the workflow settings associated with the given identifier.
 <documentation><description><p>Reads the workflow settings associated with the given identifier.</p></description>
 <example>$site_name = "cascade-admin";
 $service->readWorkflowSettings( 
-	$service->createId( a\Folder::TYPE, "/", $site_name ) );
+    $service->createId( a\Folder::TYPE, "/", $site_name ) );
 </example>
 <return-type>void</return-type></documentation>
 */
