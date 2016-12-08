@@ -11,17 +11,52 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>A <code>ContentType</code> object represents a content type asset.</p>
+<h2>Structure of <code>contentType</code></h2>
+<pre>contentType
+  id
+  name
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  pageConfigurationSetId
+  pageConfigurationSetPath
+  metadataSetId
+  metadataSetPath
+  dataDefinitionId
+  dataDefinitionPath
+  contentTypePageConfigurations
+    contentTypePageConfiguration (NULL, stdClass or array of stdClass)
+      pageConfigurationId
+      pageConfigurationName
+      publishMode
+      destinations (7.12.2 impl:destination-list)
+  inlineEditableFields
+    inlineEditableField (NULL, stdClass or array of stdClass)
+      pageConfigurationName
+      pageRegionName
+      dataDefinitionGroupPath
+      type
+      name
+</pre>
+<h2>Design Issues</h2>
+<ul>
+<li>As of December, 2016, there is a <a href="https://hannonhill.jira.com/browse/CSI-626">bug</a> related to adding/removing a data definition field to the set of inline editable fields. Although the <code>addInlineEditableField</code> and <code>removeInlineEditableField</code> methods are implemented and work for metadata set, do not use them for data definition fields.</li>
+<li>Here again I need to work with fully qualified identifiers for inline editable fields. Cascade uses the slashes in the path. This is actually good for me because I use semi-colons. Since different delimiters are used, the group path information from Cascade will be kept intact. Whenever needed, a translation between slashes and semi-colons can be performed.</li>
+<li>When dealing with data definitions, the result of concatenating group path and the name of the field, with all the slashes turned into semi-colons, is equivalent to my fully qualified identifier of the field in the data definition.</li>
+</ul>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/content_type.php">content_type.php</a></li></ul></postscript>
 </documentation>
 */
 class ContentType extends ContainedAsset
@@ -45,7 +80,8 @@ class ContentType extends ContainedAsset
     const TITLE            = "title";
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>The constructor, overriding the parent method to process
+metadata set, configuration set, and so on.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -89,19 +125,25 @@ class ContentType extends ContainedAsset
                 $this->getProperty()->pageConfigurationSetId )
         );
         
-        $this->wired_field_types = array( self::AUTHOR, self::DISPLAY_NAME, self::END_DATE,
+        $this->wired_field_types = array(
+            self::AUTHOR, self::DISPLAY_NAME, self::END_DATE,
             self::KEYWORDS, self::META_DESCRIPTION, self::REVIEW_DATE, self::START_DATE,
             self::SUMMARY, self::TEASER, self::TITLE );
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Adds an inline editable field, and returns the calling
+object. Due to a bug in Cascade, do not use this method to add data definition fields.</p></description>
+<example>$ct->addInlineEditableField( 
+    $config_name, $region_name, $group_path, 
+    $type, $name )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NoSuchPageConfigurationException, NoSuchPageRegionException, NoSuchFieldException, Exception</exception>
 </documentation>
 */
-    public function addInlineEditableField( $config, $region, $group_path, $type, $name )
+    public function addInlineEditableField( 
+        string $config, string $region, string $group_path,
+        string $type, string $name ) : Asset
     {
         $identifier = $config . DataDefinition::DELIMITER .
             $region . DataDefinition::DELIMITER .
@@ -156,14 +198,17 @@ class ContentType extends ContainedAsset
         $field_std                          = new \stdClass();
         $field_std->pageConfigurationName   = $config;
         $field_std->pageRegionName          = $region;
-        $field_std->dataDefinitionGroupPath = ( $group_path == NULL || $group_path == 'NULL' ? NULL : $group_path );
+        $field_std->dataDefinitionGroupPath = ( $group_path == NULL ||
+            $group_path == 'NULL' ? NULL : $group_path );
         $field_std->type                    = $type;
-        $field_std->name                    = ( $name == NULL || $name == 'NULL' ? NULL : $name );
+        $field_std->name                    = ( $name == NULL ||
+            $name == 'NULL' ? NULL : $name );
         $field = new p\InlineEditableField( $field_std );
         
         $this->inline_editable_fields[] = $field;
         $this->inline_editable_field_map[ $field->getIdentifier() ] = $field;
-        $this->inline_editable_field_names = array_keys( $this->inline_editable_field_map );
+        $this->inline_editable_field_names = array_keys(
+            $this->inline_editable_field_map );
         
         if( self::DEBUG ) { u\DebugUtility::dump( $this->inline_editable_fields ); }
         
@@ -171,9 +216,10 @@ class ContentType extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Displays some information and returns the calling object,
+overriding the parent method to display the configuration set as well.</p></description>
+<example>$ct->display();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
@@ -190,9 +236,9 @@ class ContentType extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Edits and returns the calling object.</p></description>
+<example>$ct->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
@@ -248,53 +294,45 @@ class ContentType extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>An alias of <code>getPageConfigurationSet</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getConfigurationSet()
+    public function getConfigurationSet() : Asset
     {
         return $this->getPageConfigurationSet();
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns an array of page configuration names.</p></description>
+<example>u\DebugUtility::dump( $ct->getContentTypePageConfigurationNames() );</example>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getContentTypePageConfigurationNames()
+    public function getContentTypePageConfigurationNames() : array
     {
         return $this->content_type_page_configuration_names;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns the <code>DataDefinition</code> object or <code>NULL</code>.</p></description>
+<example>$dd = $ct->getDataDefinition();</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
     public function getDataDefinition()
     {
-        if( isset( $this->getProperty()->dataDefinitionId ) )
-        {
-            $service = $this->getService();
-        
-            return Asset::getAsset( $service,
-                DataDefinition::TYPE,
-                $this->getProperty()->dataDefinitionId );
-        }
-        return NULL;
+        return $this->data_definition;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>dataDefinitionId</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $ct->getDataDefinitionId() ), BR;</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -304,9 +342,9 @@ class ContentType extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>dataDefinitionPath</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $ct->getDataDefinitionPath() ), BR;</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -316,9 +354,9 @@ class ContentType extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns an array of inline editable field names. An inline editable field name consists of five parts: <code>pageConfigurationName;pageRegionName;dataDefinitionGroupPath;type;name</code>. For example, <code>RWD;DEFAULT;NULL;data-definition;post-title-chooser</code>.</p></description>
+<example>u\DebugUtility::dump( $ct->getInlineEditableFieldNames() );</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -328,49 +366,45 @@ class ContentType extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>inlineEditableFields</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>stdClass</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getInlineEditableFields()
+    public function getInlineEditableFields() : \stdClass
     {
         return $this->getProperty()->inlineEditableFields;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns the <code>MetadataSet</code> object.</p></description>
+<example>$ms = $ct->getMetadataSet();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMetadataSet()
+    public function getMetadataSet() : Asset
     {
-        $service = $this->getService();
-        
-        return Asset::getAsset( $service,
-            MetadataSet::TYPE,
-            $this->getProperty()->metadataSetId );
+        return $this->metadata_set;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>metadataSetId</code>.</p></description>
+<example>echo $ct->getMetadataSetId(), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMetadataSetId()
+    public function getMetadataSetId() : string
     {
         return $this->getProperty()->metadataSetId;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>metadataSetPath</code>.</p></description>
+<example>echo $ct->getMetadataSetPath(), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
@@ -380,53 +414,49 @@ class ContentType extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns the <code>PageConfigurationSet</code> object.</p></description>
+<example>$cs = $ct->getPageConfigurationSet();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPageConfigurationSet()
+    public function getPageConfigurationSet() : Asset
     {
-        $service = $this->getService();
-        
-        return Asset::getAsset( $service,
-            PageConfigurationSet::TYPE,
-            $this->getProperty()->pageConfigurationSetId );
+        return $this->configuration_set;
     }
-        
+
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>pageConfigurationSetId</code>.</p></description>
+<example>echo $ct->getPageConfigurationSetId(), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPageConfigurationSetId()
+    public function getPageConfigurationSetId() : string
     {
         return $this->getProperty()->pageConfigurationSetId;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>pageConfigurationSetPath</code>.</p></description>
+<example>echo $ct->getPageConfigurationSetPath(), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPageConfigurationSetPath()
+    public function getPageConfigurationSetPath() : string
     {
         return $this->getProperty()->pageConfigurationSetPath;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Returns the published mode of the named configuration.</p></description>
+<example>echo $ct->getPublishMode( "RWD" ), BR;</example>
+<return-type>string</return-type>
+<exception>Exception</exception>
 </documentation>
 */
-    public function getPublishMode( $config_name )
+    public function getPublishMode( string $config_name ) : string
     {
         if( !in_array( $config_name, $this->content_type_page_configuration_names ) )
         {
@@ -444,65 +474,77 @@ class ContentType extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a bool, indicating whether the group path, when all slashes replaced by semi-colons, exists in the corresponding data definition as a fully qualified field identifier.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>bool</return-type>
+<exception>Exception</exception>
 </documentation>
 */
-    public function hasDataDefinitionGroupPath( $name )
+    public function hasDataDefinitionGroupPath( string $name ) : bool
     {
+    	if( !isset( $this->data_definition ) )
+    		throw new \Exception( 
+    			"The content type is not associated with a data definition" );
+    			
         $name = str_replace( '/', DataDefinition::DELIMITER, $name );
         return in_array( $name, $this->data_definition->getIdentifiers() );
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Returns a bool, indicating whether the field bearing the name exists.</p></description>
+<example>echo u\StringUtility::boolToString(
+    $ct->hasInlineEditableField(
+        "RWD;DEFAULT;NULL;wired-metadata;title" ) ), BR;</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
 */
-    public function hasInlineEditableField( $name )
+    public function hasInlineEditableField( string $name ) : bool
     {
-        if( isset( $this->inline_editable_field_names ) && is_array( $this->inline_editable_field_names ) )
+        if( isset( $this->inline_editable_field_names ) && 
+            is_array( $this->inline_editable_field_names ) )
             return in_array( $name, $this->inline_editable_field_names );
         return false;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns a bool, indicating whether the page configuration bearing that name exists.</p></description>
+<example>echo u\StringUtility::boolToString(
+    $ct->hasPageConfiguration( "RWD" ) ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function hasPageConfiguration( $name )
+    public function hasPageConfiguration( string $name ) : bool
     {
         return in_array( $name, $this->content_type_page_configuration_names );
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns a bool, indicating whether the named region exists in the named page configuration. Note that this method calls <code>Template::getPageRegionNames</code> instead of <code>PageConfiguration::getPageRegionNames</code>.</p></description>
+<example>echo u\StringUtility::boolToString(
+    $ct->hasRegion( "RWD", "BANNER 12 COLUMNS" ) ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function hasRegion( $config_name, $region_name )
+    public function hasRegion( string $config_name, string $region_name ) : bool
     {
         return in_array( $region_name, 
-            $this->configuration_set->getPageRegionNames( $config_name ) );
+            $this->configuration_set->getPageConfiguration( $config_name )->
+                getTemplate()->getPageRegionNames() );
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Removes the field bearing the fully qualified identifier, 
+and returns the calling object. Due to a bug in Cascade, do not use this method to remove
+data definition fields.</p></description>
+<example>$ct->removeInlineEditableField( $field_name )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NoSuchFieldException</exception>
 </documentation>
 */
-    public function removeInlineEditableField( $identifier )
+    public function removeInlineEditableField( string $identifier ) : Asset
     {
         if( !$this->hasInlineEditableField( $identifier ) )
         {
@@ -536,13 +578,13 @@ class ContentType extends ContainedAsset
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Sets <code>dataDefinitionId</code> and <code>dataDefinitionPath</code>, and returns the calling object.</p></description>
+<example>$ct->setDataDefinition( $dd )->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setDataDefinition( DataDefinition $dd=NULL )
+    public function setDataDefinition( DataDefinition $dd=NULL ) : Asset
     {
         if( isset( $dd ) )
         {
@@ -558,13 +600,13 @@ class ContentType extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Sets <code>metadataSetId</code> and <code>metadataSetPath</code>, and returns the calling object.</p></description>
+<example>$ct->setMetadataSet( $ms )->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setMetadataSet( MetadataSet $ms )
+    public function setMetadataSet( MetadataSet $ms ) : Asset
     {
         $this->getProperty()->metadataSetId   = $ms->getId();
         $this->getProperty()->metadataSetPath = $ms->getPath();
@@ -572,13 +614,13 @@ class ContentType extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Sets <code>pageConfigurationSetId</code> and <code>pageConfigurationSetPath</code>, and returns the calling object.</p></description>
+<example>$ct->setPageConfigurationSet( $pcs )->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setPageConfigurationSet( PageConfigurationSet $pcs )
+    public function setPageConfigurationSet( PageConfigurationSet $pcs ) : Asset
     {
         $this->getProperty()->pageConfigurationSetId   = $pcs->getId();
         $this->getProperty()->pageConfigurationSetPath = $pcs->getPath();
@@ -586,13 +628,16 @@ class ContentType extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets the publish mode for the named page configuration and returns the object. Currently only two modes are supported: <code>all-destinations</code> and <code>do-not-publish</code>.</p></description>
+<example>$ct->setPublishMode( 
+    $config_name, 
+    a\ContentType::PUBLISH_MODE_ALL_DESTINATIONS )->
+    edit();</example>
+<return-type>Asset</return-type>
+<exception>Exception</exception>
 </documentation>
 */
-    public function setPublishMode( $config_name, $mode )
+    public function setPublishMode( string $config_name, string $mode ) : Asset
     {
         if( !in_array( $config_name, $this->content_type_page_configuration_names ) )
         {
