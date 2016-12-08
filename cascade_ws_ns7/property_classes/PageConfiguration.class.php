@@ -18,6 +18,31 @@ use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>A <code>PageConfiguration</code> object represents a <code>pageConfiguration</code> property found in a page configuration set.</p>
+<h2>Structure of <code>pageConfiguration</code></h2>
+<pre>pageConfigurations
+  pageConfiguration (NULL, stdClass or array of stdClass)
+    id
+    name
+    defaultConfiguration
+    templateId
+    templatePath
+    formatId
+    formatPath
+    formatRecycled
+    pageRegions
+      pageRegion
+    outputExtension
+    serializationType
+    includeXMLDeclaration
+    publishable
+</pre>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class PageConfiguration extends Property
 {
     const DEBUG = false;
@@ -30,6 +55,13 @@ class PageConfiguration extends Property
     const DATA_TYPE_JS   = 'JS';
     const DATA_TYPE_CSS  = 'CSS';
     
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         \stdClass $configuration=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
@@ -57,7 +89,8 @@ class PageConfiguration extends Property
             $this->page_region_map         = array(); // name->page region map
 
             // test added 8/16/2014
-            if( isset( $configuration->pageRegions ) && isset( $configuration->pageRegions->pageRegion ) )
+            if( isset( $configuration->pageRegions ) && isset(
+                $configuration->pageRegions->pageRegion ) )
                 a\Template::processPageRegions( 
                     $configuration->pageRegions->pageRegion, 
                     $this->page_regions, 
@@ -71,42 +104,29 @@ class PageConfiguration extends Property
         }
     }
     
-    public function addPageRegion( $page_region_name )
-    {
-        if( !$this->getTemplate()->hasPageRegion( $page_region_name ) )
-        {
-            throw new e\NoSuchPageRegionException( 
-                S_SPAN . "The page region $page_region_name does not exist.". E_SPAN );
-        }
-        
-        // exists
-        if( $this->hasPageRegion( $page_region_name ) )
-        {
-            return $this;
-        }
-        // does not exist
-        $pr_std                  = new \stdClass();
-        $pr_std->name            = $page_region_name;
-        $pr_std->block_recycled  = false;
-        $pr_std->no_block        = false;
-        $pr_std->format_recycled = false;
-        $pr_std->no_format       = false;
-        
-        $pr = new PageRegion( $pr_std, $this->service );
-        $this->page_regions[]                       = $pr;
-        $this->page_region_map[ $page_region_name ] = $pr;
-        
-        return $this;
-    }
-    
-    public function display()
+/**
+<documentation><description><p>Displays some basic information of the page configuration, and returns the calling object.</p></description>
+<example>$pc->display();</example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
+    public function display() : Property
     {
         echo "ID: " . $this->id . BR .
              "Name: " . $this->name . BR;
         return $this;
     }
     
-    public function dump( $formatted=false )
+/**
+<documentation><description><p>Dumps the information of the object, and returns the
+calling object.</p></description>
+<example>$pc->dump();</example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
+    public function dump( bool $formatted=true ) : Property
     {
         if( $formatted ) echo S_H2 . c\L::READ_DUMP . E_H2 . S_PRE;
         var_dump( $this->toStdClass() );
@@ -115,63 +135,147 @@ class PageConfiguration extends Property
         return $this;
     }
 
-    public function getDefaultConfiguration()
+/**
+<documentation><description><p>Returns <code>defaultConfiguration</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $pc->getDefaultConfiguration() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getDefaultConfiguration() : bool
     {
         return $this->default_configuration;
     }
     
+/**
+<documentation><description><p>Returns <code>formatId</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $pc->getFormatId() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFormatId()
     {
         return $this->format_id;
     }
     
+/**
+<documentation><description><p>Returns <code>formatPath</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $pc->getFormatPath() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getFormatPath()
     {
         return $this->format_path;
     }
     
-    public function getFormatRecycled()
+/**
+<documentation><description><p>Returns <code>formatRecycled</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $pc->getFormatRecycled() ), BR;</example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getFormatRecycled() : bool
     {
         return $this->format_recycled;
     }
     
-    public function getId()
+/**
+<documentation><description><p>Returns <code>id</code>.</p></description>
+<example>echo $pc->getId(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getId() : string
     {
         return $this->id;
     }
     
-    public function getIncludeXMLDeclaration()
+/**
+<documentation><description><p>Returns <code>includeXMLDeclaration</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $pc->getIncludeXMLDeclaration() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getIncludeXMLDeclaration() : bool
     {
         return $this->include_xml_declaration;
     }
     
-    public function getName()
+/**
+<documentation><description><p>Returns <code>name</code>.</p></description>
+<example>echo $pc->getName(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getName() : string
     {
         return $this->name;
     }
     
-    public function getOutputExtension()
+/**
+<documentation><description><p>Returns <code>outputExtension</code>.</p></description>
+<example>echo $pc->getOutputExtension(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getOutputExtension() : string
     {
         return $this->output_extension;
     }
     
-    public function getPageRegion( $name )
+/**
+<documentation><description><p>Returns the <code>PageRegion</code> object bearing the name. Note that for a page configuration, a region does not exist unless the region is attached with a block and/or a format.</p></description>
+<example>u\DebugUtility::dump( $pc->getPageRegion( "DEFAULT" ) );</example>
+<return-type>mixed</return-type>
+<exception>NoSuchPageRegionException</exception>
+</documentation>
+*/
+    public function getPageRegion( $name ) : mixed
     {
         $this->checkPageRegion( $name );
         return $this->page_region_map[ $name ];
     }
     
+/**
+<documentation><description><p>Returns an array of page regoin names. Note that for a page configuration, a region does not exist unless the region is attached with a block and/or a format. To get all the names, use <code>Template::getPageRegionNames</code> instead.</p></description>
+<example>u\DebugUtility::dump( $pc->getPageRegionNames() );</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageRegionNames()
     {
         return array_keys( $this->page_region_map );
     }
     
-    public function getPageRegions()
+/**
+<documentation><description><p>Returns an array of <code>PageRegion</code> objects. Note that for a page configuration, a region does not exist unless the region is attached with a block and/or a format.</p></description>
+<example>u\DebugUtility::dump( $pc->getPageRegionNames() );</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getPageRegions() : array
     {
         return $this->page_regions;
     }
     
-    public function getPageRegionBlock( $name )
+/**
+<documentation><description><p>Returns the block attached to the named region or <code>NULL</code>.</p></description>
+<example>u\DebugUtility::dump( $pc->getPageRegionBlock( "DEFAULT" ) );</example>
+<return-type>mixed</return-type>
+<exception>NoSuchPageRegionException</exception>
+</documentation>
+*/
+    public function getPageRegionBlock( string $name )
     {
         $this->checkPageRegion( $name );
         $page_region = $this->page_region_map[ $name ];
@@ -179,7 +283,14 @@ class PageConfiguration extends Property
         return $page_region->getBlock();
     }
     
-    public function getPageRegionFormat( $name )
+/**
+<documentation><description><p>Returns the format attached to the named region or <code>NULL</code>.</p></description>
+<example>u\DebugUtility::dump( $pc->getPageRegionFormat( "DEFAULT" ) );</example>
+<return-type>mixed</return-type>
+<exception>NoSuchPageRegionException</exception>
+</documentation>
+*/
+    public function getPageRegionFormat( string $name )
     {
         $this->checkPageRegion( $name );
         $page_region = $this->page_region_map[ $name ];
@@ -187,16 +298,37 @@ class PageConfiguration extends Property
         return $page_region->getFormat();
     }
     
-    public function getPublishable()
+/**
+<documentation><description><p>Returns <code>publishable</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $pc->getPublishable() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getPublishable() : bool
     {
         return $this->publishable;
     }
     
-    public function getSerializationType()
+/**
+<documentation><description><p>Returns <code>serializationType</code>.</p></description>
+<example>echo $pc->getSerializationType(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getSerializationType() : string
     {
         return $this->serialization_type;
     }
     
+/**
+<documentation><description><p>Returns the associated <code>a\Template</code> object.</p></description>
+<example>$pc->getTemplate()->dump();</example>
+<return-type></return-type>
+<exception>NullServiceException</exception>
+</documentation>
+*/
     public function getTemplate()
     {
         if( $this->service == NULL )
@@ -206,24 +338,56 @@ class PageConfiguration extends Property
         return a\Asset::getAsset( $this->service, a\Template::TYPE, $this->template_id );
     }
     
-    public function getTemplateId()
+/**
+<documentation><description><p>Returns <code>templateId</code>.</p></description>
+<example>echo $pc->getTemplateId(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getTemplateId() : string
     {
         return $this->template_id;
     }
 
-    public function getTemplatePath()
+/**
+<documentation><description><p>Returns <code>templatePath</code>.</p></description>
+<example>echo $pc->getTemplatePath(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getTemplatePath() : string
     {
         return $this->template_path;
     }
 
-    public function hasPageRegion( $region_name )
+/**
+<documentation><description><p>Returns a bool, indicating whether the named region exists.
+Note that for a page configuration, a region does not exist unless the region is attached
+with a block and/or a format.</p></description>
+<example>echo u\StringUtility::boolToString( $pc->hasPageRegion( "LOGO" ) ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function hasPageRegion( string $region_name ) : bool
     {
-        if( self::DEBUG ) { u\DebugUtility::out( "Region name fed in: " . $region_name ); }
+        if( self::DEBUG ) {
+            u\DebugUtility::out( "Region name fed in: " . $region_name ); }
     
         return isset( $this->page_region_map[ $region_name ] );
     }
     
-    public function setDefaultConfiguration( $v )
+/**
+<documentation><description><p>Sets <code>defaultConfiguration</code> and returns the
+calling object.</p></description>
+<example>u\DebugUtility::dump( $pc->setDefaultConfiguration( true )->toStdClass() );</example>
+<return-type>Property</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setDefaultConfiguration( bool $v ) : Property
     {
         if( !c\BooleanValues::isBoolean( $v ) )
             throw new e\UnacceptableValueException( 
@@ -232,7 +396,17 @@ class PageConfiguration extends Property
         return $this;
     }
     
-    public function setFormat( a\Format $format=NULL )
+/**
+<documentation><description><p>Sets <code>format</code> and returns the calling
+object.</p></description>
+<example>u\DebugUtility::dump( $pc->setFormat(
+    $cascade->getAsset( a\XsltFormat::TYPE, "255a4cec8b7ffe3b00a7e3433e083063" )
+)->toStdClass() );</example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setFormat( a\Format $format=NULL ) : Property
     {
         if( isset( $format ) )
         {
@@ -253,17 +427,34 @@ class PageConfiguration extends Property
         return $this;
     }
     
-    public function setIncludeXMLDeclaration( $include_xml_declaration )
+/**
+<documentation><description><p>Sets <code>includeXMLDeclaration</code> and returns the
+calling object.</p></description>
+<example>u\DebugUtility::dump( $pc->setIncludeXMLDeclaration( true )->toStdClass() );</example>
+<return-type>Property</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setIncludeXMLDeclaration( bool $include_xml_declaration ) : Property
     {
         if( !c\BooleanValues::isBoolean( $include_xml_declaration ) )
             throw new e\UnacceptableValueException( 
-                S_SPAN . "The value $include_xml_declaration is not a boolean." . E_SPAN );
+                S_SPAN . "The value $include_xml_declaration is not a boolean." . 
+                E_SPAN );
                 
         $this->include_xml_declaration = $include_xml_declaration;
         return $this;
     }
 
-    public function setOutputExtension( $ext )
+/**
+<documentation><description><p>Sets <code>outputExtension</code> and returns the calling
+object.</p></description>
+<example>u\DebugUtility::dump( $pc->setOutputExtension( ".html" )->toStdClass() );</example>
+<return-type>Property</return-type>
+<exception>EmptyValueException</exception>
+</documentation>
+*/
+    public function setOutputExtension( string $ext ) : Property
     {
         $ext = trim( $ext );
         
@@ -277,7 +468,16 @@ class PageConfiguration extends Property
         return $this;
     }
     
-    public function setPageRegionBlock( $page_region_name, a\Block $block=NULL )
+/**
+<documentation><description><p>Sets the block of the named region, and returns the calling
+object.</p></description>
+<example>u\DebugUtility::dump( $pc->setPageRegionBlock( "SEARCH PRINT" )->toStdClass() );</example>
+<return-type>Property</return-type>
+<exception>NoSuchPageRegionException</exception>
+</documentation>
+*/
+    public function setPageRegionBlock(
+        string $page_region_name, a\Block $block=NULL ) : Property
     {
         $regions = $this->getTemplate()->getRegionNames();
         
@@ -293,9 +493,19 @@ class PageConfiguration extends Property
         }
         
         $this->page_region_map[ $page_region_name ]->setBlock( $block );
+        return $this;
     }
     
-    public function setPageRegionFormat( $page_region_name, a\Format $format=NULL )
+/**
+<documentation><description><p>Sets the format of the named region, and returns the
+calling object.</p></description>
+<example>u\DebugUtility::dump( $pc->setPageRegionFormat( "LAST MODIFIED" )->toStdClass() );</example>
+<return-type>Property</return-type>
+<exception>NoSuchPageRegionException</exception>
+</documentation>
+*/
+    public function setPageRegionFormat(
+        string $page_region_name, a\Format $format=NULL ) : Property
     {
         $regions = $this->getTemplate()->getRegionNames();
         
@@ -311,9 +521,18 @@ class PageConfiguration extends Property
         }
         
         $this->page_region_map[ $page_region_name ]->setFormat( $format );
+        return $this;
     }
     
-    public function setPublishable( $publishable )
+/**
+<documentation><description><p>Sets <code>publishable</code> and returns the calling
+object.</p></description>
+<example>u\DebugUtility::dump( $pc->setPublishable( false )->toStdClass() );</example>
+<return-type></return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setPublishable( bool $publishable ) : Property
     {
         if( !c\BooleanValues::isBoolean( $publishable ) )
             throw new e\UnacceptableValueException( 
@@ -323,56 +542,115 @@ class PageConfiguration extends Property
         return $this;
     }
     
-    public function setRegionBlock( $region_name, a\Block $block=NULL )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setRegionBlock( string $region_name, a\Block $block=NULL ) : Property
     {
         return $this->setPageRegionBlock( $region_name, $block );
     }
     
-    public function setRegionFormat( $region_name, a\Format $format=NULL )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setRegionFormat(
+        string $region_name, a\Format $format=NULL ) : Property
     {
         return $this->setPageRegionFormat( $region_name, $format );
     }
     
-    public function setRegionNoBlock( $name, $no_block )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception>NoSuchPageRegionException, UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setRegionNoBlock( string $name, bool $no_block ) : Property
     {
         $this->checkPageRegion( $name );
+        
+        if( !c\BooleanValues::isBoolean( $no_block ) )
+            throw new e\UnacceptableValueException( 
+                S_SPAN . "The value $no_block is not a boolean." . E_SPAN );
+                
         $region = $this->page_region_map[ $name ];
         $region->setNoBlock( $no_block );        
         
         return $this;
     }
     
-    public function setRegionNoFormat( $name, $no_format )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>NoSuchPageRegionException</exception>
+</documentation>
+*/
+    public function setRegionNoFormat( string $name, bool $no_format ) : Property
     {
         $this->checkPageRegion( $name );
+
+        if( !c\BooleanValues::isBoolean( $no_format ) )
+            throw new e\UnacceptableValueException( 
+                S_SPAN . "The value $no_format is not a boolean." . E_SPAN );
+                
         $region = $this->page_region_map[ $name ];
         $region->setNoFormat( $no_format );
         
         return $this;
     }
     
-    public function setSerializationType( $serialization_type )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setSerializationType( string $serialization_type ) : Property
     {
         if( $serialization_type != self::DATA_TYPE_HTML &&
             $serialization_type != self::DATA_TYPE_XML &&
             $serialization_type != self::DATA_TYPE_PDF &&
             $serialization_type != self::DATA_TYPE_RTF )
             throw new e\UnacceptableValueException(
-                S_SPAN . "The serialization type $serialization_type is unacceptable. " . E_SPAN );
+                S_SPAN . "The serialization type $serialization_type is unacceptable. " .
+                E_SPAN );
     
         $this->serialization_type = $serialization_type;
         return $this;
     }
 
-    // template cannot be NULL
-    public function setTemplate( a\Template $template )
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setTemplate( a\Template $template ) : Property
     {
         $this->template_id   = $template->getId();
         $this->template_path = $template->getPath();
         return $this;
     }
     
-    public function toStdClass()
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example></example>
+<return-type>stdClass</return-type>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj                       = new \stdClass();
         $obj->id                   = $this->id;
@@ -416,8 +694,36 @@ class PageConfiguration extends Property
         
         return $obj;
     }
-    
-    private function checkPageRegion( $name )
+
+    private function addPageRegion( string $page_region_name ) : Property
+    {
+        if( !$this->getTemplate()->hasPageRegion( $page_region_name ) )
+        {
+            throw new e\NoSuchPageRegionException( 
+                S_SPAN . "The page region $page_region_name does not exist.". E_SPAN );
+        }
+        
+        // exists
+        if( $this->hasPageRegion( $page_region_name ) )
+        {
+            return $this;
+        }
+        // does not exist
+        $pr_std                  = new \stdClass();
+        $pr_std->name            = $page_region_name;
+        $pr_std->block_recycled  = false;
+        $pr_std->no_block        = false;
+        $pr_std->format_recycled = false;
+        $pr_std->no_format       = false;
+        
+        $pr = new PageRegion( $pr_std, $this->service );
+        $this->page_regions[]                       = $pr;
+        $this->page_region_map[ $page_region_name ] = $pr;
+        
+        return $this;
+    }
+        
+    private function checkPageRegion( string $name )
     {
         if( !isset( $this->page_region_map[ $name ] ) )
         {
