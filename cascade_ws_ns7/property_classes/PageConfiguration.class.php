@@ -40,7 +40,7 @@ use cascade_ws_asset     as a;
     publishable
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/page_configuration.php">page_configuration.php</a></li></ul></postscript>
 </documentation>
 */
 class PageConfiguration extends Property
