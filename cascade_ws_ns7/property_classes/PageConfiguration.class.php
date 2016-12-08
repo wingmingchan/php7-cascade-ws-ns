@@ -543,9 +543,9 @@ object.</p></description>
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>An alias of <code>setPageRegionBlock</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Property</return-type>
 <exception></exception>
 </documentation>
 */
@@ -555,9 +555,9 @@ object.</p></description>
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>An alias of <code>setPageRegionFormat</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Property</return-type>
 <exception></exception>
 </documentation>
 */
@@ -568,9 +568,10 @@ object.</p></description>
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Sets <code>noBlock</code> of the named region with the
+supplied value and returns the calling object.</p></description>
+<example>u\DebugUtility::dump( $pc->setRegionNoBlock( "SEARCH PRINT", true )->toStdClass() );</example>
+<return-type>Property</return-type>
 <exception>NoSuchPageRegionException, UnacceptableValueException</exception>
 </documentation>
 */
@@ -589,8 +590,9 @@ object.</p></description>
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Sets <code>noFormat</code> of the named region with the
+supplied value and returns the calling object.</p></description>
+<example>u\DebugUtility::dump( $pc->setRegionNoFormat( "SEARCH PRINT", true )->toStdClass() );</example>
 <return-type>Property</return-type>
 <exception>NoSuchPageRegionException</exception>
 </documentation>
@@ -610,8 +612,9 @@ object.</p></description>
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Sets <code>serializationType</code> and returns the
+calling object.</p></description>
+<example>u\DebugUtility::dump( $pc->setSerializationType( "XML" )->toStdClass() );</example>
 <return-type>Property</return-type>
 <exception>UnacceptableValueException</exception>
 </documentation>
@@ -631,8 +634,8 @@ object.</p></description>
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Sets <code>templateId</code> and <code>templatePath</code> and returns the calling object.</p></description>
+<example>$pc->getTemplate()->dump();</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
