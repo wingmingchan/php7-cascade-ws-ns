@@ -57,7 +57,31 @@ use cascade_ws_property as p;
   expirationFolderRecycled
   linkURL
 </pre></description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/symlink.php">symlink.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/symlink.php">symlink.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>
+{ "asset":{
+    "symlink":{
+      "linkURL":"http://help.hannonhill.com/discussions/product-feedback",
+      "expirationFolderRecycled":false,
+      "metadataSetId":"f7a963087f0000012693e3d9b68e9e1d",
+      "metadataSetPath":"Default",
+      "metadata":{},
+      "parentFolderId":"f7a9630b7f0000012693e3d99c134cef",
+      "parentFolderPath":"/",
+      "lastModifiedDate":"Apr 8, 2016 3:56:27 PM",
+      "lastModifiedBy":"tim.reilly",
+      "createdDate":"Apr 8, 2016 3:56:27 PM",
+      "createdBy":"tim.reilly",
+      "path":"GIVE US FEEDBACK",
+      "siteId":"f7a963087f0000012693e3d9932e44ba",
+      "siteName":"SUNY Upstate",
+      "name":"GIVE US FEEDBACK",
+      "id":"f7a967857f0000012693e3d97239afde"}},
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class Symlink extends Linkable
@@ -95,7 +119,7 @@ class Symlink extends Linkable
 <exception></exception>
 </documentation>
 */
-    public function setLinkURL( $url ) : Asset
+    public function setLinkURL( string $url ) : Asset
     {
         $this->getProperty()->linkURL = $url;
         return $this;
