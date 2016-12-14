@@ -163,7 +163,61 @@ type. To make methods, like <code>Page::getMetadataSetId</code>, <code>Page::get
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page.php">page.php</a></li>
-<li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page2.php">page2.php</a></li></ul></postscript>
+<li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page2.php">page2.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>
+{ "asset":{
+    "page":{
+      "contentTypeId":"c45a3de47f0000014d7031655feac983",
+      "contentTypePath":"suny-upstate/RWD",
+      "structuredData":{
+        "structuredDataNodes":[ {
+          "type":"text",
+          "identifier":"h1",
+          "text":"Wonderful!",
+          "recycled":false } ] },
+      "pageConfigurations":[ {
+        "name":"RWD",
+        "defaultConfiguration":true,
+        "templateId":"c44a60887f0000014d7031654a242191",
+        "templatePath":"suny-upstate/templates/RWD",
+        "formatRecycled":false,
+        "pageRegions":[ {
+          "name":"DEFAULT",
+          "blockRecycled":false,
+          "noBlock":false,
+          "formatRecycled":false,
+          "noFormat":false,
+          "id":"c44a60887f0000014d703165451aa818" } ],
+        "includeXMLDeclaration":false,
+        "publishable":false,
+        "id":"c44dbf5c7f0000014d703165b91a4add" } ],
+      "maintainAbsoluteLinks":false,
+      "shouldBePublished":true,
+      "shouldBeIndexed":true,
+      "expirationFolderRecycled":false,
+      "metadata":{
+        "displayName":"",
+        "title":"",
+        "summary":"",
+        "teaser":"",
+        "keywords":"",
+        "metaDescription":"",
+        "author":"" },
+      "parentFolderId":"a226b81c7f0000011d450d2ac664948d",
+      "parentFolderPath":"suny-upstate",
+      "lastModifiedDate":"May 18, 2016 11:35:25 AM",
+      "lastModifiedBy":"wing",
+      "createdDate":"May 18, 2016 11:35:25 AM",
+      "createdBy":"wing",
+      "path":"suny-upstate/my-first-page",
+      "siteId":"9c8883d07f00000140b4daea7170b336",
+      "siteName":"POPs","name":"my-first-page",
+      "id":"c4b8cb807f0000014d703165d37b79a7" } },
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class Page extends Linkable
