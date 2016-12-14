@@ -17,9 +17,50 @@ use cascade_ws_property as p;
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>A <code>DataDefinitionContainer</code> object represents a data definition container asset. This class is a sub-class of <a href="/web-services/api/asset-classes/container"><code>Container</code></a>.</p>
+<h2>Structure of <code>dataDefinitionContainer</code></h2>
+<pre>dataDefinitionContainer
+  id
+  name
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  children
+    child
+      id
+      path
+        path
+        siteId
+        siteName
+      type
+      recycled
+</pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/data_definition_container.php">data_definition_container.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>
+{ "asset":{
+    "dataDefinitionContainer":{
+    "children":[ {
+      "id":"e3aceb867f00000118d3acfcaabcc1f4",
+      "path":{
+        "path":"DD Container/DD",
+        "siteId":"f7a963087f0000012693e3d9932e44ba"},
+        "type":"datadefinition",
+        "recycled":false } ],
+    "parentContainerId":"f7a9632d7f0000012693e3d9809faca9",
+    "parentContainerPath":"/",
+    "path":"DD Container",
+    "siteId":"f7a963087f0000012693e3d9932e44ba",
+    "siteName":"SUNY Upstate",
+    "name":"DD Container",
+    "id":"e3a9224c7f00000118d3acfc495173e2" } },
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class DataDefinitionContainer extends Container
