@@ -58,7 +58,35 @@ use cascade_ws_property  as p;
 <li>There is no <code>set</code> method to work with targets.</li>
 </ul>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/template.php">template.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/template.php">template.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>
+{ "asset":{
+    "template":{
+      "formatRecycled":false,
+      "pageRegions":[ {
+        "name":"DEFAULT",
+        "blockRecycled":false,
+        "noBlock":false,
+        "formatRecycled":false,
+        "noFormat":false,
+        "id":"f9193e647f00000118d3acfc1e28111c" } ],
+      "xml":"\u003csystem-region name\u003d\"DEFAULT\"/\u003e",
+      "parentFolderId":"f7a9630b7f0000012693e3d99c134cef",
+      "parentFolderPath":"/",
+      "lastModifiedDate":"Dec 13, 2016 11:52:10 AM",
+      "lastModifiedBy":"wing ming.chan",
+      "createdDate":"Dec 13, 2016 11:52:10 AM",
+      "createdBy":"wing ming.chan",
+      "path":"XML",
+      "siteId":"f7a963087f0000012693e3d9932e44ba",
+      "siteName":"SUNY Upstate",
+      "name":"XML",
+      "id":"f9193e647f00000118d3acfc223b5493"}},
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class Template extends ContainedAsset
