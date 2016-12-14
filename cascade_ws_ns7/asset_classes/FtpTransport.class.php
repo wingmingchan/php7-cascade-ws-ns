@@ -10,17 +10,34 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>An <code>FtpTransport</code> object represents a database transport asset. This class is a sub-class of <a href="/web-services/api/asset-classes/transport"><code>Transport</code></a>.</p>
+<h2>Structure of <code>ftpTransport</code></h2>
+<pre>ftpTransport
+  id
+  name
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  hostName
+  port
+  username
+  password
+  directory
+  doSFTP
+  doPASV
+</pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/ftp_transport.php">ftp_transport.php</a></li></ul></postscript>
 </documentation>
 */
 class FtpTransport extends Transport
@@ -39,44 +56,44 @@ class FtpTransport extends Transport
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>directory</code>.</p></description>
+<example>echo $t->getDirectory(), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDirectory()
+    public function getDirectory() : string
     {
         return $this->getProperty()->directory;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>doPASV</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $t->getDoPASV() ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDoPASV()
+    public function getDoPASV() : bool
     {
         return $this->getProperty()->doPASV;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>doSFTP</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $t->getDoSFTP() ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDoSFTP()
+    public function getDoSFTP() : bool
     {
         return $this->getProperty()->doSFTP;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Returns <code>hostName</code>.</p></description>
+<example>echo $t->getHostName(), BR;</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -87,32 +104,33 @@ class FtpTransport extends Transport
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>password</code>. Since the password is
+encrypted, the returned string is useless.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPassword()
+    public function getPassword() : string
     {
         return $this->getProperty()->password;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>port</code>.</p></description>
+<example>echo $t->getPort(), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPort()
+    public function getPort() : string
     {
         return $this->getProperty()->port;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Returns <code>username</code>.</p></description>
+<example>echo $t->getUsername(), BR;</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -123,26 +141,26 @@ class FtpTransport extends Transport
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Sets the <code>directory</code> and returns the calling object.</p></description>
+<example>$t->setDirectory( 'about' )->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setDirectory( $d )
+    public function setDirectory( string $d ) : Asset
     {
         $this->getProperty()->directory = $d;
         return $this;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets the <code>doPASV</code> and returns the calling object.</p></description>
+<example>$t->setDoPASV( false )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setDoPASV( $bool )
+    public function setDoPASV( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException( 
@@ -153,13 +171,13 @@ class FtpTransport extends Transport
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets the <code>doSFTP</code> and returns the calling object.</p></description>
+<example>$t->setDoSFTP( true )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setDoSFTP( $bool )
+    public function setDoSFTP( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException( 
@@ -169,13 +187,13 @@ class FtpTransport extends Transport
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets the <code>hostName</code> and returns the calling object.</p></description>
+<example>$t->setHostName( 'www.upstate.edu' )->edit();</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setHostName( $h )
+    public function setHostName( string $h ) : Asset
     {
         if( trim( $h ) == "" )
             throw new e\EmptyValueException( 
@@ -185,13 +203,13 @@ class FtpTransport extends Transport
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets the <code>port</code> and returns the calling object.</p></description>
+<example>$t->setPort( 50 )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setPort( $p )
+    public function setPort( string $p ) : Asset
     {
         if( !is_numeric( $p ) )
             throw new e\UnacceptableValueException( 
@@ -201,13 +219,13 @@ class FtpTransport extends Transport
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets the <code>password</code> and returns the calling object.</p></description>
+<example>$t->setPassword( $pw )->edit();</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setPassword( $pw )
+    public function setPassword( string $pw ) : Asset
     {
         if( trim( $pw ) == "" )
             throw new e\EmptyValueException( 
@@ -217,13 +235,13 @@ class FtpTransport extends Transport
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets the <code>username</code> and returns the calling object.</p></description>
+<example>$t->setUsername( $name )->edit();</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setUsername( $u )
+    public function setUsername( string $u ) : Asset
     {
         if( trim( $u ) == "" )
             throw new e\EmptyValueException( 
