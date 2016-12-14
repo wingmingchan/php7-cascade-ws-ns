@@ -11,17 +11,54 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>An <code>XmlBlock</code> object represents an an xml block asset. This class is a sub-class of <a href="/web-services/api/asset-classes/block"><code>Block</code></a>.</p>
+<h2>Structure of <code>xmlBlock</code></h2>
+<pre>xmlBlock
+  id
+  name
+  parentFolderId
+  parentFolderPath
+  path
+  lastModifiedDate
+  lastModifiedBy
+  createdDate
+  createdBy
+  siteId
+  siteName
+  metadata
+    author
+    displayName
+    endDate
+    keywords
+    metaDescription
+    reviewDate
+    startDate
+    summary
+    teaser
+    title
+    dynamicFields (NULL or an stdClass)
+      dynamicField (an stdClass or or array of stdClass)
+        name
+        fieldValues (NULL, stdClass or array of stdClass)
+          fieldValue
+            value
+  metadataSetId
+  metadataSetPath
+  expirationFolderId
+  expirationFolderPath
+  expirationFolderRecycled
+  xml
+</pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/xml_block.php">xml_block.php</a></li></ul></postscript>
 </documentation>
 */
 class XmlBlock extends Block
@@ -40,25 +77,25 @@ class XmlBlock extends Block
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>xml</code>.</p></description>
+<example>echo u\XmlUtility::replaceBrackets( $xb->getXML() ) . BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getXML()
+    public function getXML() : string
     {
         return $this->getProperty()->xml;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>xml</code> and returns the calling object. If <code>$enforce_xml</code> is set to <code>true</code>, then the <code>&amp;xml</code> will be checked for well-formedness.</p></description>
+<example>$xb->setXML( $xml )->edit();</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setXML( $xml, $enforce_xml=false )
+    public function setXML( string $xml, bool $enforce_xml=false ) : Asset
     {
         if( trim( $xml ) == '' )
         {
