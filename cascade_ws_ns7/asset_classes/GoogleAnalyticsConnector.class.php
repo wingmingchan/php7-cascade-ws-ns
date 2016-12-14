@@ -9,17 +9,37 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>A <code>GoogleAnalyticsConnector</code> object represents a Google analytics connector asset. This class is a sub-class of <a href="/web-services/api/asset-classes/connector"><code>Connector</code></a>.</p>
+<h2>Structure of <code>googleAnalyticsConnector</code></h2>
+<pre>googleAnalyticsConnector
+  id
+  name
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  auth1
+  auth2
+  url
+  verified
+  verifiedDate
+  connectorParameters
+    connectorParameter
+      name
+      value
+  connectorContentTypeLinks (empty)
+</pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/google_connector.php">google_connector.php</a></li></ul></postscript>
 </documentation>
 */
 class GoogleAnalyticsConnector extends Connector
@@ -40,13 +60,13 @@ class GoogleAnalyticsConnector extends Connector
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns the value of the <code>connectorParameter</code> named <code>Base Path</code>.</p></description>
+<example>echo $gc->getBasePath(), BR;</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getBasePath()
+    public function getBasePath() : string
     {
         $connector_parameters = $this->getConnectorParameters();
         
@@ -57,12 +77,13 @@ class GoogleAnalyticsConnector extends Connector
                 return $param->getValue();
             }
         }
+        return NULL;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns the value of the <code>connectorParameter</code> named <code>Google Analytics Profile Id</code>.</p></description>
+<example>echo $gc->getProfileId(), BR;</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -77,16 +98,17 @@ class GoogleAnalyticsConnector extends Connector
                 return $param->getValue();
             }
         }
+        return NULL;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Sets the value of the <code>connectorParameter</code> named <code>Base Path</code>, and returns the calling object.</p></description>
+<example>$gc->setBasePath( 'all' )->setProfileId( 'two' )->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setBasePath( $value )
+    public function setBasePath( string $value ) : Asset
     {
         $connector_parameters = $this->getConnectorParameters();
         
@@ -101,13 +123,13 @@ class GoogleAnalyticsConnector extends Connector
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets the value of the <code>connectorParameter</code> named <code>Google Analytics Profile Id</code>, and returns the calling object. The <code>$value</code> cannot be empty.</p></description>
+<example>$gc->setBasePath( 'all' )->setProfileId( 'two' )->edit();</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setProfileId( $value )
+    public function setProfileId( string $value ) : Asset
     {
         if( trim( $value) == "" )
         {
