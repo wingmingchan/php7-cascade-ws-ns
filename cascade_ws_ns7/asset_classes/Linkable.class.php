@@ -31,7 +31,7 @@ use cascade_ws_property  as p;
 <h2>Design Issues</h2>
 <p>Currently, the metadata set ID can be read from a file or symlink property. But it is not possible for a page. Instead, the ID can only be read through the associated content type. Before this class processes the metadata, the <code>ContentType</code> object associated with a page must be passed into this class from <code>Page</code>. Therefore, I have to provide a <code>setPageContentType</code> method in this class to allow that. This method only works for a <code>Page</code> object, or a <code>WrongAssetTypeException</code> will be thrown.</p>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/linkable.php">linkable.php</a></li></ul></postscript>
 </documentation>
 */
 abstract class Linkable extends ContainedAsset
@@ -113,8 +113,8 @@ abstract class Linkable extends ContainedAsset
     }
     
 /**
-<documentation><description><p><p>Returns the <a
-href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-field.php"><code>p\DynamicField</code></a> object bearing that name.</p></p></description>
+<documentation><description><p>Returns the <a
+href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-field.php"><code>p\DynamicField</code></a> object bearing that name.</p></description>
 <example>u\DebugUtility::dump( $page->getDynamicField( "exclude-from-menu" ) );</example>
 <return-type>Property</return-type>
 <exception>EmptyNameException, NoSuchFieldException</exception>
@@ -265,7 +265,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
     }
     
 /**
-<documentation><description><p><p>Returns a bool, indicating whether the <code>DynamicField</code> bearing that name exists.</p></description>
+<documentation><description><p>Returns a bool, indicating whether the <code>DynamicField</code> bearing that name exists.</p></description>
 <example>echo u\StringUtility::boolToString( $page->hasDynamicField( "exclude-from-menu" ) ), BR;</example>
 <return-type>bool</return-type>
 <exception></exception>
@@ -279,8 +279,8 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/met
 /**
 <documentation><description><p>Sets the <code>expirationFolderId</code> and <code>expirationFolderPath</code>, and returns the calling object.</p></description>
 <example>$page->setExpirationFolder(
-	$cascade->getAsset(
-	    a\Folder::TYPE, "39d53a118b7ffe834c5fe91e7e2e0cd9" )
+    $cascade->getAsset(
+        a\Folder::TYPE, "39d53a118b7ffe834c5fe91e7e2e0cd9" )
 )->edit();
 </example>
 <return-type>Asset</return-type>
@@ -342,8 +342,8 @@ the calling object.</p></description>
         
         if( $this->getType() == Page::TYPE )
         {
-        	throw new e\WrongAssetTypeException(
-        	    S_SPAN . c\M::PAGE_METADATA_SET . E_SPAN );
+            throw new e\WrongAssetTypeException(
+                S_SPAN . c\M::PAGE_METADATA_SET . E_SPAN );
         }
     
         $this->getProperty()->metadataSetId   = $m->getId();
