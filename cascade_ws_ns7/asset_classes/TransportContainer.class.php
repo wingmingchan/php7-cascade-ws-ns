@@ -17,9 +17,44 @@ use cascade_ws_property as p;
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>A <code>TransportContainer</code> object represents a transport container asset. This class is a sub-class of <a href="/web-services/api/asset-classes/container"><code>Container</code></a>.</p>
+<h2>Structure of <code>transportContainer</code></h2>
+<pre>transportContainer
+  id
+  name
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  children
+    child
+      id
+      path
+        path
+        siteId
+        siteName
+      type
+      recycled
+</pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/transport_container.php">transport_container.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>
+{ "asset":{
+    "transportContainer":{
+      "children":[],
+      "parentContainerId":"f7a963357f0000012693e3d98d968254",
+      "parentContainerPath":"/",
+      "path":"Transport Container",
+      "siteId":"f7a963087f0000012693e3d9932e44ba",
+      "siteName":"SUNY Upstate",
+      "name":"Transport Container",
+      "id":"e3b0b7247f00000118d3acfc42c96feb"}},
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class TransportContainer extends Container
