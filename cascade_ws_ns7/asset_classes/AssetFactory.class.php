@@ -61,7 +61,36 @@ use cascade_ws_property as p;
     plugin (NULL, stdClass or array of stdClass)
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/asset_factory.php">asset_factory.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/asset_factory.php">asset_factory.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>
+{ "asset":{
+  "assetFactory":{
+    "applicableGroups":"SUNY Upstate-testers",
+    "assetType":"page",
+    "baseAssetId":"c45b81837f0000014d7031650a7252a2",
+    "baseAssetPath":"suny-upstate/base-assets/index",
+    "baseAssetRecycled":false,
+    "placementFolderRecycled":false,
+    "allowSubfolderPlacement":true,
+    "description":"Create New Page",
+    "folderPlacementPosition":0,
+    "overwrite":true,
+    "workflowMode":"folder-controlled",
+    "plugins":[ {
+      "name":"com.cms.assetfactory.FileLimitPlugin",
+      "parameters":[] } ],
+    "parentContainerId":"a23a47017f0000011d450d2affc6b348",
+    "parentContainerPath":"suny-upstate",
+    "path":"suny-upstate/New Page",
+    "siteId":"9c8883d07f00000140b4daea7170b336",
+    "siteName":"POPs",
+    "name":"New Page",
+    "id":"c45e55597f0000014d70316542bae384" } },
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class AssetFactory extends ContainedAsset
