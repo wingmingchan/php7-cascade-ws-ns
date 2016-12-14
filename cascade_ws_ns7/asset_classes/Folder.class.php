@@ -76,7 +76,63 @@ use cascade_ws_property  as p;
       type
       recycled
 </pre></description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/folder.php">folder.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/folder.php">folder.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>
+{ "asset":{
+    "folder":{
+      "children":[ {
+        "id":"c4482f1f7f0000014d70316543f95810",
+        "path":{ "path":"suny-upstate/templates/RWD",
+          "siteId":"9c8883d07f00000140b4daea7170b336" },
+        "type":"template",
+        "recycled":false },
+      {
+        "id":"c44960a07f0000014d70316501c2184a",
+        "path":{ "path":"suny-upstate/templates/",
+          "siteId":"9c8883d07f00000140b4daea7170b336" },
+        "type":"template",
+        "recycled":false },
+      {
+        "id":"c449b0ff7f0000014d703165d32ba6cd",
+        "path":{ "path":"suny-upstate/templates/",
+          "siteId":"9c8883d07f00000140b4daea7170b336" },
+        "type":"template",
+        "recycled":false },
+      {
+        "id":"c44a60887f0000014d7031654a242191",
+        "path":{ "path":"suny-upstate/templates/RWD",
+          "siteId":"9c8883d07f00000140b4daea7170b336" },
+        "type":"template",
+        "recycled":false } ],
+      "shouldBePublished":true,
+      "shouldBeIndexed":true,
+      "expirationFolderRecycled":false,
+      "metadataSetId":"9c8883aa7f00000140b4daeab7c5079c",
+      "metadataSetPath":"Default",
+      "metadata":{
+        "displayName":"",
+        "title":"",
+        "summary":"",
+        "teaser":"",
+        "keywords":"",
+        "metaDescription":"",
+        "author":"" },
+      "parentFolderId":"a226b81c7f0000011d450d2ac664948d",
+      "parentFolderPath":"suny-upstate",
+      "lastModifiedDate":"May 18, 2016 9:15:24 AM",
+      "lastModifiedBy":"wing",
+      "createdDate":"May 18, 2016 9:15:24 AM",
+      "createdBy":"wing",
+      "path":"suny-upstate/templates",
+      "siteId":"9c8883d07f00000140b4daea7170b336",
+      "siteName":"POPs",
+      "name":"templates",
+      "id":"c4389bc17f0000014d7031651f80292e" } },
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class Folder extends Container
@@ -512,7 +568,7 @@ href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/wor
     public function hasWorkflowDefinition( WorkflowDefinition $wf ) : bool
     {
         return $this->getWorkflowSettings()->hasWorkflowDefinition(
-        	$wf->getId()
+          $wf->getId()
         );
     }
 
