@@ -60,7 +60,33 @@ use cascade_ws_property  as p;
 </pre>
 <p>There is an important issue related to page regions of a configuration. A configuration contains a page region only if the page region is attached with either a block or a format or both. If a region is not attached with a block or a format, then it will not show up in the configuration; namely, it does not exist. To test whether a certain region exists in a configuration, do that test through the associated <code>Template</code> object.</p>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page_configuration_set.php">page_configuration_set.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page_configuration_set.php">page_configuration_set.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>
+{ "asset":{
+    "pageConfigurationSet":{
+      "pageConfigurations":[ {
+        "name":"RWD",
+        "defaultConfiguration":true,
+        "templateId":"c44a60887f0000014d7031654a242191",
+        "templatePath":"suny-upstate/templates/RWD",
+        "formatRecycled":false,
+        "pageRegions":[],
+        "serializationType":"HTML",
+        "outputExtension":".php",
+        "includeXMLDeclaration":false,
+        "publishable":true,"id":"c44dbf5c7f0000014d703165b91a4add" } ],
+      "parentContainerId":"a246c72c7f0000011d450d2a4d922aa4",
+      "parentContainerPath":"suny-upstate",
+      "path":"suny-upstate/RWD",
+      "siteId":"9c8883d07f00000140b4daea7170b336",
+      "siteName":"POPs",
+      "name":"RWD",
+      "id":"c44dbf5c7f0000014d7031654a7b54a9" } },
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class PageConfigurationSet extends ContainedAsset
