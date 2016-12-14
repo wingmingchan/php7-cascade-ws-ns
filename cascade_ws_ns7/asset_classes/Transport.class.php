@@ -14,6 +14,15 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+<p>The <code>Transport</code> class is the superclass of <a href="/web-services/api/asset-classes/database-transport"><code>DatabaseTransport</code></a>, <a href="/web-services/api/asset-classes/file-system-transport"><code>FileSystemTransport</code></a>, and <a href="/web-services/api/asset-classes/ftp-transport"><code>FtpTransport</code></a>. It is an abstract class and defines all shared methods of its sub-classes.</p>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/ftp_transport.php">ftp_transport.php</a></li>
+</ul></postscript>
+</documentation>
+*/
 abstract class Transport extends ContainedAsset
 {
     const DEBUG = false;
@@ -29,10 +38,10 @@ abstract class Transport extends ContainedAsset
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Edits and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
-<exception></exception>
+<exception>EditingFailureException</exception>
 </documentation>
 */
     public function edit(
