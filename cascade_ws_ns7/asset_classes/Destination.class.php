@@ -18,9 +18,39 @@ use cascade_ws_property  as p;
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>A <code>Destination</code> object represents a destination asset. This class is a sub-class of <a href="/web-services/api/asset-classes/scheduled-publishing"><code>ScheduledPublishing</code></a>.</p>
+<h2>Structure of <code>destination</code></h2>
+<pre>destination
+  id
+  name
+  parentContainerId
+  parentContainerPath
+  transportId
+  transportPath
+  applicableGroups
+  directory
+  enabled (bool)
+  checkedByDefault (bool)
+  publishASCII (bool)
+  usesScheduledPublishing (bool)
+  scheduledPublishDestinationMode
+  scheduledPublishDestinations
+  timeToPublish
+  publishIntervalHours
+  publishDaysOfWeek
+    dayOfWeek
+  cronExpression
+  sendReportToUsers
+  sendReportToGroups
+  sendReportOnErrorOnly (bool)
+  webUrl
+  siteId
+  siteName
+</pre>
+<h2>Design Issues</h2>
+<p>There is something special about all <code>ScheduledPublishing</code> assets: right after such an asset is read from Cascade, if we send the asset back to Cascade by calling <code>edit</code>, even without making any changes to it, Cascade will reject the asset. To fix this problem, we have to call <code>unset</code> to unset any property related to scheduled publishing if the property stores a <code>NULL</code> value. This must be done inside <code>edit</code>, or an exception will be thrown.</p>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/destination.php">destination.php</a></li></ul></postscript>
 </documentation>
 */
 class Destination extends ScheduledPublishing
@@ -40,13 +70,14 @@ class Destination extends ScheduledPublishing
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Adds the group name to <code>applicableGroups</code> and
+returns the calling object.</p></description>
+<example>$d->addGroup( $g )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NullAssetException</exception>
 </documentation>
 */
-    public function addGroup( Group $g )
+    public function addGroup( Group $g ) : Asset
     {
         if( $g == NULL )
             throw new e\NullAssetException( 
@@ -66,8 +97,9 @@ class Destination extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Disables the destination and returns the calling
+object.</p></description>
+<example>$d->disable()->edit();</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -79,10 +111,10 @@ class Destination extends ScheduledPublishing
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Edits and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>EditingFailureException</exception>
 </documentation>
 */
     public function edit(
@@ -97,27 +129,35 @@ class Destination extends ScheduledPublishing
         
         if( $destination->usesScheduledPublishing ) // publishing is scheduled
         {
-            if( $destination->timeToPublish == NULL )
+            if( !isset( $destination->timeToPublish ) ||
+                is_null( $destination->timeToPublish ) )
+            {
                 unset( $destination->timeToPublish );
+            }
             // fix the time unit
             else if( strpos( $destination->timeToPublish, '-' ) !== false )
             {
                 $pos = strpos( $destination->timeToPublish, '-' );
-                $destination->timeToPublish = substr( $destination->timeToPublish, 0, $pos );
+                $destination->timeToPublish = substr(
+                    $destination->timeToPublish, 0, $pos );
             }
-            
-            if( $destination->publishIntervalHours == NULL )
+      
+            if( !isset( $destination->publishIntervalHours ) ||
+            	is_null( $destination->publishIntervalHours ) )
                 unset( $destination->publishIntervalHours );
                 
-            if( $destination->publishDaysOfWeek == NULL )
+            if( !isset( $destination->publishDaysOfWeek ) ||
+            	is_null( $destination->publishDaysOfWeek ) )
                 unset( $destination->publishDaysOfWeek );
                 
-            if( $destination->cronExpression == NULL )
+            if( !isset( $destination->cronExpression ) ||
+            	is_null( $destination->cronExpression ) )
                 unset( $destination->cronExpression );
         }
         
         $asset                                    = new \stdClass();
         $asset->{ $p = $this->getPropertyName() } = $destination;
+        
         // edit asset
         $service = $this->getService();
         $service->edit( $asset );
@@ -131,8 +171,9 @@ class Destination extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Enables the destination and returns the calling
+object.</p></description>
+<example>$d->enable()->edit();</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -144,8 +185,8 @@ class Destination extends ScheduledPublishing
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Returns <code>applicableGroups</code>.</p></description>
+<example>echo $d->getApplicableGroups(), BR;</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -156,8 +197,8 @@ class Destination extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Returns <code>checkedByDefault</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $d->getCheckedByDefault() ), BR;</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -168,8 +209,8 @@ class Destination extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Returns <code>directory</code>.</p></description>
+<example>echo $d->getDirectory(), BR;</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -180,73 +221,74 @@ class Destination extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>enabled</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $d->getEnabled() ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getEnabled()
+    public function getEnabled() : bool
     {
         return $this->getProperty()->enabled;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>publishASCII</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $d->getPublishASCII() ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPublishASCII()
+    public function getPublishASCII() : bool
     {
         return $this->getProperty()->publishASCII;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>transportId</code>.</p></description>
+<example>echo $d->getTransportId(), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getTransportId()
+    public function getTransportId() : string
     {
         return $this->getProperty()->transportId;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>transportPath</code>.</p></description>
+<example>echo $d->getTransportPath(), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getTransportPath()
+    public function getTransportPath() : string
     {
         return $this->getProperty()->transportPath;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>webUrl</code>.</p></description>
+<example>echo $d->getWebUrl(), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getWebUrl()
+    public function getWebUrl() : string
     {
         return $this->getProperty()->webUrl;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Returns a bool, indicating whether the destination is
+applicable to the group.</p></description>
+<example>echo u\StringUtility::boolToString( $d->hasGroup( $g ) ), BR;</example>
+<return-type>bool</return-type>
+<exception>NullAssetException</exception>
 </documentation>
 */
-    public function hasGroup( Group $g )
+    public function hasGroup( Group $g ) : bool
     {
         if( $g == NULL )
             throw new e\NullAssetException( 
@@ -259,13 +301,14 @@ class Destination extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Removes the group name from <code>applicableGroups</code>
+and returns the calling object.</p></description>
+<example>$d->removeGroup( $g )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NullAssetException</exception>
 </documentation>
 */
-    public function removeGroup( Group $g )
+    public function removeGroup( Group $g ) : Asset
     {
         if( $g == NULL )
             throw new e\NullAssetException( 
@@ -289,13 +332,14 @@ class Destination extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>checkedByDefault</code> and returns the calling
+object.</p></description>
+<example>$d->setCheckedByDefault( false )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setCheckedByDefault( $bool )
+    public function setCheckedByDefault( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException( 
@@ -306,13 +350,14 @@ class Destination extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Sets <code>directory</code> and returns the calling
+object.</p></description>
+<example>$d->setDirectory( 'test' )->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setDirectory( $d )
+    public function setDirectory( string $d ) : Asset
     {
         if( trim( $d ) == "" )
         {
@@ -325,13 +370,14 @@ class Destination extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>enabled</code> and returns the calling
+object.</p></description>
+<example>$d->setEnabled( true )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setEnabled( $bool )
+    public function setEnabled( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException( 
@@ -342,13 +388,14 @@ class Destination extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>publishASCII</code> and returns the calling
+object.</p></description>
+<example>$d->setPublishASCII( false )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setPublishASCII( $bool )
+    public function setPublishASCII( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException( 
@@ -359,13 +406,13 @@ class Destination extends ScheduledPublishing
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>transportId</code> and <code>transportPath</code>, and returns the calling object.</p></description>
+<example>$d->setTransport( $t )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NullAssetException</exception>
 </documentation>
 */
-    public function setTransport( Transport $t )
+    public function setTransport( Transport $t ) : Asset
     {
         if( $t == NULL )
         {
@@ -379,13 +426,14 @@ class Destination extends ScheduledPublishing
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>webUrl</code> and returns the calling
+object.</p></description>
+<example>$d->setWebUrl( 'http://web.upstate.edu/test' )->edit();</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setWebUrl( $u )
+    public function setWebUrl( string $u ) : Asset
     {
         if( trim( $u ) == "" )
         {
