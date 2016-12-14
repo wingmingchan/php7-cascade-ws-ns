@@ -11,17 +11,93 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>A <code>PublishSet</code> object represents a publish set asset. This class is a sub-class of <a href="/web-services/api/asset-classes/scheduled-publishing"><code>ScheduledPublishing</code></a>.</p>
+<h2>Structure of <code>publishSet</code></h2>
+<pre>publishSet
+  id
+  name
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  files
+    publishableAssetIdentifier (NULL, object or array)
+      id
+      path
+        path
+        siteId
+        siteName (always NULL)
+      type
+      recycled
+  folders
+    publishableAssetIdentifier (NULL, object or array)
+      id
+      path
+        path
+        siteId
+        siteName (always NULL)
+      type
+      recycled
+  pages
+    publishableAssetIdentifier (NULL, object or array)
+      id
+      path
+        path
+        siteId
+        siteName (always NULL)
+      type
+      recycled
+  usesScheduledPublishing
+  scheduledPublishDestinationMode
+  scheduledPublishDestinations
+  timeToPublish
+  publishIntervalHours
+  publishDaysOfWeek
+    dayOfWeek
+  cronExpression
+  sendReportToUsers
+  sendReportToGroups
+  sendReportOnErrorOnly
+</pre>
+<h2>Design Issues</h2>
+<p>There is something special about all <code>ScheduledPublishing</code> assets: right after such an asset is read from Cascade, if we send the asset back to Cascade by calling <code>edit</code>, even without making any changes to it, Cascade will reject the asset. To fix this problem, we have to call <code>unset</code> to unset any property related to scheduled publishing if the property stores a <code>NULL</code> value. This must be done inside <code>edit</code>, or an exception will be thrown.</p>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/publish_set.php">publish_set.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>
+{ "asset":{
+    "publishSet":{
+      "files":[],
+      "folders":[ {
+        "id":"f7a9630b7f0000012693e3d99c134cef",
+        "path":{
+          "path":"/",
+		  "siteId":"f7a963087f0000012693e3d9932e44ba" },
+          "type":"folder",
+          "recycled":false } ],
+      "pages":[],
+      "usesScheduledPublishing":false,
+      "sendReportOnErrorOnly":false,
+      "parentContainerId":"e3b3f79d7f00000118d3acfc87f7c51e",
+      "parentContainerPath":"Publish Set Container",
+      "path":"Publish Set Container/Publish Set",
+      "siteId":"f7a963087f0000012693e3d9932e44ba",
+      "siteName":"SUNY Upstate",
+      "name":"Publish Set",
+      "id":"e3b44aa47f00000118d3acfc4bb73848" } },
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class PublishSet extends ScheduledPublishing
@@ -30,7 +106,7 @@ class PublishSet extends ScheduledPublishing
     const TYPE  = c\T::PUBLISHSET;
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>The constructor, overriding the parent method to process publish set-specific information like pages and folders.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -46,13 +122,14 @@ class PublishSet extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Adds a file to the publish set, and returns the calling object.</p></description>
+<example>$ps->addFile( $cascade->getAsset(
+    a\File::TYPE, '1f2259288b7ffe834c5fe91e55c1b66f' ) )->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function addFile( File $file )
+    public function addFile( File $file ) : Asset
     {
         $id             = $file->getId();
         $path           = new \stdClass();
@@ -71,13 +148,14 @@ class PublishSet extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Adds a folder to the publish set and returns the calling object.</p></description>
+<example>$ps->addFolder( $cascade->getAsset(
+    a\Folder::TYPE, '1f229e908b7ffe834c5fe91e04cc2303' ) )->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function addFolder( Folder $folder )
+    public function addFolder( Folder $folder ) : Asset
     {
         $id             = $folder->getId();
         $path           = new \stdClass();
@@ -96,13 +174,14 @@ class PublishSet extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Adds a page to the publish set and returns the calling object.</p></description>
+<example>$ps->addPage( $cascade->getAsset(
+    a\Page::TYPE, '1f2373488b7ffe834c5fe91e2f1fb803' ) )->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function addPage( Page $page )
+    public function addPage( Page $page ) : Asset
     {
         $id             = $page->getId();
         $path           = new \stdClass();
@@ -121,10 +200,10 @@ class PublishSet extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Edits and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>EditingFailureException</exception>
 </documentation>
 */
     public function edit(
@@ -201,15 +280,34 @@ class PublishSet extends ScheduledPublishing
                     $this->pages[ $i ]->toStdClass();
             }
         }
-        
-        if( $publish_set->timeToPublish == NULL )
-            unset( $publish_set->timeToPublish );
-        
-        if( $publish_set->publishIntervalHours == NULL )
-            unset( $publish_set->publishIntervalHours );
-            
-        if( $publish_set->cronExpression == NULL )
-            unset( $publish_set->cronExpression );
+
+        if( $publish_set->usesScheduledPublishing ) // publishing is scheduled
+        {
+            if( !isset( $publish_set->timeToPublish ) ||
+                is_null( $publish_set->timeToPublish ) )
+            {
+                unset( $publish_set->timeToPublish );
+            }
+            // fix the time unit
+            else if( strpos( $publish_set->timeToPublish, '-' ) !== false )
+            {
+                $pos = strpos( $publish_set->timeToPublish, '-' );
+                $publish_set->timeToPublish = substr(
+                    $publish_set->timeToPublish, 0, $pos );
+            }
+      
+            if( !isset( $publish_set->publishIntervalHours ) ||
+            	is_null( $publish_set->publishIntervalHours ) )
+                unset( $publish_set->publishIntervalHours );
+                
+            if( !isset( $publish_set->publishDaysOfWeek ) ||
+            	is_null( $publish_set->publishDaysOfWeek ) )
+                unset( $publish_set->publishDaysOfWeek );
+                
+            if( !isset( $publish_set->cronExpression ) ||
+            	is_null( $publish_set->cronExpression ) )
+                unset( $publish_set->cronExpression );
+        }
 
         $asset                                    = new \stdClass();
         $asset->{ $p = $this->getPropertyName() } = $publish_set;
@@ -226,13 +324,13 @@ class PublishSet extends ScheduledPublishing
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns an array of path strings of the files.</p></description>
+<example>u\DebugUtility::dump( $ps->getFilePaths() );</example>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getFilePaths()
+    public function getFilePaths() : array
     {
         $file_paths = array();
         
@@ -245,13 +343,13 @@ class PublishSet extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns an array of path strings of the folders.</p></description>
+<example>u\DebugUtility::dump( $ps->getFolderPaths() );</example>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getFolderPaths()
+    public function getFolderPaths() : array
     {
         $folder_paths = array();
         
@@ -263,13 +361,13 @@ class PublishSet extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns an array of path strings of the pages.</p></description>
+<example>u\DebugUtility::dump( $ps->getPagePaths() );</example>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPagePaths()
+    public function getPagePaths() : array
     {
         $page_paths = array();
         
@@ -281,13 +379,13 @@ class PublishSet extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Publishes the publish set and returns the calling object.</p></description>
+<example>$ps->publish();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function publish( Destination $destination=NULL )
+    public function publish( Destination $destination=NULL ) : Asset
     {
         if( isset( $destination ) )
         {
@@ -300,7 +398,8 @@ class PublishSet extends ScheduledPublishing
         
         if( isset( $destination ) )
             $service->publish( 
-                $service->createId( self::TYPE, $this->getProperty()->id ), $destination_std );
+                $service->createId(
+                    self::TYPE, $this->getProperty()->id ), $destination_std );
         else
             $service->publish( 
                 $service->createId( self::TYPE, $this->getProperty()->id ) );
@@ -308,13 +407,14 @@ class PublishSet extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Removes the file and returns the calling object.</p></description>
+<example>$ps->removeFile( $cascade->getAsset(
+    a\File::TYPE, '1f2259288b7ffe834c5fe91e55c1b66f' ) )->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function removeFile( File $file )
+    public function removeFile( File $file ) : Asset
     {
         $id = $file->getId();
         
@@ -332,13 +432,14 @@ class PublishSet extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Removes the folder and returns the calling object.</p></description>
+<example>$ps->removeFolder( $cascade->getAsset(
+    a\Folder::TYPE, '1f229e908b7ffe834c5fe91e04cc2303' ) )->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function removeFolder( Folder $folder )
+    public function removeFolder( Folder $folder ) : Asset
     {
         $id = $folder->getId();
         
@@ -356,13 +457,14 @@ class PublishSet extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Removes the page and returns the calling object.</p></description>
+<example>$ps->removeFolder( $cascade->getAsset(
+    a\Page::TYPE, '1f2373488b7ffe834c5fe91e2f1fb803' ) )->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function removePage( Page $page )
+    public function removePage( Page $page ) : Asset
     {
         $id = $page->getId();
         
