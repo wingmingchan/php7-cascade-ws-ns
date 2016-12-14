@@ -10,17 +10,34 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>A <code>WorkflowDefinition</code> object represents a workflow definition asset.</p>
+<h2>Structure of <code>workflowDefinition</code></h2>
+<pre>workflowDefinition
+  id
+  name
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  applicableGroups
+  copy
+  create
+  delete
+  edit
+  namingBehavior
+  xml
+</pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/workflow_definition.php">workflow_definition.php</a></li></ul></postscript>
 </documentation>
 */
 class WorkflowDefinition extends ContainedAsset
@@ -33,7 +50,7 @@ class WorkflowDefinition extends ContainedAsset
     const NAMING_BEHAVIOR_BLANK      = 'empty';
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>The constructor, overriding the parent method to parse the XML definition.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -87,13 +104,13 @@ class WorkflowDefinition extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Adds a group name to <code>applicableGroups</code> and returns the calling object.</p></description>
+<example>$wfd->addGroup( $cascade->getAsset( a\Group::TYPE, 'demo' ) )->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function addGroup( Group $g )
+    public function addGroup( Group $g ) : Asset
     {
         if( $g == NULL )
         {
@@ -116,13 +133,13 @@ class WorkflowDefinition extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Displays <code>xml</code> and returns the calling object.</p></description>
+<example>$wfd->displayXml();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function displayXml()
+    public function displayXml() : Asset
     {
         $xml_string = u\XMLUtility::replaceBrackets( 
             $this->getProperty()->xml );
@@ -134,13 +151,14 @@ class WorkflowDefinition extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Overriding the parent method, dumps the <code>workflowDefinition</code> property,
+displays the XML definition, and returns the calling object.</p></description>
+<example>$wfd->dump();</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
 */
-    public function dump( bool $formatted=false ) : Asset
+    public function dump( bool $formatted=true ) : Asset
     {
         parent::dump( $formatted );        
         $this->displayXml();
@@ -148,10 +166,10 @@ class WorkflowDefinition extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Edits and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>EditingFailureException</exception>
 </documentation>
 */
     public function edit(
@@ -178,67 +196,68 @@ class WorkflowDefinition extends ContainedAsset
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>applicableGroups</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $wfd->getApplicableGroups() ), BR;</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getApplicableGroups()
+    public function getApplicableGroups() 
     {
         return $this->getProperty()->applicableGroups;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>copy</code>.</p></description>
+<example>echo $wfd->u\StringUtility::boolToString( $wfd->getCopy() ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getCopy()
+    public function getCopy() : bool
     {
         return $this->getProperty()->copy;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>create</code>.</p></description>
+<example>echo $wfd->u\StringUtility::boolToString( $wfd->getCreate() ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getCreate()
+    public function getCreate() : bool
     {
         return $this->getProperty()->create;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>delete</code>.</p></description>
+<example>echo $wfd->u\StringUtility::boolToString( $wfd->getDelete() ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDelete()
+    public function getDelete() : bool
     {
         return $this->getProperty()->delete;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>edit</code>.</p></description>
+<example>echo $wfd->u\StringUtility::boolToString( $wfd->getEdit() ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getEdit()
+    public function getEdit() : bool
     {
         return $this->getProperty()->edit;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Overriding the parent method, returns an <code>Identifier</code> object,
+representing the workflow definition. This method is used by <code>WorkflowSettings</code>.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -258,25 +277,25 @@ class WorkflowDefinition extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>namingBehavior</code>.</p></description>
+<example>echo $wfd->getNamingBehavior(), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getNamingBehavior()
+    public function getNamingBehavior() : string
     {
         return $this->getProperty()->namingBehavior;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns a <code>StepDefinition</code> object bearing that id, listed under non-ordered steps.</p></description>
+<example>u\DebugUtility::dump( $wfd->getNonOrderedStep( 'edit' ) );</example>
+<return-type>StepDefinition</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getNonOrderedStep( $step_id )
+    public function getNonOrderedStep( string $step_id ) : p\StepDefinition
     {
         if( !isset( $this->non_ordered_step_map[ $step_id ] ) )
             throw new e\NoSuchStepException(
@@ -286,25 +305,25 @@ class WorkflowDefinition extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns an array of <code>StepDefinition</code> objects listed under non-ordered steps.</p></description>
+<example>u\DebugUtility::dump( $wfd->getNonOrderedSteps() );</example>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getNonOrderedSteps()
+    public function getNonOrderedSteps() : array
     {
         return $this->non_ordered_steps;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Returns a <code>StepDefinition</code> object bearing that id, listed under ordered steps.</p></description>
+<example>u\DebugUtility::dump( $wfd->getOrderedStep( 'initialize' ) );</example>
+<return-type>StepDefinition</return-type>
+<exception>NoSuchStepException</exception>
 </documentation>
 */
-    public function getOrderedStep( $step_id )
+    public function getOrderedStep( string $step_id ) : p\StepDefinition
     {
         if( !isset( $this->ordered_step_map[ $step_id ] ) )
             throw new e\NoSuchStepException( 
@@ -314,61 +333,63 @@ class WorkflowDefinition extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns an array of <code>StepDefinition</code> objects listed under ordered steps.</p></description>
+<example>u\DebugUtility::dump( $wfd->getOrderedSteps() );</example>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getOrderedSteps()
+    public function getOrderedSteps() : array
     {
         return $this->ordered_steps;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>xml</code>.</p></description>
+<example>u\DebugUtility::dump( u\XmlUtility::replaceBrackets( $wfd->getXml() ) );</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getXml()
+    public function getXml() : string
     {
         return $this->getProperty()->xml;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns a bool, indicating whether the named step exists under non-ordered steps.</p></description>
+<example>echo u\StringUtility::boolToString( $wfd->hasNonOrderedStep( 'edit' ) ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function hasNonOrderedStep( $step_id )
+    public function hasNonOrderedStep( string $step_id ) : bool
     {
         return isset( $this->non_ordered_step_map[ $step_id ] );
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns a bool, indicating whether the named step exists under ordered steps.</p></description>
+<example>echo u\StringUtility::boolToString( $wfd->hasOrderedStep( 'initialize' ) ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function hasOrderedStep( $step_id )
+    public function hasOrderedStep( string $step_id ) : bool
     {
         return isset( $this->ordered_step_map[ $step_id ] );
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Returns a bool, indicating whether the workflow definition is applicable to the group.</p></description>
+<example>echo u\StringUtility::boolToString( $wfd->isApplicableToGroup(
+    $cascade->getAsset( a\Group::TYPE, "Administrators" )
+) ), BR;</example>
+<return-type>bool</return-type>
+<exception>NullAssetException</exception>
 </documentation>
 */
-    public function isApplicableToGroup( Group $g )
+    public function isApplicableToGroup( Group $g ) : bool
     {
         if( $g == NULL )
         {
@@ -383,13 +404,14 @@ class WorkflowDefinition extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Removes the group name from <code>applicableGroups</code>,
+and returns the calling object.</p></description>
+<example>$wfd->removeGroup( $group )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NullAssetException</exception>
 </documentation>
 */
-    public function removeGroup( Group $g )
+    public function removeGroup( Group $g ) : Asset
     {
         if( $g == NULL )
         {
@@ -419,13 +441,13 @@ class WorkflowDefinition extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>copy</code> and returns the calling object.</p></description>
+<example>$wfd->setCopy( true )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setCopy( $bool )
+    public function setCopy( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException(
@@ -436,13 +458,13 @@ class WorkflowDefinition extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>create</code> and returns the calling object.</p></description>
+<example>$wfd->setCreate( true )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setCreate( $bool )
+    public function setCreate( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException(
@@ -453,13 +475,13 @@ class WorkflowDefinition extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Sets <code>delete</code> and returns the calling object.</p></description>
+<example>$wfd->setDelete( true )->edit();</example>
+<return-type>UnacceptableValueException</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setDelete( $bool )
+    public function setDelete( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException(
@@ -470,13 +492,13 @@ class WorkflowDefinition extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Sets <code>edit</code> and returns the calling object.</p></description>
+<example>$wfd->setEdit( true )->edit();</example>
+<return-type>UnacceptableValueException</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setEdit( $bool )
+    public function setEdit( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException(
@@ -487,13 +509,14 @@ class WorkflowDefinition extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>namingBehavior</code> and returns the calling object.</p></description>
+<example>$wfd->setNamingBehavior( 
+    a\WorkflowDefinition::NAMING_BEHAVIOR_DEFINITION )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setNamingBehavior( $nb )
+    public function setNamingBehavior( string $nb ) : Asset
     {
         if( $nb != self::NAMING_BEHAVIOR_AUTO && 
             $nb != self::NAMING_BEHAVIOR_DEFINITION &&
@@ -507,13 +530,13 @@ class WorkflowDefinition extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>xml</code> and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setXml( $xml )
+    public function setXml( string $xml ) : Asset
     {
         if( trim( $xml ) == "" )
             throw new e\EmptyValueException(
@@ -524,13 +547,13 @@ class WorkflowDefinition extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an XML string (for debugging purposes).</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function toXml()
+    public function toXml() : string
     {
         $xml_string = "<system-workflow-definition name=\"" . $this->name .
             "\" initial-step=\"" . $this->initial_step . "\">\n";
