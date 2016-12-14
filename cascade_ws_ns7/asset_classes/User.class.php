@@ -10,17 +10,50 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>A <code>User</code> object represents a user asset. Note that if a user's type is <code>ldap</code>, then the user cannot be edited. (See <a href="https://hannonhill.jira.com/browse/CSI-722">Allow editing users authenticated through LDAP</a>.)</p>
+<h2>Structure of <code>user</code></h2>
+<pre>user
+  username
+  fullName
+  email
+  authType
+  password
+  enabled
+  groups
+  defaultGroup
+  role
+  defaultSiteId
+  defaultSiteName
+</pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/user.php">user.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>
+{ "asset":{
+    "user":{
+      "username":"admin",
+      "fullName":"CMS Administrator",
+      "email":"admin@site.com",
+      "authType":"normal",
+      "password":"fk3*h\u0026_sd%^#^!ew",
+      "enabled":true,
+      "groups":"ALL;Administrators",
+      "defaultGroup":"Administrators",
+      "roles":"Administrator",
+      "defaultSiteId":"9cdfcef17f0000017046c78b5bee4e6b",
+      "defaultSiteName":"Bradley Wagner University - example.edu" } },
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class User extends Asset
@@ -39,8 +72,8 @@ class User extends Asset
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Disables a user and returns the calling object.</p></description>
+<example>$u->disable()->edit();</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -52,10 +85,10 @@ class User extends Asset
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Edits and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
-<exception></exception>
+<exception>EditingFailureException</exception>
 </documentation>
 */
     public function edit(
@@ -81,9 +114,9 @@ class User extends Asset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Enables a user and returns the calling object.</p></description>
+<example>$u->enable()->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
@@ -94,9 +127,9 @@ class User extends Asset
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>authType</code>.</p></description>
+<example>echo $u->getAuthType(), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
@@ -106,56 +139,92 @@ class User extends Asset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>defaultGroup</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $u->getDefaultGroup() ), BR;</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDefaultGroup() : string
+    public function getDefaultGroup()
     {
         return $this->getProperty()->defaultGroup;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>defaultSiteId</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $u->getDefaultSiteId() ), BR;</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDefaultSiteId() : string
+    public function getDefaultSiteId()
     {
         return $this->getProperty()->defaultSiteId;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>defaultSiteName</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $u->getDefaultSiteName() ), BR;</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDefaultSiteName() : string
+    public function getDefaultSiteName()
     {
         return $this->getProperty()->defaultSiteName;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>enabled</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $u->getEnabled() ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getEnabled() : string
+    public function getEnabled() : bool
     {
         return $this->getProperty()->enabled;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Returns <code>email</code>.</p></description>
+<example>echo $u->getEmail(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getEmail() : string
+    {
+        return $this->getProperty()->email;
+    }
+    
+/**
+<documentation><description><p>Returns <code>fullName</code>.</p></description>
+<example>echo $u->getUsername(), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getFullName()
+    {
+        return $this->getProperty()->fullName;
+    }
+    
+/**
+<documentation><description><p>Returns <code>groups</code>.</p></description>
+<example>echo $u->getGroups(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getGroups() : string
+    {
+        return $this->getProperty()->groups;
+    }
+    
+/**
+<documentation><description><p>Overriding the parent method, returns <code>username</code>.</p></description>
+<example>echo $u->getId(), BR;</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -166,44 +235,8 @@ class User extends Asset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getEmail() : string
-    {
-        return $this->getProperty()->email;
-    }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getFullName() : string
-    {
-        return $this->getProperty()->fullName;
-    }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getGroups() : string
-    {
-        return $this->getProperty()->groups;
-    }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Overriding the parent method, returns <code>username</code>.</p></description>
+<example>echo $u->getName(), BR;</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -214,9 +247,9 @@ class User extends Asset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>role</code>.</p></description>
+<example>echo $u->getRole(), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
@@ -226,8 +259,8 @@ class User extends Asset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Returns <code>password</code>. Note that the password is encrypted and the returned value is useless.</p></description>
+<example>echo $u->getPassword(), BR;</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -238,9 +271,9 @@ class User extends Asset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>username</code>.</p></description>
+<example>echo $u->getUsername(), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
@@ -250,9 +283,9 @@ class User extends Asset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a bool, indicating whether the user is in the named group.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
@@ -260,16 +293,20 @@ class User extends Asset
     {
         $users = $group->getUsers();
         
-        if( strpos( $users, Group::DELIMITER . $this->getProperty()->username . Group::DELIMITER ) !== false )
+        if( strpos( $users, Group::DELIMITER . $this->getProperty()->username .
+            Group::DELIMITER ) !== false )
             return true;
             
         return false;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Adds the user to the group and returns the calling object.
+Note that because the <code>Group</code> object, not the <code>User</code> object, is
+modified, the <code>Group::edit</code> method is called inside this method. Do not mixed
+this method call with other <code>User::set</code> methods.</p></description>
+<example>$u->joinGroup( $cascade->getAsset( a\Group::TYPE, "cru" ) );</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
@@ -282,9 +319,12 @@ class User extends Asset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Removes the user from the group and returns the calling
+object. Note that because the <code>Group</code> object, not the <code>User</code> object,
+is modified, the <code>Group::edit</code> method is called inside this method. Do not
+mixed this method call with other <code>User::set</code> methods.</p></description>
+<example>$u->leaveGroup( $cascade->getAsset( a\Group::TYPE, "cru" ) );</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
@@ -297,9 +337,9 @@ class User extends Asset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Sets <code>defaultGroup</code> and returns the calling object.</p></description>
+<example>$u->setDefaultGroup( $cascade->getAsset( a\Group::TYPE, "cru" ) )->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
@@ -313,13 +353,15 @@ class User extends Asset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Sets <code>defaultSiteId</code> and <code>defaultSiteName</code> and returns the calling object.</p></description>
+<example>$u->setDefaultSite( 
+    $cascade->getAsset( a\Site::TYPE, 'ede8ade68b7f08560139425c36d7307f' ) )->
+    edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setDefaultSite( Site $site=NULL )
+    public function setDefaultSite( Site $site=NULL ) : Asset
     {
         if( isset( $site ) )
         {
@@ -335,13 +377,13 @@ class User extends Asset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Sets <code>enabled</code> and returns the calling object.</p></description>
+<example>$u->setEnabled( true )->edit();</example>
 <return-type></return-type>
-<exception></exception>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setEnabled( $bool )
+    public function setEnabled( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException( "The value $bool must be a boolean." );
@@ -351,13 +393,13 @@ class User extends Asset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>email</code> and returns the calling object.</p></description>
+<example>$u->setEmail( 'chanw' )->edit();</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setEmail( $email )
+    public function setEmail( string $email ) : Asset
     {
         if( trim( $email ) == '' )
             throw new e\EmptyValueException( 
@@ -368,13 +410,13 @@ class User extends Asset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>fullName</code> and returns the calling object.</p></description>
+<example>$u->setFullName( 'Wing Ming Chan' )->edit();</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setFullName( $name )
+    public function setFullName( string $name ) : Asset
     {
         if( trim( $name ) == '' )
             throw new e\EmptyValueException(
@@ -385,13 +427,13 @@ class User extends Asset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>password</code> and returns the calling object.</p></description>
+<example>$u->setPassword( '************' )->edit();</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setPassword( $pw )
+    public function setPassword( string $pw ) : Asset
     {
         if( trim( $pw ) == '' )
             throw new e\EmptyValueException(
