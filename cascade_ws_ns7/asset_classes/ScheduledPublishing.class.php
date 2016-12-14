@@ -15,6 +15,28 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
+/**
+<documentation>
+<description><h2>Introduction</h2>
+<p>A destination, a publish set, and a site share a common feature: all three can have scheduled publishing enabled. The properties related to scheduled publishing are the following:</p>
+<ul>
+<li><code>usesScheduledPublishing</code></li>
+<li><code>timeToPublish</code></li>
+<li><code>publishIntervalHours</code></li>
+<li><code>publishDaysOfWeek</code></li>
+<li><code>cronExpression</code></li>
+<li><code>sendReportToUsers</code></li>
+<li><code>sendReportToGroups</code></li>
+<li><code>sendReportOnErrorOnly</code></li>
+</ul>
+<p>To turn on scheduled publishing, one of the three temporal settings (<code>publishIntervalHours</code>, <code>publishDaysOfWeek</code>, or <code>cronExpression</code>) must be supplied. And there is one more requirement: when a temporal setting is supplied, the other two must be unset. Assigning <code>NULL</code> to them will not work.</p>
+<p>Since these eight properties and related methods are shared by <code><a href="/web-services/api/asset-classes/destination"><code>Destination</code></a>, <a href="/web-services/api/asset-classes/publish-set"><code>PublishSet</code></a> and <a href="/web-services/api/asset-classes/site"><code>Site</code></a></code>, I decide to create an abstract class named <code>ScheduledPublishing</code>, which serves as the parent class of these three classes<a href="/web-services/api/asset-classes/site"></a>, and provides all the relevant methods in this class.</p>
+<h2>Design Issues</h2>
+<p>Due to a known <a href="https://hannonhill.jira.com/browse/CSI-861">bug</a> when PHP is used, the <code>scheduledPublishDestinations</code> property cannot be set properly. Thereofore, the <code>setScheduledPublishing</code> method defined in this class always sets the <code>scheduledPublishDestinationMode</code> property to <code>all-destinations</code>.</p>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/destination.php">destination.php</a></li></ul></postscript>
+</documentation>
+*/
 abstract class ScheduledPublishing extends ContainedAsset
 {
     const DEBUG     = false;
@@ -32,7 +54,8 @@ abstract class ScheduledPublishing extends ContainedAsset
     const DEFAULT_TIME = "00:00:00.000";
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>The constructor, overriding the parent method to initialize
+the private array <code>$days_of_week</code>.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -51,13 +74,15 @@ abstract class ScheduledPublishing extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Adds a group name to <code>sendReportToGroups</code> and
+returns the calling object.</p></description>
+<example>$d->addGroupToSendReport(
+    $cascade->getAsset( a\Group::TYPE, 'gch' ) )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NullAssetException</exception>
 </documentation>
 */
-    public function addGroupToSendReport( Group $g )
+    public function addGroupToSendReport( Group $g ) : Asset
     {
         if( $g == NULL )
             throw new e\NullAssetException( 
@@ -78,13 +103,15 @@ abstract class ScheduledPublishing extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Adds a user name to <code>sendReportToUsers</code> and
+returns the calling object.</p></description>
+<example>$d->addUserToSendReport( 
+    $cascade->getAsset( a\User::TYPE, 'chanw' ) )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NullAssetException</exception>
 </documentation>
 */
-    public function addUserToSendReport( User $u )
+    public function addUserToSendReport( User $u ) : Asset
     {
         if( $u == NULL )
             throw new e\NullAssetException( 
@@ -105,9 +132,9 @@ abstract class ScheduledPublishing extends ContainedAsset
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>cronExpression</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $d->getCronExpression() ), BR;</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -117,21 +144,21 @@ abstract class ScheduledPublishing extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns an array of strings containing all seven weekday constants.</p></description>
+<example>u\DebugUtility::dump( $d->getDaysOfWeek() );</example>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDaysOfWeek()
+    public function getDaysOfWeek() : array
     {
         return $this->days_of_week;
     }
    
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>publishDaysOfWeek</code>.</p></description>
+<example>u\DebugUtility::dump( $d->getPublishDaysOfWeek() );</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -141,9 +168,9 @@ abstract class ScheduledPublishing extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>publishIntervalHours</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $d->getPublishIntervalHours() ), BR;</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -153,57 +180,57 @@ abstract class ScheduledPublishing extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>scheduledPublishDestinationMode</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $d->getScheduledDestinationMode() ), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getScheduledDestinationMode()
+    public function getScheduledDestinationMode() : string
     {
         return $this->getProperty()->scheduledPublishDestinationMode;
     }
   
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>sendReportOnErrorOnly</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $d->getSendReportOnErrorOnly() ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSendReportOnErrorOnly()
+    public function getSendReportOnErrorOnly() : bool
     {
         return $this->getProperty()->sendReportOnErrorOnly;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>sendReportToGroups</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $d->getSendReportToGroups() ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSendReportToGroups()
+    public function getSendReportToGroups() : bool
     {
         return $this->getProperty()->sendReportToGroups;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>sendReportToUsers</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $d->getSendReportToUsers() ), BR;</example>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSendReportToUsers()
+    public function getSendReportToUsers() : bool
     {
         return $this->getProperty()->sendReportToUsers;
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>timeToPublish</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $d->getTimeToPublish() ), BR;</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -213,8 +240,8 @@ abstract class ScheduledPublishing extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
+<documentation><description><p>Returns <code>usesScheduledPublishing</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $d->getUsesScheduledPublishing() ), BR;</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -225,13 +252,14 @@ abstract class ScheduledPublishing extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>cronExpression</code> and returns the calling
+object.</p></description>
+<example>$d->setCronExpression( "0 4 12 * * ?" )->edit();</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setCronExpression( $cron )
+    public function setCronExpression( $cron ) : Asset
     {
         if( isset( $cron ) && trim( $cron ) != "" )
         {
@@ -242,37 +270,38 @@ abstract class ScheduledPublishing extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>An alias of <code>setPublishDayOfWeek</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setDayOfWeek( $days, $time=NULL )
+    public function setDayOfWeek( $days, $time=NULL ) : Asset
     {
-        return $this->setPublishDayOfWeek( $days, $time=NULL );
+        return $this->setPublishDayOfWeek( $days, $time );
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>An alias of <code>setPublishIntervalHours</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setIntervalHours( $hours, $time=NULL )
+    public function setIntervalHours( $hours, $time=NULL ) : Asset
     {
-        return $this->setPublishIntervalHours( $hours, $time=NULL );
+        return $this->setPublishIntervalHours( $hours, $time );
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>publishDaysOfWeek</code> and returns the calling
+object.</p></description>
+<example>$d->setPublishDayOfWeek( $d->getDaysOfWeek() )->edit();</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setPublishDayOfWeek( $days, $time=NULL )
+    public function setPublishDayOfWeek( $days, $time=NULL ) : Asset
     {
         if( isset( $days ) )
         {
@@ -283,13 +312,14 @@ abstract class ScheduledPublishing extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>publishIntervalHours</code> and returns the
+calling object.</p></description>
+<example>$d->setPublishIntervalHours( 4 )->edit();</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setPublishIntervalHours( $hours, $time=NULL )
+    public function setPublishIntervalHours( int $hours, $time=NULL ) : Asset
     {
         if( isset( $hours ) )
         {
@@ -300,10 +330,17 @@ abstract class ScheduledPublishing extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets one of the three temporal settings and returns the
+calling object. This method is called by all other scheduling methods.</p></description>
+<example>$d->setScheduledPublishing( true, 
+    array( a\PublishSet::FRIDAY, a\PublishSet::FRIDAY, 
+        a\PublishSet::THURSDAY, a\PublishSet::SATURDAY, 
+        a\PublishSet::SUNDAY, a\PublishSet::WEDNESDAY,
+        a\PublishSet::TUESDAY, a\PublishSet::THURSDAY, 
+        a\PublishSet::MONDAY, a\PublishSet::SUNDAY ), 
+    NULL, NULL, '06:30:00.000' )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException, EmptyValueException</exception>
 </documentation>
 */
     public function setScheduledPublishing( 
@@ -312,13 +349,14 @@ abstract class ScheduledPublishing extends ContainedAsset
         //$destinations=NULL,
         $day_of_week=NULL, 
         $publish_interval_hours=NULL, 
-        $cron_expression=NULL, 
-        $time_to_publish=NULL
-    )
+        string $cron_expression=NULL, 
+        string $time_to_publish=NULL
+    ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $uses_scheduled_publishing ) )
             throw new e\UnacceptableValueException( 
-                S_SPAN . "The value $uses_scheduled_publishing must be a boolean. " . E_SPAN );
+                S_SPAN . "The value $uses_scheduled_publishing must be a boolean. " .
+                E_SPAN );
     
         if( !$uses_scheduled_publishing ) // unset
         {
@@ -376,6 +414,7 @@ abstract class ScheduledPublishing extends ContainedAsset
                 // a string
                 if( in_array( $day_of_week, $this->days_of_week ) )
                 {
+                    $this->getProperty()->publishDaysOfWeek = new \stdClass();
                     $this->getProperty()->publishDaysOfWeek->dayOfWeek = $day_of_week;
                 
                     // possible error message from Cascade?
@@ -441,7 +480,8 @@ abstract class ScheduledPublishing extends ContainedAsset
                 else
                 {
                     throw new e\UnacceptableValueException( 
-                        S_SPAN . "The value $publish_interval_hours is not acceptable." . E_SPAN );
+                        S_SPAN . "The value $publish_interval_hours is not acceptable." .
+                        E_SPAN );
                 }
             
                 unset( $this->getProperty()->publishDaysOfWeek );
@@ -468,29 +508,32 @@ abstract class ScheduledPublishing extends ContainedAsset
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>sendReportOnErrorOnly</code> and returns the
+calling object.</p></description>
+<example>$d->setSendReportOnErrorOnly( false )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setSendReportOnErrorOnly( $bool )
+    public function setSendReportOnErrorOnly( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException( 
                 S_SPAN . "The value $bool must be a boolean." . E_SPAN );
         $this->getProperty()->sendReportOnErrorOnly   = $bool;
+        
         return $this;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Turns off scheduled publishing and returns the calling
+object.</p></description>
+<example>$d->unsetScheduledPublishing()->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function unsetScheduledPublishing()
+    public function unsetScheduledPublishing() : Asset
     {
         return $this->setScheduledPublishing( false );
     }
