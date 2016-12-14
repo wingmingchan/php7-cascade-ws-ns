@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/9/2016 Added empty path in reloadProperty for Destination.
   * 11/11/2016 Added default value for $type to getAudits.
   * 9/29/2016 Added text color to $service->getMessage().
   * 8/30/2016 Added XML documentation.
@@ -196,7 +197,8 @@ abstract class Asset
         }
         else
         {
-            throw new e\CopyErrorException( c\M::COPY_ASSET_FAILURE . $service->getMessage() );
+            throw new e\CopyErrorException(
+                c\M::COPY_ASSET_FAILURE . $service->getMessage() );
         }
     }
     
@@ -209,9 +211,12 @@ abstract class Asset
 */
     public function display() : Asset
     {
+    	$id   = $this->getId();
+    	$name = $this->getName();
+    	
         echo S_H2 . "Asset::display" . E_H2 .
-             c\L::ID .            $this->id .            BR .
-             c\L::NAME .          $this->name .          BR .
+             c\L::ID .            $id .                  BR .
+             c\L::NAME .          $name .                BR .
              c\L::PATH .          $this->path .          BR .
              c\L::SITE_ID .       $this->site_id .       BR .
              c\L::SITE_NAME .     $this->site_name .     BR .
@@ -580,6 +585,13 @@ echo "There are " . count( $subscribers ) . " subscribers.", BR;</example>
 */
     public function reloadProperty() : Asset
     {
+        // 2016/12/09 added path for Destination
+        if( !isset( $this->identifier->path->path ) )
+        {
+        	$this->identifier->path = new \stdClass();
+            $this->identifier->path->path = "";
+        }
+    
         $this->property = 
             $this->service->retrieve( $this->identifier, $this->property_name );
         return $this;
