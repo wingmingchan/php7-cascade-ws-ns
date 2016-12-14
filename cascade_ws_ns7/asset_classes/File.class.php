@@ -23,9 +23,86 @@ use cascade_ws_property as p;
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>A <code>File</code> object represents a file asset. The <code>File</code> class is a sub-class of <a href="/web-services/api/asset-classes/linkable"><code>Linkable</code></a>.</p>
+<h2>Structure of <code>file</code></h2>
+<pre>file
+  id
+  name
+  parentFolderId
+  parentFolderPath
+  path
+  lastModifiedDate
+  lastModifiedBy
+  createdDate
+  createdBy
+  siteId
+  siteName
+  metadata
+    author
+    displayName
+    endDate
+    keywords
+    metaDescription
+    reviewDate
+    startDate
+    summary
+    teaser
+    title
+    dynamicFields (NULL or an stdClass)
+      dynamicField (an stdClass or or array of stdClass)
+        name
+        fieldValues (NULL, stdClass or array of stdClass)
+          fieldValue
+            value
+  metadataSetId
+  metadataSetPath
+  expirationFolderId
+  expirationFolderPath
+  expirationFolderRecycled (bool)
+  shouldBePublished (bool)
+  shouldBeIndexed (bool)
+  lastPublishedDate
+  lastPublishedBy
+  text
+  data
+  rewriteLinks (bool)
+  maintainAbsoluteLinks (bool)
+</pre>
+<h2>Design Issues</h2>
+<ul>
+<li>The <code>setData</code> method accepts any data, binary or textual.</li>
+<li>The <code>setText</code> method accepts only textual data.</li>
+</ul>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/file.php">file.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>
+{ "asset":{
+    "file":{
+      "data":[-1,...-39],
+      "rewriteLinks":false,
+      "maintainAbsoluteLinks":false,
+      "shouldBePublished":true,
+      "shouldBeIndexed":true,
+      "expirationFolderRecycled":false,
+      "metadataSetId":"9c8883aa7f00000140b4daeab7c5079c",
+      "metadataSetPath":"Default",
+      "metadata":{"displayName":"PreviewSlide.jpg"},
+      "parentFolderId":"a226b81c7f0000011d450d2ac664948d",
+      "parentFolderPath":"suny-upstate",
+      "lastModifiedDate":"May 13, 2016 10:51:15 AM",
+      "lastModifiedBy":"david",
+      "createdDate":"May 13, 2016 10:51:15 AM",
+      "createdBy":"david",
+      "path":"suny-upstate/PreviewSlide.jpg",
+      "siteId":"9c8883d07f00000140b4daea7170b336",
+      "siteName":"POPs",
+      "name":"PreviewSlide.jpg",
+      "id":"aad0905d7f0000017b71f4bcf6283903"}},
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class File extends Linkable
@@ -44,10 +121,17 @@ class File extends Linkable
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Edits and returns the calling object, overriding the parent
+method to allow for workflow information. When working with workflows, the <code>WorkflowDefinition</code>
+object cannot be <code>NULL</code>. The <code>p\Workflow</code> cannot be <code>NULL</code> if the file
+is edited to advance the workflow. A non-empty comment is also required. When a
+non-<code>NULL</code> <code>WorkflowDefinition</code> object is passed in, a <code>workflowConfiguration stdClass</code>
+object will be created inside <code>edit</code>. If the <code>p\Workflow</code> object is
+<code>NULL</code>, then the <code>$new_workflow_name</code> must be supplied. If the
+<code>p\Workflow</code> object is not <code>NULL</code>, then its name will be used instead.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>EmptyValueException, EditingFailureException</exception>
 </documentation>
 */
     public function edit(
@@ -96,9 +180,9 @@ class File extends Linkable
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>data</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -108,7 +192,7 @@ class File extends Linkable
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>lastPublishedBy</code>.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -120,7 +204,7 @@ class File extends Linkable
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>lastPublishedDate</code>.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -132,57 +216,57 @@ class File extends Linkable
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>maintainAbsoluteLinks</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getMaintainAbsoluteLinks()
+    public function getMaintainAbsoluteLinks() : bool
     {
         return $this->getProperty()->maintainAbsoluteLinks;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>rewriteLinks</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getRewriteLinks()
+    public function getRewriteLinks() : bool
     {
         return $this->getProperty()->rewriteLinks;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>shouldBeIndexed</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getShouldBeIndexed()
+    public function getShouldBeIndexed() : bool
     {
         return $this->getProperty()->shouldBeIndexed;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>shouldBePublished</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getShouldBePublished()
+    public function getShouldBePublished() : bool
     {
         return $this->getProperty()->shouldBePublished;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>text</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -192,22 +276,24 @@ class File extends Linkable
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a <code>p\Workflow</code> object of <code>NULL</code>.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>mixed</return-type>
+<exception>NullAssetException</exception>
 </documentation>
 */
     public function getWorkflow()
     {
         $service = $this->getService();
-        $service->readWorkflowInformation( $service->createId( self::TYPE, $this->getProperty()->id ) );
+        $service->readWorkflowInformation( 
+            $service->createId( self::TYPE, $this->getProperty()->id ) );
         
         if( $service->isSuccessful() )
         {
             if( isset( $service->getReply()->readWorkflowInformationReturn->workflow ) )
                 return new p\Workflow( 
-                    $service->getReply()->readWorkflowInformationReturn->workflow, $service );
+                    $service->getReply()->
+                        readWorkflowInformationReturn->workflow, $service );
             else
                 return NULL; // no workflow
         }
@@ -219,26 +305,27 @@ class File extends Linkable
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a bool, indicating whether the file is publishable.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function isPublishable()
+    public function isPublishable() : bool
     {
-        $parent = $this->getAsset( $this->getService(), Folder::TYPE, $this->getParentContainerId() );
+        $parent = $this->getAsset(
+            $this->getService(), Folder::TYPE, $this->getParentContainerId() );
         return $parent->isPublishable() && $this->getShouldBePublished();
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Publishes the file and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function publish( Destination $destination=NULL )
+    public function publish( Destination $destination=NULL ) : Asset
     {
         if( isset( $destination ) )
         {
@@ -253,7 +340,8 @@ class File extends Linkable
             
             if( isset( $destination ) )
                 $service->publish( 
-                    $service->createId( $this->getType(), $this->getId() ), $destination_std );
+                    $service->createId( 
+                        $this->getType(), $this->getId() ), $destination_std );
             else
                 $service->publish( 
                     $service->createId( $this->getType(), $this->getId() ) );
@@ -262,26 +350,26 @@ class File extends Linkable
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>data</code> and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setData( $data )
+    public function setData( $data ) : Asset
     {
         $this->getProperty()->data = $data;
         return $this;
     }
        
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>maintainAbsoluteLinks</code> and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setMaintainAbsoluteLinks( $bool )
+    public function setMaintainAbsoluteLinks( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException( 
@@ -293,13 +381,14 @@ class File extends Linkable
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>rewriteLinks</code> and returns the calling
+object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setRewriteLinks( $bool )
+    public function setRewriteLinks( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException( 
@@ -311,62 +400,68 @@ class File extends Linkable
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>shouldBeIndexed</code> returns the calling
+object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setShouldBeIndexed( $bool )
+    public function setShouldBeIndexed( bool $bool ) : Asset
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException( 
                 S_SPAN . "The value $bool must be a boolean." . E_SPAN );
             
         $this->getProperty()->shouldBeIndexed = $bool;
+        
         return $this;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>shouldBePublished</code> returns the calling
+object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setShouldBePublished( $bool )
+    public function setShouldBePublished( bool $bool )
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException( 
                 S_SPAN . "The value $bool must be a boolean." . E_SPAN );
             
         $this->getProperty()->shouldBePublished = $bool;
+        
         return $this;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>text</code> and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setText( $text )
+    public function setText( string $text ) : Asset
     {
         $this->getProperty()->text = $text;
+        
         return $this;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Unpublishes the file and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function unpublish()
+    public function unpublish() : Asset
     {
         $this->getService()->unpublish( $this->getIdentifier() );
+        
         return $this;
     }
 }
