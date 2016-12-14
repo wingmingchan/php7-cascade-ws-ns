@@ -70,7 +70,112 @@ use cascade_ws_property  as p;
           selectedByDefault
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/metadata_set.php">metadata_set.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/metadata_set.php">metadata_set.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>
+{ "asset":{
+    "metadataSet":{
+      "authorFieldRequired":false,
+      "authorFieldVisibility":"visible",
+      "descriptionFieldRequired":false,
+      "descriptionFieldVisibility":"visible",
+      "displayNameFieldRequired":false,
+      "displayNameFieldVisibility":"visible",
+      "endDateFieldRequired":false,
+      "endDateFieldVisibility":"visible",
+      "expirationFolderFieldRequired":false,
+      "expirationFolderFieldVisibility":"visible",
+      "keywordsFieldRequired":false,
+      "keywordsFieldVisibility":"visible",
+      "reviewDateFieldRequired":false,
+      "reviewDateFieldVisibility":"visible",
+      "startDateFieldRequired":false,
+      "startDateFieldVisibility":"visible",
+      "summaryFieldRequired":false,
+      "summaryFieldVisibility":"visible",
+      "teaserFieldRequired":false,
+      "teaserFieldVisibility":"visible",
+      "titleFieldRequired":false,
+      "titleFieldVisibility":"visible",
+      "dynamicMetadataFieldDefinitions":[ 
+      { 
+        "name":"text",
+        "label":"Text",
+        "fieldType":"text",
+        "required":false,
+        "visibility":"visible",
+        "possibleValues":[]
+      },
+      {
+        "name":"radio",
+        "label":"Radio",
+        "fieldType":"radio",
+        "required":false,
+        "visibility":"visible",
+        "possibleValues":[ 
+        {
+          "value":"yes",
+          "selectedByDefault":true },
+        {
+          "value":"no",
+          "selectedByDefault":false } ]
+      },
+      {
+        "name":"dropdown",
+        "label":"Dropdown",
+        "fieldType":"dropdown",
+        "required":false,
+        "visibility":"visible",
+        "possibleValues":[ 
+        {
+          "value":"Option 1",
+          "selectedByDefault":false },
+        {
+          "value":"Option 2",
+          "selectedByDefault":false } ] 
+      },
+      {
+        "name":"checkbox",
+        "label":"Checkbox",
+        "fieldType":"checkbox",
+        "required":true,
+        "visibility":"visible",
+        "possibleValues":[ 
+        {
+          "value":"This",
+          "selectedByDefault":true },
+        {
+          "value":"That",
+          "selectedByDefault":false } ] 
+      },
+      {
+        "name":"multiselect",
+        "label":"Multiselect",
+        "fieldType":"multiselect",
+        "required":false,
+        "visibility":"visible",
+        "possibleValues":[ 
+        {
+          "value":"One",
+          "selectedByDefault":false },
+        {
+          "value":"Two",
+          "selectedByDefault":false },
+        {
+          "value":"Three",
+          "selectedByDefault":false } ]
+        } ],
+        "parentContainerId":"f7a963417f0000012693e3d9d1302ce2",
+        "parentContainerPath":"/",
+        "path":"Block",
+        "siteId":"f7a963087f0000012693e3d9932e44ba",
+        "siteName":"SUNY Upstate",
+        "name":"Block",
+        "id":"e39d38037f00000118d3acfc8aff7434" } },
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class MetadataSet extends ContainedAsset
