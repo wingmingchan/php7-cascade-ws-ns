@@ -17,9 +17,25 @@ use cascade_ws_property as p;
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>A <code>DatabaseTransport</code> object represents a database transport asset. This class is a sub-class of <a href="/web-services/api/asset-classes/transport"><code>Transport</code></a>.</p>
+<h2>Structure of <code>databaseTransport</code></h2>
+<pre>databaseTransport
+  id
+  name
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  transportSiteId
+  serverName
+  serverPort
+  databaseName
+  username
+  password
+</pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/database_transport.php">database_transport.php</a></li></ul></postscript>
 </documentation>
 */
 class DatabaseTransport extends Transport
@@ -38,85 +54,86 @@ class DatabaseTransport extends Transport
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>databaseName</code>.</p></description>
+<example>echo $t->getDatabaseName();</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDatabaseName()
+    public function getDatabaseName() : string
     {
         return $this->getProperty()->databaseName;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>password</code>. Since the password is encrypted, the returned string is useless.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPassword()
+    public function getPassword() : string
     {
         return $this->getProperty()->password;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>serverName</code>.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
 */
-    public function getServerName()
+    public function getServerName() : string
     {
         return $this->getProperty()->serverName;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>serverPort</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getServerPort()
+    public function getServerPort() : string
     {
         return $this->getProperty()->serverPort;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>transportSiteId</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getTransportSiteId()
+    public function getTransportSiteId() : string
     {
         return $this->getProperty()->transportSiteId;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>username</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getUsername()
+    public function getUsername() : string
     {
         return $this->getProperty()->username;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets the <code>databaseName</code> and returns the calling
+object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setDatabaseName( $d )
+    public function setDatabaseName( string $d ) : Asset
     {
         if( trim( $d ) == "" )
             throw new e\EmptyValueException( 
@@ -126,26 +143,28 @@ class DatabaseTransport extends Transport
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets the <code>password</code> and returns the calling
+object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
-    public function setPassword( $pw="" )
+    public function setPassword( string $pw="" ) : Asset
     {
         $this->getProperty()->password = $pw;
         return $this;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets the <code>serverName</code> and returns the calling
+object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setServerName( $s )
+    public function setServerName( string $s ) : Asset
     {
         if( trim( $s ) == "" )
             throw new e\EmptyValueException( 
@@ -155,13 +174,14 @@ class DatabaseTransport extends Transport
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets the <code>serverPort</code> and returns the calling
+object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setServerPort( $p )
+    public function setServerPort( string $p ) : Asset
     {
         if( !is_numeric( $p ) )
             throw new e\UnacceptableValueException( 
@@ -171,13 +191,14 @@ class DatabaseTransport extends Transport
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets the <code>transportSiteId</code> and returns the
+calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
 </documentation>
 */
-    public function setTransportSiteId( $t )
+    public function setTransportSiteId( string $t ) : Asset
     {
         if( !is_numeric( $t ) )
             throw new e\UnacceptableValueException( 
@@ -187,13 +208,14 @@ class DatabaseTransport extends Transport
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets the <code>username</code> and returns the calling
+object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setUsername( $u )
+    public function setUsername( string $u ) : Asset
     {
         if( trim( $u ) == "" )
             throw new e\EmptyValueException( 
