@@ -9,17 +9,28 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>A <code>FileSystemTransport</code> object represents a file system transport asset. This class is a sub-class of <a href="/web-services/api/asset-classes/transport"><code>Transport</code></a>.</p>
+<h2>Structure of <code>fileSystemTransport</code></h2>
+<pre>fileSystemTransport
+  id
+  name
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  directory
+</pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/fs_transport.php">fs_transport.php</a></li></ul></postscript>
 </documentation>
 */
 class FileSystemTransport extends Transport
@@ -38,25 +49,25 @@ class FileSystemTransport extends Transport
     }
 
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
+<documentation><description><p>Returns <code>directory</code>.</p></description>
+<example>echo $t->getDirectory(), BR;</example>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDirectory()
+    public function getDirectory() : string
     {
         return $this->getProperty()->directory;
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-<exception></exception>
+<documentation><description><p>Sets <code>directory</code> and returns the calling object.</p></description>
+<example>$t->setDirectory( 'about' )->edit();</example>
+<return-type>Asset</return-type>
+<exception>EmptyValueException</exception>
 </documentation>
 */
-    public function setDirectory( $d )
+    public function setDirectory( string $d ) : Asset
     {
         if( trim( $d ) == "" )
             throw new e\EmptyValueException( 
