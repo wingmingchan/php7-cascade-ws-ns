@@ -19,14 +19,66 @@ use cascade_ws_exception as e;
 
 /**
  * Abilities
- * The parent class of GlobalAbilities and SiteAbilities. This class only deals with the 49 properties shared
- * by the two children.
+ * The parent class of GlobalAbilities and SiteAbilities. This class only deals with
+ * the 50 properties shared by the two children.
  *
  */
  
 /**
 <documentation><description><h2>Introduction</h2>
-
+<p>There are two types of roles in Cascade: global and site. In a role asset, there are two corresponding properties: <code>globalAbilities</code> and <code>siteAbilities</code>. If the role is a global one, then the <code>siteAbilities</code> property will have a <code>NULL</code> value. On the other hand, a site role will have a <code>NULL</code> value in the <code>globalAbilities</code> property.</p>
+<p><code>globalAbilities</code> and <code>siteAbilities</code> also have a large number of properties, 50 of which are shared by both. Since each of these 50 overlapping properties will have a pair of corresponding <code>get</code> and <code>set</code> methods, I want to avoid large amount of repetition and abstract the class variables and methods out of the two classes and put them in the parent class. Therefore, I create the <code>Abilities</code> class, which serves as the parent of <a href="/web-services/api/property-classes/global-abilities"><code>GlobalAbilities</code></a> and <a href="/web-services/api/property-classes/site-abilities"><code>SiteAbilities</code></a>. These two sub-classes inherit all the members defined in their parent.</p>
+<h2>49 Properties of <code>Abilities</code> (Sorted)</h2>
+<pre>accessAssetFactories
+accessAudits
+accessConfigurationSets
+accessContentTypes
+accessDataDefinitions
+accessManageSiteArea
+accessMetadataSets
+accessPublishSets
+accessTransports
+accessWorkflowDefinitions
+activateDeleteVersions
+alwaysAllowedToToggleDataChecks
+assignApproveWorkflowSteps
+assignWorkflowsToFolders
+breakLocks
+brokenLinkReportAccess
+brokenLinkReportMarkFixed
+bulkChange
+bypassAllPermissionsChecks
+bypassAssetFactoryGroupsNewMenu
+bypassDestinationGroupsWhenPublishing
+bypassWorkflow
+bypassWorkflowDefintionGroupsForFolders
+cancelPublishJobs
+deleteWorkflows
+diagnosticTests
+editAccessRights
+editDataDefinition
+editPageContentType
+editPageLevelConfigurations
+importZipArchive
+integrateFolder
+moveRenameAssets
+multiSelectCopy
+multiSelectDelete
+multiSelectMove
+multiSelectPublish
+publishReadableAdminAreaAssets
+publishReadableHomeAssets
+publishWritableAdminAreaAssets
+publishWritableHomeAssets
+recycleBinDeleteAssets
+recycleBinViewRestoreAllAssets
+recycleBinViewRestoreUserAssets
+reorderPublishQueue
+sendStaleAssetNotifications
+uploadImagesFromWysiwyg
+viewPublishQueue
+viewVersions
+</pre>
 
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
@@ -35,7 +87,7 @@ use cascade_ws_exception as e;
 abstract class Abilities extends Property
 {
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>The constructor.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -54,6 +106,7 @@ abstract class Abilities extends Property
             $this->access_configuration_sets                    = $a->accessConfigurationSets;
             $this->access_content_types                         = $a->accessContentTypes;
             $this->access_data_definitions                      = $a->accessDataDefinitions;
+            $this->access_manage_site_area                      = $a->accessManageSiteArea;
             $this->access_metadata_sets                         = $a->accessMetadataSets;
             $this->access_publish_sets                          = $a->accessPublishSets;
             $this->access_transports                            = $a->accessTransports;
@@ -97,12 +150,11 @@ abstract class Abilities extends Property
             $this->upload_images_from_wysiwyg                   = $a->uploadImagesFromWysiwyg;
             $this->view_publish_queue                           = $a->viewPublishQueue;
             $this->view_versions                                = $a->viewVersions;
-            $this->access_manage_site_area                      = $a->accessManageSiteArea;
         }
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>accessAssetFactories</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -113,7 +165,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>accessAudits</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -124,7 +176,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>accessConfigurationSets</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -135,7 +187,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>accessContentTypes</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -146,7 +198,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>accessDataDefinitions</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -157,7 +209,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>accessManageSiteArea</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -168,7 +220,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>accessMetadataSets</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -179,7 +231,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>accessPublishSets</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -190,7 +242,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>accessTransports</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -201,7 +253,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>accessWorkflowDefinitions</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -212,7 +264,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>activateDeleteVersions</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -223,7 +275,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>alwaysAllowedToToggleDataChecks</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -234,7 +286,7 @@ abstract class Abilities extends Property
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>assignApproveWorkflowSteps</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -245,7 +297,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>assignWorkflowsToFolders</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -256,7 +308,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>breakLocks</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -267,7 +319,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>brokenLinkReportAccess</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -278,7 +330,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>brokenLinkReportMarkFixed</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -289,7 +341,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>bulkChange</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -300,51 +352,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-</documentation>
-*/
-    public function getBypassWorkflow() : bool
-    {
-        return $this->bypass_workflow;
-    }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-</documentation>
-*/
-    public function getBypassAssetFactoryGroupsNewMenu() : bool
-    {
-        return $this->bypass_asset_factory_groups_new_menu;
-    }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-</documentation>
-*/
-    public function getBypassDestinationGroupsWhenPublishing() : bool
-    {
-        return $this->bypass_destination_groups_when_publishing;
-    }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-</documentation>
-*/
-    public function getBypassWorkflowDefintionGroupsForFolders() : bool
-    {
-        return $this->bypass_workflow_defintion_groups_for_folders;
-    }    
-    
-/**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>bypassAllPermissionsChecks</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -355,7 +363,51 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>bypassAssetFactoryGroupsNewMenu</code>.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getBypassAssetFactoryGroupsNewMenu() : bool
+    {
+        return $this->bypass_asset_factory_groups_new_menu;
+    }
+    
+/**
+<documentation><description><p>Returns <code>bypassDestinationGroupsWhenPublishing</code>.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getBypassDestinationGroupsWhenPublishing() : bool
+    {
+        return $this->bypass_destination_groups_when_publishing;
+    }
+    
+/**
+<documentation><description><p>Returns <code>bypassWorkflow</code>.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getBypassWorkflow() : bool
+    {
+        return $this->bypass_workflow;
+    }
+    
+/**
+<documentation><description><p>Returns <code>bypassWorkflowDefintionGroupsForFolders</code>.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getBypassWorkflowDefintionGroupsForFolders() : bool
+    {
+        return $this->bypass_workflow_defintion_groups_for_folders;
+    }    
+    
+/**
+<documentation><description><p>Returns <code>cancelPublishJobs</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -366,7 +418,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>deleteWorkflows</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -377,7 +429,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>diagnosticTests</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -388,7 +440,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>editAccessRights</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -399,7 +451,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>editDataDefinition</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -410,7 +462,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>editPageContentType</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -421,7 +473,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>editPageLevelConfigurations</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -432,18 +484,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-</documentation>
-*/
-    public function getIntegrateFolder() : bool
-    {
-        return $this->integrate_folder;
-    }
-    
-/**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>importZipArchive</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -454,7 +495,18 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>integrateFolder</code>.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getIntegrateFolder() : bool
+    {
+        return $this->integrate_folder;
+    }
+    
+/**
+<documentation><description><p>Returns <code>moveRenameAssets</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -465,7 +517,7 @@ abstract class Abilities extends Property
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>multiSelectCopy</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -476,7 +528,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>multiSelectDelete</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -487,7 +539,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>multiSelectMove</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -498,7 +550,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>multiSelectPublish</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -509,7 +561,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>publishReadableAdminAreaAssets</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -520,7 +572,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>publishReadableHomeAssets</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -531,7 +583,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>publishWritableAdminAreaAssets</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -542,7 +594,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>publishWritableHomeAssets</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -553,7 +605,7 @@ abstract class Abilities extends Property
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>recycleBinDeleteAssets</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -564,7 +616,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>recycleBinViewRestoreAllAssets</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -575,7 +627,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>recycleBinViewRestoreUserAssets</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -586,7 +638,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>reorderPublishQueue</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -597,7 +649,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>sendStaleAssetNotifications</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -608,7 +660,7 @@ abstract class Abilities extends Property
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>uploadImagesFromWysiwyg</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -619,7 +671,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>viewPublishQueue</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -630,7 +682,7 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>viewVersions</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
@@ -641,12 +693,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>accessAssetFactories</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setAccessAssetFactories( $bool ) : Property
+    public function setAccessAssetFactories( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_asset_factories = $bool;
@@ -654,12 +706,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>accessAudits</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setAccessAudits( $bool ) : Property
+    public function setAccessAudits( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_audits = $bool;
@@ -667,12 +719,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>accessConfigurationSets</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setAccessConfigurationSets( $bool ) : Property
+    public function setAccessConfigurationSets( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_configuration_sets = $bool;
@@ -680,12 +732,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>accessContentTypes</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setAccessContentTypes( $bool ) : Property
+    public function setAccessContentTypes( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_content_types = $bool;
@@ -693,12 +745,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>accessDataDefinitions</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setAccessDataDefinitions( $bool ) : Property
+    public function setAccessDataDefinitions( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_data_definitions = $bool;
@@ -706,13 +758,13 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>accessManageSiteArea</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
 
-    public function setAccessManageSiteArea( $bool ) : Property
+    public function setAccessManageSiteArea( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_manage_site_area = $bool;
@@ -720,12 +772,12 @@ abstract class Abilities extends Property
     }
    
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>accessMetadataSets</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setAccessMetadataSets( $bool ) : Property
+    public function setAccessMetadataSets( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_metadata_sets = $bool;
@@ -733,12 +785,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>accessPublishSets</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setAccessPublishSets( $bool ) : Property
+    public function setAccessPublishSets( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_publish_sets = $bool;
@@ -746,12 +798,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>accessTransports</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setAccessTransports( $bool ) : Property
+    public function setAccessTransports( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_transports = $bool;
@@ -759,12 +811,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>accessWorkflowDefinitions</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setAccessWorkflowDefinitions( $bool ) : Property
+    public function setAccessWorkflowDefinitions( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->access_workflow_definitions = $bool;
@@ -772,12 +824,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>activateDeleteVersions</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setActivateDeleteVersions( $bool ) : Property
+    public function setActivateDeleteVersions( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->activate_delete_versions = $bool;
@@ -785,12 +837,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>alwaysAllowedToToggleDataChecks</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setAlwaysAllowedToToggleDataChecks( $bool ) : Property
+    public function setAlwaysAllowedToToggleDataChecks( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->always_allowed_to_toggle_data_checks = $bool;
@@ -798,12 +850,12 @@ abstract class Abilities extends Property
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>assignApproveWorkflowSteps</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setAssignApproveWorkflowSteps( $bool ) : Property
+    public function setAssignApproveWorkflowSteps( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->assign_approve_workflow_steps = $bool;
@@ -811,12 +863,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>assignWorkflowsToFolders</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setAssignWorkflowsToFolders( $bool ) : Property
+    public function setAssignWorkflowsToFolders( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->assign_workflows_to_folders = $bool;
@@ -824,64 +876,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>breakLocks</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setBrokenLinkReportAccess( $bool ) : Property
-    {
-        $this->checkBoolean( $bool );
-        $this->broken_link_report_access = $bool;
-        return $this;
-    }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-</documentation>
-*/
-    public function setBrokenLinkReportMarkFixed( $bool ) : Property
-    {
-        $this->checkBoolean( $bool );
-        $this->broken_link_report_mark_fixed = $bool;
-        return $this;
-    }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-</documentation>
-*/
-    public function setBulkChange( $bool ) : Property
-    {
-        $this->checkBoolean( $bool );
-        $this->bulk_change = $bool;
-        return $this;
-    }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-</documentation>
-*/
-    public function setBypassWorkflow( $bool ) : Property
-    {
-        $this->checkBoolean( $bool );
-        $this->bypass_workflow = $bool;
-        return $this;
-    }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-</documentation>
-*/
-    public function setBreakLocks( $bool ) : Property
+    public function setBreakLocks( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->break_locks = $bool;
@@ -889,51 +889,51 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>brokenLinkReportAccess</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setBypassAssetFactoryGroupsNewMenu( $bool ) : Property
+    public function setBrokenLinkReportAccess( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
-        $this->bypass_asset_factory_groups_new_menu = $bool;
+        $this->broken_link_report_access = $bool;
         return $this;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>brokenLinkReportMarkFixed</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setBypassDestinationGroupsWhenPublishing( $bool ) : Property
+    public function setBrokenLinkReportMarkFixed( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
-        $this->bypass_destination_groups_when_publishing = $bool;
+        $this->broken_link_report_mark_fixed = $bool;
         return $this;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>bulkChange</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setBypassWorkflowDefintionGroupsForFolders( $bool ) : Property
+    public function setBulkChange( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
-        $this->bypass_workflow_defintion_groups_for_folders = $bool;
+        $this->bulk_change = $bool;
         return $this;
-    }    
+    }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>bypassAllPermissionsChecks</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setBypassAllPermissionsChecks( $bool ) : Property
+    public function setBypassAllPermissionsChecks( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->bypass_all_permissions_checks = $bool;
@@ -941,12 +941,64 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>bypassAssetFactoryGroupsNewMenu</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setCancelPublishJobs( $bool ) : Property
+    public function setBypassAssetFactoryGroupsNewMenu( bool $bool ) : Property
+    {
+        $this->checkBoolean( $bool );
+        $this->bypass_asset_factory_groups_new_menu = $bool;
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Sets <code>bypassDestinationGroupsWhenPublishing</code> and returns the calling object.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setBypassDestinationGroupsWhenPublishing( bool $bool ) : Property
+    {
+        $this->checkBoolean( $bool );
+        $this->bypass_destination_groups_when_publishing = $bool;
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Sets <code>bypassWorkflow</code> and returns the calling object.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setBypassWorkflow( bool $bool ) : Property
+    {
+        $this->checkBoolean( $bool );
+        $this->bypass_workflow = $bool;
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Sets <code>bypassWorkflowDefintionGroupsForFolders</code> and returns the calling object.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setBypassWorkflowDefintionGroupsForFolders( bool $bool ) : Property
+    {
+        $this->checkBoolean( $bool );
+        $this->bypass_workflow_defintion_groups_for_folders = $bool;
+        return $this;
+    }    
+    
+/**
+<documentation><description><p>Sets <code>cancelPublishJobs</code> and returns the calling object.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setCancelPublishJobs( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->cancel_publish_jobs = $bool;
@@ -954,12 +1006,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>deleteWorkflows</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setDeleteWorkflows( $bool ) : Property
+    public function setDeleteWorkflows( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->delete_workflows = $bool;
@@ -967,12 +1019,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>diagnosticTests</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setDiagnosticTests( $bool ) : Property
+    public function setDiagnosticTests( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->diagnostic_tests = $bool;
@@ -980,12 +1032,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>editAccessRights</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setEditAccessRights( $bool ) : Property
+    public function setEditAccessRights( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->edit_access_rights = $bool;
@@ -993,12 +1045,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>editDataDefinition</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setEditDataDefinition( $bool ) : Property
+    public function setEditDataDefinition( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->edit_data_definition = $bool;
@@ -1006,12 +1058,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>editPageContentType</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setEditPageContentType( $bool ) : Property
+    public function setEditPageContentType( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->edit_page_content_type = $bool;
@@ -1019,12 +1071,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>editPageLevelConfigurations</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setEditPageLevelConfigurations( $bool ) : Property
+    public function setEditPageLevelConfigurations( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->edit_page_level_configurations = $bool;
@@ -1032,25 +1084,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>importZipArchive</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setIntegrateFolder( $bool ) : Property
-    {
-        $this->checkBoolean( $bool );
-        $this->integrate_folder = $bool;
-        return $this;
-    }
-    
-/**
-<documentation><description><p></p></description>
-<example></example>
-<return-type></return-type>
-</documentation>
-*/
-    public function setImportZipArchive( $bool ) : Property
+    public function setImportZipArchive( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->import_zip_archive = $bool;
@@ -1058,12 +1097,25 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>integrateFolder</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setMoveRenameAssets( $bool ) : Property
+    public function setIntegrateFolder( bool $bool ) : Property
+    {
+        $this->checkBoolean( $bool );
+        $this->integrate_folder = $bool;
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Sets <code>moveRenameAssets</code> and returns the calling object.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setMoveRenameAssets( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->move_rename_assets = $bool;
@@ -1071,12 +1123,12 @@ abstract class Abilities extends Property
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>multiSelectCopy</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setMultiSelectCopy( $bool ) : Property
+    public function setMultiSelectCopy( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->multi_select_copy = $bool;
@@ -1084,12 +1136,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>multiSelectDelete</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setMultiSelectDelete( $bool ) : Property
+    public function setMultiSelectDelete( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->multi_select_delete = $bool;
@@ -1097,12 +1149,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>multiSelectMove</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setMultiSelectMove( $bool ) : Property
+    public function setMultiSelectMove( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->multi_select_move = $bool;
@@ -1110,12 +1162,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>multiSelectPublish</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setMultiSelectPublish( $bool ) : Property
+    public function setMultiSelectPublish( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->multi_select_publish = $bool;
@@ -1123,12 +1175,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>publishReadableAdminAreaAssets</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setPublishReadableAdminAreaAssets( $bool ) : Property
+    public function setPublishReadableAdminAreaAssets( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->publish_readable_admin_area_assets = $bool;
@@ -1136,12 +1188,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>publishReadableHomeAssets</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setPublishReadableHomeAssets( $bool ) : Property
+    public function setPublishReadableHomeAssets( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->publish_readable_home_assets = $bool;
@@ -1149,12 +1201,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>publishWritableAdminAreaAssets</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setPublishWritableAdminAreaAssets( $bool ) : Property
+    public function setPublishWritableAdminAreaAssets( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->publish_writable_admin_area_assets = $bool;
@@ -1162,12 +1214,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>publishWritableHomeAssets</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setPublishWritableHomeAssets( $bool ) : Property
+    public function setPublishWritableHomeAssets( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->publish_writable_home_assets = $bool;
@@ -1175,12 +1227,12 @@ abstract class Abilities extends Property
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>recycleBinDeleteAssets</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setRecycleBinDeleteAssets( $bool ) : Property
+    public function setRecycleBinDeleteAssets( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->recycle_bin_delete_assets = $bool;
@@ -1188,12 +1240,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>recycleBinViewRestoreAllAssets</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setRecycleBinViewRestoreAllAssets( $bool ) : Property
+    public function setRecycleBinViewRestoreAllAssets( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->recycle_bin_view_restore_all_assets = $bool;
@@ -1201,12 +1253,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>recycleBinViewRestoreUserAssets</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setRecycleBinViewRestoreUserAssets( $bool ) : Property
+    public function setRecycleBinViewRestoreUserAssets( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->recycle_bin_view_restore_user_assets = $bool;
@@ -1214,12 +1266,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>reorderPublishQueue</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setReorderPublishQueue( $bool ) : Property
+    public function setReorderPublishQueue( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->reorder_publish_queue = $bool;
@@ -1227,12 +1279,12 @@ abstract class Abilities extends Property
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>sendStaleAssetNotifications</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setSendStaleAssetNotifications( $bool ) : Property
+    public function setSendStaleAssetNotifications( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->send_stale_asset_notifications = $bool;
@@ -1240,12 +1292,12 @@ abstract class Abilities extends Property
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns <code>uploadImagesFromWysiwyg</code>.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setUploadImagesFromWysiwyg( $bool ) : Property
+    public function setUploadImagesFromWysiwyg( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->upload_images_from_wysiwyg = $bool;
@@ -1253,12 +1305,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>viewPublishQueue</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setViewPublishQueue( $bool ) : Property
+    public function setViewPublishQueue( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->view_publish_queue = $bool;
@@ -1266,12 +1318,12 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets <code>viewVersions</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
 </documentation>
 */
-    public function setViewVersions( $bool ) : Property
+    public function setViewVersions( bool $bool ) : Property
     {
         $this->checkBoolean( $bool );
         $this->view_versions = $bool;
@@ -1279,64 +1331,64 @@ abstract class Abilities extends Property
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>stdClass</return-type>
 </documentation>
 */
     public function toStdClass() : \stdClass
     {
         $obj           = new \stdClass();
         
-        $obj->bypassAllPermissionsChecks              = $this->bypass_all_permissions_checks;
-        $obj->uploadImagesFromWysiwyg                 = $this->upload_images_from_wysiwyg;
-        $obj->multiSelectCopy                         = $this->multi_select_copy;
-        $obj->multiSelectPublish                      = $this->multi_select_publish;
-        $obj->multiSelectMove                         = $this->multi_select_move;
-        $obj->multiSelectDelete                       = $this->multi_select_delete;
-        $obj->editPageLevelConfigurations             = $this->edit_page_level_configurations;
-        $obj->editPageContentType                     = $this->edit_page_content_type;
-        $obj->editDataDefinition                      = $this->edit_data_definition;
-        $obj->publishReadableHomeAssets               = $this->publish_readable_home_assets;
-        $obj->publishWritableHomeAssets               = $this->publish_writable_home_assets;
-        $obj->editAccessRights                        = $this->edit_access_rights;
-        $obj->viewVersions                            = $this->view_versions;
-        $obj->activateDeleteVersions                  = $this->activate_delete_versions;
-        $obj->accessAudits                            = $this->access_audits;
-        $obj->bypassWorkflow                          = $this->bypass_workflow;
-        $obj->assignApproveWorkflowSteps              = $this->assign_approve_workflow_steps;
-        $obj->deleteWorkflows                         = $this->delete_workflows;
-        $obj->breakLocks                              = $this->break_locks;
-        $obj->assignWorkflowsToFolders                = $this->assign_workflows_to_folders;
-        $obj->bypassAssetFactoryGroupsNewMenu         = $this->bypass_asset_factory_groups_new_menu;
-        $obj->bypassDestinationGroupsWhenPublishing   = $this->bypass_destination_groups_when_publishing;
-        $obj->bypassWorkflowDefintionGroupsForFolders = $this->bypass_workflow_defintion_groups_for_folders;
         $obj->accessAssetFactories                    = $this->access_asset_factories;
+        $obj->accessAudits                            = $this->access_audits;
         $obj->accessConfigurationSets                 = $this->access_configuration_sets;
+        $obj->accessContentTypes                      = $this->access_content_types;
         $obj->accessDataDefinitions                   = $this->access_data_definitions;
+        $obj->accessManageSiteArea                    = $this->access_manage_site_area;
         $obj->accessMetadataSets                      = $this->access_metadata_sets;
         $obj->accessPublishSets                       = $this->access_publish_sets;
         $obj->accessTransports                        = $this->access_transports;
         $obj->accessWorkflowDefinitions               = $this->access_workflow_definitions;
-        $obj->accessContentTypes                      = $this->access_content_types;
-        $obj->publishReadableAdminAreaAssets          = $this->publish_readable_admin_area_assets;
-        $obj->publishWritableAdminAreaAssets          = $this->publish_writable_admin_area_assets;
-        $obj->integrateFolder                         = $this->integrate_folder;
-        $obj->importZipArchive                        = $this->import_zip_archive;
-        $obj->bulkChange                              = $this->bulk_change;
-        $obj->recycleBinViewRestoreUserAssets         = $this->recycle_bin_view_restore_user_assets;
-        $obj->recycleBinDeleteAssets                  = $this->recycle_bin_delete_assets;
-        $obj->recycleBinViewRestoreAllAssets          = $this->recycle_bin_view_restore_all_assets;
-        $obj->moveRenameAssets                        = $this->move_rename_assets;
-        $obj->diagnosticTests                         = $this->diagnostic_tests;
+        $obj->activateDeleteVersions                  = $this->activate_delete_versions;
         $obj->alwaysAllowedToToggleDataChecks         = $this->always_allowed_to_toggle_data_checks;
-        $obj->viewPublishQueue                        = $this->view_publish_queue;
-        $obj->reorderPublishQueue                     = $this->reorder_publish_queue;
-        $obj->cancelPublishJobs                       = $this->cancel_publish_jobs;
-        $obj->sendStaleAssetNotifications             = $this->send_stale_asset_notifications;
+        $obj->assignApproveWorkflowSteps              = $this->assign_approve_workflow_steps;
+        $obj->assignWorkflowsToFolders                = $this->assign_workflows_to_folders;
         $obj->brokenLinkReportAccess                  = $this->broken_link_report_access;
         $obj->brokenLinkReportMarkFixed               = $this->broken_link_report_mark_fixed;
-        $obj->accessManageSiteArea                    = $this->access_manage_site_area;
+        $obj->breakLocks                              = $this->break_locks;
+        $obj->bulkChange                              = $this->bulk_change;
+        $obj->bypassAllPermissionsChecks              = $this->bypass_all_permissions_checks;
+        $obj->bypassAssetFactoryGroupsNewMenu         = $this->bypass_asset_factory_groups_new_menu;
+        $obj->bypassDestinationGroupsWhenPublishing   = $this->bypass_destination_groups_when_publishing;
+        $obj->bypassWorkflow                          = $this->bypass_workflow;
+        $obj->bypassWorkflowDefintionGroupsForFolders = $this->bypass_workflow_defintion_groups_for_folders;
+        $obj->cancelPublishJobs                       = $this->cancel_publish_jobs;
+        $obj->deleteWorkflows                         = $this->delete_workflows;
+        $obj->diagnosticTests                         = $this->diagnostic_tests;
+        $obj->editAccessRights                        = $this->edit_access_rights;
+        $obj->editDataDefinition                      = $this->edit_data_definition;
+        $obj->editPageContentType                     = $this->edit_page_content_type;
+        $obj->editPageLevelConfigurations             = $this->edit_page_level_configurations;
+        $obj->importZipArchive                        = $this->import_zip_archive;
+        $obj->integrateFolder                         = $this->integrate_folder;
+        $obj->moveRenameAssets                        = $this->move_rename_assets;
+        $obj->multiSelectCopy                         = $this->multi_select_copy;
+        $obj->multiSelectDelete                       = $this->multi_select_delete;
+        $obj->multiSelectMove                         = $this->multi_select_move;
+        $obj->multiSelectPublish                      = $this->multi_select_publish;
+        $obj->publishReadableAdminAreaAssets          = $this->publish_readable_admin_area_assets;
+        $obj->publishReadableHomeAssets               = $this->publish_readable_home_assets;
+        $obj->publishWritableAdminAreaAssets          = $this->publish_writable_admin_area_assets;
+        $obj->publishWritableHomeAssets               = $this->publish_writable_home_assets;
+        $obj->recycleBinDeleteAssets                  = $this->recycle_bin_delete_assets;
+        $obj->recycleBinViewRestoreAllAssets          = $this->recycle_bin_view_restore_all_assets;
+        $obj->recycleBinViewRestoreUserAssets         = $this->recycle_bin_view_restore_user_assets;
+        $obj->reorderPublishQueue                     = $this->reorder_publish_queue;
+        $obj->sendStaleAssetNotifications             = $this->send_stale_asset_notifications;
+        $obj->uploadImagesFromWysiwyg                 = $this->upload_images_from_wysiwyg;
+        $obj->viewVersions                            = $this->view_versions;
+        $obj->viewPublishQueue                        = $this->view_publish_queue;
         
         return $obj;
     }
@@ -1348,8 +1400,28 @@ abstract class Abilities extends Property
                 S_SPAN . "The value $bool must be a boolean." . E_SPAN );
     }
 
-    // 50 members
+    // 49 members
+    private $access_asset_factories;
+    private $access_audits;
+    private $access_configuration_sets;
+    private $access_content_types;
+    private $access_data_definitions;
+    private $access_manage_site_area;
+    private $access_metadata_sets;
+    private $access_publish_sets;
+    private $access_transports;
+    private $access_workflow_definitions;
+    private $activate_delete_versions;
+    private $always_allowed_to_toggle_data_checks;
+    private $assign_approve_workflow_steps;
+    private $assign_workflows_to_folders;
+    private $break_locks;
+    private $broken_link_report_access;
+    private $broken_link_report_mark_fixed;
+    private $bulk_change;
     private $bypass_all_permissions_checks;
+    private $bypass_asset_factory_groups_new_menu;
+    private $bypass_destination_groups_when_publishing;
     private $upload_images_from_wysiwyg;
     private $multi_select_copy;
     private $multi_select_publish;
@@ -1362,42 +1434,21 @@ abstract class Abilities extends Property
     private $publish_writable_home_assets;
     private $edit_access_rights;
     private $view_versions;
-    private $activate_delete_versions;
-    private $access_audits;
     private $bypass_workflow;
-    private $assign_approve_workflow_steps;
     private $delete_workflows;
-    private $break_locks;
-    private $assign_workflows_to_folders;
-    private $bypass_asset_factory_groups_new_menu;
-    private $bypass_destination_groups_when_publishing;
     private $bypass_workflow_defintion_groups_for_folders;
-    private $access_admin_area;
-    private $access_asset_factories;
-    private $access_configuration_sets;
-    private $access_data_definitions;
-    private $access_metadata_sets;
-    private $access_publish_sets;
-    private $access_transports;
-    private $access_workflow_definitions;
-    private $access_content_types;
     private $publish_readable_admin_area_assets;
     private $publish_writable_admin_area_assets;
     private $integrate_folder;
     private $import_zip_archive;
-    private $bulk_change;
     private $recycle_bin_view_restore_user_assets;
     private $recycle_bin_delete_assets;
     private $recycle_bin_view_restore_all_assets;
     private $move_rename_assets;
     private $diagnostic_tests;
-    private $always_allowed_to_toggle_data_checks;
     private $view_publish_queue;
     private $reorder_publish_queue;
     private $cancel_publish_jobs;
     private $send_stale_asset_notifications;
-    private $broken_link_report_access;
-    private $broken_link_report_mark_fixed;
-    private $access_manage_site_area;
 }
 ?>
