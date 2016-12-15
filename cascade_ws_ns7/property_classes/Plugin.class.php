@@ -10,13 +10,33 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_asset as a;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
+use cascade_ws_asset     as a;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>A <code>Plugin</code> object represents a <code>plugin</code> property found in an <a href="web-services/api/asset-classes/asset-factory"><code>a\AssetFactory</code></a> object.</p>
+<h2>Structure of <code>plugin</code></h2>
+<pre>plugin
+  name
+  parameters
+    parameter
+</pre>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class Plugin extends Property
 {
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         \stdClass $p=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
@@ -35,7 +55,14 @@ class Plugin extends Property
         }
     }
     
-    public function addParameter( $name, $value )
+/**
+<documentation><description><p>Adds the named parameter with the supplied value.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>NoSuchPluginParameterException</exception>
+</documentation>
+*/
+    public function addParameter( string $name, string $value ) : Property
     {
         if( $value.trim( " " ) == "" )
             $value = "1"; // there must be value
@@ -56,12 +83,25 @@ class Plugin extends Property
             $this->setParameterValue( $name, $value );
     }
     
-    public function getName()
+/**
+<documentation><description><p>Returns the name.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getName() : string
     {
         return $this->name;
     }
     
-    public function getParameter( $name )
+/**
+<documentation><description><p>Returns the <code>Parameter</code> object bearing that name.</p></description>
+<example></example>
+<return-type>string</return-type>
+<exception>NoSuchPluginParameterException</exception>
+</documentation>
+*/
+    public function getParameter( string $name ) : string
     {
         foreach( $this->parameters as $parameter )
         {
@@ -75,12 +115,24 @@ class Plugin extends Property
         );
     }
     
+/**
+<documentation><description><p>Returns NULL, a <code>Parameter</code> object, or an array of <code>Parameter</code> objects.</p></description>
+<example></example>
+<return-type>mixed</return-type>
+</documentation>
+*/
     public function getParameters()
     {
         return $this->parameters;
     }
     
-    public function hasParameter( $name )
+/**
+<documentation><description><p>Returns a bool, indicating whether the named parameter exists.</p></description>
+<example></example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function hasParameter( string $name ) : bool
     {
         if( count( $this->parameters ) > 0 )
         {
@@ -95,7 +147,14 @@ class Plugin extends Property
         return false;
     }
     
-    public function removeParameter( $name )
+/**
+<documentation><description><p>Removes the named parameter and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>NoSuchPluginParameterException</exception>
+</documentation>
+*/
+    public function removeParameter( string $name ) : Property
     {
         if( !in_array( $name, a\AssetFactory::$plugin_name_param_map[ $this->name ] ) )
             throw new e\NoSuchPluginParameterException(
@@ -116,9 +175,17 @@ class Plugin extends Property
             
             $this->parameters = $temp;
         }
+        return $this;
     }
     
-    public function setParameterValue( $name, $value )
+/**
+<documentation><description><p>Sets the value of the parameter bearing that name and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>NoSuchPluginParameterException</exception>
+</documentation>
+*/
+    public function setParameterValue( string $name, string $value ) : Property
     {
         $parameter = $this->getParameter( $name );
         $parameter->setValue( $value );
@@ -126,7 +193,13 @@ class Plugin extends Property
         return $this;
     }
     
-    public function toStdClass()
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example></example>
+<return-type>stdClass</return-type>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj       = new \stdClass();
         $obj->name = $this->name;
