@@ -9,13 +9,38 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_asset as a;
+use cascade_ws_asset     as a;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>A <code>ConnectorContentTypeLink</code> object represents a <code>connectorContentTypeLink</code> property found in a <a href="web-services/api/asset-classes/connector"><code>Connector</code></a> asset.</p>
+<h2>Structure of <code>connectorContentTypeLink</code></h2>
+<pre>connectorContentTypeLink
+  contentTypeId
+  contentTypePath
+  pageConfigurationId
+  pageConfigurationName
+  connectorContentTypeLinkParams (empty except for WordPressConnector)
+    connectorContentTypeLinkParam
+      name
+      value
+</pre>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class ConnectorContentTypeLink extends Property
 {
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         \stdClass $cctl=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
@@ -41,7 +66,8 @@ class ConnectorContentTypeLink extends Property
             $this->connector_content_type_link_params = array();
             
             if( isset( $cctl->connectorContentTypeLinkParams ) && 
-                isset( $cctl->connectorContentTypeLinkParams->connectorContentTypeLinkParam ) )
+                isset( $cctl->connectorContentTypeLinkParams->
+                    connectorContentTypeLinkParam ) )
             {
                 $params = $cctl->connectorContentTypeLinkParams->connectorContentTypeLinkParam;
                 
@@ -59,32 +85,68 @@ class ConnectorContentTypeLink extends Property
         }
     }
     
+/**
+<documentation><description><p>Returns <code>contentTypeId</code>.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getContentTypeId()
     {
         return $this->content_type_id;
     }
     
+/**
+<documentation><description><p>Returns <code>contentTypePath</code>.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getContentTypePath()
     {
         return $this->content_type_path;
     }
     
+/**
+<documentation><description><p>Returns <code>pageConfigurationId</code>.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageConfigurationId()
     {
         return $this->page_configuration_id;
     }
     
+/**
+<documentation><description><p>Returns <code>pageConfigurationName</code>.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getPageConfigurationName()
     {
         return $this->page_configuration_name;
     }
     
-    public function setMetadataMapping( $name, $value )
+/**
+<documentation><description><p>A method used by <code>a\WordPressConnector</code>, which returns the object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setMetadataMapping( string $name, string $value ) : Property
     {
         $wired = $this->metadata_set->getNonHiddenWiredFieldNames();
         $dynamic = $this->metadata_set->getDynamicMetadataFieldDefinitionNames();
         
-        if( !in_array( $value, $wired ) && !in_array( $value, $dynamic ) && isset( $value ) && $value != "" )
+        if( !in_array( $value, $wired ) && !in_array( $value, $dynamic ) && 
+            isset( $value ) && $value != "" )
         {
             throw new e\UnacceptableValueException( "The value $value is unacceptable." );
         }
@@ -118,14 +180,28 @@ class ConnectorContentTypeLink extends Property
         return $this;
     }
     
-    public function setPageConfiguration( PageConfiguration $pc )
+/**
+<documentation><description><p>Sets <code>pageConfigurationId</code> and
+<code>pageConfigurationName</code> and returns the calling object.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setPageConfiguration( PageConfiguration $pc ) : Property
     {
         $this->page_configuration_id   = $pc->getId();
         $this->page_configuration_name = $pc->getName();
         return $this;
     }
     
-    public function toStdClass()
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example></example>
+<return-type>stdClass</return-type>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj                                 = new \stdClass();
         $obj->contentTypeId                  = $this->content_type_id;
@@ -145,7 +221,8 @@ class ConnectorContentTypeLink extends Property
             }
             else
             {
-                $obj->connectorContentTypeLinkParams->connectorContentTypeLinkParam = array();
+                $obj->connectorContentTypeLinkParams->connectorContentTypeLinkParam =
+                    array();
 
                 for( $i = 0; $i < $count; $i++ )
                 {
