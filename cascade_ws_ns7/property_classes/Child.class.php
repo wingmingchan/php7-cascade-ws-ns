@@ -37,7 +37,8 @@ use cascade_ws_exception as e;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/child.php">child.php</a></li></ul></postscript>
 </documentation>
-*/class Child extends Property
+*/
+class Child extends Property
 {
 /**
 <documentation><description><p>The constructor.</p></description>
