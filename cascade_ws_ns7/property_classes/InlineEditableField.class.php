@@ -9,19 +9,40 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_asset as a;
+use cascade_ws_asset     as a;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>An <code>InlineEditableField</code> object represents an <code>inlineEditableField</code> property that can be found in a <a href="web-services/api/asset-classes/content-type"><code>a\ContentType</code></a> object.</p>
+<h2>Structure of <code>inlineEditableField</code></h2>
+<pre>inlineEditableField
+  pageConfigurationName
+  pageRegionName
+  dataDefinitionGroupPath
+  type
+  name
+</pre>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class InlineEditableField extends Property
 {
-    
     const INLINE_WIRED_METADATA   = c\T::WIRED_METADATA;
     const INLINE_DYNAMIC_METADATA = c\T::DYNAMIC_METADATA;
     const INLINE_DATA_DEFINITION  = c\T::INLINE_DATA_DEFINITION;
     const INLINE_XHTML            = c\T::XHTML;
     
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         \stdClass $ief=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
@@ -39,12 +60,24 @@ class InlineEditableField extends Property
         }
     }
     
-    public function getDataDefinitionGroupPath()
+/**
+<documentation><description><p>Returns <code>dataDefinitionGroupPath</code>.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getDataDefinitionGroupPath() : string
     {
         return $this->data_definition_group_path;
     }
     
-    public function getIdentifier()
+/**
+<documentation><description><p>Returns a fully qualified identifier of the field.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getIdentifier() : string
     {
         return $this->page_configuration_name . 
                a\DataDefinition::DELIMITER .
@@ -58,27 +91,57 @@ class InlineEditableField extends Property
                ( $this->name == NULL ? 'NULL' : $this->name );
     }
     
-    public function getName()
+/**
+<documentation><description><p>Returns <code>name</code>.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getName() : string
     {
         return $this->name;
     }
     
-    public function getPageConfigurationName()
+/**
+<documentation><description><p>Returns <code>pageConfigurationName</code>.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getPageConfigurationName() : string
     {
         return $this->pageConfigurationName;
     }
     
-    public function getPageRegionName()
+/**
+<documentation><description><p>Returns <code>pageRegionName</code>.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getPageRegionName() : string
     {
         return $this->pageRegionName;
     }
     
-    public function getType()
+/**
+<documentation><description><p>Returns <code>type</code>.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getType() : string
     {
         return $this->type;
     }
     
-    public function toStdClass()
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example></example>
+<return-type>stdClass</return-type>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj                          = new \stdClass();
         $obj->pageConfigurationName   = $this->page_configuration_name;
