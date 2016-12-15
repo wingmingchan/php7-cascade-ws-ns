@@ -9,12 +9,32 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
+use cascade_ws_asset     as a;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>A <code>SiteAbilities</code> object represents the <code>siteAbilities</code> property found in a role asset. This class is a sub-class of <a href="/web-services/api/property-classes/abilities"><code>Abilities</code></a>.</p>
+<h2>Properties of <code>siteAbilities</code></h2>
+<p>Besides the 49 properties (Cascade 8) shared with the sibling class <a href="/web-services/api/property-classes/global-abilities"><code>GlobalAbilities</code></a> (which are defined in the parent class <a href="/web-services/api/property-classes/abilities"><code>Abilities</code></a>), this class has two more additional properties:</p>
+<pre>accessConnectors
+accessDestinations
+</pre>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class SiteAbilities extends Abilities
 {
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         \stdClass $a=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
@@ -29,20 +49,38 @@ class SiteAbilities extends Abilities
         
         $this->access_connectors       = $a->accessConnectors;
         $this->access_destinations     = $a->accessDestinations;
-        //$this->access_manage_site_area = $a->accessManageSiteArea;
     }
         
-    public function getAccessConnectors()
+/**
+<documentation><description><p>Returns <code>accessConnectors</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function getAccessConnectors() : bool
     {
         return $this->access_connectors;
     }
     
-    public function getAccessDestinations()
+/**
+<documentation><description><p>Returns <code>accessDestinations</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function getAccessDestinations() : bool
     {
         return $this->access_destinations;
     }
 
-    public function setAccessConnectors( $bool )
+/**
+<documentation><description><p>Sets <code>accessConnectors</code> and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setAccessConnectors( bool $bool ) : Property
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException(
@@ -52,7 +90,14 @@ class SiteAbilities extends Abilities
         return $this;
     }
     
-    public function setAccessDestinations( $bool )
+/**
+<documentation><description><p>Sets <code>accessDestinations</code> and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setAccessDestinations( bool $bool ) : Property
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException(
@@ -62,12 +107,17 @@ class SiteAbilities extends Abilities
         return $this;
     }
 
-    public function toStdClass()
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example></example>
+<return-type>stdClass</return-type>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj = parent::toStdClass();
         $obj->accessDestinations   = $this->access_destinations;
         $obj->accessConnectors     = $this->access_connectors;
-        //$obj->accessManageSiteArea = $this->access_manage_site_area;
         
         return $obj;
     }
