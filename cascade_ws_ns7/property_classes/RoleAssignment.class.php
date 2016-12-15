@@ -9,15 +9,36 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_asset as a;
+use cascade_ws_asset     as a;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>A <code>RoleAssignment</code> object represents a <code>roleAssignment</code> property found in a <a href="web-services/api/asset-classes/site"><code>a\Site</code></a> object.</p>
+<h2>Structure of <code>roleAssignment</code></h2>
+<pre>roleAssignment
+  roleId
+  roleName
+  users
+  groups
+</pre>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class RoleAssignment extends Property
 {
     const DELIMITER = ',';
 
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         \stdClass $ra=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
@@ -34,6 +55,12 @@ class RoleAssignment extends Property
         }
     }
     
+/**
+<documentation><description><p>Adds a group to <code>groups</code> and returns the calling object.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
     public function addGroup( a\Group $g ) 
     {
         if( $g == NULL )
@@ -62,6 +89,12 @@ class RoleAssignment extends Property
         return $this;
     }
 
+/**
+<documentation><description><p>Adds a user to <code>users</code> and returns the calling object.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
     public function addUser( a\User $u ) 
     {
         if( $u == NULL )
@@ -90,27 +123,57 @@ class RoleAssignment extends Property
         return $this;
     }
     
-    public function getGroups()
+/**
+<documentation><description><p>Returns <code>groups</code> (a string).</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getGroups() : string
     {
         return $this->groups;
     }
     
+/**
+<documentation><description><p>Returns <code>roleId</code>.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
     public function getRoleId()
     {
         return $this->role_id;
     }
     
+/**
+<documentation><description><p>Returns <code>roleName</code>.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
     public function getRoleName()
     {
         return $this->role_name;
     }
     
-    public function getUsers()
+/**
+<documentation><description><p>Returns <code>users</code> (a string).</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getUsers() : string
     {
         return $this->users;
     }
     
-    public function toStdClass()
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example></example>
+<return-type>stdClass</return-type>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj           = new \stdClass();
         $obj->roleId   = $this->role_id;
