@@ -10,15 +10,30 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
+use cascade_ws_asset     as a;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>An <code>ActionDefinition</code> object represents an action definition, an XML element in the a step definition of a <a href="web-services/api/asset-classes/workflow-definition"><code>a\WorkflowDefinition</code></a> object. This class is not a sub-class of <code>Property</code> and does not implement the <code>toStdClass</code> method. Instead, it provides a <code>toXml</code> method, which converts the data of the object back to an XML string.</p>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class ActionDefinition
 {
     const DEBUG = false;
     const DUMP  = false;
     
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+<exception>EmptyValueException</exception>
+</documentation>
+*/
     public function __construct( \SimpleXMLElement $action_xml )
     {
         if( $action_xml == NULL )
@@ -63,7 +78,14 @@ class ActionDefinition
         }
     }
     
-    public function toXml()
+/**
+<documentation><description><p>Converts the object back to an XML string.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
+    public function toXml() : string
     {
         $has_trigger = count( $this->triggers ) > 0 ;
         $xml_string  = "";
