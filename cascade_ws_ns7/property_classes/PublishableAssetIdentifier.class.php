@@ -9,12 +9,37 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
+use cascade_ws_asset     as a;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>A <code>PublishableAssetIdentifier</code> object represents a <code>publishableAssetIdentifier</code> property found in a <a href="web-services/api/asset-classes/publish-set"><code>a\PublishSet</code></a> object. It is used to identify publishable assets of type page, file, and folder.</p>
+<h2>Structure of <code>publishableAssetIdentifier</code></h2>
+<pre>publishableAssetIdentifier (NULL, object or array)
+  id
+  path
+    path
+    siteId
+    siteName (always NULL)
+  type
+  recycled
+</pre>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class PublishableAssetIdentifier extends Property
 {
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         \stdClass $psi=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
@@ -32,27 +57,57 @@ class PublishableAssetIdentifier extends Property
         }
     }
     
+/**
+<documentation><description><p>Returns <code>id</code>.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
     public function getId()
     {
         return $this->id;
     }
     
+/**
+<documentation><description><p>Returns (the parent) <code>path</code> ( a <code>Path</code> object).</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
     public function getPath()
     {
         return $this->path;
     }
     
+/**
+<documentation><description><p>Returns <code>recycled</code>.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
     public function getRecycled()
     {
         return $this->recycled;
     }
     
+/**
+<documentation><description><p>Returns <code>type</code>.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
     public function getType()
     {
         return $this->type;
     }
     
-    public function toStdClass()
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example></example>
+<return-type>stdClass</return-type>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj                 = new \stdClass();
         $obj->id             = $this->id;
