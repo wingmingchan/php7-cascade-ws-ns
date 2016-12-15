@@ -10,15 +10,104 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_asset as a;
+use cascade_ws_asset     as a;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>An <code>AccessRightsInformation</code> object represents an <code>accessRightsInformation</code> property returned from Cascade when the access rights information of an asset is read. See below for an example read dump.</p>
+<h2>Structure of <code>accessRightsInformation</code></h2>
+<pre>accessRightsInformation
+  identifier
+    id
+    path
+      path
+      siteId
+      siteName
+    type
+    recycled
+  aclEntries
+    aclEntry
+      level
+      type
+      name
+  allLevel
+</pre>
+</description>
+<postscript>
+<h2>Read Dump</h2>
+<pre>object(stdClass)#21 (3) {
+  ["identifier"]=&gt;
+  object(stdClass)#26 (4) {
+    ["id"]=&gt;
+    string(32) "ffe39a278b7f08ee3e513744c5d70ead"
+    ["path"]=&gt;
+    object(stdClass)#27 (3) {
+      ["path"]=&gt;
+      string(4) "test"
+      ["siteId"]=&gt;
+      string(32) "980a7aa38b7f0856015997e4dd095185"
+      ["siteName"]=&gt;
+      string(13) "cascade-admin"
+    }
+    ["type"]=&gt;
+    string(6) "folder"
+    ["recycled"]=&gt;
+    bool(false)
+  }
+  ["aclEntries"]=&gt;
+  object(stdClass)#23 (1) {
+    ["aclEntry"]=&gt;
+    array(3) {
+      [0]=&gt;
+      object(stdClass)#24 (3) {
+        ["level"]=&gt;
+        string(5) "write"
+        ["type"]=&gt;
+        string(4) "user"
+        ["name"]=&gt;
+        string(5) "chanw"
+      }
+      [1]=&gt;
+      object(stdClass)#25 (3) {
+        ["level"]=&gt;
+        string(5) "write"
+        ["type"]=&gt;
+        string(4) "user"
+        ["name"]=&gt;
+        string(10) "chanw-test"
+      }
+      [2]=&gt;
+      object(stdClass)#22 (3) {
+        ["level"]=&gt;
+        string(4) "read"
+        ["type"]=&gt;
+        string(5) "group"
+        ["name"]=&gt;
+        string(13) "CWT-Designers"
+      }
+    }
+  }
+  ["allLevel"]=&gt;
+  string(4) "none"
+}
+</pre>
+<h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class AccessRightsInformation extends Property
 {
     const DEBUG = false;
     
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         \stdClass $ari=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
@@ -39,42 +128,84 @@ class AccessRightsInformation extends Property
         }
     }
     
-    public function addGroupReadAccess( a\Group $g )
+/**
+<documentation><description><p>Grants the group read access to the asset, and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function addGroupReadAccess( a\Group $g ) : Property
     {
         if( self::DEBUG ){ u\DebugUtility::out( "Granting read access to " . $g->getName() );  }
         $this->setAccess( $g, c\T::READ );
         return $this;
     }
     
-    public function addGroupWriteAccess( a\Group $g )
+/**
+<documentation><description><p>Grants the group write access to the asset, and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function addGroupWriteAccess( a\Group $g ) : Property
     {
         if( self::DEBUG ){ u\DebugUtility::out( "Granting write access to " . $g->getName() );  }
         $this->setAccess( $g, c\T::WRITE );
         return $this;
     }
     
-    public function addUserReadAccess( a\User $u )
+/**
+<documentation><description><p>Grants the user read access to the asset, and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function addUserReadAccess( a\User $u ) : Property
     {
         if( self::DEBUG ){ u\DebugUtility::out( "Granting read access to " . $u->getName() );  }
         $this->setAccess( $u, c\T::READ );
         return $this;
     }
     
-    public function addUserWriteAccess( a\User $u )
+/**
+<documentation><description><p>Grants the user write access to the asset, and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function addUserWriteAccess( a\User $u ) : Property
     {
         if( self::DEBUG ){ u\DebugUtility::out( "Granting write access to " . $u->getName() );  }
         $this->setAccess( $u, c\T::WRITE );
         return $this;
     }
     
-    public function clearPermissions()
+/**
+<documentation><description><p>Clears all permissions and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function clearPermissions() : Property
     {
         $this->acl_entries = array();
         $this->all_level   = c\T::NONE;
         return $this;
     }
     
-    public function denyAccessToAllGroups()
+/**
+<documentation><description><p>Removes all group access, and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function denyAccessToAllGroups() : Property
     {
         foreach( $this->acl_entries as $entry )
         {
@@ -87,7 +218,14 @@ class AccessRightsInformation extends Property
         return $this;
     }
     
-    public function denyAccessToAllUsers()
+/**
+<documentation><description><p>Removes all user access, and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function denyAccessToAllUsers() : Property
     {
         foreach( $this->acl_entries as $entry )
         {
@@ -100,19 +238,40 @@ class AccessRightsInformation extends Property
         return $this;
     }
 
-    public function denyGroupAccess( a\Group $g )
+/**
+<documentation><description><p>Removes the group from the <code>aclEntries</code>, and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function denyGroupAccess( a\Group $g ) : Property
     {
         $this->denyAccess( $g, $g->getType() );
         return $this;
     }
     
-    public function denyUserAccess( a\User $u )
+/**
+<documentation><description><p>Removes the user from the <code>aclEntries</code>, and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function denyUserAccess( a\User $u ) : Property
     {
         $this->denyAccess( $u, $u->getType() );
         return $this;
     }
     
-    public function display()
+/**
+<documentation><description><p>Displays and returns calling the object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function display() : Property
     {
         echo S_PRE;
         var_dump( $this->toStdClass() );
@@ -120,16 +279,37 @@ class AccessRightsInformation extends Property
         return $this;
     }
     
-    public function getAclEntries()
+/**
+<documentation><description><p>Returns an array of <code>AclEntry</code> objects.</p></description>
+<example></example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getAclEntries() : array
     {
         return $this->acl_entries;
     }
     
-    public function getAllLevel()
+/**
+<documentation><description><p>Returns <code>allLevel</code>.</p></description>
+<example></example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getAllLevel() : string
     {
         return $this->all_level;
     }
     
+/**
+<documentation><description><p>Returns the <code>level</code> string of the named group or <code>NULL</code>.</p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getGroupLevel( a\Group $g )
     {
         $entry = $this->getEntry( $g );
@@ -141,11 +321,25 @@ class AccessRightsInformation extends Property
         return NULL;
     }
 
-    public function getIdentifier()
+/**
+<documentation><description><p>Returns <code>identifier</code> (an <code>Identifier</code> object).</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getIdentifier() : Property
     {
         return $this->identifier;
     }
     
+/**
+<documentation><description><p>Returns the <code>level</code> string of the named user or <code>NULL</code>.</p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getUserLevel( a\User $u )
     {
         $entry = $this->getEntry( $u );
@@ -157,37 +351,99 @@ class AccessRightsInformation extends Property
         return NULL;
     }
 
-    public function grantGroupReadAccess( a\Group $g )
+/**
+<documentation><description><p>An alias of <code>addGroupReadAccess</code>.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function grantGroupReadAccess( a\Group $g ) : Property
     {
         return $this->addGroupReadAccess( $g );
     }
     
-    public function grantGroupWriteAccess( a\Group $g )
+/**
+<documentation><description><p>An alias of <code>addGroupWriteAccess</code>.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function grantGroupWriteAccess( a\Group $g ) : Property
     {
         return $this->addGroupWriteAccess( $g );
     }
     
-    public function grantUserReadAccess( a\User $u )
+/**
+<documentation><description><p>An alias of <code>addUserReadAccess</code>.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function grantUserReadAccess( a\User $u ) : Property
     {
         return $this->addUserReadAccess( $u );
     }
     
-    public function grantUserWriteAccess( a\User $u )
+/**
+<documentation><description><p>An alias of <code>addUserWriteAccess</code>.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function grantUserWriteAccess( a\User $u ) : Property
     {
         return $this->addUserWriteAccess( $u );
     }
     
-    public function hasGroup( a\Group $g )
+/**
+<documentation><description><p>Returns a bool,, indicating whether the named group has access to the asset.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function hasGroup( a\Group $g ) : bool
     {
         return $this->getEntry( $g ) != NULL;
     }
 
-    public function hasUser( a\User $u )
+/**
+<documentation><description><p>Returns a bool, indicating whether the named user has access to the asset.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function hasUser( a\User $u ) : bool
     {
         return $this->getEntry( $u ) != NULL;
     }
 
-    public function setAllLevel( $level )
+/**
+<documentation><description><p>Sets the access rights with <code>$level</code> for a group or user asset, and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>WrongAssetTypeException</exception>
+</documentation>
+*/
+    public function setAccessRights( a\Asset $a, string $level ) : Property
+    {
+        $this->setAccess( $a, $level );
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Sets <code>allLevel</code> and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setAllLevel( $level ) : Property
     {
         if( !c\LevelValues::isLevel( $level ) )
         {
@@ -198,33 +454,61 @@ class AccessRightsInformation extends Property
         return $this;
     }
     
-    public function setGroupReadAccess( a\Group $g )
+/**
+<documentation><description><p>An alias of <code>addGroupReadAccess</code>.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setGroupReadAccess( a\Group $g ) : Property
     {
         return $this->addGroupReadAccess( $g );
     }
     
-    public function setGroupWriteAccess( a\Group $g )
+/**
+<documentation><description><p>An alias of <code>addGroupWriteAccess</code>.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setGroupWriteAccess( a\Group $g ) : Property
     {
         return $this->addGroupWriteAccess( $g );
     }
     
-    public function setUserReadAccess( a\User $u )
+/**
+<documentation><description><p>An alias of <code>addUserReadAccess</code>.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setUserReadAccess( a\User $u ) : Property
     {
         return $this->addUserReadAccess( $u );
     }
     
-    public function setUserWriteAccess( a\User $u )
+/**
+<documentation><description><p>An alias of <code>addUserWriteAccess</code>.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setUserWriteAccess( a\User $u ) : Property
     {
         return $this->addUserWriteAccess( $u );
     }
     
-    public function setAccessRights( a\Asset $a, $level )
-    {
-        $this->setAccess( $a, $level );
-        return $this;
-    }
-    
-    public function toStdClass()
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example></example>
+<return-type>stdClass</return-type>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj = new \stdClass();
         
