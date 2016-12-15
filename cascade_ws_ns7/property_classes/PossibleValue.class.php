@@ -92,6 +92,7 @@ class PossibleValue extends Property
 <documentation><description><p>The constructor.</p></description>
 <example></example>
 <return-type></return-type>
+<exception>EmptyValueException, UnacceptableValueException</exception>
 </documentation>
 */
     public function __construct( 
