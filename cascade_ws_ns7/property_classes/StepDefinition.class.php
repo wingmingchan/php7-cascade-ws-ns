@@ -9,12 +9,27 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
+use cascade_ws_asset     as a;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>A <code>StepDefinition</code> object represents a step definition, an XML element in a <a href="web-services/api/asset-classes/workflow-definition"><code>a\WorkflowDefinition</code></a> object. This class is not a sub-class of <code>Property</code> and does not implement the <code>toStdClass</code> method. Instead, it provides a <code>toXml</code> method, which converts the data of the object back to an XML string.</p>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class StepDefinition
 {
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+<exception>EmptyValueException</exception>
+</documentation>
+*/
     public function __construct( \SimpleXMLElement $step_xml )
     {
         if( $step_xml == NULL )
@@ -45,32 +60,68 @@ class StepDefinition
         }
     }
     
-    public function getActions()
+/**
+<documentation><description><p>Returns an array of <code>ActionDefinition</code> objects of the step definition.</p></description>
+<example></example>
+<return-type>array</return-type>
+</documentation>
+*/
+    public function getActions() : array
     {
         return $this->actions;
     }
     
-    public function getDefaultUser()
+/**
+<documentation><description><p>Returns the value of the <code>default-user</code> attribute.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getDefaultUser() : string
     {
         return $this->default_user;
     }
     
-    public function getIdentifier()
+/**
+<documentation><description><p>Returns the value of the <code>identifier</code> attribute.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getIdentifier() : string
     {
         return $this->identifier;
     }
     
-    public function getLabel()
+/**
+<documentation><description><p>Returns the value of the <code>label</code> attribute.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getLabel() : string
     {
         return $this->label;
     }
     
-    public function getType()
+/**
+<documentation><description><p>Returns the value of the <code>type</code> attribute.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getType() : string
     {
         return $this->type;
     }
     
-    public function toXml()
+/**
+<documentation><description><p>Converts the object back to an XML string.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function toXml() : string
     {
         $has_actions = count( $this->actions ) > 0 ;
     
