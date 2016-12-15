@@ -44,7 +44,7 @@ class PageRegion extends Property
     const DUMP  = false;
     
 /**
-<documentation><description>The constructor.</description>
+<documentation><description><p>The constructor.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -86,8 +86,8 @@ class PageRegion extends Property
     }
     
 /**
-<documentation><description>Displays some basic information of the page region,
-and returns the calling object.</description>
+<documentation><description><p>Displays some basic information of the page region,
+and returns the calling object.</p></description>
 <example>$region->display();</example>
 <return-type>Property</return-type>
 <exception></exception>
@@ -102,7 +102,7 @@ and returns the calling object.</description>
     }
     
 /**
-<documentation><description>Returns the <code>a\Block</code> object of the region, or <code>NULL</code>.</description>
+<documentation><description><p>Returns the <code>a\Block</code> object of the region, or <code>NULL</code>.</p></description>
 <example>$block = $region->getBlock();
 echo u\StringUtility::boolToString( is_null( $block ) ), BR;</example>
 <return-type>mixed</return-type>
@@ -126,7 +126,7 @@ echo u\StringUtility::boolToString( is_null( $block ) ), BR;</example>
     }
     
 /**
-<documentation><description>Returns <code>blockId</code>.</description>
+<documentation><description><p>Returns <code>blockId</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $region->getBlockId() ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
@@ -138,7 +138,7 @@ echo u\StringUtility::boolToString( is_null( $block ) ), BR;</example>
     }
     
 /**
-<documentation><description>Returns <code>blockPath</code>.</description>
+<documentation><description><p>Returns <code>blockPath</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $region->getBlockPath() ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
@@ -150,7 +150,7 @@ echo u\StringUtility::boolToString( is_null( $block ) ), BR;</example>
     }
     
 /**
-<documentation><description>Returns <code>blockRecycled</code>.</description>
+<documentation><description><p>Returns <code>blockRecycled</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $region->getBlockRecycled() ), BR;</example>
 <return-type>bool</return-type>
 <exception></exception>
@@ -162,7 +162,7 @@ echo u\StringUtility::boolToString( is_null( $block ) ), BR;</example>
     }
     
 /**
-<documentation><description>Returns the <code>a\Format</code> object of the region, or <code>NULL</code>.</description>
+<documentation><description><p>Returns the <code>a\Format</code> object of the region, or <code>NULL</code>.</p></description>
 <example>$format = $region->getFormat();</example>
 <return-type>mixed</return-type>
 <exception></exception>
@@ -184,7 +184,7 @@ echo u\StringUtility::boolToString( is_null( $block ) ), BR;</example>
     }
     
 /**
-<documentation><description>Returns <code>formatId</code>.</description>
+<documentation><description><p>Returns <code>formatId</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $region->getFormatId() ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
@@ -196,7 +196,7 @@ echo u\StringUtility::boolToString( is_null( $block ) ), BR;</example>
     }
     
 /**
-<documentation><description>Returns <code>formatPath</code>.</description>
+<documentation><description><p>Returns <code>formatPath</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $region->getFormatPath() ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
@@ -208,7 +208,7 @@ echo u\StringUtility::boolToString( is_null( $block ) ), BR;</example>
     }
     
 /**
-<documentation><description>Returns <code>formatRecycled</code>.</description>
+<documentation><description><p>Returns <code>formatRecycled</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $region->getFormatRecycled() ), BR;</example>
 <return-type>bool</return-type>
 <exception></exception>
@@ -220,7 +220,7 @@ echo u\StringUtility::boolToString( is_null( $block ) ), BR;</example>
     }
     
 /**
-<documentation><description>Returns <code>id</code>.</description>
+<documentation><description><p>Returns <code>id</code>.</p></description>
 <example>echo $region->getId(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
@@ -232,7 +232,7 @@ echo u\StringUtility::boolToString( is_null( $block ) ), BR;</example>
     }
     
 /**
-<documentation><description>Returns <code>name</code>.</description>
+<documentation><description><p>Returns <code>name</code>.</p></description>
 <example>echo $region->getName(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
@@ -244,7 +244,7 @@ echo u\StringUtility::boolToString( is_null( $block ) ), BR;</example>
     }
     
 /**
-<documentation><description>Returns <code>noBlock</code>.</description>
+<documentation><description><p>Returns <code>noBlock</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $region->getNoBlock() ), BR;</example>
 <return-type>bool</return-type>
 <exception></exception>
@@ -256,7 +256,7 @@ echo u\StringUtility::boolToString( is_null( $block ) ), BR;</example>
     }
     
 /**
-<documentation><description>Returns <code>noFormat</code>.</description>
+<documentation><description><p>Returns <code>noFormat</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $region->getNoFormat() ), BR;</example>
 <return-type>bool</return-type>
 <exception></exception>
@@ -268,11 +268,11 @@ echo u\StringUtility::boolToString( is_null( $block ) ), BR;</example>
     }
     
 /**
-<documentation><description>Attaches the block to the region, and returns the object.
+<documentation><description><p>Attaches the block to the region, and returns the object.
 If the block is NULL, then the block associated with the region at the page level will be
 removed. Note that at the page level, a block cannot be removed if it is associated with
 the region at the configuration level. Use the <code>noBlock</code> property to
-disassociate the block from the region.</description>
+disassociate the block from the region.</p></description>
 <example>$region->setBlock(
     $cascade->getAsset(
         a\TextBlock::TYPE, "0bc94b1f8b7ffe83006a5cefe3ab1dac" ) );
@@ -317,11 +317,11 @@ disassociate the block from the region.</description>
     }
     
 /**
-<documentation><description>Attaches the format to the region and returns the object.
+<documentation><description><p>Attaches the format to the region and returns the object.
 If the format is NULL, then the format associated with the region at the page level will
 be removed. Note that at the page level, a format cannot be removed if it is associated
 with the region at the configuration level. Use the <code>noFormat</code> property to
-disassociate the format from the region.</description>
+disassociate the format from the region.</p></description>
 <example>$region->setFormat(
     $cascade->getAsset(
         a\ScriptFormat::TYPE, "0bcf8ce48b7ffe83006a5cef7d7c12f5" ) );
@@ -366,8 +366,8 @@ disassociate the format from the region.</description>
     }
     
 /**
-<documentation><description>Sets <code>noBlock</code> and returns the calling
-object.</description>
+<documentation><description><p>Sets <code>noBlock</code> and returns the calling
+object.</p></description>
 <example>$region->setNoBlock( true );
 </example>
 <return-type>Property</return-type>
@@ -384,8 +384,8 @@ object.</description>
     }
     
 /**
-<documentation><description>Sets <code>noFormat</code> and returns the calling
-object.</description>
+<documentation><description><p>Sets <code>noFormat</code> and returns the calling
+object.</p></description>
 <example>$region->setNoFormat( true );</example>
 <return-type>Property</return-type>
 <exception>UnacceptableValueException</exception>
@@ -402,8 +402,8 @@ object.</description>
     }
     
 /**
-<documentation><description>Converts the object back to an <code>\stdClass</code>
-object.</description>
+<documentation><description><p>Converts the object back to an <code>\stdClass</code>
+object.</p></description>
 <example>u\DebugUtility::dump( $region->toStdClass() );</example>
 <return-type>stdClass</return-type>
 <exception></exception>
