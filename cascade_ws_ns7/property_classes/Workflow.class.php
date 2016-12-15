@@ -11,12 +11,70 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
+use cascade_ws_asset     as a;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>A <code>Workflow</code> object represents a workflow instance. It contains <a href="/web-services/api/property-classes/step"><code>Step</code></a> objects, which in turn contain <a href="/web-services/api/property-classes/action"><code>Action</code></a> objects. All properties in this class are read-only. There are no <code>set</code> methods implemented.</p>
+<p>A <code>workflow</code> object can be obtained by calling the <code>getWorkflow</code> method through an <code>Asset</code> object (e.g., a <code>Page</code> object).</p>
+<h2>Structure of <code>workflow</code></h2>
+<pre>workflow
+  id
+  name
+  relatedEntity (an Identifier object)
+    id
+    path
+      path
+      siteId
+      siteName
+    type
+    recycled
+  currentStep (a string)
+  orderedSteps
+    step
+      identifier
+      label
+      stepType
+      owner
+      actions
+        action
+          identifier
+          label
+          actionType
+          nextId
+  unorderedSteps
+    step
+      identifier
+      label
+      stepType
+      owner
+      actions
+        action
+          identifier
+          label
+          actionType
+          nextId
+  startDate
+  endDate
+</pre>
+<h2>Design Issues</h2>
+<p>Currently, there are no <code>set</code> methods in this class. If we want to be able to modify the <code>endDate</code> property, a <code>setEndDate</code> method can be added.</p>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class Workflow extends Property
 {
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         \stdClass $wf=NULL, 
         aohs\AssetOperationHandlerService $service=NULL,
@@ -74,49 +132,99 @@ class Workflow extends Property
         }
     }
     
-    public function getCurrentStep()
+/**
+<documentation><description><p>Returns <code>currentStep</code>.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getCurrentStep() : string
     {
         return $this->workflow->currentStep;
     }
     
-    public function getCurrentStepPossibleActions()
+/**
+<documentation><description><p>Returns a string array of possible actions of the current step.</p></description>
+<example></example>
+<return-type>array</return-type>
+</documentation>
+*/
+    public function getCurrentStepPossibleActions() : array
     {
         return $this->ordered_step_possible_action_map[ $this->workflow->currentStep ];
     }
     
-    public function getEndDate()
+/**
+<documentation><description><p>Returns <code>endDate</code>.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getEndDate() : string
     {
         return $this->end_date;
     }
     
-    public function getId()
+/**
+<documentation><description><p>Returns <code>id</code>.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getId() : string
     {
         return $this->workflow->id;
     }
     
-    public function getName()
+/**
+<documentation><description><p>Returns <code>name</code>.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getName() : string
     {
         return $this->workflow->name;
     }
     
-    public function getRelatedEntity()
+/**
+<documentation><description><p>Returns <code>relatedEntity</code>, which is an <code>Identifier</code> object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+</documentation>
+*/
+    public function getRelatedEntity() : Property
     {
         return $this->related_entity;
     }
     
-    public function getStartDate()
+/**
+<documentation><description><p>Returns <code>startDate</code></p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getStartDate() : string
     {
         return $this->start_date;
     }
     
-    public function isPossibleAction( $a_name )
+/**
+<documentation><description><p>Returns a bool, indicating whether the named action is possible in the current step.</p></description>
+<example></example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function isPossibleAction( string $a_name ) : bool
     {
-        if( is_array( $this->ordered_step_possible_action_map[ $this->workflow->currentStep ] ) &&
+        if( is_array( $this->ordered_step_possible_action_map[
+            $this->workflow->currentStep ] ) &&
             in_array( $a_name,
                 $this->ordered_step_possible_action_map[ $this->workflow->currentStep ] ) )
             return true;
             
-        if( is_array( $this->unordered_step_possible_action_map[ $this->workflow->currentStep ] ) &&
+        if( is_array( $this->unordered_step_possible_action_map[
+            $this->workflow->currentStep ] ) &&
             in_array( $a_name,
                 $this->unordered_step_possible_action_map[ $this->workflow->currentStep ] ) )
             return true;
@@ -124,7 +232,15 @@ class Workflow extends Property
         return false;
     }
     
-    public function performWorkflowTransition( $a_name, $comment="" )
+/**
+<documentation><description><p>Advances the workflow to the named action of the current step. Note that the advancement is possible only for ordered steps.</p></description>
+<example></example>
+<return-type></return-type>
+<exception>NoSuchActionException, WorkflowTransitionFailureException</exception>
+</documentation>
+*/
+    public function performWorkflowTransition(
+        string $a_name, string $comment="" ) : Property
     {
         if( !$this->isPossibleAction( $a_name ) )
             throw new e\NoSuchActionException(
@@ -144,7 +260,13 @@ class Workflow extends Property
         }
     }
     
-    public function toStdClass()
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example></example>
+<return-type>stdClass</return-type>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj                = new \stdClass();
         $obj->id            = $this->workflow->id;
