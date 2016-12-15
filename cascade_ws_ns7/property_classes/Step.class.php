@@ -9,12 +9,40 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
+use cascade_ws_asset     as a;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>A <code>Step</code> object represents a step in a workflow instance.</p>
+<h2>Structure of <code>step</code></h2>
+<pre>step
+  identifier
+  label
+  stepType
+  owner
+  actions
+    action
+      identifier
+      label
+      actionType
+      nextId
+</pre>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class Step
 {
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct( 
         \stdClass $s=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
@@ -47,37 +75,79 @@ class Step
         }
     }
     
-    public function getActionIdentifiers()
+/**
+<documentation><description><p>Returns an array of identifiers of the <code>Action</code> objects of the step.</p></description>
+<example></example>
+<return-type>array</return-type>
+</documentation>
+*/
+    public function getActionIdentifiers() : array
     {
         return $this->action_identifiers;
     }
     
-    public function getActions()
+/**
+<documentation><description><p>Returns an array of <code>Action</code> objects.</p></description>
+<example></example>
+<return-type>array</return-type>
+</documentation>
+*/
+    public function getActions() : array
     {
         return $this->actions;
     }
     
-    public function getIdentifier()
+/**
+<documentation><description><p>Returns <code>identifier</code>.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getIdentifier() : string
     {
         return $this->identifier;
     }
     
-    public function getLabel()
+/**
+<documentation><description><p>Returns <code>label</code>.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getLabel() : string
     {
         return $this->label;
     }
     
-    public function getOwner()
+/**
+<documentation><description><p>Returns <code>owner</code>.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getOwner() : string
     {
         return $this->owner;
     }
     
-    public function getStepType()
+/**
+<documentation><description><p>Returns <code>stepType</code>.</p></description>
+<example></example>
+<return-type>string</return-type>
+</documentation>
+*/
+    public function getStepType() : string
     {
         return $this->step_type;
     }
     
-    public function toStdClass()
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example></example>
+<return-type>stdClass</return-type>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj             = new \stdClass();
         $obj->identifier = $this->identifier;
