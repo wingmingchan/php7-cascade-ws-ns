@@ -9,9 +9,15 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p><code>ConnectorContentTypeLinkParameter</code> is an empty sub-class of <a href="web-services/api/property-classes/parameter"><code>Parameter</code></a> used by <a href="web-services/api/asset-classes/wordpress-connector"><code>WordPressConnector</code></a>.</p>
+</description>
+</documentation>
+*/
 class ConnectorContentTypeLinkParameter extends Parameter{}
 ?>
