@@ -9,12 +9,34 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
+use cascade_ws_asset     as a;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>An <code>Action</code> object represents an action in a step of a workflow instance.</p>
+<h2>Structure of <code>action</code></h2>
+<pre>action
+  identifier
+  label
+  actionType
+  nextId
+</pre>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+</documentation>
+*/
 class Action extends Property
 {
+/**
+<documentation><description><p>The constructor.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function __construct(
         \stdClass $a=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
@@ -31,27 +53,61 @@ class Action extends Property
         }
     }
     
+/**
+<documentation><description><p>Returns <code>actionType</code>.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getActionType()
     {
         return $this->action_type;
     }
     
+/**
+<documentation><description><p>Returns <code>identifier</code>.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getIdentifier()
     {
         return $this->identifier;
     }
     
+/**
+<documentation><description><p>Returns <code>label</code>.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getLabel()
     {
         return $this->label;
     }
     
+/**
+<documentation><description><p>Returns <code>nextId</code>.</p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public function getNextId()
     {
         return $this->next_id;
     }
     
-    public function toStdClass()
+/**
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<example></example>
+<return-type>stdClass</return-type>
+</documentation>
+*/
+    public function toStdClass() : \stdClass
     {
         $obj             = new \stdClass();
         $obj->identifier = $this->identifier;
