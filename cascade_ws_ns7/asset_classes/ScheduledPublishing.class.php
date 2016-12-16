@@ -4,6 +4,8 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/16/2016 Changed return type of getSendReportToGroups and getSendReportToUsers
+  * to mixed.
   * 1/17/2016 Added scheduledPublishDestinationMode to the class.
   * 5/28/2015 Added namespaces.
  */
@@ -206,11 +208,11 @@ returns the calling object.</p></description>
 /**
 <documentation><description><p>Returns <code>sendReportToGroups</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $d->getSendReportToGroups() ), BR;</example>
-<return-type>bool</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSendReportToGroups() : bool
+    public function getSendReportToGroups()
     {
         return $this->getProperty()->sendReportToGroups;
     }
@@ -218,11 +220,11 @@ returns the calling object.</p></description>
 /**
 <documentation><description><p>Returns <code>sendReportToUsers</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $d->getSendReportToUsers() ), BR;</example>
-<return-type>bool</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSendReportToUsers() : bool
+    public function getSendReportToUsers()
     {
         return $this->getProperty()->sendReportToUsers;
     }
