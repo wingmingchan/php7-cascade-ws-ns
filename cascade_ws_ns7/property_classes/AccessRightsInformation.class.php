@@ -103,7 +103,9 @@ class AccessRightsInformation extends Property
     
 /**
 <documentation><description><p>The constructor.</p></description>
-<example></example>
+<example>// get the object
+$ari = $cascade->getAccessRights(
+    a\Folder::TYPE, $folder_path, $site_name );</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -130,7 +132,10 @@ class AccessRightsInformation extends Property
     
 /**
 <documentation><description><p>Grants the group read access to the asset, and returns the calling object.</p></description>
-<example></example>
+<example>$ari->addGroupReadAccess( $team );
+// true means apply to children
+$cascade->setAccessRights( $ari, true );
+</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -144,7 +149,10 @@ class AccessRightsInformation extends Property
     
 /**
 <documentation><description><p>Grants the group write access to the asset, and returns the calling object.</p></description>
-<example></example>
+<example>$ari->addGroupWriteAccess( $team );
+// true means apply to children
+$cascade->setAccessRights( $ari, true );
+</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -158,7 +166,10 @@ class AccessRightsInformation extends Property
     
 /**
 <documentation><description><p>Grants the user read access to the asset, and returns the calling object.</p></description>
-<example></example>
+<example>$ari->addUserReadAccess( $thomas );
+// true means apply to children
+$cascade->setAccessRights( $ari, true );
+</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -172,7 +183,10 @@ class AccessRightsInformation extends Property
     
 /**
 <documentation><description><p>Grants the user write access to the asset, and returns the calling object.</p></description>
-<example></example>
+<example>$ari->addUserWriteAccess( $wing );
+// true means apply to children
+$cascade->setAccessRights( $ari, true );
+</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -186,7 +200,9 @@ class AccessRightsInformation extends Property
     
 /**
 <documentation><description><p>Clears all permissions and returns the calling object.</p></description>
-<example></example>
+<example>$ari->clearPermissions();
+// false means do not apply to children
+$cascade->setAccessRights( $ari, false );</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -200,7 +216,10 @@ class AccessRightsInformation extends Property
     
 /**
 <documentation><description><p>Removes all group access, and returns the calling object.</p></description>
-<example></example>
+<example>$ari->denyAccessToAllGroups();
+// true means apply to children
+$cascade->setAccessRights( $ari, true );
+</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -220,7 +239,9 @@ class AccessRightsInformation extends Property
     
 /**
 <documentation><description><p>Removes all user access, and returns the calling object.</p></description>
-<example></example>
+<example>$ari->denyAccessToAllUsers();
+// true means apply to children
+$cascade->setAccessRights( $ari, true );</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -240,7 +261,9 @@ class AccessRightsInformation extends Property
 
 /**
 <documentation><description><p>Removes the group from the <code>aclEntries</code>, and returns the calling object.</p></description>
-<example></example>
+<example>$ari->denyGroupAccess( $cru );
+// true means apply to children
+$cascade->setAccessRights( $ari, true );</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -253,7 +276,9 @@ class AccessRightsInformation extends Property
     
 /**
 <documentation><description><p>Removes the user from the <code>aclEntries</code>, and returns the calling object.</p></description>
-<example></example>
+<example>$ari->denyUserAccess( $thomas );
+// true means apply to children
+$cascade->setAccessRights( $ari, true );</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -266,7 +291,7 @@ class AccessRightsInformation extends Property
     
 /**
 <documentation><description><p>Displays and returns calling the object.</p></description>
-<example></example>
+<example>$ari->display();</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -281,7 +306,7 @@ class AccessRightsInformation extends Property
     
 /**
 <documentation><description><p>Returns an array of <code>AclEntry</code> objects.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $ari->getAclEntries() );</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
@@ -293,7 +318,7 @@ class AccessRightsInformation extends Property
     
 /**
 <documentation><description><p>Returns <code>allLevel</code>.</p></description>
-<example></example>
+<example>echo $ari->getAllLevel(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
 </documentation>
@@ -305,7 +330,8 @@ class AccessRightsInformation extends Property
     
 /**
 <documentation><description><p>Returns the <code>level</code> string of the named group or <code>NULL</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString(
+    $ari->getGroupLevel( $cru ) ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -322,8 +348,8 @@ class AccessRightsInformation extends Property
     }
 
 /**
-<documentation><description><p>Returns <code>identifier</code> (an <code>Identifier</code> object).</p></description>
-<example></example>
+<documentation><description><p>Returns <code>identifier</code> (an <code>Identifier</code> object) of the associated asset.</p></description>
+<example>u\DebugUtility::dump( $ari->getIdentifier() );</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
@@ -335,7 +361,8 @@ class AccessRightsInformation extends Property
     
 /**
 <documentation><description><p>Returns the <code>level</code> string of the named user or <code>NULL</code>.</p></description>
-<example></example>
+<example>echo u\StringUtility::getCoalescedString(
+    $ari->getUserLevel( $thomas ) ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -401,7 +428,8 @@ class AccessRightsInformation extends Property
     
 /**
 <documentation><description><p>Returns a bool,, indicating whether the named group has access to the asset.</p></description>
-<example></example>
+<example>echo u\StringUtility::boolToString(
+    $ari->hasGroup( $cru ) ), BR;</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -413,7 +441,8 @@ class AccessRightsInformation extends Property
 
 /**
 <documentation><description><p>Returns a bool, indicating whether the named user has access to the asset.</p></description>
-<example></example>
+<example>echo u\StringUtility::boolToString(
+    $ari->hasUser( $thomas ) ), BR;</example>
 <return-type>bool</return-type>
 <exception></exception>
 </documentation>
@@ -425,7 +454,9 @@ class AccessRightsInformation extends Property
 
 /**
 <documentation><description><p>Sets the access rights with <code>$level</code> for a group or user asset, and returns the calling object.</p></description>
-<example></example>
+<example>$ari->setAccessRights( $cru, c\T::READ );
+// true means apply to children
+$cascade->setAccessRights( $ari, true );</example>
 <return-type>Property</return-type>
 <exception>WrongAssetTypeException</exception>
 </documentation>
@@ -438,7 +469,7 @@ class AccessRightsInformation extends Property
     
 /**
 <documentation><description><p>Sets <code>allLevel</code> and returns the calling object.</p></description>
-<example></example>
+<example>$ari->setAllLevel( c\T::NONE );</example>
 <return-type>Property</return-type>
 <exception></exception>
 </documentation>
