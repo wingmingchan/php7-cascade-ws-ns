@@ -32,7 +32,12 @@ class Plugin extends Property
 {
 /**
 <documentation><description><p>The constructor.</p></description>
-<example></example>
+<example>// retrieve the asset factory
+$af = $cascade->getAsset(
+		a\AssetFactory::TYPE, "1f2179f08b7ffe834c5fe91e7eb59cc8" );
+// get the plugin
+$plugin = $af->getPlugin( "com.cms.assetfactory.FileLimitPlugin" );
+	</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
@@ -57,12 +62,15 @@ class Plugin extends Property
     
 /**
 <documentation><description><p>Adds the named parameter with the supplied value.</p></description>
-<example></example>
+<example>$plugin->addParameter( $param->getName(),
+    $param->getValue() );
+$af->edit();</example>
 <return-type>Property</return-type>
 <exception>NoSuchPluginParameterException</exception>
 </documentation>
 */
-    public function addParameter( string $name, string $value ) : Property
+    public function addParameter(
+        string $name, string $value ) : Property
     {
         if( $value.trim( " " ) == "" )
             $value = "1"; // there must be value
@@ -81,11 +89,13 @@ class Plugin extends Property
         }
         else    
             $this->setParameterValue( $name, $value );
+            
+        return $this;
     }
     
 /**
 <documentation><description><p>Returns the name.</p></description>
-<example></example>
+<example>echo $plugin->getName(), BR;</example>
 <return-type>string</return-type>
 </documentation>
 */
@@ -93,31 +103,32 @@ class Plugin extends Property
     {
         return $this->name;
     }
-    
+
 /**
-<documentation><description><p>Returns the <code>Parameter</code> object bearing that name.</p></description>
-<example></example>
-<return-type>string</return-type>
-<exception>NoSuchPluginParameterException</exception>
+<documentation><description>Returns the <code>Parameter</code> object bearing that name.</p></description>
+<example>if( $plugin->hasParameter( $param_name ) )
+{
+    $param = $plugin->getParameter( $param_name );
+    u\DebugUtility::dump( $param );
+}
+</example>
+<return-type>mixed</return-type>
 </documentation>
 */
-    public function getParameter( string $name ) : string
+    public function getParameter( string $name )
     {
-        foreach( $this->parameters as $parameter )
+        if( !$this->hasParameter( $name ) )
         {
-            if( $parameter->getName() == $name )
-            {
-                return $parameter;
-            }
+        	throw new e\NoSuchPluginParameterException(
+            	S_SPAN . "The parameter $name does not exist." .
+            	E_SPAN );
         }
-        throw new e\NoSuchPluginParameterException(
-            S_SPAN . "The parameter $name does not exist." . E_SPAN
-        );
+        return $this->parameter;
     }
     
 /**
 <documentation><description><p>Returns NULL, a <code>Parameter</code> object, or an array of <code>Parameter</code> objects.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $plugin->getParameters() );</example>
 <return-type>mixed</return-type>
 </documentation>
 */
@@ -128,7 +139,9 @@ class Plugin extends Property
     
 /**
 <documentation><description><p>Returns a bool, indicating whether the named parameter exists.</p></description>
-<example></example>
+<example>echo u\StringUtility::boolToString(
+    $plugin->hasParameter( "assetfactory.plugin.filelimit" .
+        ".param.name.filenameregex" ) ), BR;</example>
 <return-type>bool</return-type>
 </documentation>
 */
@@ -140,16 +153,23 @@ class Plugin extends Property
             {
                 if( $parameter->getName() == $name )
                 {
+                	$this->parameter = $parameter;
                     return true;
+                }
+                else
+                {
+                	$this->parameter = NULL;
                 }
             }
         }
+        
         return false;
     }
     
 /**
 <documentation><description><p>Removes the named parameter and returns the calling object.</p></description>
-<example></example>
+<example>$plugin->removeParameter( $param_name );
+$af->edit();</example>
 <return-type>Property</return-type>
 <exception>NoSuchPluginParameterException</exception>
 </documentation>
@@ -180,7 +200,8 @@ class Plugin extends Property
     
 /**
 <documentation><description><p>Sets the value of the parameter bearing that name and returns the calling object.</p></description>
-<example></example>
+<example>$plugin->setParameterValue( $param_name, "150" );
+$af->edit();</example>
 <return-type>Property</return-type>
 <exception>NoSuchPluginParameterException</exception>
 </documentation>
@@ -244,5 +265,6 @@ class Plugin extends Property
 
     private $name;
     private $parameters;
+    private $parameter;
 }
 ?>
