@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/22/2016 Minor bug fixes.
   * 2/13/2016 Added start_date, end_date, and the get methods.
   * 5/28/2015 Added namespaces.
   * 10/1/2014 Fixed a bug in getRelatedEntity.
@@ -60,10 +61,9 @@ use cascade_ws_asset     as a;
   startDate
   endDate
 </pre>
-<h2>Design Issues</h2>
-<p>Currently, there are no <code>set</code> methods in this class. If we want to be able to modify the <code>endDate</code> property, a <code>setEndDate</code> method can be added.</p>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/workflow.php">workflow.php</a></li>
+<li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/recipes/workflow/transition.php">transition.php</a></li></ul></postscript>
 </documentation>
 */
 class Workflow extends Property
@@ -134,7 +134,7 @@ class Workflow extends Property
     
 /**
 <documentation><description><p>Returns <code>currentStep</code>.</p></description>
-<example></example>
+<example>echo $wf->getCurrentStep(), BR;</example>
 <return-type>string</return-type>
 </documentation>
 */
@@ -144,19 +144,23 @@ class Workflow extends Property
     }
     
 /**
-<documentation><description><p>Returns a string array of possible actions of the current step.</p></description>
-<example></example>
-<return-type>array</return-type>
+<documentation><description><p>Returns a string array of possible actions of the current step, if the current step has possible actions; otherwise <code>NULL</code>.</p></description>
+<example>u\DebugUtility::dump( $wf->getCurrentStepPossibleActions() );</example>
+<return-type>mixed</return-type>
 </documentation>
 */
-    public function getCurrentStepPossibleActions() : array
+    public function getCurrentStepPossibleActions()
     {
-        return $this->ordered_step_possible_action_map[ $this->workflow->currentStep ];
+    	if( isset(
+    	    $this->ordered_step_possible_action_map[ $this->workflow->currentStep ] ) )
+        	return $this->ordered_step_possible_action_map[ $this->workflow->currentStep ];
+        else
+        	return NULL;
     }
     
 /**
 <documentation><description><p>Returns <code>endDate</code>.</p></description>
-<example></example>
+<example>echo $wf->getEndDate(), BR;</example>
 <return-type>string</return-type>
 </documentation>
 */
@@ -164,10 +168,10 @@ class Workflow extends Property
     {
         return $this->end_date;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>id</code>.</p></description>
-<example></example>
+<example>echo $wf->getId(), BR;</example>
 <return-type>string</return-type>
 </documentation>
 */
@@ -178,7 +182,7 @@ class Workflow extends Property
     
 /**
 <documentation><description><p>Returns <code>name</code>.</p></description>
-<example></example>
+<example>echo $wf->getName(), BR;</example>
 <return-type>string</return-type>
 </documentation>
 */
@@ -189,7 +193,7 @@ class Workflow extends Property
     
 /**
 <documentation><description><p>Returns <code>relatedEntity</code>, which is an <code>Identifier</code> object.</p></description>
-<example></example>
+<example>u\DebugUtility::dump( $wf->getRelatedEntity() );</example>
 <return-type>Property</return-type>
 </documentation>
 */
@@ -200,7 +204,7 @@ class Workflow extends Property
     
 /**
 <documentation><description><p>Returns <code>startDate</code></p></description>
-<example></example>
+<example>echo $wf->getStartDate(), BR;</example>
 <return-type>string</return-type>
 </documentation>
 */
@@ -211,20 +215,24 @@ class Workflow extends Property
     
 /**
 <documentation><description><p>Returns a bool, indicating whether the named action is possible in the current step.</p></description>
-<example></example>
+<example>echo u\StringUtility::boolToString( $wf->isPossibleAction( $action ) );</example>
 <return-type>bool</return-type>
 </documentation>
 */
     public function isPossibleAction( string $a_name ) : bool
     {
-        if( is_array( $this->ordered_step_possible_action_map[
-            $this->workflow->currentStep ] ) &&
+        if( isset( $this->ordered_step_possible_action_map[
+            	$this->workflow->currentStep ] ) &&
+        	is_array( $this->ordered_step_possible_action_map[
+            	$this->workflow->currentStep ] ) &&
             in_array( $a_name,
                 $this->ordered_step_possible_action_map[ $this->workflow->currentStep ] ) )
             return true;
             
-        if( is_array( $this->unordered_step_possible_action_map[
-            $this->workflow->currentStep ] ) &&
+        if( isset( $this->unordered_step_possible_action_map[
+            	$this->workflow->currentStep ] ) &&
+        	is_array( $this->unordered_step_possible_action_map[
+            	$this->workflow->currentStep ] ) &&
             in_array( $a_name,
                 $this->unordered_step_possible_action_map[ $this->workflow->currentStep ] ) )
             return true;
@@ -234,7 +242,8 @@ class Workflow extends Property
     
 /**
 <documentation><description><p>Advances the workflow to the named action of the current step. Note that the advancement is possible only for ordered steps.</p></description>
-<example></example>
+<example>if( $action != "" )
+    $wf->performWorkflowTransition( $action, "Performing $action" );</example>
 <return-type></return-type>
 <exception>NoSuchActionException, WorkflowTransitionFailureException</exception>
 </documentation>
