@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/27/2016 Changed return type of getSiteName to mixed.
   * 12/9/2016 Added empty path in reloadProperty for Destination.
   * 11/11/2016 Added default value for $type to getAudits.
   * 9/29/2016 Added text color to $service->getMessage().
@@ -479,11 +480,11 @@ abstract class Asset
 /**
 <documentation><description><p>Returns <code>siteName</code>.</p></description>
 <example>echo $page->getSiteName(), BR;</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSiteName() : string
+    public function getSiteName()
     {
         return $this->site_name;
     }
