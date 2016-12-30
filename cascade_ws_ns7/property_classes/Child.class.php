@@ -136,7 +136,8 @@ class Child extends Property
     }
     
 /**
-<documentation><description>Returns the <code>path</code> string of <code>path</code>.</description>
+<documentation><description>Returns the <code>path</code> string of <code>path</code>.
+Note that for a <code>a\Site</code> object, this method returns the site name.</description>
 <example>echo $child->getPathPath(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
@@ -161,7 +162,8 @@ class Child extends Property
     }
     
 /**
-<documentation><description>Returns <code>siteName</code> of <code>path</code>.</description>
+<documentation><description>Returns <code>siteName</code> of <code>path</code>.
+Note that for a <code>a\Site</code> object, this method returns <code>NULL</code>.</description>
 <example>echo u\StringUtility::getCoalescedString( $child->getPathSiteName() ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
