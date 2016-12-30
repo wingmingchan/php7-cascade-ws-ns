@@ -4,6 +4,7 @@
   * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/30/2016 Changed default value of $site_name in clearPermissions to NULL.
   * 9/28/2016 Changed the code of getRoleAssetById to call getAsset directly.
     Added hasUser.
   * 9/8/2016 Changed signature of denyAccess, grantAccess, moving $asset to the front.
@@ -375,7 +376,8 @@ an empty string must be passed in as the third argument if there is a fourth arg
 <exception></exception>
 </documentation>
 */
-    public function clearPermissions( string $type, string $id_path, string $site_name="", bool $applied_to_children=false ) : Cascade
+    public function clearPermissions( string $type, string $id_path,
+        string $site_name=NULL, bool $applied_to_children=false ) : Cascade
     {
         $ari = $this->getAccessRights( $type, $id_path, $site_name );
         $ari->clearPermissions();
