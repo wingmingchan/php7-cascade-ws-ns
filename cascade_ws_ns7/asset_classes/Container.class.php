@@ -1,7 +1,7 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 4/25/2016 Added isAncestorOf and contains.
@@ -45,7 +45,11 @@ abstract class Container extends ContainedAsset
     {
         parent::__construct( $service, $identifier );
         
-        if( isset( $this->getProperty()->children ) && isset( $this->getProperty()->children->child ) )
+        $this->children               = array();
+        $this->container_children_ids = array();
+        
+        if( isset( $this->getProperty()->children ) && 
+            isset( $this->getProperty()->children->child ) )
         {
             $this->processChildren();
         }
@@ -64,7 +68,7 @@ abstract class Container extends ContainedAsset
     }
 
 /**
-<documentation><description><p>Deletes all children in the container and returns the object.
+<documentation><description><p>Deletes all children in the container and returns the calling object.
 This method uses the <code>aohs\AssetOperationHandlerService::batch</code> operation.
 There is no need to call <code>Container::edit</code> because the container object itself is not modified.</p></description>
 <example>$folder->deleteAllChildren();</example>
@@ -155,11 +159,11 @@ There is no need to call <code>Container::edit</code> because the container obje
 /**
 <documentation><description><p>Returns an array of <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/child.php"><code>p\Child</code></a> objects.</p></description>
 <example>u\DebugUtility::dump( $folder->getChildren() );</example>
-<return-type>mixed</return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getChildren()
+    public function getChildren() : array
     {
         return $this->children;
     }
@@ -181,7 +185,7 @@ then the id's returned are id's of all children of the type asset factory contai
 /**
 <documentation><description><p>Returns a bool, indicating whether this container is an ancestor of the named asset.</p></description>
 <example>echo u\StringUtility::boolToString( $folder2->isAncestorOf( $folder1) ), BR;</example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception>WrongAssetTypeException</exception>
 </documentation>
 */
@@ -207,7 +211,7 @@ then the id's returned are id's of all children of the type asset factory contai
 /**
 <documentation><description><p>Returns a bool, indicating whether this container is the parent container of the named asset.</p></description>
 <example>echo u\StringUtility::boolToString( $folder2->isParentOf( $folder1) ), BR;</example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception>WrongAssetTypeException</exception>
 </documentation>
 */
@@ -247,9 +251,6 @@ This method is used by the <a href="http://www.upstate.edu/cascade-admin/web-ser
     
     private function processChildren()
     {
-        $this->children                = array();
-        $this->container_children_ids  = array();
-
         $children = $this->getProperty()->children->child;
         
         if( !is_array( $children ) )

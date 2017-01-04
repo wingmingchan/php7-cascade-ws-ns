@@ -1,7 +1,7 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 12/30/2016 Changed default value of $site_name in clearPermissions to NULL.

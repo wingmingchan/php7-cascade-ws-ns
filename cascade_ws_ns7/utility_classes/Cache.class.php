@@ -1,7 +1,7 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 8/26/2016 Added constant NAME_SPACE.

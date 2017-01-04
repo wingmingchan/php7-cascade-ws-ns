@@ -1,7 +1,7 @@
 <?php 
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 11/2/2016 Added hasPossibleValues, isMultipleField and isMultipleNode.
@@ -163,7 +163,10 @@ type. To make methods, like <code>Page::getMetadataSetId</code>, <code>Page::get
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page.php">page.php</a></li>
-<li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page2.php">page2.php</a></li></ul>
+<li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page2.php">page2.php</a></li>
+<li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/tree/master/recipes/pages">Page Recipes</a></li>
+
+</ul>
 <h2>JSON Dump</h2>
 <pre>
 { "asset":{

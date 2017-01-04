@@ -1,7 +1,7 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 9/17/2016 Added initialization of recycled.
@@ -77,7 +77,7 @@ class Child extends Property
     }
     
 /**
-<documentation><description>Displays some basic information, and returns the calling object.</description>
+<documentation><description><p>Displays some basic information, and returns the calling object.</p></description>
 <example>$c->display();</example>
 <return-type>Property</return-type>
 <exception></exception>
@@ -92,7 +92,7 @@ class Child extends Property
     }
     
 /**
-<documentation><description>Returns the corresponding <code>Asset</code> object.</description>
+<documentation><description><p>Returns the corresponding <code>Asset</code> object.</p></description>
 <example>$folder = $id_child->getAsset( $service );</example>
 <return-type>Asset</return-type>
 <exception>NullServiceException</exception>
@@ -112,7 +112,7 @@ class Child extends Property
     }
     
 /**
-<documentation><description>Returns <code>id</code>.</description>
+<documentation><description><p>Returns <code>id</code>.</p></description>
 <example>echo $child->getId(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
@@ -124,7 +124,7 @@ class Child extends Property
     }
     
 /**
-<documentation><description>Returns <code>path</code> (a <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/path.php"><code>Path</code></a> object).</description>
+<documentation><description><p>Returns <code>path</code> (a <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/path.php"><code>Path</code></a> object).</p></description>
 <example>u\DebugUtility::dump( $child->getPath()->toStdClass() );</example>
 <return-type>Property</return-type>
 <exception></exception>
@@ -136,8 +136,8 @@ class Child extends Property
     }
     
 /**
-<documentation><description>Returns the <code>path</code> string of <code>path</code>.
-Note that for a <code>a\Site</code> object, this method returns the site name.</description>
+<documentation><description><p>Returns the <code>path</code> string of <code>path</code>.
+Note that for a <code>a\Site</code> object, this method returns the site name.</p></description>
 <example>echo $child->getPathPath(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
@@ -150,7 +150,7 @@ Note that for a <code>a\Site</code> object, this method returns the site name.</
     }
     
 /**
-<documentation><description>Returns <code>siteId</code> of <code>path</code>.</description>
+<documentation><description><p>Returns <code>siteId</code> of <code>path</code>.</p></description>
 <example>echo $child->getPathSiteId(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
@@ -162,8 +162,8 @@ Note that for a <code>a\Site</code> object, this method returns the site name.</
     }
     
 /**
-<documentation><description>Returns <code>siteName</code> of <code>path</code>.
-Note that for a <code>a\Site</code> object, this method returns <code>NULL</code>.</description>
+<documentation><description><p>Returns <code>siteName</code> of <code>path</code>.
+Note that for a <code>a\Site</code> object, this method returns <code>NULL</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $child->getPathSiteName() ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
@@ -176,7 +176,7 @@ Note that for a <code>a\Site</code> object, this method returns <code>NULL</code
     }
     
 /**
-<documentation><description>Returns <code>recycled</code>.</description>
+<documentation><description><p>Returns <code>recycled</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $child->getRecycled() ), BR;</example>
 <return-type>bool</return-type>
 <exception></exception>
@@ -188,7 +188,7 @@ Note that for a <code>a\Site</code> object, this method returns <code>NULL</code
     }
     
 /**
-<documentation><description>Returns <code>type</code>.</description>
+<documentation><description><p>Returns <code>type</code>.</p></description>
 <example>echo $child->getType(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
@@ -200,8 +200,8 @@ Note that for a <code>a\Site</code> object, this method returns <code>NULL</code
     }
     
 /**
-<documentation><description>Returns a string representation of the object as an
-<code>li</code> element, used by <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-tree/index.php"><code>AssetTree</code></a>.</description>
+<documentation><description><p>Returns a string representation of the object as an
+<code>li</code> element, used by <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-tree/index.php"><code>AssetTree</code></a>.</p></description>
 <example></example>
 <return-type>string</return-type>
 <exception></exception>
@@ -236,7 +236,7 @@ u\DebugUtility::dump( $id_child );</example>
     }
     
 /**
-<documentation><description>Returns a string representation of the object as an XML element, used by <code>a\AssetTree</code>.</description>
+<documentation><description><p>Returns a string representation of the object as an XML element, used by <code>a\AssetTree</code>.</p></description>
 <example></example>
 <return-type>string</return-type>
 <exception></exception>

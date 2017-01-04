@@ -1,7 +1,7 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2016 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 10/24/2016 Fixed a namespace, added constructor.
@@ -59,7 +59,51 @@ use cascade_ws_property as p;
   text
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/text_block.php">text_block.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/text_block.php">text_block.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>
+{ "asset":{
+    "textBlock":{
+      "text":"Some text here.",
+      "expirationFolderRecycled":false,
+      "metadataSetId":"45a6e8db7f00000178d6a41af950de9e",
+      "metadataSetPath":"Block",
+      "metadata":{
+        "displayName":"",
+        "title":"",
+        "summary":"",
+        "teaser":"",
+        "keywords":"",
+        "metaDescription":"",
+        "author":"",
+        "dynamicFields":[ {
+          "name":"macro",
+          "fieldValues":[ {
+            "value":"processTextBlock" } ]
+          },
+          {
+            "name":"dummy",
+            "fieldValues":[{
+              "value":"dummy" } ]
+          } ]
+      },
+      "parentFolderId":"45a78dc77f00000178d6a41a7cd3b6b2",
+      "parentFolderPath":"blocks",
+      "lastModifiedDate":"Dec 28, 2016 8:40:19 AM",
+      "lastModifiedBy":"wing",
+      "createdDate":"Dec 28, 2016 8:39:21 AM",
+      "createdBy":"wing",
+      "path":"blocks/text",
+      "siteId":"3e15e3fe0a00016b00677c0a42ef3909",
+      "siteName":"wing",
+      "name":"text",
+      "id":"45a81b127f00000178d6a41acb6004f7"
+    }
+  },
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class TextBlock extends Block
