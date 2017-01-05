@@ -1,5 +1,5 @@
 # php7-cascade-ws-ns
-My Cascade web service library, using namespaces, written in PHP 7 for Cascade 8. 
+My Cascade web service library, using namespaces, written in PHP 7 for Cascade 8.1. 
 <p>Last modified: 1/5/2017, 1:50 PM</p>
 <p>This version of the library makes use of features in PHP 7. Since I have just started making changes,
 most files are identical to those in the older version. Everything is posted here so that the library 
