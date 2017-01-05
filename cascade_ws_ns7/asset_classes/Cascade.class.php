@@ -4,6 +4,8 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/5/2017 Removed all search-related methods. Reimplemented the search method
+    and made it public.
   * 12/30/2016 Changed default value of $site_name in clearPermissions to NULL.
   * 9/28/2016 Changed the code of getRoleAssetById to call getAsset directly.
     Added hasUser.
@@ -1848,14 +1850,14 @@ either an existing index block of type "folder", or an index block newly created
     
     public function createTwitterFeedBlock(
         Folder $parent, 
-    	string $name
+        string $name
     ) : Asset
     {
-    	$asset = AssetTemplate::getTwitterFeedBlock();
-    	$asset->twitterFeedBlock->parentFolderPath = $parent->getPath();
+        $asset = AssetTemplate::getTwitterFeedBlock();
+        $asset->twitterFeedBlock->parentFolderPath = $parent->getPath();
         $asset->twitterFeedBlock->siteName         = $parent->getSiteName();
 
-    	return $this->createAsset( $asset, TwitterFeedBlock::TYPE, $name );
+        return $this->createAsset( $asset, TwitterFeedBlock::TYPE, $name );
     }
     
 /**
@@ -2457,11 +2459,11 @@ or <code>NULL</code> if there is no asset bearing that ID.</p></description>
         if( is_null( $this->groups ) )
         {
             $this->groups             = array();
-            $search_for               = new \stdClass();
-            $search_for->matchType    = c\T::MATCH_ANY;
-            $search_for->searchGroups = true;
-            $search_for->assetName    = '*';
-    
+            $search_for = AssetTemplate::getSearchInformation();
+            $search_for->searchTerms = "*";
+            $search_for->searchTypes->searchType = Group::TYPE;
+            $search_for->searchFields->searchField = "name";
+
             $this->service->search( $search_for );
             
             if ( $this->service->isSuccessful() )
@@ -2483,7 +2485,16 @@ or <code>NULL</code> if there is no asset bearing that ID.</p></description>
     }
     
 /**
-<documentation><description><p>Returns an array of groups (<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects) bearing the name. If <code>$name</code> is not supplied, then this method becomes an alias of <code>getGroups()</code>. The name can be an ID of a group, or it can be a string containing wild-card characters.</p></description>
+<documentation><description><p>Returns an array of groups (<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects) whose names
+containing <code>$name</code> as a substring. If <code>$name</code> is not supplied,
+then this method becomes an alias of <code>getGroups()</code>. The <code>$name</code> variable is used in the following way:</p>
+<ul>
+<li>If the value of <code>$name</code> does not contain wildcard characters, then any
+group whose name containing this value as a substring (case insensitive) will be included;
+for example, if the value is "CWT", then groups like "CWT-Designers", "Site-CWT-Designers", and "cwt-newsletter" are included</li>
+<li>When wildcard characters are used, a wildcard character can stand for any sequence of characters, including the empty string; for example, "m*m" will apply to "emergencymgt" as well as "community"</li>
+</ul>
+</description>
 <example>$groups = $cascade->getGroupsByName( "a*" );</example>
 <return-type>array</return-type>
 <exception></exception>
@@ -2494,17 +2505,17 @@ or <code>NULL</code> if there is no asset bearing that ID.</p></description>
         if( $name == "" )
             return $this->getGroups();
             
-        $group_ids                = array();
-        $search_for               = new \stdClass();
-        $search_for->matchType    =c\T::MATCH_ANY;
-        $search_for->searchGroups = true;
-        $search_for->assetName    = $name;
+        $group_ids               = array();
+		$search_for = AssetTemplate::getSearchInformation();
+		$search_for->searchTerms = $name;
+		$search_for->searchTypes->searchType   = Group::TYPE;
+		$search_for->searchFields->searchField = "name";
 
         $this->service->search( $search_for );
         
         if ( $this->service->isSuccessful() )
         {
-            if( !is_null( $this->service->getSearchMatches()->match ) )
+            if( isset( $this->service->getSearchMatches()->match ) )
             {
                 $groups = $this->service->getSearchMatches()->match;
         
@@ -2712,11 +2723,11 @@ if( count( $messages ) > 0 )
             $this->role_name_object_map = array();
             $this->role_id_object_map   = array();
         }
-    
-        $search_for              = new \stdClass();
-        $search_for->matchType   =c\T::MATCH_ANY;
-        $search_for->searchRoles = true;
-        $search_for->assetName   = '*';
+        
+        $search_for = AssetTemplate::getSearchInformation();
+        $search_for->searchTerms = "*";
+        $search_for->searchTypes->searchType = Role::TYPE;
+        $search_for->searchFields->searchField = "name";
 
         $this->service->search( $search_for );
         
@@ -2907,11 +2918,11 @@ foreach( $sites as $site )
         if( is_null( $this->users ) )
         {
             $this->users             = array();
-            $search_for              = new \stdClass();
-            $search_for->matchType   =c\T::MATCH_ANY;
-            $search_for->searchUsers = true;
-            $search_for->assetName   = '*';
-    
+            $search_for = AssetTemplate::getSearchInformation();
+            $search_for->searchTerms = "*";
+            $search_for->searchTypes->searchType = User::TYPE;
+            $search_for->searchFields->searchField = "name";
+            
             $this->service->search( $search_for );
             
             if ( $this->service->isSuccessful() )
@@ -2933,7 +2944,7 @@ foreach( $sites as $site )
         // add those that belong to groups
         $extra_names = array();
         $extra_users = array();
-        
+       
         if( $this->groups == NULL || count( $this->groups ) == 0 )
         {
             $this->getGroups();
@@ -2979,13 +2990,21 @@ foreach( $sites as $site )
     {
         if( $name == "" )
             return $this->getUsers();
-            
+
+		$search_for = AssetTemplate::getSearchInformation();
+		
+		$search_for = AssetTemplate::getSearchInformation();
+		$search_for->searchTerms = $name;
+		$search_for->searchTypes->searchType   = User::TYPE;
+		$search_for->searchFields->searchField = "name";
+			
+/*
         $user_ids                 = array();
         $search_for               = new \stdClass();
         $search_for->matchType    =c\T::MATCH_ANY;
         $search_for->searchUsers  = true;
         $search_for->assetName    = $name;
-
+*/
         $this->service->search( $search_for );
         
         if ( $this->service->isSuccessful() )
@@ -3266,95 +3285,63 @@ $cascade->moveAsset( $page,
     }   
 
 /**
-<documentation><description><p>Searches with <code>all</code> as the match type and returns an array of identifiers (<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects) or an empty array.</p></description>
-<example>u\DebugUtility::dump(
-    $cascade->searchForAll(
-        "a*",
-        "Cascade",
-        "",
-        c\S::SEARCHPAGES
-    )
-);</example>
-<return-type>array</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function searchForAll( 
-        string $asset_name, string $asset_content, string $asset_metadata, 
-        string $search_type ) : array
-    {
-        return $this->search(
-            c\T::MATCH_ALL, $asset_name, $asset_content, $asset_metadata, $search_type );
-    }
+<documentation><description><p>Searches for assets and returns an array of identifiers (<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects) or an empty array. Note that since there are too many parameters involved in this method, there is no easy to check all parameter values. Therefore, all values passed in will be sent to Cascade directly without data checking. Garbage in, garbage out.</p></description>
+<example>$assets = $cascade->search(
+    "cascade", "", "_common_assets", "name", a\ScriptFormat::TYPE );
+u\DebugUtility::dump( $assets );
     
-/**
-<documentation><description><p>Searches with <code>any</code> as the match type and <code>$asset_content</code> as the content, and returns an array of identifiers (<code>p\Identifier</code> objects) or an empty array.</p></description>
-<example>u\DebugUtility::dump(
-    $cascade->searchForAssetContent(
-        "Cascade",
-        c\S::SEARCHPAGES
-    )
-);</example>
+$assets = $cascade->search(
+    "API", "", "cascade-admin", "displayName", a\Page::TYPE );
+u\DebugUtility::dump( $assets );
+
+// the or search: Cascade or cascade or API or api, etc
+$assets = $cascade->search(
+    "Cascade API", "", "cascade-admin", "displayName", a\Page::TYPE );
+u\DebugUtility::dump( $assets );
+
+// the exact phrase search: search for the phrase "standard model", ignoring case
+$assets = $cascade->search(
+    '"standard model"', "", "cascade-admin", "displayName", a\Page::TYPE );
+u\DebugUtility::dump( $assets );</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function searchForAssetContent( 
-        string $asset_content, string $search_type ) : array
+    public function search(
+    	string $search_terms="",
+    	string $site_id="",
+    	string $site_name="",
+    	string $search_fields="",
+    	string $search_types=""
+    ) : array
     {
-        if( trim( $asset_content ) == "" )
+    	$asset_ids               = array();
+    	
+		$search_for = AssetTemplate::getSearchInformation();
+		$search_for->searchTerms = $search_terms;
+		$search_for->siteId      = $site_id;
+    	$search_for->siteName    = $site_name;
+		$search_for->searchFields->searchField = $search_fields;
+		$search_for->searchTypes->searchType   = $search_types;
+
+        $this->service->search( $search_for );
+        
+        if ( $this->service->isSuccessful() )
         {
-            throw new e\EmptyValueException( 
-                S_SPAN . c\M::EMPTY_ASSET_CONTENT . E_SPAN );
+            if( isset( $this->service->getSearchMatches()->match ) )
+            {
+                $assets = $this->service->getSearchMatches()->match;
+        
+                if( count( $assets ) == 1 )
+                    $asset_ids[] = new p\Identifier( $assets );
+                else
+                    foreach( $assets as $asset )
+                        $asset_ids[] = new p\Identifier( $asset );
+            }
         }
-        return $this->search(c\T::MATCH_ANY, "", $asset_content, "", $search_type );
+        return $asset_ids;
     }
-    
-/**
-<documentation><description><p>Searches with <code>any</code> as the match type and <code>$asset_name</code> as the name, and returns an array of identifiers (<code>p\Identifier</code> objects) or an empty array.</p></description>
-<example>u\DebugUtility::dump(
-    $cascade->searchForAssetName(
-        "a*",
-        c\S::SEARCHPAGES
-    )
-);</example>
-<return-type>array</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function searchForAssetName( string $asset_name, string $search_type ) : array
-    {
-        if( trim( $asset_name ) == "" )
-        {
-            throw new e\EmptyNameException(
-                S_SPAN . c\M::EMPTY_ASSET_NAME . E_SPAN );
-        }
-        return $this->search(c\T::MATCH_ANY, $asset_name, "", "", $search_type );
-    }
-    
-/**
-<documentation><description><p>Searches with <code>any</code> as the match type and <code>$asset_metadata</code> as the metadata, and returns an array of identifiers (<code>p\Identifier</code> objects) or an empty array.</p></description>
-<example>u\DebugUtility::dump(
-    $cascade->searchForAssetMetadata(
-        "Cascade",
-        c\S::SEARCHPAGES
-    )
-);</example>
-<return-type>array</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function searchForAssetMetadata(
-        string $asset_metadata, string $search_type ) : array
-    {
-        if( trim( $asset_metadata ) == "" )
-        {
-            throw new e\EmptyValueException(
-                S_SPAN . c\M::EMPTY_ASSET_METADATA . E_SPAN );
-        }
-        return $this->search(c\T::MATCH_ANY, "", "", $asset_metadata, $search_type );
-    }
-    
+
 /**
 <documentation><description><p>Calls <code>AssetOperationHandlerService::editAccessRights</code> by passing in all the supplied information, and returns <code>$cascade</code>.</p></description>
 <example>$cascade->setAccessRights( $ari, true );</example>
@@ -3472,68 +3459,7 @@ $cascade->moveAsset( $page,
         
         return $path;
     }
-    
-    private function search( 
-        string $match_type=c\T::MATCH_ANY, 
-        string $asset_name='', 
-        string $asset_content='', 
-        string $asset_metadata='', // metadata overrides others when any
-        string $search_type='' ) : array
-    {
-        if( !c\SearchTypes::isSearchType( trim( $search_type ) ) )
-        {
-            throw new e\NoSuchTypeException( 
-                S_SPAN . "The search type $search_type does not exist." . E_SPAN );
-        }
-        
-        if( $match_type !=c\T::MATCH_ANY && $match_type !=c\T::MATCH_ALL )
-        {
-            throw new e\NoSuchTypeException( 
-                S_SPAN . "The match type $match_type does not exist." . E_SPAN );
-        }
-    
-        $search_for = new \stdClass();
-        $search_for->matchType     = $match_type;
-        $search_for->$search_type  = true;
-        
-        if( trim( $asset_name ) != "" )
-            $search_for->assetName = $asset_name;
-        if( trim( $asset_content ) != "" )
-            $search_for->assetContent = $asset_content;
-        if( trim( $asset_metadata ) != "" )
-            $search_for->assetMetadata = $asset_metadata;
-            
-        if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $search_for ); }
-            
-        $this->service->search( $search_for );
-    
-        // if succeeded
-        if ( $this->service->isSuccessful() )
-        {
-            $results = array();
-            
-            if( !is_null( $this->service->getSearchMatches()->match ) )
-            {
-                $temp = $this->service->getSearchMatches()->match;
-                
-                if( !is_array( $temp ) )
-                {
-                    $temp = array( $temp );
-                }
-                    
-                foreach( $temp as $match )
-                {
-                    $results[] = new p\Identifier( $match );
-                }
-            }
-            return $results;
-        }
-        else
-        {
-            throw new e\SearchException( $this->service->getMessage() );
-        }
-    }
-    
+
     private $service;
     private $sites;
     private $name_site_map;
