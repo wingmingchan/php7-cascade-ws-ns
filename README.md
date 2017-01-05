@@ -1,13 +1,10 @@
 # php7-cascade-ws-ns
 My Cascade web service library, using namespaces, written in PHP 7 for Cascade 8.1. 
 <p>Last modified: 1/5/2017, 1:50 PM</p>
-<p>This version of the library makes use of features in PHP 7. Since I have just started making changes,
-most files are identical to those in the older version. Everything is posted here so that the library 
-constantly remains complete with all new features I am adding, and users can use this version to
-take advantage of the new features. I expect that this upgrade process will last for a few months.</p>
+<p>This version of the library makes use of features in PHP 7.</p>
 
 <h2>Purpose of the Upgrade</h2>
-<p>The library is being upgraded to PHP 7 due to two main reasons:</p>
+<p>The library has been upgraded to PHP 7 for two main reasons:</p>
 <ul>
 <li>When using parameter types and return types, I can have tighter control over client code</li>
 <li>I can use the type information, together with the ReflectionUtility class, to generate documentation pages; for an example of a generated page, see http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/asset.php</li>
@@ -29,11 +26,7 @@ u\ReflectionUtility::showFunctionSignature( "str_replace", true );
 
 <h2>Progress</h2>
 <ul>
-<li>Updated all Asset classes</li>
-<li>Updated all Property classes</li>
-<li>Updated test code and examples</li>
-<li>Added methods to a few classes for Cascade 8.</li>
-<li>All utility classes have been updated.</li>
+<li>All classes have been updated, except Report and CascadeInstances.</li>
 </ul>
 
 
