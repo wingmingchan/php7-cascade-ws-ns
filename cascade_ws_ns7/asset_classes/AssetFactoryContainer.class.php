@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/10/2017 Added JSON structure and JSON dump.
   * 9/7/2016 Added getDescription and setDescription.
   * 5/28/2015 Added namespaces.
  */
@@ -20,7 +21,8 @@ use cascade_ws_property  as p;
 <description><h2>Introduction</h2>
 <p>An <code>AssetFactoryContainer</code> object represents an asset factory container asset. This class is a sub-class of <a href="/web-services/api/asset-classes/container"><code>Container</code></a>.</p>
 <h2>Structure of <code>assetFactoryContainer</code></h2>
-<pre>assetFactoryContainer
+<pre>SOAP:
+assetFactoryContainer
   id
   name
   parentContainerId
@@ -39,8 +41,57 @@ use cascade_ws_property  as p;
         siteName
       type
       recycled
+      
+JSON:
+assetFactoryContainer
+  applicableGroups
+  children (array)
+    stdClass
+      id
+      path (stdClass)
+        path
+        siteId
+      type
+      recycled
+  description
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  name
+  id
 </pre></description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/asset_factory_container.php">asset_factory_container.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/asset_factory_container.php">asset_factory_container.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{ "asset":{
+  "assetFactoryContainer":{
+    "applicableGroups":"22q",
+    "children":[
+    { "id":"1f217d608b7ffe834c5fe91ed245a520",
+      "path":{
+        "path":"Upload/test",
+        "siteId":"1f2172088b7ffe834c5fe91e9596d028" },
+      "type":"assetfactory",
+      "recycled":false },
+    { "id":"1f217b0b8b7ffe834c5fe91e4a8615fd",
+      "path":{
+        "path":"Upload/Upload Word and Other Documents",
+        "siteId":"1f2172088b7ffe834c5fe91e9596d028"},
+      "type":"assetfactory",
+      "recycled":false } ],
+    "description":"Upload",
+    "parentContainerId":"1f2174298b7ffe834c5fe91e544ee758",
+    "parentContainerPath":"/",
+    "path":"Upload",
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"Upload",
+    "id":"1f217d838b7ffe834c5fe91e9832f910"}},
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class AssetFactoryContainer extends Container
