@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/10/2017 Added JSON structure.
   * 9/7/2016 Added getDescription and setDescription.
   * 2/11/2016 Added constants and methods related to plugins.
   * 5/28/2015 Added namespaces.
@@ -32,7 +33,8 @@ use cascade_ws_property as p;
 <documentation><description><h2>Introduction</h2>
 <p>An <code>AssetFactory</code> object represents an asset factory asset.</p>
 <h2>Structure of <code>assetFactory</code></h2>
-<pre>assetFactory
+<pre>SOAP:
+assetFactory
   id
   name
   parentContainerId
@@ -59,6 +61,34 @@ use cascade_ws_property as p;
   workflowDefinitionPath
   plugins
     plugin (NULL, stdClass or array of stdClass)
+
+JSON:
+assetFactory
+  applicableGroups
+  assetType
+  baseAssetId
+  baseAssetPath
+  baseAssetRecycled (bool)
+  placementFolderRecycled (bool)
+  allowSubfolderPlacement (bool)
+  description
+  folderPlacementPosition (int)
+  overwrite (bool)
+  workflowMode
+  plugins (array)
+    stdClass
+      name
+      parameters (array)
+        stdClass
+          name
+          value
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  name
+  id
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/asset_factory.php">asset_factory.php</a></li></ul>
