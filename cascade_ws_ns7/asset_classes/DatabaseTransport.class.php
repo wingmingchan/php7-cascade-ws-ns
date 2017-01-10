@@ -4,15 +4,16 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/10/2017 Added JSON dump.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
@@ -35,7 +36,26 @@ use cascade_ws_property as p;
   password
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/database_transport.php">database_transport.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/database_transport.php">database_transport.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{ "asset":{
+  "databaseTransport":{
+    "transportSiteId":1,
+    "serverName":"db",
+    "serverPort":80,
+    "databaseName":"db",
+    "username":"user",
+    "password":"",
+    "parentContainerId":"042b48d78b7ffe8339ce5d13f348500d",
+    "parentContainerPath":"Transport Container",
+    "path":"Transport Container/Test DB",
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"Test DB",
+    "id":"042cdef08b7ffe8339ce5d137abd4718" } },
+  "success":true
+}</pre>
+</postscript>
 </documentation>
 */
 class DatabaseTransport extends Transport
