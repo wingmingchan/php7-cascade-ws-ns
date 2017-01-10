@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/5/2017 Added getSearchInformation.
   * 8/26/2016 Added constant NAME_SPACE.
   * 3/15/2016 Fixed a bug in getFeedBlock.
   * 9/14/2015 Added getMetadata.
