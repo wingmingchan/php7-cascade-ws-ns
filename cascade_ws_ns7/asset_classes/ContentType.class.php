@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/10/2017 Added JSON structure and JSON dump.
   * 6/24/2016 Minor bug fix.
   * 5/28/2015 Added namespaces.
   * 9/22/2014 Added setDataDefinition, setMetadataSet, and setPageConfigurationSet.
@@ -21,7 +22,8 @@ use cascade_ws_property  as p;
 <description><h2>Introduction</h2>
 <p>A <code>ContentType</code> object represents a content type asset.</p>
 <h2>Structure of <code>contentType</code></h2>
-<pre>contentType
+<pre>SOAP:
+contentType
   id
   name
   parentContainerId
@@ -48,6 +50,28 @@ use cascade_ws_property  as p;
       dataDefinitionGroupPath
       type
       name
+      
+JSON:
+contentType
+  pageConfigurationSetId
+  pageConfigurationSetPath
+  dataDefinitionId
+  dataDefinitionPath
+  metadataSetId
+  metadataSetPath
+  contentTypePageConfigurations (array)
+    stdClass
+      pageConfigurationId
+      pageConfigurationName
+      publishMode
+  inlineEditableFields (array)
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  name
+  id
 </pre>
 <h2>Design Issues</h2>
 <ul>
@@ -56,7 +80,30 @@ use cascade_ws_property  as p;
 <li>When dealing with data definitions, the result of concatenating group path and the name of the field, with all the slashes turned into semi-colons, is equivalent to my fully qualified identifier of the field in the data definition.</li>
 </ul>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/content_type.php">content_type.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/content_type.php">content_type.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{ "asset":{
+  "contentType":{
+    "pageConfigurationSetId":"d7b67e638b7f085600a0fcdc2ef6d531",
+    "pageConfigurationSetPath":"_common:3 Columns",
+    "dataDefinitionId":"1f24084f8b7ffe834c5fe91e2e4d7950",
+    "dataDefinitionPath":"article_new",
+    "metadataSetId":"1f22ac6a8b7ffe834c5fe91ec00145cb",
+    "metadataSetPath":"My Metadata Set",
+    "contentTypePageConfigurations":[ { 
+      "pageConfigurationId":"d7b67e658b7f085600a0fcdc6767c5fe",
+      "pageConfigurationName":"Desktop",
+      "publishMode":"all-destinations" } ],
+    "inlineEditableFields":[],
+    "parentContainerId":"1f2175d28b7ffe834c5fe91e3eb6485d",
+    "parentContainerPath":"/",
+    "path":"article_new",
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"article_new",
+    "id":"1f2239118b7ffe834c5fe91e560a90e0"}},
+  "success":true
+}</pre></postscript>
 </documentation>
 */
 class ContentType extends ContainedAsset
