@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/10/2017 Added JSON dump.
   * 11/4/2016 Added default value to createChildStd.
   * 9/22/2016 Added getStructuredDataStdClass.
   * 6/2/2016 Replaced most string literals with constants.
@@ -142,7 +143,25 @@ element. To retrieve this array, we just need to call the <code>getField</code> 
 pass in the fully qualified identifier like
 <code>"simpleslideshow-image-caption"</code>.</p>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/data_definition.php">data_definition.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/data_definition.php">data_definition.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{ "asset":{
+  "dataDefinition":{
+    "xml":"\u003csystem-data-structure\u003e\r\n  \u003ctext multi-line\u003d\"true\"
+identifier\u003d\"Summary\" label\u003d\"Summary\"/\u003e\r\n  \u003ctext
+multi-line\u003d\"true\" identifier\u003d\"body\"
+label\u003d\"Body\"/\u003e\r\n\u003c/system-data-structure\u003e",
+    "parentContainerId":"1f2176588b7ffe834c5fe91eab1be7e7",
+    "parentContainerPath":"/",
+    "path":"article_new",
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"article_new",
+    "id":"1f24084f8b7ffe834c5fe91e2e4d7950" } },
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class DataDefinition extends ContainedAsset
