@@ -34,7 +34,8 @@ use cascade_ws_property  as p;
 <p>This class can be used to manipulate both data definition blocks and xhtml blocks. The only test available to tell them apart is the <code>DataDefinitionBlock::hasStructuredData</code> method. When it returns true, the block is a data definition block; else it is an xhtml block. We cannot consider the <code>xhtml</code> property because it can be <code>NULL</code> for both block sub-types.</p>
 <p>I could have split this class into two: <code>DataDefinitionBlock</code> and <code>XhtmlBlock</code>. But this difference between with and without using a data definition also exists in a page, and I do not think I should split the <code>Page</code> class into two. Therefore, I use the same class to deal with these two types of <code>xhtmlDataDefinitionBlock</code>.</p>
 <h2>Structure of <code>xhtmlDataDefinitionBlock</code></h2>
-<pre>xhtmlDataDefinitionBlock
+<pre>SOAP:
+xhtmlDataDefinitionBlock
   id
   name
   parentFolderId
@@ -88,6 +89,40 @@ use cascade_ws_property  as p;
         symlinkPath
         recycled
   xhtml
+  
+JSON:
+xhtmlDataDefinitionBlock
+  structuredData
+  structuredData
+    definitionId
+    definitionPath
+    structuredDataNodes (array)
+      stdClass
+        type
+        identifier
+        structuredDataNodes (array)
+  expirationFolderId
+  expirationFolderPath
+  expirationFolderRecycled (bool)
+  metadataSetId
+  metadataSetPath
+  metadata
+    author
+    displayName
+    endDate
+    keywords
+    metaDescription
+    reviewDate
+    startDate
+    summary
+    teaser
+    title
+    dynamicFields (array)
+      stdClass
+        name
+        fieldValues (array)
+          stdClass
+            value
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul>
@@ -95,7 +130,39 @@ use cascade_ws_property  as p;
 <li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/dd_block_multiple_fields.php">dd_block_multiple_fields.php</a></li>
 <li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/dd_block_multiple_text.php">dd_block_multiple_text.php</a></li>
 <li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/xhtml_block.php">xhtml_block.php</a></li>
-</ul></postscript>
+</ul>
+<h2>JSON Dump</h2>
+<pre>{ "asset":{
+  "xhtmlDataDefinitionBlock":{
+    "structuredData":{
+      "definitionId":"ead5f08a8b7ffe83164c9314c0bc0983",
+      "definitionPath":"_common_assets:WYSIWYG",
+      "structuredDataNodes":[ {
+        "type":"text",
+        "identifier":"block-type",
+        "text":"wysiwyg",
+        "recycled":false } ] },
+    "expirationFolderId":"1f22a7c88b7ffe834c5fe91e546e8b1e",
+    "expirationFolderPath":"_cascade/blocks/data",
+    "expirationFolderRecycled":false,
+    "metadataSetId":"345f42988b7ffe83164c93149a0faa9a",
+    "metadataSetPath":"_common_assets:Default",
+    "metadata":{"displayName":"Block",
+    "startDate":"Nov 27, 2016 12:00:00 AM"},
+    "parentFolderId":"1f22a7c88b7ffe834c5fe91e546e8b1e",
+    "parentFolderPath":"_cascade/blocks/data",
+    "lastModifiedDate":"Jan 10, 2017 1:03:40 PM",
+    "lastModifiedBy":"wing",
+    "createdDate":"Sep 12, 2016 12:01:51 PM",
+    "createdBy":"wing",
+    "path":"_cascade/blocks/data/wysiwyg",
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"wysiwyg",
+    "id":"1f221ae38b7ffe834c5fe91e33a3b33b" } },
+  "success":true
+}</pre>
+</postscript>
 </documentation>
 */
 class DataDefinitionBlock extends Block
