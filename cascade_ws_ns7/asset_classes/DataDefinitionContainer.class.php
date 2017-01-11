@@ -19,7 +19,8 @@ use cascade_ws_property as p;
 <description><h2>Introduction</h2>
 <p>A <code>DataDefinitionContainer</code> object represents a data definition container asset. This class is a sub-class of <a href="/web-services/api/asset-classes/container"><code>Container</code></a>.</p>
 <h2>Structure of <code>dataDefinitionContainer</code></h2>
-<pre>dataDefinitionContainer
+<pre>SOAP:
+dataDefinitionContainer
   id
   name
   parentContainerId
@@ -36,6 +37,24 @@ use cascade_ws_property as p;
         siteName
       type
       recycled
+
+JSON:
+dataDefinitionContainer
+  children (array)
+    stdClass
+      id
+      path
+        path
+        siteId
+      type
+      recycled
+    parentContainerId
+    parentContainerPath
+    path
+    siteId
+    siteName
+    name
+    id
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/data_definition_container.php">data_definition_container.php</a></li></ul>
