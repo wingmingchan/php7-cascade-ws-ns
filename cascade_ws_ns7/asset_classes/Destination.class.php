@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/11/2017 Added JSON dump.
   * 5/28/2015 Added namespaces.
   * 8/11/2014 Removed getParentContainer.
  */
@@ -50,7 +51,27 @@ use cascade_ws_property  as p;
 <h2>Design Issues</h2>
 <p>There is something special about all <code>ScheduledPublishing</code> assets: right after such an asset is read from Cascade, if we send the asset back to Cascade by calling <code>edit</code>, even without making any changes to it, Cascade will reject the asset. To fix this problem, we have to call <code>unset</code> to unset any property related to scheduled publishing if the property stores a <code>NULL</code> value. This must be done inside <code>edit</code>, or an exception will be thrown.</p>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/destination.php">destination.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/destination.php">destination.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{ "asset":{
+  "destination":{
+    "parentContainerId":"1f2178198b7ffe834c5fe91eafd5fd78",
+    "parentContainerPath":"/",
+    "transportId":"ec1098338b7ffe8330d802d7b038cf35",
+    "transportPath":"_common:webapp-cascade8",
+    "directory":"cascade-admin",
+    "enabled":true,
+    "checkedByDefault":true,
+    "publishASCII":false,
+    "usesScheduledPublishing":false,
+    "sendReportOnErrorOnly":false,
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"webapp",
+    "id":"1f2239578b7ffe834c5fe91ee9cac23f" } },
+  "success":true
+}
+</pre></postscript>
 </documentation>
 */
 class Destination extends ScheduledPublishing
