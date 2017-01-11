@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/11/2017 Added JSON structure and JSON dump.
   * 11/2/2016 Added searchTextByPattern and searchWYSIWYGByPattern.
   * 10/25/2016 Added hasPossibleValues, isMultipleField and isMultipleNode.
   * 6/2/2016 Added aliases.
