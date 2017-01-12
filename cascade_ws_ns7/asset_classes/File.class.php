@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/12/2017 Added JSON structure and JSON dump.
   * 9/6/2016 Added expiration folder-related code.
   * 1/4/2016 Fixed a bug in publish.
   * 10/30/2015 Modified edit to accept workflows, and added unpublish.
@@ -25,7 +26,8 @@ use cascade_ws_property as p;
 <description><h2>Introduction</h2>
 <p>A <code>File</code> object represents a file asset. The <code>File</code> class is a sub-class of <a href="/web-services/api/asset-classes/linkable"><code>Linkable</code></a>.</p>
 <h2>Structure of <code>file</code></h2>
-<pre>file
+<pre>SOAP structure:
+file
   id
   name
   parentFolderId
@@ -49,7 +51,7 @@ use cascade_ws_property as p;
     teaser
     title
     dynamicFields (NULL or an stdClass)
-      dynamicField (an stdClass or or array of stdClass)
+      dynamicField (an stdClass or array of stdClass)
         name
         fieldValues (NULL, stdClass or array of stdClass)
           fieldValue
@@ -67,6 +69,51 @@ use cascade_ws_property as p;
   data
   rewriteLinks (bool)
   maintainAbsoluteLinks (bool)
+  
+JSON structure:
+file
+  text (NULL)
+  data
+  rewriteLinks
+  maintainAbsoluteLinks
+  shouldBePublished
+  shouldBeIndexed
+  lastPublishedDate
+  lastPublishedBy
+    expirationFolderId
+  expirationFolderPath
+  expirationFolderRecycled (bool)
+  metadataSetId
+  metadataSetPath
+  metadata
+    author
+    displayName
+    endDate
+    keywords
+    metaDescription
+    reviewDate
+    startDate
+    summary
+    teaser
+    title
+    dynamicFields (array)
+      stdClass
+        name
+        fieldValues (array)
+          stdClass
+            value
+  parentFolderId
+  parentFolderPath
+  lastModifiedDate
+  lastModifiedBy
+  createdDate
+  createdBy
+  path
+  siteId
+  siteName
+  name
+  id
+
 </pre>
 <h2>Design Issues</h2>
 <ul>
