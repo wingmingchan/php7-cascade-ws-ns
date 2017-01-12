@@ -124,6 +124,17 @@ xhtmlDataDefinitionBlock
         fieldValues (array)
           stdClass
             value
+  parentFolderId
+  parentFolderPath
+  lastModifiedDate
+  lastModifiedBy
+  createdDate
+  createdBy
+  path
+  siteId
+  siteName
+  name
+  id
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul>
