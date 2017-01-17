@@ -28,7 +28,7 @@ use cascade_ws_property  as p;
   globalAbilities
     (82 properties, v.8)
   siteAbilities
-    (52 properties)
+    (51 properties)
 </pre>
 <h2>Design Issues</h2>
 <p>Since there are too many methods (85 <code>get</code> and 85 <code>set</code> methods) involved here, I decide not to repeat these methods in various classes. Instead, I provide two <code>get</code> methods, i.e., <code>getGlobalAbilities()</code> and <code>getSiteAbilities()</code> in this class, each returning an <code>Abilities</code> object, allowing us to manipulate these two objects directly. Therefore, there are no <code>set</code> methods in this class.</p>
@@ -124,6 +124,66 @@ use cascade_ws_property  as p;
       "brokenLinkReportMarkFixed":false },
     "name":"Default",
     "id":"10" } },
+  "success":true
+}
+
+{ "asset":{
+  "role":{
+    "roleType":"site",
+    "siteAbilities":{
+      "bypassAllPermissionsChecks":false,
+      "uploadImagesFromWysiwyg":false,
+      "multiSelectCopy":true,
+      "multiSelectPublish":true,
+      "multiSelectMove":true,
+      "multiSelectDelete":true,
+      "editPageLevelConfigurations":true,
+      "editPageContentType":true,
+      "editDataDefinition":true,
+      "publishReadableHomeAssets":true,
+      "publishWritableHomeAssets":true,
+      "editAccessRights":false,
+      "viewVersions":true,
+      "activateDeleteVersions":true,
+      "accessAudits":true,
+      "bypassWorkflow":true,
+      "assignApproveWorkflowSteps":true,
+      "deleteWorkflows":true,
+      "breakLocks":true,
+      "assignWorkflowsToFolders":true,
+      "bypassAssetFactoryGroupsNewMenu":true,
+      "bypassDestinationGroupsWhenPublishing":false,
+      "bypassWorkflowDefintionGroupsForFolders":true,
+      "accessManageSiteArea":true,
+      "accessAssetFactories":true,
+      "accessConfigurationSets":false,
+      "accessDataDefinitions":true,
+      "accessMetadataSets":true,
+      "accessPublishSets":true,
+      "accessDestinations":false,
+      "accessTransports":false,
+      "accessWorkflowDefinitions":true,
+      "accessContentTypes":false,
+      "accessConnectors":true,
+      "publishReadableAdminAreaAssets":true,
+      "publishWritableAdminAreaAssets":false,
+      "integrateFolder":true,
+      "importZipArchive":true,
+      "bulkChange":true,
+      "recycleBinViewRestoreUserAssets":true,
+      "recycleBinDeleteAssets":true,
+      "recycleBinViewRestoreAllAssets":true,
+      "moveRenameAssets":true,
+      "diagnosticTests":false,
+      "alwaysAllowedToToggleDataChecks":true,
+      "viewPublishQueue":true,
+      "reorderPublishQueue":true,
+      "cancelPublishJobs":true,
+      "sendStaleAssetNotifications":true,
+      "brokenLinkReportAccess":false,
+      "brokenLinkReportMarkFixed":false },
+    "name":"Library-Site-Administrator",
+    "id":"131" } },
   "success":true
 }
 </pre>
