@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON dump.
   * 5/28/2015 Added namespaces.
   * 7/8/2014 Fixed some bugs.
  */
@@ -37,7 +38,26 @@ use cascade_ws_property  as p;
   doPASV
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/ftp_transport.php">ftp_transport.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/ftp_transport.php">ftp_transport.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{ "asset":{
+  "ftpTransport":{
+    "hostName":"www.upstate.edu",
+    "port":50,
+    "username":"Cascade",
+    "password":"kf4*IG_ds%^#^!we",
+    "doSFTP":true,
+    "doPASV":false,
+    "parentContainerId":"042b48d78b7ffe8339ce5d13f348500d",
+    "parentContainerPath":"Transport Container",
+    "path":"Transport Container/Test FTP",
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"Test FTP",
+    "id":"085ee3dd8b7ffe8339ce5d13c4b8bd85" } },
+  "success":true
+}</pre>
+</postscript>
 </documentation>
 */
 class FtpTransport extends Transport
