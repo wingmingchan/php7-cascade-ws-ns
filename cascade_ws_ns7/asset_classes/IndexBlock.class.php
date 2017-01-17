@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON structure and JSON dump.
   * 10/24/2016 Added construtor.
   * 9/22/2016 Added default param values to all set methods.
   * 5/28/2015 Added namespaces.
