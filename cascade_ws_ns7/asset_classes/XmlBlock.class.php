@@ -21,7 +21,8 @@ use cascade_ws_property  as p;
 <description><h2>Introduction</h2>
 <p>An <code>XmlBlock</code> object represents an an xml block asset. This class is a sub-class of <a href="/web-services/api/asset-classes/block"><code>Block</code></a>.</p>
 <h2>Structure of <code>xmlBlock</code></h2>
-<pre>xmlBlock
+<pre>SOAP:
+xmlBlock
   id
   name
   parentFolderId
@@ -56,9 +57,67 @@ use cascade_ws_property  as p;
   expirationFolderPath
   expirationFolderRecycled
   xml
-</pre>
+  
+JSON:
+xmlBlock
+  xml
+  expirationFolderId
+  expirationFolderPath
+  expirationFolderRecycled
+  metadataSetId
+  metadataSetPath
+  metadata
+    author
+    displayName
+    endDate
+    keywords
+    metaDescription
+    reviewDate
+    startDate
+    summary
+    teaser
+    title
+    dynamicFields (array)
+      stdClass
+        name
+        fieldValues (array)
+          stdClass
+            value
+  parentFolderId
+  parentFolderPath
+  lastModifiedDate
+  lastModifiedBy
+  createdDate
+  createdBy
+  path
+  siteId
+  siteName
+  name
+  id</pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/xml_block.php">xml_block.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/xml_block.php">xml_block.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{ "asset":{
+  "xmlBlock":{
+    "xml":"...",
+    "expirationFolderRecycled":false,
+    "metadataSetId":"4dddf3e58b7f085600a0fcdc06afa7df",
+    "metadataSetPath":"_common:Default",
+    "metadata":{},
+    "parentFolderId":"1f22ab188b7ffe834c5fe91eed1a064a",
+    "parentFolderPath":"_cascade/blocks/feed",
+    "lastModifiedDate":"Sep 12, 2016 12:01:32 PM",
+    "lastModifiedBy":"wing",
+    "createdDate":"Sep 12, 2016 12:01:32 PM",
+    "createdBy":"wing",
+    "path":"_cascade/blocks/feed/xml",
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"xml",
+    "id":"1f21d1ef8b7ffe834c5fe91e94c764d8"}},
+  "success":true
+}
+</pre></postscript>
 </documentation>
 */
 class XmlBlock extends Block
