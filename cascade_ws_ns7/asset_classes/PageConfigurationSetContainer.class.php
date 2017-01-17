@@ -19,7 +19,8 @@ use cascade_ws_property  as p;
 <description><h2>Introduction</h2>
 <p>A <code>PageConfigurationSetContainer</code> object represents a page configuration set container asset. This class is a sub-class of <a href="/web-services/api/asset-classes/container"><code>Container</code></a>.</p>
 <h2>Structure of <code>pageConfigurationSetContainer</code></h2>
-<pre>pageConfigurationSetContainer
+<pre>SOAP:
+pageConfigurationSetContainer
   id
   name
   parentContainerId
@@ -36,9 +37,42 @@ use cascade_ws_property  as p;
         siteName
       type
       recycled
+      
+JSON:
+pageConfigurationSetContainer
+  children (array)
+    stdClass
+      id
+      path
+        path
+        siteId
+      type
+      recycled
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  name
+  id
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page_configuration_set_container.php">page_configuration_set_container.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page_configuration_set_container.php">page_configuration_set_container.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{ "asset":{
+  "pageConfigurationSetContainer":{
+    "children":[],
+    "parentContainerId":"1f2175268b7ffe834c5fe91ea94519a0",
+    "parentContainerPath":"/",
+    "path":"Test Configuration Set Container",
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"Test Configuration Set Container",
+    "id":"ad2b3c068b7ffe83664b9bd40724496c"}},
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class PageConfigurationSetContainer extends Container
