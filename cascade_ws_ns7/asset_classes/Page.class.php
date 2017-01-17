@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON structure and JSON dump.
   * 11/2/2016 Added hasPossibleValues, isMultipleField and isMultipleNode.
   * Rewrote code so that methods like getDataDefinitionId, getDataDefinitionPath do
   * return useful information.
@@ -71,7 +72,8 @@ enough to deal with these sub-types.</p>
 and <code>configurationSetPath</code>. They all store <code>NULL</code>. To retrieve the metadata set and configuration set associated with a page, we must go through the content
 type. To make methods, like <code>Page::getMetadataSetId</code>, <code>Page::getMetadataSetPath</code>, <code>Page::getConfigurationSetId</code>, and <code>Page::getConfigurationSetPath</code>, useful, instead of returning the <code>NULL</code> value, I go through the content type and retrieve the configuration set and metadata set. Therefore, the <code>Page::getMetadataSetId</code>, <code>Page::getMetadataSetPath</code>, <code>Page::getConfigurationSetId</code>, and <code>Page::getConfigurationSetPath</code> methods do return useful information.</p>
 <h2>Structure of <code>page</code></h2>
-<pre>page
+<pre>SOAP:
+page
   id
   name
   parentFolderId
@@ -160,6 +162,88 @@ type. To make methods, like <code>Page::getMetadataSetId</code>, <code>Page::get
       includeXMLDeclaration
       publishable
   maintainAbsoluteLinks
+  
+JSON:
+page
+  contentTypeId
+  contentTypePath
+  structuredData
+    structuredDataNodes (array)
+      stdClass
+        type
+        identifier
+        structuredDataNodes (array)
+        text
+        assetType
+        blockId
+        blockPath
+        fileId
+        filePath
+        pageId
+        pagePath
+        symlinkId
+        symlinkPath
+        recycled
+  pageConfigurations (array)
+    stdClass
+      name
+      defaultConfiguration
+      templateId
+      templatePath
+      formatId
+      formatPath
+      formatRecycled
+      pageRegions (array)
+        stdClass
+          name
+          blockId
+          blockPath
+          blockRecycled
+          noBlock
+          formatId
+          formatPath
+          formatRecycled
+          noFormat
+          id
+      includeXMLDeclaration
+      publishable
+      id
+  maintainAbsoluteLinks
+  shouldBePublished
+  shouldBeIndexed
+  lastPublishedDate
+  lastPublishedBy
+  expirationFolderId
+  expirationFolderPath
+  expirationFolderRecycled
+  metadata
+    author
+    displayName
+    endDate
+    keywords
+    metaDescription
+    reviewDate
+    startDate
+    summary
+    teaser
+    title
+    dynamicFields (array)
+      stdClass
+        name
+        fieldValues (array)
+          stdClass
+            value
+  parentFolderId
+  parentFolderPath
+  lastModifiedDate
+  lastModifiedBy
+  createdDate
+  createdBy
+  path
+  siteId
+  siteName
+  name
+  id   
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page.php">page.php</a></li>
