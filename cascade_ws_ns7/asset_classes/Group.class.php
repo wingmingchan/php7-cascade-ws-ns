@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON dump.
   * 1/27/2016 Modified addUser, removeUser and hasUser, using StringUtility::getExplodedStringArray.
   *           Added addUserName, hasUserName, removeUserName.
   *           Added getGroupStartingPageRecycled.
