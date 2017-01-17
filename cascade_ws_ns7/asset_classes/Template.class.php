@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON structure and JSON dump.
   * 3/14/2016 Minor bug fix.
   * 5/28/2015 Added namespaces.
   * 7/3/2014 Added getPageRegionStdForPageConfiguration.
@@ -22,7 +23,8 @@ use cascade_ws_property  as p;
 <description><h2>Introduction</h2>
 <p>A <code>Template</code> object represents a template asset. It contains <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/page-region.php"><code>PageRegion</code></a> objects and can be associated with an <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/xslt-format.php"><code>XsltFormat</code></a> object.</p>
 <h2>Structure of <code>template</code></h2>
-<pre>template
+<pre>SOAP:
+template
   id
   name
   parentFolderId
@@ -52,6 +54,35 @@ use cascade_ws_property  as p;
       formatPath
       formatRecycled
       noFormat
+
+JSON:
+template
+  formatId
+  formatPath
+  formatRecycled
+  pageRegions (array)
+    stdClass
+      name
+      blockId
+      blockPath
+      blockRecycled
+      noBlock
+      formatId
+      formatPath
+      formatRecycled
+      noFormat
+      id
+  parentFolderId
+  parentFolderPath
+  lastModifiedDate
+  lastModifiedBy
+  createdDate
+  createdBy
+  path
+  siteId
+  siteName
+  name
+  id   
 </pre>
 <h2>Design Issues</h2>
 <ul>
