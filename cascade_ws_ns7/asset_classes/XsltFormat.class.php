@@ -35,7 +35,26 @@ use cascade_ws_property  as p;
   xml
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/xslt_format.php">xslt_format.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/xslt_format.php">xslt_format.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{ "asset":{
+  "xsltFormat":{
+    "xml":"...",
+    "parentFolderId":"1f22a5fc8b7ffe834c5fe91ec2acf245",
+    "parentFolderPath":"_cascade/formats/test-xslt",
+    "lastModifiedDate":"Dec 19, 2016 11:11:12 AM",
+    "lastModifiedBy":"wing",
+    "createdDate":"Sep 12, 2016 12:04:04 PM",
+    "createdBy":"wing",
+    "path":"_cascade/formats/test-xslt/rwd-slideshow-test",
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"rwd-slideshow-test",
+    "id":"1f2422858b7ffe834c5fe91ecd110f7a" } },
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class XsltFormat extends Format
