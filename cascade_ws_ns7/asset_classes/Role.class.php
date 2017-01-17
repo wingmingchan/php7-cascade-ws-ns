@@ -26,7 +26,7 @@ use cascade_ws_property  as p;
   name
   roleType
   globalAbilities
-    (83 properties, v.8)
+    (82 properties, v.8)
   siteAbilities
     (52 properties)
 </pre>
