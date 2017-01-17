@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON structure and JSON dump.
   * 9/14/2016 Added removeField.
   * 9/9/2016 Added $wired_fields. Added default values to getMetadata.
   * 9/6/2016 Added isDynamicMetadataFieldRequired.
@@ -27,7 +28,8 @@ use cascade_ws_property  as p;
 <description><h2>Introduction</h2>
 <p>A <code>MetadataSet</code> object represents a metadata set asset. See <a href="site://cascade-admin-old/projects/web-services/oop/classes/property-classes/dynamic-field">DynamicField</a> for an important note on the use of default values. Use <code>MetadataSet::setSelectedByDefault</code> carefully.</p>
 <h2>Structure of <code>metadataSet</code></h2>
-<pre>metadataSet
+<pre>SOAP structure:
+metadataSet
   id
   name
   parentContainerId
@@ -68,6 +70,48 @@ use cascade_ws_property  as p;
         possibleValue (NULL, stdClass or array of stdClass)
           value
           selectedByDefault
+
+JSON structure:
+metadataSet
+  authorFieldRequired
+  authorFieldVisibility
+  descriptionFieldRequired
+  descriptionFieldVisibility
+  displayNameFieldRequired
+  displayNameFieldVisibility
+  endDateFieldRequired
+  endDateFieldVisibility
+  expirationFolderFieldRequired (8)
+  expirationFolderFieldVisibility (8)
+  keywordsFieldRequired
+  keywordsFieldVisibility
+  reviewDateFieldRequired
+  reviewDateFieldVisibility
+  startDateFieldRequired
+  startDateFieldVisibility
+  summaryFieldRequired
+  summaryFieldVisibility
+  teaserFieldRequired
+  teaserFieldVisibility
+  titleFieldRequired
+  titleFieldVisibility
+  dynamicMetadataFieldDefinitions (array)
+    stdClass
+      name
+      label
+      fieldType
+      required
+      visibility
+      possibleValues (array)
+        value
+        selectedByDefault
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  name
+  id 
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/metadata_set.php">metadata_set.php</a></li></ul>
