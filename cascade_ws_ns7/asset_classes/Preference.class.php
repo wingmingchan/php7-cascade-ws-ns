@@ -4,6 +4,7 @@
   * Copyright (c) 2015 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON dump.
   * 7/6/2015 File created.
  */
 namespace cascade_ws_asset;
@@ -22,7 +23,73 @@ use cascade_ws_property as p;
 <p>Note that neither the keys nor the possible values are defined in the WSDL. Therefore, when editing an entry, any value can be attached to an existing key, and Cascade will accept the value. How a meaningless value is treated in the Cascade back-end depends on default values assigned to these keys. When a meaningless value is assigned, Cascade falls back to the default.</p>
 <p>When this class is implemented, I only check the keys. That is to say, when reading or editing an entry, the input key must exist. But I do not check the values for editing. Garbage in, garbage out.</p>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/preference.php">preference.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/preference.php">preference.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{ "preferences":[
+  { "name":"system_pref_allow_font_assignment","value":"off" },
+  { "name":"system_pref_allow_font_formatting","value":"on" },
+  { "name":"system_pref_allow_text_formatting","value":"on" },
+  { "name":"system_pref_available_asset_factory_plugins","value":"com.cms.assetfactory.CreateResizedImagesPlugin;com.cms.assetfactory.DisplayToSystemNamePlugin;com.cms.assetfactory.FileLimitPlugin;com.cms.assetfactory.ImageResizerPlugin;com.cms.assetfactory.PageNameCharsLimitPlugin;com.cms.assetfactory.SetStartDatePlugin;com.cms.assetfactory.TitleToSystemNamePlugin;com.cms.assetfactory.StructuredDataFieldsToSystemNamePlugin;com.cms.assetfactory.StructuredDataFieldToSystemNamePlugin;edu.upstate.chanw.plugin.CustomFileLimitPlugin" },
+  { "name":"system_pref_available_workflow_triggers","value":"com.cms.workflow.function.AssignStepIfUser;com.cms.workflow.function.AssignToGroupOwningAsset;com.cms.workflow.function.AssignToSpecifiedGroup;com.cms.workflow.function.AssignToWorkflowOwner;com.cms.workflow.function.CopyFolder;com.cms.workflow.function.CreateNewWorkflowTrigger;com.cms.workflow.function.Delete;com.cms.workflow.function.DeleteAndUnpublish;com.cms.workflow.function.DeleteParentFolderTrigger;com.cms.workflow.function.EmailProvider;com.cms.workflow.function.Merge;com.cms.workflow.function.PreserveCurrentUser;com.cms.workflow.function.PublishContainingPublishSetTrigger;com.cms.workflow.function.PublishParentFolderTrigger;com.cms.workflow.function.PublishSetTrigger;com.cms.workflow.function.Publisher;com.cms.workflow.function.Version" },
+  { "name":"system_pref_check_external_links","value":"on" },
+  { "name":"system_pref_check_external_links_timeout","value":"5000" },
+  { "name":"system_pref_css_classes","value":"alignleft, alignright, bold, centerobject, center, clr, clearfix, imagerollover, intro-text, italic, pad3, pad4, pad6, width100,table-upstate,table-header,tablerow1,img-responsive" },
+  { "name":"system_pref_default_508_compliance_behavior","value":"on" },
+  { "name":"system_pref_default_language","value":"en_US" },
+  { "name":"system_pref_default_link_check_behavior","value":"on" },
+  { "name":"system_pref_default_spellcheck_behavior","value":"on" },
+  { "name":"system_pref_default_tidy_behavior","value":"on" },
+  { "name":"system_pref_disable_table_ctrls","value":"off" },
+  { "name":"system_pref_editable_file_extensions","value":".css,.htaccess,.js,.php" },
+  { "name":"system_pref_email_max_batch_size","value":"10" },
+  { "name":"system_pref_email_max_wait_time","value":"15" },
+  { "name":"system_pref_enable_folder_gallery","value":"true" },
+  { "name":"system_pref_enable_smart_publish","value":"off" },
+  { "name":"system_pref_expiration_first_warning_days","value":"1" },
+  { "name":"system_pref_expiration_second_warning_days","value":"1" },
+  { "name":"system_pref_license_expiration_notification","value":"60" },
+  { "name":"system_pref_max_num_versions","value":"20" },
+  { "name":"system_pref_max_rendered_entities","value":"1000" },
+  { "name":"system_pref_max_upload_in_kb","value":"65000" },
+  { "name":"system_pref_optimize_office_html","value":"on" },
+  { "name":"system_pref_organization_name","value":"Upstate Content Management System Sandbox" },
+  { "name":"system_pref_publisher_concurrency","value":"heavy" },
+  { "name":"system_pref_publisher_job_timeout","value":"900000" },
+  { "name":"system_pref_remove_font_and_style","value":"off" },
+  { "name":"system_pref_report_relative_links_as_errors","value":"on" },
+  { "name":"system_pref_search_indexlocation","value":"indexes" },
+  { "name":"system_pref_session_timeout","value":"60.0" },
+  { "name":"system_pref_sitewide_css_file","value":"00fb0b348b7ffe83765c5582af336436" },
+  { "name":"system_pref_smtp_email_address","value":"chanw@upstate.edu" },
+  { "name":"system_pref_smtp_host","value":"smtp.upstate.edu" },
+  { "name":"system_pref_smtp_password","value":"Cxq556010174422#" },
+  { "name":"system_pref_smtp_port","value":"25" },
+  { "name":"system_pref_smtp_username","value":"chanw" },
+  { "name":"system_pref_system_keywords","value":"SUNY Upstate Medical University Syracuse" },
+  { "name":"system_pref_system_url","value":"http://www.upstate.edu" },
+  { "name":"system_pref_smtps","value":"off" },
+  { "name":"system_pref_xalan_java_extensions","value":"on" },
+  { "name":"system_pref_index_block_rendering_cache","value":"on" },
+  { "name":"system_pref_max_index_block_size","value":"5" },
+  { "name":"system_pref_xalan_javascript_extensions","value":"on" },
+  { "name":"system_pref_recycle_bin_expiration","value":"15" },
+  { "name":"system_pref_use_old_cache","value":"off" },
+  { "name":"system_pref_unpublish_global_on_expiration","value":"off" },
+  { "name":"system_pref_link_checker_frequency","value":"daily" },
+  { "name":"system_pref_link_checker_frequency_days","value":"7" },
+  { "name":"system_pref_link_checker_frequency_time","value":"9:00:PM" },
+  { "name":"system_pref_global_area_link_checker_enabled","value":"off" },
+  { "name":"system_pref_allow_table_editing","value":"on" },
+  { "name":"system_pref_global_area_external_link_check_on_publish","value":"off" },
+  { "name":"system_pref_editable_image_file_extensions","value":".gif,.jpg,.png" },
+  { "name":"system_pref_sitewide_css_fileText" },
+  { "name":"system_pref_template_create_block_folder" },
+  { "name":"system_pref_template_create_block_folderText" },
+  { "name":"system_pref_unpublish_by_default_on_delete" },
+  { "name":"system_pref_plain_text_file_extensions" } ],
+  "success":true
+}</pre>
+</postscript>
 </documentation>
 */
 class Preference
