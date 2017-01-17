@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON dump.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_asset;
@@ -34,7 +35,26 @@ use cascade_ws_property  as p;
   script
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/script_format.php">script_format.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/script_format.php">script_format.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{ "asset":{
+  "scriptFormat":{
+    "script":"##",
+    "parentFolderId":"1f22ab8e8b7ffe834c5fe91e555a2a38",
+    "parentFolderPath":"_cascade/formats/test-velocity",
+    "lastModifiedDate":"Sep 12, 2016 12:04:00 PM",
+    "lastModifiedBy":"wing",
+    "createdDate":"Sep 12, 2016 12:04:00 PM",
+    "createdBy":"wing",
+    "path":"_cascade/formats/test-velocity/test-config",
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"test-config",
+    "id":"1f24139b8b7ffe834c5fe91ea124b974" } },
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class ScriptFormat extends Format
