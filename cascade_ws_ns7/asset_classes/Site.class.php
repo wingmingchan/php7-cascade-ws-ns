@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON structure and JSON dump.
   * 1/28/2016 Added a set of get methods to return root containers.
   * 10/29/2015 Added getExternalLinkCheckOnPublish and setExternalLinkCheckOnPublish.
   * 5/28/2015 Added namespaces.
@@ -22,7 +23,8 @@ use cascade_ws_property  as p;
 <description><h2>Introduction</h2>
 <p>An <code>Site</code> object represents a site asset. This class is a sub-class of <a href="/web-services/api/asset-classes/scheduled-publishing"><code>ScheduledPublishing</code></a>.</p>
 <h2>Structure of <code>site</code></h2>
-<pre>site
+<pre>SOAP:
+site
   id
   name
   url
@@ -69,47 +71,111 @@ use cascade_ws_property  as p;
   rootSiteDestinationContainerId
   rootTransportContainerId
   rootWorkflowDefinitionContainerId
+
+JSON:
+site
+  defaultMetadataSetId
+  defaultMetadataSetPath
+  siteAssetFactoryContainerId
+  siteAssetFactoryContainerPath
+  siteStartingPageId
+  siteStartingPagePath
+  siteStartingPageRecycled (bool)
+  url
+  cssClasses
+  recycleBinExpiration
+  cssFileId
+  cssFilePath
+  cssFileRecycled (bool)
+  roleAssignments (array)
+    stdClass
+      roleId
+      roleName
+      users
+      groups
+  usesScheduledPublishing (bool)
+  scheduledPublishDestinationMode
+  scheduledPublishDestinations
+  timeToPublish
+  publishIntervalHours
+  publishDaysOfWeek
+    dayOfWeek
+  cronExpression
+  sendReportToUsers
+  sendReportToGroups
+  sendReportOnErrorOnly
+  rootFolderId
+  rootAssetFactoryContainerId
+  rootPageConfigurationSetContainerId
+  rootContentTypeContainerId
+  rootConnectorContainerId
+  rootDataDefinitionContainerId
+  rootMetadataSetContainerId
+  rootPublishSetContainerId
+  rootSiteDestinationContainerId
+  rootTransportContainerId
+  rootWorkflowDefinitionContainerId
+  unpublishOnExpiration (bool)
+  linkCheckerEnabled (bool)
+  externalLinkCheckOnPublish (bool)
+  name
+  id
 </pre>
 <h2>Design Issues</h2>
 <p>There is something special about all <code>ScheduledPublishing</code> assets: right after such an asset is read from Cascade, if we send the asset back to Cascade by calling <code>edit</code>, even without making any changes to it, Cascade will reject the asset. To fix this problem, we have to call <code>unset</code> to unset any property related to scheduled publishing if the property stores a <code>NULL</code> value. This must be done inside <code>edit</code>, or an exception will be thrown.</p>
-
-
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/site.php">site.php</a></li></ul>
 <h2>JSON Dump</h2>
 <pre>
 { "asset":{
-    "site":{
-      "defaultMetadataSetId":"f7a963087f0000012693e3d9b68e9e1d",
-      "defaultMetadataSetPath":"Default",
-      "siteAssetFactoryContainerId":"f7a963197f0000012693e3d94a278887",
-      "siteAssetFactoryContainerPath":"Default",
-      "siteStartingPageRecycled":false,
-      "url":"http://sandbox.SUNY Upstate.com",
-      "recycleBinExpiration":"15",
-      "cssFileRecycled":false,
-      "roleAssignments":[ { 
-        "roleId":"11",
-        "roleName":"Test Site Manager",
-        "groups":"SUNY Upstate-testers" } ],
-      "usesScheduledPublishing":false,
-      "sendReportOnErrorOnly":false,
-      "rootFolderId":"f7a9630b7f0000012693e3d99c134cef",
-      "rootAssetFactoryContainerId":"f7a963107f0000012693e3d9a7be58e8",
-      "rootPageConfigurationSetContainerId":"f7a9631f7f0000012693e3d90c58cbf5",
-      "rootContentTypeContainerId":"f7a963297f0000012693e3d966e34575",
-      "rootDataDefinitionContainerId":"f7a9632d7f0000012693e3d9809faca9",
-      "rootMetadataSetContainerId":"f7a963417f0000012693e3d9d1302ce2",
-      "rootPublishSetContainerId":"f7a963317f0000012693e3d9db70427b",
-      "rootSiteDestinationContainerId":"f7a963387f0000012693e3d9090cd7a9",
-      "rootTransportContainerId":"f7a963357f0000012693e3d98d968254",
-      "rootWorkflowDefinitionContainerId":"f7a9633c7f0000012693e3d98ac14ce1",
-      "rootConnectorContainerId":"f7a963247f0000012693e3d92c905759",
-      "unpublishOnExpiration":true,
-      "linkCheckerEnabled":true,
-      "externalLinkCheckOnPublish":false,
-      "name":"SUNY Upstate",
-      "id":"f7a963087f0000012693e3d9932e44ba" } },
+  "site":{
+    "defaultMetadataSetId":"1f22ac858b7ffe834c5fe91e67ea0fcf",
+    "defaultMetadataSetPath":"Default",
+    "siteAssetFactoryContainerId":"1f217d838b7ffe834c5fe91e9832f910",
+    "siteAssetFactoryContainerPath":"Upload",
+    "siteStartingPageId":"1f2376798b7ffe834c5fe91ead588ce1",
+    "siteStartingPagePath":"index",
+    "siteStartingPageRecycled":false,
+    "url":"http://www.upstate.edu/tuw-test",
+    "recycleBinExpiration":"never",
+    "cssFileId":"081d805b8b7ffe8339ce5d1303b53a50",
+    "cssFilePath":"_extra/test.css",
+    "cssFileRecycled":false,
+    "roleAssignments":[ { 
+      "roleId":"50",
+      "roleName":"Site-Publisher",
+      "users":"chanw,tuw",
+      "groups":"cru" } ],
+    "usesScheduledPublishing":true,
+    "scheduledPublishDestinationMode":"all-destinations",
+    "timeToPublish":"00:00:00.000-05:00",
+    "publishDaysOfWeek":[
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday" ],
+    "sendReportToUsers":"wing",
+    "sendReportToGroups":"Administrators",
+    "sendReportOnErrorOnly":true,
+    "rootFolderId":"1f21734f8b7ffe834c5fe91e89f3d6c2",
+    "rootAssetFactoryContainerId":"1f2174298b7ffe834c5fe91e544ee758",
+    "rootPageConfigurationSetContainerId":"1f2175268b7ffe834c5fe91ea94519a0",
+    "rootContentTypeContainerId":"1f2175d28b7ffe834c5fe91e3eb6485d",
+    "rootDataDefinitionContainerId":"1f2176588b7ffe834c5fe91eab1be7e7",
+    "rootMetadataSetContainerId":"1f2176d58b7ffe834c5fe91ee998459c",
+    "rootPublishSetContainerId":"1f21774c8b7ffe834c5fe91e130d561a",
+    "rootSiteDestinationContainerId":"1f2178198b7ffe834c5fe91eafd5fd78",
+    "rootTransportContainerId":"1f2178878b7ffe834c5fe91e726ec502",
+    "rootWorkflowDefinitionContainerId":"1f2172958b7ffe834c5fe91edc1f2412",
+    "rootConnectorContainerId":"1f2177b48b7ffe834c5fe91e1a7d31f4",
+    "unpublishOnExpiration":true,
+    "linkCheckerEnabled":false,
+    "externalLinkCheckOnPublish":true,
+    "name":"cascade-admin-webapp",
+    "id":"1f2172088b7ffe834c5fe91e9596d028" } },
   "success":true
 }
 </pre>
