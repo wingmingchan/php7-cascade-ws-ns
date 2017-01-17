@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON structure and JSON dump.
   * 1/4/2016 Fixed a bug in publish.
   * 6/17/2015 Fixed a bug in edit.
   * 5/28/2015 Added namespaces.
@@ -21,7 +22,8 @@ use cascade_ws_property  as p;
 <description><h2>Introduction</h2>
 <p>A <code>PublishSet</code> object represents a publish set asset. This class is a sub-class of <a href="/web-services/api/asset-classes/scheduled-publishing"><code>ScheduledPublishing</code></a>.</p>
 <h2>Structure of <code>publishSet</code></h2>
-<pre>publishSet
+<pre>SOAP:
+publishSet
   id
   name
   parentContainerId
@@ -67,6 +69,51 @@ use cascade_ws_property  as p;
   sendReportToUsers
   sendReportToGroups
   sendReportOnErrorOnly
+
+JSON:
+publishSet
+  files (array)
+    stdClass
+      id
+      path
+        path
+        siteId
+      type
+      recycled
+  folders (array)
+    stdClass
+      id
+      path
+        path
+        siteId
+      type
+      recycled
+  pages (array)
+    stdClass
+      id
+      path
+        path
+        siteId
+      type
+      recycled
+  usesScheduledPublishing
+  scheduledPublishDestinationMode
+  scheduledPublishDestinations
+  timeToPublish
+  publishIntervalHours
+  publishDaysOfWeek
+    dayOfWeek
+  cronExpression
+  sendReportToUsers
+  sendReportToGroups
+  sendReportOnErrorOnly
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  name
+  id  
 </pre>
 <h2>Design Issues</h2>
 <p>There is something special about all <code>ScheduledPublishing</code> assets: right after such an asset is read from Cascade, if we send the asset back to Cascade by calling <code>edit</code>, even without making any changes to it, Cascade will reject the asset. To fix this problem, we have to call <code>unset</code> to unset any property related to scheduled publishing if the property stores a <code>NULL</code> value. This must be done inside <code>edit</code>, or an exception will be thrown.</p>
