@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON structure and JSON dump.
   * 5/28/2015 Added namespaces.
       Swapped the last two arguments of PageConfiguration.
   * 9/22/2014 Fixed a bug in addPageConfiguration.
@@ -23,7 +24,8 @@ use cascade_ws_property  as p;
 <description><h2>Introduction</h2>
 <p>A <code>PageConfigurationSet</code> object represents a page configuration set asset.</p>
 <h2>Structure of <code>pageConfigurationSet</code></h2>
-<pre>pageConfigurationSet
+<pre>SOAP:
+pageConfigurationSet
   id
   name
   parentContainerId
@@ -57,6 +59,42 @@ use cascade_ws_property  as p;
       serializationType
       includeXMLDeclaration
       publishable
+
+JSON:
+pageConfigurationSet
+  pageConfigurations (array)
+    stdClass
+      name
+      defaultConfiguration
+      templateId
+      templatePath
+      formatId
+      formatPath
+      formatRecycled
+      pageRegions (array)
+        stdClass
+          name
+          blockId
+          blockPath
+          blockRecycled
+          noBlock
+          formatId
+          formatPath
+          formatRecycled
+          noFormat
+          id
+      serializationType
+      outputExtension
+      includeXMLDeclaration
+      publishable
+      id
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  name
+  id
 </pre>
 <p>There is an important issue related to page regions of a configuration. A configuration contains a page region only if the page region is attached with either a block or a format or both. If a region is not attached with a block or a format, then it will not show up in the configuration; namely, it does not exist. To test whether a certain region exists in a configuration, do that test through the associated <code>Template</code> object.</p>
 </description>
