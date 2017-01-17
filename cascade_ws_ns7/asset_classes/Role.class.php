@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON dump.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_asset;
@@ -32,7 +33,101 @@ use cascade_ws_property  as p;
 <h2>Design Issues</h2>
 <p>Since there are too many methods (85 <code>get</code> and 85 <code>set</code> methods) involved here, I decide not to repeat these methods in various classes. Instead, I provide two <code>get</code> methods, i.e., <code>getGlobalAbilities()</code> and <code>getSiteAbilities()</code> in this class, each returning an <code>Abilities</code> object, allowing us to manipulate these two objects directly. Therefore, there are no <code>set</code> methods in this class.</p>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/role.php">role.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/role.php">role.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>
+{ "asset":{
+  "role":{
+    "roleType":"global",
+    "globalAbilities":{
+      "bypassAllPermissionsChecks":false,
+      "accessSiteManagement":false,
+      "createSites":false,
+      "uploadImagesFromWysiwyg":false,
+      "multiSelectCopy":false,
+      "multiSelectPublish":false,
+      "multiSelectMove":false,
+      "multiSelectDelete":false,
+      "editPageLevelConfigurations":false,
+      "editPageContentType":false,
+      "editDataDefinition":false,
+      "publishReadableHomeAssets":false,
+      "publishWritableHomeAssets":false,
+      "viewPublishQueue":true,
+      "reorderPublishQueue":false,
+      "cancelPublishJobs":false,
+      "editAccessRights":false,
+      "viewVersions":false,
+      "activateDeleteVersions":false,
+      "accessAudits":false,
+      "bypassWorkflow":false,
+      "assignApproveWorkflowSteps":false,
+      "deleteWorkflows":false,
+      "breakLocks":false,
+      "assignWorkflowsToFolders":false,
+      "bypassAssetFactoryGroupsNewMenu":false,
+      "bypassDestinationGroupsWhenPublishing":false,
+      "bypassWorkflowDefintionGroupsForFolders":false,
+      "alwaysAllowedToToggleDataChecks":false,
+      "accessManageSiteArea":false,
+      "accessAdminArea":false,
+      "accessAssetFactories":false,
+      "accessConfigurationSets":false,
+      "accessDataDefinitions":false,
+      "accessMetadataSets":false,
+      "accessPublishSets":false,
+      "accessTargetsDestinations":false,
+      "accessTransports":false,
+      "accessWorkflowDefinitions":false,
+      "accessContentTypes":false,
+      "accessAllSites":true,
+      "viewSystemInfoAndLogs":false,
+      "forceLogout":false,
+      "diagnosticTests":false,
+      "accessSecurityArea":false,
+      "publishReadableAdminAreaAssets":false,
+      "publishWritableAdminAreaAssets":false,
+      "integrateFolder":false,
+      "importZipArchive":false,
+      "optimizeDatabase":false,
+      "syncLdap":false,
+      "bulkChange":false,
+      "configureLogging":false,
+      "searchingIndexing":false,
+      "accessConfiguration":false,
+      "editSystemPreferences":false,
+      "broadcastMessages":false,
+      "recycleBinViewRestoreUserAssets":false,
+      "recycleBinDeleteAssets":false,
+      "recycleBinViewRestoreAllAssets":false,
+      "viewUsersInMemberGroups":false,
+      "viewAllUsers":false,
+      "createUsers":false,
+      "deleteUsersInMemberGroups":false,
+      "deleteAllUsers":false,
+      "viewMemberGroups":false,
+      "viewAllGroups":false,
+      "createGroups":false,
+      "deleteMemberGroups":false,
+      "accessRoles":false,
+      "createRoles":false,
+      "deleteAnyGroup":false,
+      "editAnyUser":false,
+      "editUsersInMemberGroups":false,
+      "editAnyGroup":false,
+      "editMemberGroups":false,
+      "changeIdentity":false,
+      "moveRenameAssets":false,
+      "databaseExportTool":false,
+      "sendStaleAssetNotifications":false,
+      "brokenLinkReportAccess":false,
+      "brokenLinkReportMarkFixed":false },
+    "name":"Default",
+    "id":"10" } },
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class Role extends Asset
