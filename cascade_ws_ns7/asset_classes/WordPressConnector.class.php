@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON structure and JSON dump.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_asset;
