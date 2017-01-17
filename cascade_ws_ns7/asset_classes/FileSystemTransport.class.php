@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/12/2017 Added JSON dump.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_asset;
@@ -30,7 +31,22 @@ use cascade_ws_property  as p;
   directory
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/fs_transport.php">fs_transport.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/fs_transport.php">fs_transport.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{ "asset":{
+  "fileSystemTransport":{
+    "directory":"about",
+    "parentContainerId":"042b48d78b7ffe8339ce5d13f348500d",
+    "parentContainerPath":"Transport Container",
+    "path":"Transport Container/Test File",
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"Test File",
+    "id":"08378e518b7ffe8339ce5d1372331a0f"}},
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class FileSystemTransport extends Transport
