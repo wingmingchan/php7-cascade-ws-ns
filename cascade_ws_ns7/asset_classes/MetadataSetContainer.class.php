@@ -19,7 +19,8 @@ use cascade_ws_property  as p;
 <description><h2>Introduction</h2>
 <p>A <code>MetadataSetContainer</code> object represents a metadata set container asset. This class is a sub-class of <a href="/web-services/api/asset-classes/container"><code>Container</code></a>.</p>
 <h2>Structure of <code>metadataSetContainer</code></h2>
-<pre>metadataSetContainer
+<pre>SOAP:
+metadataSetContainer
   id
   name
   parentContainerId
@@ -36,9 +37,41 @@ use cascade_ws_property  as p;
         siteName
       type
       recycled
+
+JSON:
+metadataSetContainer
+  children (array)
+    stdClass
+      id
+      path
+        path
+        siteId
+      type
+      recycled
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  name
+  id
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/metadata_set_container.php">metadata_set_container.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/metadata_set_container.php">metadata_set_container.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{"asset":{
+  "metadataSetContainer":{
+    "children":[],
+    "parentContainerId":"1f2176d58b7ffe834c5fe91ee998459c",
+    "parentContainerPath":"/",
+    "path":"Test Metadata Set Container",
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"Test Metadata Set Container",
+    "id":"1f22acb08b7ffe834c5fe91eaf922b7d" } },
+  "success":true
+}
+</pre></postscript>
 </documentation>
 */
 class MetadataSetContainer extends Container
