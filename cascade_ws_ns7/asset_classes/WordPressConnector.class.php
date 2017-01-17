@@ -19,7 +19,8 @@ use cascade_ws_property  as p;
 <description><h2>Introduction</h2>
 <p>A <code>WordPressConnector</code> object represents a WordPress connector asset. This class is a sub-class of <a href="/web-services/api/asset-classes/connector"><code>Connector</code></a>.</p>
 <h2>Structure of <code>wordPressConnector</code></h2>
-<pre>wordPressConnector
+<pre>SOAP:
+wordPressConnector
   id
   name
   parentContainerId
@@ -42,9 +43,61 @@ use cascade_ws_property  as p;
       connectorContentTypeLinkParams
         name
         value
+
+JSON:
+wordPressConnector
+  auth1
+  auth2
+  url
+  verified
+  verifiedDate
+  connectorParameters (array)
+  connectorContentTypeLinks (array)
+  	stdClass
+      contentTypeId
+      contentTypePath
+      pageConfigurationId
+      pageConfigurationName
+      connectorContentTypeLinkParams (array)
+        stdClass
+          name
+          value
+  parentFolderId
+  parentFolderPath
+  path
+  siteId
+  siteName
+  name
+  id
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/wp_connector.php">wp_connector.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/wp_connector.php">wp_connector.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{ "asset":{
+  "wordPressConnector":{
+    "auth1":"wing",
+    "auth2":"kf4*IG_ds%^#^!we",
+    "url":"blogs.upstate.edu",
+    "verified":false,
+    "connectorParameters":[],
+    "connectorContentTypeLinks":[ {
+      "contentTypeId":"1f2238f48b7ffe834c5fe91e0baabfc7",
+      "contentTypePath":"article_old",
+      "pageConfigurationId":"d7b67e658b7f085600a0fcdc6767c5fe",
+      "pageConfigurationName":"_common:Desktop",
+      "connectorContentTypeLinkParams":[ { 
+        "name":"Metadata mapping for categories" },
+        {"name":"Metadata mapping for tags" } ] } ],
+    "parentContainerId":"03dbe3628b7ffe8339ce5d132b740004",
+    "parentContainerPath":"Test Connector Container",
+    "path":"Test Connector Container/Word Press",
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"Word Press",
+    "id":"f95e2b688b7ffe8339ce5d131397b292"}},
+  "success":true
+}</pre>
+</postscript>
 </documentation>
 */
 class WordPressConnector extends Connector
