@@ -23,7 +23,8 @@ use cascade_ws_property  as p;
 <p>A <code>IndexBlock</code> object represents an index block asset. This class is a sub-class of <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/block.php"><code>Block</code></a>.</p>
 <p>There are two types of index blocks: "folder" and "content-type". Use the <code>IndexBlock::getIndexBlockType()</code> method to get the type, or use <code>IndexBlock::isFolder()</code> or <code>IndexBlock::isContent()</code> to test the type.</p>
 <h2>Structure of <code>indexBlock</code></h2>
-<pre>indexBlock
+<pre>SOAP structure:
+indexBlock
   id
   name
   parentFolderId
@@ -80,6 +81,65 @@ use cascade_ws_property  as p;
   sortMethod
   sortOrder
   pageXML
+  
+JSON structure:
+indexBlock
+  indexedFolderId
+  indexedFolderPath
+  indexedContentTypeId
+  indexedContentTypePath
+  indexedFolderRecycled
+  indexBlockType
+  maxRenderedAssets
+  depthOfIndex
+  indexPages
+  indexBlocks
+  indexLinks
+  indexFiles
+  indexRegularContent
+  indexSystemMetadata
+  indexUserMetadata
+  indexAccessRights
+  indexUserInfo
+  indexWorkflowInfo
+  appendCallingPageData
+  sortMethod
+  sortOrder
+  pageXML
+  renderingBehavior
+  expirationFolderId
+  expirationFolderPath
+  expirationFolderRecycled
+  metadataSetId
+  metadataSetPath
+  metadata
+    author
+    displayName
+    endDate
+    keywords
+    metaDescription
+    reviewDate
+    startDate
+    summary
+    teaser
+    title
+    dynamicFields (array)
+      stdClass
+        name
+        fieldValues (array)
+          stdClass
+            value
+  parentFolderId
+  parentFolderPath
+  lastModifiedDate
+  lastModifiedBy
+  createdDate
+  createdBy
+  path
+  siteId
+  siteName
+  name
+  id
 </pre>
 <p>Note that there is a <code>pageXML</code> property but no <code>blockXML</code> property. This is a bug in Cascade, and I cannot provide any methods to access this missing property.</p>
 <h2>Design Issues</h2>
@@ -87,7 +147,53 @@ use cascade_ws_property  as p;
 <li>Although it is not hard to implement, I decide not to provide a <code>setType</code> method. Switching between folder indexing and content type indexing may not be a good idea.</li>
 </ul></description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/index_block_folder.php">index_block_folder.php</a></li>
-<li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/index_block_content.php">index_block_content.php</a></li></ul></postscript>
+<li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/index_block_content.php">index_block_content.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{"asset":{
+  "indexBlock":{
+    "indexedFolderId":"1f22a9b58b7ffe834c5fe91e954a68d4",
+    "indexedFolderPath":"_cascade/bootstrap-js",
+    "indexedFolderRecycled":false,
+    "indexBlockType":"folder",
+    "maxRenderedAssets":0,
+    "depthOfIndex":4,
+    "indexPages":true,
+    "indexBlocks":false,
+    "indexLinks":false,
+    "indexFiles":false,
+    "indexRegularContent":true,
+    "indexSystemMetadata":false,
+    "indexUserMetadata":false,
+    "indexAccessRights":false,
+    "indexUserInfo":false,
+    "indexWorkflowInfo":false,
+    "appendCallingPageData":false,
+    "sortMethod":"folder-order",
+    "sortOrder":"ascending",
+    "pageXML":"render",
+    "renderingBehavior":"render-normally",
+    "expirationFolderRecycled":false,
+    "metadataSetId":"358be6af8b7ffe83164c9314f9a3c1a6",
+    "metadataSetPath":"_common_assets:Block",
+    "metadata":{
+      "dynamicFields":[ {
+        "name":"macro",
+        "fieldValues":[ { "value":"" } ] } ] },
+    "parentFolderId":"1f22a76f8b7ffe834c5fe91e2bd49427",
+    "parentFolderPath":"_cascade/blocks/index",
+    "lastModifiedDate":"Sep 12, 2016 12:01:36 PM",
+    "lastModifiedBy":"wing",
+    "createdDate":"Sep 12, 2016 12:01:36 PM",
+    "createdBy":"wing",
+    "path":"_cascade/blocks/index/gallery",
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"gallery",
+    "id":"1f21e1fc8b7ffe834c5fe91ece2e3ece"}},
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class IndexBlock extends Block
