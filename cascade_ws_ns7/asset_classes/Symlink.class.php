@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON structure and JSON dump.
   * 10/12/2016 Removed folder-related code because it is in Linkable.
   * 9/6/2016 Added expiration folder-related code.
   * 5/28/2015 Added namespaces.
@@ -21,7 +22,8 @@ use cascade_ws_property as p;
 <description><h2>Introduction</h2>
 <p>A <code>Symlink</code> represents a symlink asset. This class is a sub-class of <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/linkable.php"><code>Linkable</code></a>.</p>
 <h2>Structure of <code>symlink</code></h2>
-<pre>symlink
+<pre>SOAP:
+symlink
   id
   name
   parentFolderId
@@ -56,6 +58,43 @@ use cascade_ws_property as p;
   expirationFolderPath
   expirationFolderRecycled
   linkURL
+
+JSON:
+symlink
+  linkURL
+  expirationFolderId
+  expirationFolderPath
+  expirationFolderRecycled
+  metadataSetId
+  metadataSetPath
+  metadata
+    author
+    displayName
+    endDate
+    keywords
+    metaDescription
+    reviewDate
+    startDate
+    summary
+    teaser
+    title
+    dynamicFields (array)
+      stdClass
+        name
+        fieldValues (array)
+          stdClass
+            value
+  parentFolderId
+  parentFolderPath
+  lastModifiedDate
+  lastModifiedBy
+  createdDate
+  createdBy
+  path
+  siteId
+  siteName
+  name
+  id   
 </pre></description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/symlink.php">symlink.php</a></li></ul>
 <h2>JSON Dump</h2>
