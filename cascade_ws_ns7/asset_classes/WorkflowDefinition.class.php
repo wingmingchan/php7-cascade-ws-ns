@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON dump.
   * 5/28/2015 Added namespaces.
   * 7/17/2014 Fixed a bug in setXml.
  */
@@ -37,7 +38,28 @@ use cascade_ws_property  as p;
   xml
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/workflow_definition.php">workflow_definition.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/workflow_definition.php">workflow_definition.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{ "asset":{
+  "workflowDefinition":{
+    "applicableGroups":"demo",
+    "copy":true,
+    "create":true,
+    "delete":true,
+    "edit":true,
+    "namingBehavior":"name-of-definition",
+    "xml":"...",
+    "parentContainerId":"1f2421b28b7ffe834c5fe91effa66c81",
+    "parentContainerPath":"Test Workflow Container",
+    "path":"Test Workflow Container/Test Workflow",
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"Test Workflow",
+    "id":"1f241fa98b7ffe834c5fe91ec4400ef2" } },
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class WorkflowDefinition extends ContainedAsset
