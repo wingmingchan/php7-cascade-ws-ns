@@ -44,7 +44,24 @@ use cascade_ws_property  as p;
   role
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/group.php">group.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/group.php">group.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{ "asset":{
+  "group":{
+    "groupName":"22q",
+    "groupStartingPageRecycled":false,
+    "groupBaseFolderRecycled":false,
+    "wysiwygAllowFontAssignment":false,
+    "wysiwygAllowFontFormatting":true,
+    "wysiwygAllowTextFormatting":true,
+    "wysiwygAllowViewSource":false,
+    "wysiwygAllowImageInsertion":true,
+    "wysiwygAllowTableInsertion":true,
+    "users":"marrinae",
+    "roles":"Default" } },
+  "success":true
+}</pre>
+</postscript>
 </documentation>
 */
 class Group extends Asset
