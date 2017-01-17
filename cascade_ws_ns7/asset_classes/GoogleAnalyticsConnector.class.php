@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON structure and JSON dump.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_asset;
@@ -19,7 +20,8 @@ use cascade_ws_property  as p;
 <description><h2>Introduction</h2>
 <p>A <code>GoogleAnalyticsConnector</code> object represents a Google analytics connector asset. This class is a sub-class of <a href="/web-services/api/asset-classes/connector"><code>Connector</code></a>.</p>
 <h2>Structure of <code>googleAnalyticsConnector</code></h2>
-<pre>googleAnalyticsConnector
+<pre>SOAP structure:
+googleAnalyticsConnector
   id
   name
   parentContainerId
@@ -37,9 +39,52 @@ use cascade_ws_property  as p;
       name
       value
   connectorContentTypeLinks (empty)
+  
+JSON structure:
+googleAnalyticsConnector
+  auth1
+  auth2
+  url
+  verified
+  verifiedDate
+  connectorParameters (array)
+    stdClass
+      name
+      value
+  connectorContentTypeLinks (array)
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  name
+  id  
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/google_connector.php">google_connector.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/google_connector.php">google_connector.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>{ "asset":{
+  "googleAnalyticsConnector":{
+    "auth2":"kf4*IG_ds%^#^!we",
+    "verified":false,
+    "connectorParameters":[ {
+      "name":"Google Analytics Profile Id",
+      "value":"two"},
+    {
+      "name":"Base Path",
+      "value":"/all" } ],
+    "connectorContentTypeLinks":[],
+    "parentContainerId":"03dbe3628b7ffe8339ce5d132b740004",
+    "parentContainerPath":"Test Connector Container",
+    "path":"Test Connector Container/Google",
+    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
+    "siteName":"cascade-admin-webapp",
+    "name":"Google",
+    "id":"086439518b7ffe8339ce5d13b34124b6" } },
+  "success":true
+}
+</pre>
+</postscript>
 </documentation>
 */
 class GoogleAnalyticsConnector extends Connector
