@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/17/2017 Added JSON structure and JSON dump.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_asset;
@@ -19,7 +20,8 @@ use cascade_ws_property as p;
 <description><h2>Introduction</h2>
 <p>A <code>TransportContainer</code> object represents a transport container asset. This class is a sub-class of <a href="/web-services/api/asset-classes/container"><code>Container</code></a>.</p>
 <h2>Structure of <code>transportContainer</code></h2>
-<pre>transportContainer
+<pre>SOAP:
+transportContainer
   id
   name
   parentContainerId
@@ -36,6 +38,24 @@ use cascade_ws_property as p;
         siteName
       type
       recycled
+
+JSON:
+transportContainer
+  children (array)
+    stdClass
+      id
+      path
+        path
+        siteId
+      type
+      recycled
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  name
+  id
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/transport_container.php">transport_container.php</a></li></ul>
