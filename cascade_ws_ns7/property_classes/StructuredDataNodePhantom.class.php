@@ -23,6 +23,42 @@ use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
+/**
+<documentation><description><h2>Introduction</h2>
+<p>A <code>StructuredDataNode</code> object represents a <code>structuredDataNode</code> property found in a <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/structured-data.php"><code>StructuredData</code></a> object inside a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/data-definition-block.php"><code>a\DataDefinitionBlock</code></a> object. This property can also be found in a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/page.php"><code>a\Page</code></a> object.</p>
+<p>A <code>StructuredDataNode</code> object can have descendants of the same <code>StructuredDataNode</code> type. Therefore, there must be recursion in the constructor and the <code>toStdClass</code> method.</p>
+<h2>Structure of <code>structureDataNode</code></h2>
+<pre>structuredDataNode (stdClass or array of stdClass)
+  type
+  identifier
+  structuredDataNodes
+  text
+  assetType
+  blockId
+  blockPath
+  fileId
+  filePath
+  pageId
+  pagePath
+  symlinkId
+  symlinkPath
+  recycled
+</pre>
+<h2>About Identifiers</h2>
+<p>Identifiers in a <code>structureDataNode</code> property can be considered in two different ways. First, these identifiers can be found in the corresponding data definition. Identifiers in a data definition has the following restriction: identifiers of siblings must be unique. The same identifier can be used in two different fields, provided they are not siblings.</p>
+<p>When a data definition is associated with a page or a data definition block, then identifiers can have a different meaning. A field type with a <code>multiple</code> attribute (set to <code>true</code>), when instantiated as nodes, will have sibling instances sharing the same identifier. These nodes are distinguished by their positions in an array. To complicate things, these nodes can mingle with nodes corresponding to other fields in the same array.</p>
+<p>Therefore, to identify a node, just using its identifier is not enough. All instances of a multiple field have the same identifier. The identifier must be combined with the positions. But the position of a multiple field can change, depending on what precedes it. For example, if there are two multiple fields at the same level, and the first field has two instances, then the first instance of the second multiple field will be the third node in the sequence. But if we add one more instance to the first field, then the first instance of the second field becomes the fourth node.</p>
+<p>To be able to identify these nodes, I decide to use what I called <strong>fully qualified identifiers</strong>. A fully qualified identifier of a node looks like a full URL or file path. It contains all the identifiers of the nodes ancestors and its own identifier, each separated by a semi-colon. For example, a text field whose identifier is <code>test-text</code> at the root level will have a fully qualified identifier <code>test-text</code> because it has no parent. But if this field occurs in a group whose identifier is <code>test-group</code>, then the fully qualified identifier of the text field will be <code>test-group;test-text</code>, provided that the group has no parent.</p>
+<p>For a field allowing multiple instances, the fully qualified identifier of the first instance is suffixed with '<code>;0</code>', the second instance is suffixed with '<code>;1</code>' and so on. Therefore, if our text field in the group <code>test-group</code> is a multiple text field, then the fully qualified identifier of the first instance of the text will be <code>test-group;test-text;0</code>. Note that this fully qualified identifier remain unchanged even if we add more instances to other fields preceding it. The '<code>;0</code>' part indicates that this is the first instance of this field. Now I can use these fully qualified identifiers as keys for quick look-up.</p>
+<h2>Design Issues</h2>
+<ul>
+<li>A <code>StructuredDataNode</code> object contains a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/data-definition.php"><code>a\DataDefinition</code></a> object. When a text value assigned to a node, the text value is checked against the definition of the field to make sure it is a valid value.</li>
+<li>Possible values of a multiple-item field can be retrieved using the <code>getItems</code> method.</li>
+</ul>
+</description>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/structured_data_node.php">structured_data_node.php</a></li></ul></postscript>
+</documentation>
+*/
 class StructuredDataNodePhantom extends Property
 {
     const DEBUG = false;

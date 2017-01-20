@@ -241,7 +241,7 @@ class StructuredDataNode extends Property
         
         if( !$this->data_definition->isMultiple( $field_id ) )
         {
-            throw new e\NodeException( 
+            throw new e\NodeException(
                 S_SPAN . "Cannot add a node to a non-multiple field." . E_SPAN );
         }
 
@@ -1189,7 +1189,7 @@ class StructuredDataNode extends Property
         
         if( $this->asset_type != c\T::BLOCK )
         {
-            throw new e\NodeException( 
+            throw new e\NodeException(
                 S_SPAN . "The asset does not accept a block." . E_SPAN );
         }
         
@@ -1225,7 +1225,7 @@ class StructuredDataNode extends Property
         
         if( $this->asset_type != c\T::FILE )
         {
-            throw new e\NodeException( 
+            throw new e\NodeException(
                 S_SPAN . "The asset does not accept a file." . E_SPAN );
         }
         
@@ -1261,7 +1261,7 @@ class StructuredDataNode extends Property
         
         if( $this->asset_type != c\T::PFS )
         {
-            throw new e\NodeException( 
+            throw new e\NodeException(
                 S_SPAN . "The asset does not accept a linkable." . E_SPAN );
         }
         
@@ -1328,7 +1328,7 @@ class StructuredDataNode extends Property
         
         if( $this->asset_type != c\T::PAGE )
         {
-            throw new e\NodeException( 
+            throw new e\NodeException(
                 S_SPAN . "The asset does not accept a page." . E_SPAN );
         }
         
@@ -1364,7 +1364,7 @@ class StructuredDataNode extends Property
         
         if( $this->asset_type != c\T::SYMLINK )
         {
-            throw new e\NodeException( 
+            throw new e\NodeException(
                 S_SPAN . "The asset does not accept a symlink." . E_SPAN );
         }
         
@@ -1527,7 +1527,7 @@ class StructuredDataNode extends Property
                 {
                     if( $text != "" && !in_array( $text, $item_array ) )
                     {
-                        throw new e\NoSuchValueException( 
+                        throw new e\NoSuchValueException(
                             S_SPAN . "The value $text does not exist." . E_SPAN );
                     }
                     $this->text = $text;
