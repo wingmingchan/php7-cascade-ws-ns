@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/20/2017 Added default value to setDynamicFieldValue.
   * 9/16/2016 Added $wired_fields and copyWiredFields.
   * 9/15/2016 Added hasDynamicFields.
   * 9/6/2016 Added all isXRequired methods.
@@ -632,7 +633,7 @@ class Metadata extends Property
 <return-type>Property</return-type>
 </documentation>
 */
-    public function setDynamicField( string $field, $values ) : Property
+    public function setDynamicField( string $field, $values=NULL ) : Property
     {
         return $this->setDynamicFieldValue( $field, $values );
     }
@@ -646,8 +647,11 @@ $m->setDynamicFieldValue( $checkbox_name, $values );</example>
 <exception>RequiredFieldException, NoSuchValueException</exception>
 </documentation>
 */
-    public function setDynamicFieldValue( string $field, $values ) : Property // string or string array
+    public function setDynamicFieldValue( string $field, $values=NULL ) : Property
     {
+    	if( $values == "" )
+    		$values = NULL;
+    		
         if( !is_array( $values ) )
         {
             $values = array( $values );
