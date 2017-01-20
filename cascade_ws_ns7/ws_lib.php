@@ -19,6 +19,5 @@ require_once( 'global_functions.php' );
 require_once( 'class_files.php' );
 require_once( 'utility_classes/XMLUtility.class.php' );
 require_once( 'utility_classes/StringUtility.class.php' );
-require_once( 'utility_classes/JsonUtility.class.php' );
 require_once( 'utility_classes/DebugUtility.class.php' );
 ?>
