@@ -1255,7 +1255,7 @@ chooser node, allowing users to choose a page.</p></description>
         $this->checkStructuredData();
         return $this->structured_data->isWYSIWYG( $identifier );
     }
-    
+
 /**
 <documentation><description><p>Returns a bool, indicating whether the named node is a WYSIWYG node.</p></description>
 <example>echo u\StringUtility::boolToString( $block->isWYSIWYGNode( $id ) ), BR;</example>
