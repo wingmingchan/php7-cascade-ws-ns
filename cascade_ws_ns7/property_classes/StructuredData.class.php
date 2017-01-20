@@ -254,7 +254,7 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
         
         if( $node->getType() != c\T::ASSET )
         {
-            throw new e\NodeException( 
+            throw new e\NodeException(
                 S_SPAN . "This node is not an asset node." . E_SPAN );
         }
 

@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 11/3/2016 Added code to copyData to bypass phantom values.
   * 10/24/2016 Added hasPossibleValues; multiple bug fixes.
   * 8/11/2016 Added getService in both this class and StructuredDataPhantom to work with phantom nodes.
   * 6/20/2016 Changed the name searchWYSIWYG to searchWYSIWYGByPattern, added searchTextByPattern.
@@ -242,7 +243,7 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
         if( $node->getType() != c\T::ASSET )
         {
             throw new e\NodeException(
-                S_SPAN .  "This node is not an asset node." . E_SPAN );
+                S_SPAN . "This node is not an asset node." . E_SPAN );
         }
 
         return $node->getAssetType();
@@ -366,10 +367,16 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
         return $this->node_map;
     }
     
-    public function getIdentifiers()
+/**
+<documentation><description><p>Returns the array of all fully qualified identifiers.</p></description>
+<example>u\DebugUtility::dump( $sd->getIdentifiers() )</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getIdentifiers() : array
     {
-        $temp = $this->identifiers;
-        return array_merge( $temp, StructuredDataNodePhantom::getPhantomIdentifiers() );
+        return $this->identifiers;
     }
     
 /**
@@ -382,7 +389,8 @@ a symlink; therefore, the id can be the <code>fileId</code>, <code>pageId</code>
 <exception></exception>
 </documentation>
 */
-    public function getLinkableId( string $node_name )    {
+    public function getLinkableId( string $node_name )
+    {
         if( isset( $this->node_map[ $node_name ] ) )
             return $this->node_map[ $node_name ]->getLinkableId();
     }
@@ -602,11 +610,11 @@ supplied identifier being the one of the first instance.</p></description>
     
 /**
 <documentation><description><p>Returns the type string of an text node (an text node is an
-instance of a normal text field (including multi-line and WYSIWYG), which are not
-associated with a type string, or a text field of
+instance of a normal text field (including multi-line and WYSIWYG), which are
+associated with <code>NULL</code>, or a text field of
 type <code>datetime</code>, <code>calendar</code>, <code>multi-selector</code>,
 <code>dropdown</code>, or <code>checkbox</code>).</p></description>
-<example>echo $sd->getTextNodeType( "group;calendar" ), BR;</example>
+<example>echo u\StringUtility::getCoalescedString( $sd->getTextNodeType( $id ) ), BR;</example>
 <return-type>mixed</return-type>
 <exception>NodeException</exception>
 </documentation>
@@ -669,7 +677,83 @@ type <code>datetime</code>, <code>calendar</code>, <code>multi-selector</code>,
         return in_array( $identifier, $this->identifiers );
     }
     
-    public function isAssetNode( $identifier )
+/**
+<documentation><description><p>Returns a bool, indicating whether there are phantom nodes
+of type B in the structured data.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function hasPhantomNodes() : bool // detects phantom nodes of type B
+    {
+        $dd_ids   = $this->data_definition->getIdentifiers();
+        $sd_ids   = $this->getIdentifiers();
+        $temp_ids = array();
+        
+        foreach( $sd_ids as $id )
+        {
+            $temp_ids[] = 
+                u\StringUtility::getFullyQualifiedIdentifierWithoutPositions( $id );
+        }
+        
+        foreach( $dd_ids as $id )
+        {
+            if( !in_array( $id, $temp_ids ) )
+            {
+                echo "Phantom node identifier: ", $id, BR;
+                return true;
+            }
+        }
+        return false;
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether this node has possible values.</p></description>
+<example>if( $sd->hasPossibleValues( $id ) )
+    u\DebugUtility::dump( $sd->getPossibleValues( $id ) );
+</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function hasPossibleValues( string $identifier ) : bool
+    {
+        if( isset( $this->node_map[ $identifier ] ) && 
+            $this->node_map[ $identifier ]->getType() == "text" )
+        {
+            $type = $this->node_map[ $identifier ]->getTextNodeType();
+            
+            return $type == c\T::CHECKBOX || $type == c\T::DROPDOWN ||
+                $type == c\T::RADIOBUTTON || $type == c\T::MULTISELECTOR;
+        }
+        return false;
+    }
+    
+/**
+<documentation><description><p>An alias of <code>isAssetNode</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isAsset( string $identifier ) : bool
+    {
+        return $this->isAssetNode( $identifier );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether the named node is an
+asset node, allowing users to choose an asset.</p></description>
+<example>if( $sd->isAsset( "group;block-chooser" ) )
+{
+    echo $sd->getAssetNodeType( "group;block-chooser" ), BR;
+}</example>
+<return-type>bool</return-type>
+<exception>NodeException</exception>
+</documentation>
+*/
+    public function isAssetNode( string $identifier ) : bool
     {
         if( !in_array( $identifier, $this->identifiers ) )
         {
@@ -1353,10 +1437,7 @@ chooser node, allowing users to choose a page.</p></description>
             {
                 $new_text = preg_replace( $pattern, $replace, $current_text );
                 
-                $this->setText(
-                    $identifier,
-                    $new_text
-                );
+                $this->setText( $identifier, $new_text );
             }
         }
         return $this;
@@ -1871,7 +1952,94 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
         $this->identifiers = array_keys( $this->node_map );
 
         return $this;
-    }    
+    }
+    
+    private static function copyData( $source, StructuredData $target, string $id )
+    {
+        if( !$source instanceof StructuredData && 
+            !$source instanceof StructuredDataPhantom )
+            throw new \Exception( "Wrong source type" );
+        
+        if( $source->isTextNode( $id ) || $source->isWYSIWYG( $id ) )
+        {
+        	try
+        	{
+                $target->setText( $id, $source->getText( $id ) );
+                
+                if( $target->getText( $id ) == NULL )
+                    $target->setText( $id, "" );
+            }
+            catch( e\NoSuchValueException $e )
+            {
+            	// do nothing to skip phantom values
+            }
+        }
+        elseif( $source->isAssetNode( $id ) )
+        {
+            $asset_type = $source->getAssetNodeType( $id );
+            
+            try
+            {
+                switch( $asset_type )
+                {
+                    case c\T::PAGE:
+                        $page_id = $source->getPageId( $id );
+                    
+                        if( isset( $page_id ) )
+                        {
+                            $target->setPage( $id, 
+                                $source->getService()->getAsset(
+                                	a\Page::TYPE, $page_id ) );
+                        }
+                        break;
+                    case c\T::FILE:
+                        $file_id = $source->getFileId( $id );
+                    
+                        if( isset( $file_id ) )
+                        {
+                            $target->setFile( $id, 
+                                $source->getService()->getAsset(
+                                	a\File::TYPE, $file_id ) );
+                        }
+                        break;
+                    case c\T::BLOCK:
+                        $block_id = $source->getBlockId( $id );
+                    
+                        if( isset( $block_id ) )
+                        {
+                            $target->setBlock( $id, a\Block::getBlock(
+                                $target->getService(), $block_id ) );
+                        }
+                        break;
+                    case c\T::SYMLINK:
+                        $symlink_id = $source->getSymlinkId( $id );
+                    
+                        if( isset( $symlink_id ) )
+                        {
+                            $target->setSymlink( $id,
+                                $source->getService()->getAsset(
+                                	a\Symlink::TYPE, $symlink_id ) );
+                        }
+                        break;
+                    case c\T::PFS:
+                        $linkable_id = $source->getLinkableId( $id );
+                    
+                        if( isset( $linkable_id ) )
+                        {
+                            $target->setLinkable(
+                                $id, 
+                                a\Linkable::getLinkable(
+                                    $source->getService(), $linkable_id ) );
+                        }
+                        break;
+                }
+            }
+            catch( e\NoSuchTypeException $e )
+            {
+                // do nothing to skip deleted blocks
+            }
+        }
+    }
 
     private $definition_id;
     private $definition_path;
