@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2017 Updated documentation.
   * 1/17/2017 Added JSON structure and JSON dump.
   * 3/14/2016 Minor bug fix.
   * 5/28/2015 Added namespaces.
@@ -231,7 +232,7 @@ object.</p></description>
     }
     
 /**
-<documentation><description><p>Returns <code>NULL</code> or an <code>XsltFormat</code> object.</p></description>
+<documentation><description><p>Returns <code>NULL</code> or the template-level format (a <code>XsltFormat</code> object).</p></description>
 <example>$f = $t->getFormat();</example>
 <return-type>mixed</return-type>
 <exception></exception>
@@ -483,7 +484,8 @@ object.</p></description>
     }
     
 /**
-<documentation><description><p>Sets the format, and returns the calling object.</p></description>
+<documentation><description><p>Sets the template-level format, and returns the calling object.
+If <code>NULL</code> is passed in, then the current template-level format will be detached.</p></description>
 <example>$t->setFormat( $format )->edit();</example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -546,9 +548,16 @@ object.</p></description>
     
 /**
 <documentation><description><p>Attaches the block to the named page region, and returns
-the calling object.</p></description>
-<example>$t->setPageRegionBlock( 'DEFAULT', NULL )->
-    setPageRegionFormat( 'DEFAULT', NULL )->
+the calling object. When <code>NULL</code> is passed in for <code>$block</code>,
+any block attached will be detached.</p></description>
+<example>// detack both the block and format
+$t->setPageRegionBlock( 'DEFAULT' )->
+    setPageRegionFormat( 'DEFAULT' )->
+    edit()->dump();
+
+// attach a block and format
+$t->setPageRegionBlock( 'DEFAULT', $block )->
+    setPageRegionFormat( 'DEFAULT', $format )->
     edit()->dump();</example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -567,9 +576,16 @@ the calling object.</p></description>
     
 /**
 <documentation><description><p>Attaches the format to the named page region, and returns
-the calling object.</p></description>
-<example>$t->setPageRegionBlock( 'DEFAULT', NULL )->
-    setPageRegionFormat( 'DEFAULT', NULL )->
+the calling object. When <code>NULL</code> is passed in for <code>$format</code>,
+any format attached will be detached.</p></description>
+<example>// detack both the block and format
+$t->setPageRegionBlock( 'DEFAULT' )->
+    setPageRegionFormat( 'DEFAULT' )->
+    edit()->dump();
+
+// attach a block and format
+$t->setPageRegionBlock( 'DEFAULT', $block )->
+    setPageRegionFormat( 'DEFAULT', $format )->
     edit()->dump();</example>
 <return-type>Asset</return-type>
 <exception></exception>
