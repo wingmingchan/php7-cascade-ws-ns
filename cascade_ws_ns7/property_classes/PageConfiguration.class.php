@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/25/2017 Fixed in bug.
   * 12/29/2015 Added three more constants.
   * 5/28/2015 Added namespaces.
   * Swapped the last two arguments of the constructor.
@@ -238,7 +239,7 @@ calling object.</p></description>
 <exception>NoSuchPageRegionException</exception>
 </documentation>
 */
-    public function getPageRegion( $name ) : mixed
+    public function getPageRegion( $name )
     {
         $this->checkPageRegion( $name );
         return $this->page_region_map[ $name ];
