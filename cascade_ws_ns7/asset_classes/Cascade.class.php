@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/26/2016 Removed comments on Cascade 8.0 regarding searching.
   * 1/5/2017 Removed all search-related methods. Reimplemented the search method
     and made it public.
   * 12/30/2016 Changed default value of $site_name in clearPermissions to NULL.
@@ -158,7 +159,7 @@ This may not cover all users, but at least it covers users that belong to some g
 there is no way to read all of them if the maximum number exceeds 250.</p>
 <p>This class also provides a few methods working with role names (not the numeric ID's).
 For example, we can retrieve a <code>Role</code> object by using <code>Cascade::getRoleAssetByName( string $role_name )</code>.</p>
-<p class="text_red">Note that since the search functionality of Cascade 8.0.1 is broken, all methods depending on search fail. This problem can only be fixed when the new search functionality is implemented in a future version of Cascade.</p>
+
 <h2>Working With Audits</h2>
 <p>This class provides a <code>getAudits</code> methods that returns an array of
 <a href="http://www.upstate.edu/cascade-admin/web-services/api/audit.php"><code>Audit</code></a> object.</p>
