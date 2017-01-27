@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/27/2017 Added assetTreeSearchForNeedleInHaystack.
  */
 use cascade_ws_AOHS as aohs;
 use cascade_ws_constants as c;
@@ -277,6 +278,25 @@ function assetTreeSearchForString(
         {
             $results[] = $child->getPathPath();
         }
+    }
+}
+
+function assetTreeSearchForNeedleInHaystack( 
+    aohs\AssetOperationHandlerService $service, 
+    p\Child $child, $params=NULL, &$results=NULL )
+{
+    $type     = $child->getType();
+    $needle   = $params[ $type ][ 'needle' ];
+    // the method call should be defined for the asset
+    // and returns a string
+    $method   = $params[ $type ][ 'method' ];
+    $code     = "\$haystack = \$child->getAsset( \$service )->$method;";
+    //echo $code, BR;
+    eval( $code ); 
+    
+    if( strpos( $haystack, $needle ) !== false )
+    {
+        $results[ $type ][] = $child->getPathPath();
     }
 }
 
