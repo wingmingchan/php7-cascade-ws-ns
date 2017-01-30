@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/30/2017 Added missing type hints.
   * 1/26/2016 Removed comments on Cascade 8.0 regarding searching.
   * 1/5/2017 Removed all search-related methods. Reimplemented the search method
     and made it public.
@@ -2391,7 +2392,8 @@ u\DebugUtility::dump( $ari->toStdClass() );
 <exception>NullAssetException, NoSuchTypeException, Exception</exception>
 </documentation>
 */
-    public function getAsset( $type, $id_path, $site_name=NULL ) : Asset
+    public function getAsset(
+        string $type, string $id_path, string $site_name=NULL ) : Asset
     {
         try
         {
@@ -2411,7 +2413,7 @@ or <code>NULL</code> if there is no asset bearing that ID.</p></description>
 <exception></exception>
 </documentation>
 */
-    public function getAssetByIdString( $id_string )
+    public function getAssetByIdString( string $id_string )
     {
         $type = $this->service->getType( $id_string );
         
@@ -2501,7 +2503,7 @@ for example, if the value is "CWT", then groups like "CWT-Designers", "Site-CWT-
 <exception></exception>
 </documentation>
 */
-    public function getGroupsByName( $name="" ) : array
+    public function getGroupsByName( string $name="" ) : array
     {
         if( $name == "" )
             return $this->getGroups();
@@ -2639,7 +2641,7 @@ if( count( $messages ) > 0 )
 <exception>NullAssetException</exception>
 </documentation>
 */
-    public function getRoleAssetByName( $role_name ) : Asset
+    public function getRoleAssetByName( string $role_name ) : Asset
     {
         $this->getRoles();
         
@@ -2657,7 +2659,7 @@ if( count( $messages ) > 0 )
 <exception>NullAssetException</exception>
 </documentation>
 */
-    public function getRoleById( $role_id ) : Asset
+    public function getRoleById( int $role_id ) : Asset
     {
         return $this->getRoleAssetById( $role_id );
     }
@@ -2669,7 +2671,7 @@ if( count( $messages ) > 0 )
 <exception>NullAssetException</exception>
 </documentation>
 */
-    public function getRoleByName( $role_name ) : Asset
+    public function getRoleByName( string $role_name ) : Asset
     {
         return $this->getRoleAssetByName( $role_name );
     }
