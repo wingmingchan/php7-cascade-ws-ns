@@ -1298,10 +1298,22 @@ ignores all other page configurations and is used mainly by <code>Page::setConte
 <exception>WrongPageTypeException</exception>
 </documentation>
 */
-    public function getStructuredData() : p\StructuredData
+    public function getStructuredData() : p\StructuredDataPhantom
     {
         $this->checkStructuredData();
         return $this->structured_data;
+    }
+    
+/**
+<documentation><description><p>Returns the <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/structured-data.php"><code>p\StructuredData</code></a> object.</p></description>
+<example>u\DebugUtility::dump( $p->getStructuredData()->toStdClass() );</example>
+<return-type>StructuredData</return-type>
+<exception>WrongPageTypeException</exception>
+</documentation>
+*/
+    public function getStructuredDataPhantom() : p\StructuredDataPhantom
+    {
+        return $this->getStructuredData();
     }
     
 /**
@@ -2319,7 +2331,6 @@ should be called as well.</p></description>
         {
             $this->xhtml = $this->getProperty()->xhtml;
         }
-        
 
         // part 3: plug the blocks and formats back in
         $count = count( array_keys( $block_format_array) );
