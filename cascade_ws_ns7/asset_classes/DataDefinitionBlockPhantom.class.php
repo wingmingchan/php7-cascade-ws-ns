@@ -600,10 +600,22 @@ node) of a multiple field. The <code>$identifier</code> must be the fully qualif
 <exception>WrongBlockTypeException</exception>
 </documentation>
 */
-    public function getStructuredData(): p\StructuredData
+    public function getStructuredData(): p\StructuredDataPhantom
     {
         $this->checkStructuredData();
         return $this->structured_data;
+    }
+    
+/**
+<documentation><description><p>Returns the <code>p\StructuredData</code> object.</p></description>
+<example>u\DebugUtility::dump( $block->getStructuredData()->toStdClass() );</example>
+<return-type>StructuredData</return-type>
+<exception>WrongBlockTypeException</exception>
+</documentation>
+*/
+    public function getStructuredDataPhantom(): p\StructuredDataPhantom
+    {
+        return $this->getStructuredData();
     }
     
 /**
