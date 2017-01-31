@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/31/2017 Added more inline comments.
   * 9/26/2016 Fixed a bug in toListString.
   * 8/26/2016 Added constant NAME_SPACE.
   * 3/8/2016 Fixed a bug related to namespace.
@@ -68,7 +69,7 @@ class AssetTree
             throw new e\NullAssetException( c\M::NULL_CONTAINER );
         }
         $this->root         = $container;
-        $root_children      = $container->getChildren();
+        $root_children      = $container->getChildren(); // Child objects
         $this->has_children = count( $root_children ) > 0;
         
         if( $this->has_children )
@@ -228,7 +229,7 @@ u\DebugUtility::dump( $results );
                 $service, $this->root->toChild(), $function_array, $params, $results );
         }
         
-        // process children
+        // process children; these are Child objects
         if( $this->has_children )
         {
             foreach( $this->children as $child )
@@ -251,7 +252,7 @@ u\DebugUtility::dump( $results );
     
     private function applyFunctionsToChild( 
         aohs\AssetOperationHandlerService $service, 
-        p\Child $child, 
+        p\Child $child, // the child object is passed in from traverse
         array $function_array, 
         array  $params=NULL, 
         array &$results=NULL )
@@ -264,6 +265,8 @@ u\DebugUtility::dump( $results );
             $functions  = $function_array[ $type ];
             $func_count = count( $functions );
             
+            // check methods and functions first
+            // quit if there is anything wrong without applying any of them
             for( $i = 0; $i < $func_count; $i++ )
             {
                 if( $functions[ $i ] == NULL )
@@ -274,6 +277,7 @@ u\DebugUtility::dump( $results );
                 // class static method
                 if( strpos( $functions[ $i ], "::" ) !== false )
                 {
+                    // compute the class name and method name
                     $method_array = u\StringUtility::getExplodedStringArray(
                         ":", $functions[ $i ] );
                     $class_name   = $method_array[ 0 ];
@@ -286,6 +290,7 @@ u\DebugUtility::dump( $results );
                             "The function " . $functions[ $i ] . " does not exist." );
                     }
                 }
+                // global function
                 else if( !function_exists( $functions[ $i ] ) )
                 {
                     throw new e\NoSuchFunctionException( 
@@ -294,6 +299,7 @@ u\DebugUtility::dump( $results );
             }
             
             // apply function with parameters and results array
+            // only if everything looks OK
             for( $i = 0; $i < $func_count; $i++ )
             {
                 if( $functions[ $i ] == NULL )
@@ -301,6 +307,7 @@ u\DebugUtility::dump( $results );
                     continue;
                 }
 
+                // apply each class method and function in sequence
                 if( strpos( $functions[ $i ], "::" ) !== false )
                 {
                     $method_array = u\StringUtility::getExplodedStringArray(
