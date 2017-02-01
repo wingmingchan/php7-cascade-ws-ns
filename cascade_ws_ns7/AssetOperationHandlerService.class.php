@@ -552,7 +552,7 @@ Creates an asset object, bridging this class and the Asset classes.
 @throw Exception if the asset cannot be retrieved
 <documentation><description><p>Creates an asset object, bridging this class and the Asset classes.</p></description>
 <example>$page = $service->getAsset( a\Page::TYPE, $page_id )</example>
-<exception>NoSuchTypeException<exception>
+<exception>NoSuchTypeException</exception>
 <return-type>Asset</return-type></documentation>
 */
     public function getAsset( string $type, string $id_path, string $site_name=NULL ) : a\Asset
