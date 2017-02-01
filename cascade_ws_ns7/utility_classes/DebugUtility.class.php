@@ -99,13 +99,14 @@ u\DebugUtility::outputDuration( $start_time );</example>
     }
 
 /**
-<documentation><description><p>Outputs the current date, using <code>$format</code> as a format string.</p></description>
+<documentation><description><p>Sets the time and space limits when performing asset tree traversal.</p></description>
 <example>u\DebugUtility::setTimeSpaceLimits();</example>
 <return-type>void</return-type>
 <exception></exception>
 </documentation>
 */
-    public static function setTimeSpaceLimits( int $time_limit=10000, string $space_limit="2048M" )
+    public static function setTimeSpaceLimits(
+        int $time_limit=10000, string $space_limit="2048M" )
     {
         // to prevent time-out
         set_time_limit ( 10000 );
