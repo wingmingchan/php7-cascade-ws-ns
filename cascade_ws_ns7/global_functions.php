@@ -241,7 +241,7 @@ function assetTreeReportTemplateFormatPaths(
     
 function assetTreeReportTemplatePaths(
     aohs\AssetOperationHandlerService $service, 
-    p\Child $child, $params=NULL, &$results=NULL )
+    p\Child $child, array $params=NULL, array &$results=NULL )
 {
     if( !isset( $params[ 'cache' ] ) )
         throw new e\ReportException( c\M::NULL_CACHE );
