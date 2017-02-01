@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/31/2017 Fixed return type of getAuthor.
   * 1/20/2017 Added default value to setDynamicFieldValue.
   * 9/16/2016 Added $wired_fields and copyWiredFields.
   * 9/15/2016 Added hasDynamicFields.
@@ -121,10 +122,10 @@ class Metadata extends Property
 /**
 <documentation><description><p>Returns <code>author</code>.</p></description>
 <example>echo "Author: ", $m->getAuthor(), BR;</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 </documentation>
 */
-    public function getAuthor() : string
+    public function getAuthor()
     {
         return $this->author;
     }
