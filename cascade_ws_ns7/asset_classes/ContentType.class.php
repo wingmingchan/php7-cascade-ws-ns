@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/1/2017 Changed signature of addInlineEditableField, allowing NULL.
   * 1/10/2017 Added JSON structure and JSON dump.
   * 6/24/2016 Minor bug fix.
   * 5/28/2015 Added namespaces.
@@ -189,8 +190,8 @@ object. Due to a bug in Cascade, do not use this method to add data definition f
 </documentation>
 */
     public function addInlineEditableField( 
-        string $config, string $region, string $group_path,
-        string $type, string $name ) : Asset
+        string $config, string $region, string $group_path=NULL,
+        string $type=NULL, string $name=NULL ) : Asset
     {
         $identifier = $config . DataDefinition::DELIMITER .
             $region . DataDefinition::DELIMITER .
@@ -234,6 +235,7 @@ object. Due to a bug in Cascade, do not use this method to add data definition f
         {
             $group_path = str_replace( '/', DataDefinition::DELIMITER, $group_path );
             $field_name = $group_path . DataDefinition::DELIMITER . $name;
+            $field_name = trim( $field_name, DataDefinition::DELIMITER );
             
             if( !$this->data_definition->hasField( $field_name ) )
             {
@@ -613,6 +615,7 @@ data definition fields.</p></description>
                 {
                     $field_after  = array_splice( $this->inline_editable_fields, $i + 1 );
                 }
+                
                 $this->inline_editable_fields = array_merge( $field_before, $field_after );
                 break;
             }
