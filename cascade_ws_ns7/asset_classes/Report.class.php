@@ -4,7 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
-  * 1/31/2017 Added documentation.
+  * 1/31/2017 Added documentation and minor bug fixes.
   * 6/7/2016 Minor bug fixes.
   * 5/28/2015 Added namespaces.
   * 3/17/2015 Added private method getTimeInfo and method calls in 
@@ -197,7 +197,9 @@ use cascade_ws_property as p;
             u\DebugUtility::dump( $results );
 </pre>
 </description>
-<postscript><h2>Recipes</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/tree/master/recipes/report">report</a></li></ul></postscript>
+<postscript><h2>Test Code</h2>
+<ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/report.php">report.php</a></li></ul>
+<h2>Recipes</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/tree/master/recipes/report">report</a></li></ul></postscript>
 </documentation>
 */
 class Report
@@ -231,10 +233,10 @@ class Report
 <p>There are two groups of methods here:</p>
 <ul>
 <li>Methods that do not involve substrings</li>
-<li>Methods, whose names has <code>Contains</code> suffix, that involve searching for a non-empty substring in a field</li>
+<li>Methods, whose names has a <code>Contains</code> suffix, that involve searching for a non-empty substring in a field</li>
 </ul>
 <p>For the first group, such a method requires two parameters. For example, <code>reportHasAuthor( string $type, bool $retraverse )</code>. The first parameter should be a type string like <code>a\Page::TYPE</code>. The bool value is used to control retraversal. If no searching of a substring is required, then set <code>$retraverse</code> to <code>true</code> for the first time, and <code>false</code> after that.</p>
-<p>For the second group, such a method requires three parameters. For example, <code>reportDisplayNameContains( string $type, bool $retraverse, string $needle )</code>. The <code>$needle</code> variable should be a non-empty string to be searched for in the relevant field. Normally, when such a method is invoked, <code>$retraverse</code> should be set to <code>true</code>.
+<p>For the second group, such a method requires three parameters. For example, <code>reportDisplayNameContains( string $type, bool $retraverse, string $needle )</code>. The <code>$needle</code> variable should be a non-empty string to be searched for in the relevant field. Normally, when such a method is invoked, <code>$retraverse</code> should be set to <code>true</code>.</p>
 
 <p>When a method in this set is called, an array of the following type will be generated after the traversal:</p>
 <pre>
@@ -1172,7 +1174,7 @@ we use X and <code>forward</code>.</p></description>
     }
     
 /**
-<documentation><description><p>eturns <code>$results</code>, containing a report of numbers of assets of various types. The <code>$types</code> parameter can be a single type like <code>Folder::TYPE</code>, or it can be an array of types like <code>array( Folder::TYPE, Page::TYPE )</code>. Only types appearing in this parameter will be reported. All other types will be ignored. Note that different root containers and separate traversals are required if we need to generate reports on the Base Folder as well as, for example, on the metadata set root container, because metadata set containers are not children of the Base Folder.</p></description>
+<documentation><description><p>Returns <code>$results</code>, containing a report of numbers of assets of various types. The <code>$types</code> parameter can be a single type like <code>Folder::TYPE</code>, or it can be an array of types like <code>array( Folder::TYPE, Page::TYPE )</code>. Only types appearing in this parameter will be reported. All other types will be ignored. Note that different root containers and separate traversals are required if we need to generate reports on the Base Folder as well as, for example, on the metadata set root container, because metadata set containers are not children of the Base Folder.</p></description>
 <example></example>
 <return-type>array</return-type>
 <exception>ReportException</exception>
@@ -1751,6 +1753,13 @@ assets that contain relatie links. Three types of assets are searched: data defi
         
     /* ===== static methods ===== */
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeReportDate(
         aohs\AssetOperationHandlerService $service, 
         p\Child $child, array $params=NULL, array &$results=NULL )
@@ -1807,6 +1816,13 @@ assets that contain relatie links. Three types of assets are searched: data defi
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeReportLast(
         aohs\AssetOperationHandlerService $service,
         p\Child $child, array $params=NULL, array &$results=NULL )
@@ -1867,6 +1883,13 @@ assets that contain relatie links. Three types of assets are searched: data defi
             $results[ $type ][] = $child->getPathPath();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeReportMetadataWiredFieldsContains(
         aohs\AssetOperationHandlerService $service,
         p\Child $child, array $params=NULL, array &$results=NULL )
@@ -1919,6 +1942,13 @@ assets that contain relatie links. Three types of assets are searched: data defi
             $results[ $type ][ 'reportTitleContains' ][] = $path;
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeReportMetadataWiredFields(
         aohs\AssetOperationHandlerService $service,
         p\Child $child, array $params=NULL, array &$results=NULL )
@@ -2021,6 +2051,13 @@ assets that contain relatie links. Three types of assets are searched: data defi
             $results[ $type ][ 'reportHasNoTitle' ][] = $path;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeReportNumberOfAssets(
         aohs\AssetOperationHandlerService $service,
         p\Child $child, array $params=NULL, array &$results=NULL )
@@ -2029,6 +2066,13 @@ assets that contain relatie links. Three types of assets are searched: data defi
         $results[ $type ] = $results[ $type ] + 1;
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeReportOrphanFiles(
         aohs\AssetOperationHandlerService $service,
         p\Child $child, array $params=NULL, array &$results=NULL )
@@ -2052,6 +2096,13 @@ assets that contain relatie links. Three types of assets are searched: data defi
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeReportPageFieldValue(
         aohs\AssetOperationHandlerService $service,
         p\Child $child, array $params=NULL, array &$results=NULL )
@@ -2237,6 +2288,13 @@ assets that contain relatie links. Three types of assets are searched: data defi
         }
     }
    
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeReportPageNodeValue(
         aohs\AssetOperationHandlerService $service,
         p\Child $child, array $params=NULL, array &$results=NULL )
@@ -2393,6 +2451,13 @@ assets that contain relatie links. Three types of assets are searched: data defi
         }
     }    
    
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeReportPublishable(
         aohs\AssetOperationHandlerService $service,
         p\Child $child, array $params=NULL, array &$results=NULL )
@@ -2438,6 +2503,13 @@ assets that contain relatie links. Three types of assets are searched: data defi
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeReportRelativeLink(
         aohs\AssetOperationHandlerService $service,
         p\Child $child, array $params=NULL, array &$results=NULL )
@@ -2541,6 +2613,13 @@ assets that contain relatie links. Three types of assets are searched: data defi
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeReportScheduledPublishDestination(
         aohs\AssetOperationHandlerService $service,
         p\Child $child, array $params=NULL, array &$results=NULL )
@@ -2567,6 +2646,13 @@ assets that contain relatie links. Three types of assets are searched: data defi
         }
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeReportScheduledPublishPublishSet(
         aohs\AssetOperationHandlerService $service,
         p\Child $child, array $params=NULL, array &$results=NULL )
