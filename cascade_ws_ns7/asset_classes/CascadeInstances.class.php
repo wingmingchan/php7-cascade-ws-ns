@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/3/2017 Added documentation.
   * 2/16/2016 Minor bug fix.
   * 5/28/2015 Added namespaces.
   * 5/4/2015 Added getSourceSite, getSourceSiteName, getTargetSite and getTargetSiteName.
@@ -29,9 +30,26 @@ use cascade_ws_property as p;
 /**
 <documentation>
 <description><h2>Introduction</h2>
-
+<p>In a nutshell, the class <code>CascadeInstances</code> contains methods that encapsulate <code>AssetTree::traverse</code> with various parameters and a whole bunch of elaborate global functions.</p>
+<p>To fully understand what this class does, consider synching pages from the source site to the target site. These are the tasks we need to perform on every source page:</p>
+<ul>
+<li>We need to find the corresponding content type in the target site.</li>
+<li>We want to find out if the associated content type is attached with a data definition.</li>
+<li>If the page is associated with a data definition, then we need to find the data definition in the target site.</li>
+<li>We need to make sure the two data definitions contain the same definition XML.</li>
+<li>If the page does not exist in the target site, we need to create a new page.</li>
+<li>When the new page is ready, we need to copy all data from the source page to the target page. This includes attaching all blocks to asset choosers in DEFAULT and attaching blocks and formats at the page level.</li>
+<li>If this is an existing page, we have to make sure it does not include extra data. This means that before updating the data, we have to unplug all blocks and formats at the page level first.</li>
+<li>We also need to take care of the no block and no format checkboxes.</li>
+<li>Lastly, we need to deal with metadata. All metadata, including wired fields and dynamic fields, must be copied over to the target page.</li>
+</ul>
+<p>To do all these, I have to write more than 300 lines of code, not counting all the supporting code in asset classes like <code>Page</code> and <code>DataDefinition</code>.</p>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript><h2>Recipes</h2>
+<ul>
+<li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/recipes/synching/auth_sandbox_production.php">auth_sandbox_production.php</a></li>
+<li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/recipes/synching/dev_app_synch_common_assets.php">dev_app_synch_common_assets.php</a></li>
+</ul></postscript>
 </documentation>
 */
 class CascadeInstances
@@ -40,7 +58,7 @@ class CascadeInstances
     const DUMP  = false;
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>The constructor.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
@@ -71,13 +89,13 @@ class CascadeInstances
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Displays some basic information of the two instances, and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>CascadeInstances</return-type>
 <exception></exception>
 </documentation>
 */
-    public function display()
+    public function display() : CascadeInstances
     {
         echo "Source URL: " . $this->source_url . BR .
              "Target URL: " . $this->target_url . BR;
@@ -91,147 +109,147 @@ class CascadeInstances
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the source <code>Cascade</code> object passed into the constructor.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Cascade</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSourceCascade()
+    public function getSourceCascade() : Cascade
     {
         return $this->source_cascade;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the source <code>AssetOperationHandlerService</code> object encapsulated in the source <code>Cascade</code> object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>AssetOperationHandlerService</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSourceService()
+    public function getSourceService() : aohs\AssetOperationHandlerService
     {
         return $this->source_service;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the source <code>Site</code> object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Site</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSourceSite()
+    public function getSourceSite() : Site
     {
         return $this->source_site;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the name of the source site.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSourceSiteName()
+    public function getSourceSiteName() : string
     {
         if( $this->isSourceSiteSet() )
             return $this->source_site->getName();
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the target <code>Cascade</code> object passed into the constructor.</p></description>
 <example></example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
 */
-    public function getTargetCascade()
+    public function getTargetCascade() : Cascade
     {
         return $this->target_cascade;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the target <code>AssetOperationHandlerService</code> object encapsulated in the target <code>Cascade</code> object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>AssetOperationHandlerService</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getTargetService()
+    public function getTargetService() : aohs\AssetOperationHandlerService
     {
         return $this->target_service;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the target <code>Site</code> object.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>Site</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getTargetSite()
+    public function getTargetSite() : Site
     {
         return $this->target_site;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns the name of the target site.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getTargetSiteName()
+    public function getTargetSiteName() : string
     {
         if( $this->isTargetSiteSet() )
             return $this->target_site->getName();
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a bool, indicating whether the two instances are actually identical.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function isSameInstance()
+    public function isSameInstance() : bool
     {
         return $this->source_url == $this->target_url;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a bool, indicating whether the source site is set.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function isSourceSiteSet()
+    public function isSourceSiteSet() : bool
     {
         return $this->source_site_set;
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns a bool, indicating whether the target site is set.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function isTargetSiteSet()
+    public function isTargetSiteSet() : bool
     {
         return $this->target_site_set;
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Returns an array containing information of missing assets in the <code>$other</code> instance. The value for <code>$other</code> is either <code>T::SOURCE</code> or <code>T::TARGET</code>. When <code>T::SOURCE</code> is passed in for <code>$other</code>, it means the target site is treated as the base for comparison, and the returned array contains information about assets that exist in the target site, but missing from the source site. When <code>T::TARGET</code> is passed in for <code>$other</code>, then the source site is treated as the base for comparison, and we get a report on assets that are missing from the target site. The <code>$type</code> can be any type defined in the asset classes.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function reportMissingAssetsIn( $other, $type )
+    public function reportMissingAssetsIn( string $other, string $type ) : array
     {
         $this->checkSourceTargetSite();
             
@@ -293,13 +311,13 @@ class CascadeInstances
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets the source site and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function setSourceSite( $site_name )
+    public function setSourceSite( string $site_name ) : CascadeInstances
     {
         try
         {
@@ -315,13 +333,13 @@ class CascadeInstances
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Sets the target site and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function setTargetSite( $site_name )
+    public function setTargetSite( string $site_name ) : CascadeInstances
     {
         try
         {
@@ -337,13 +355,14 @@ class CascadeInstances
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Synchs all asset factory containers and asset factories, and returns the object. See <code>updateBlock</code> for more information.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function updateAssetFactoryContainer( $exception_thrown=true )
+    public function updateAssetFactoryContainer( bool $exception_thrown=true ) :
+        CascadeInstances
     {
         $this->checkSourceTargetSite();
             
@@ -374,14 +393,23 @@ class CascadeInstances
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Synchs blocks from the source site to the target sites,
+which can mean either updates the data of existing blocks, or creates news blocks, and
+returns the calling object. If <code>NULL</code> is passed in for <code>$f</code>, then the
+synching starts at Base Folder; otherwise it starts at the folder passed in.
+<code>$exception_thrown</code> controls the mode for execution. If <code>true</code> is
+passed in, then the updating is executed with the strict mode and anything that goes wrong
+will throw an exception. If <code>false</code> is passed in, then the execution will be
+performed in the lenient mode and all irrelevant exceptions are ignored. Note that there
+is a bug in Cascade related to the flag blockXML in an index block, and the value of the
+radio buttons cannot be synched.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function updateBlock( Folder $f=NULL, $exception_thrown=true, 
-        $update_data=true, $update_metadata=true )
+    public function updateBlock( Folder $f=NULL, bool $exception_thrown=true, 
+        bool $update_data=true, bool $update_metadata=true ) : CascadeInstances
     {
         $this->checkSourceTargetSite();
             
@@ -416,13 +444,13 @@ class CascadeInstances
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Synchs all content type containers and content types, and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function updateContentTypeContainer()
+    public function updateContentTypeContainer() : CascadeInstances
     {
         $this->checkSourceTargetSite();
             
@@ -451,13 +479,13 @@ class CascadeInstances
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Synchs all data definition containers and data definitions, and returns the calling object. Note that if the source and the target data definitions contain the same XML, then no updates will be performed.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function updateDataDefinitionContainer()
+    public function updateDataDefinitionContainer() : CascadeInstances
     {
         $this->checkSourceTargetSite();
             
@@ -486,13 +514,14 @@ class CascadeInstances
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Synchs all files and returns the calling object. See <code>updateBlock</code> for more information.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function updateFile( Folder $f=NULL, $exception_thrown=true )
+    public function updateFile(
+        Folder $f=NULL, bool $exception_thrown=true ) : CascadeInstances
     {
         $this->checkSourceTargetSite();
 
@@ -523,13 +552,18 @@ class CascadeInstances
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Synchs all folders and returns the calling object. The
+<code>$bypass_root</code> flag is used to control what to do with the root folder. For
+example, we will need to associate folders with a metadata set. This flags control whether
+the association of a metadata set should be bypassed for the root folder.
+See <code>updateBlock</code> for more information.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function updateFolder( $bypass_root=true, Folder $f=NULL, $exception_thrown=true )
+    public function updateFolder( bool $bypass_root=true, Folder $f=NULL, 
+        bool $exception_thrown=true ) : CascadeInstances
     {
         $this->checkSourceTargetSite();
 
@@ -561,13 +595,13 @@ class CascadeInstances
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Synchs all formats and returns the calling object. Note that if the source and the target XSLT formats contain the same XML, then no updates will be performed.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function updateFormat( Folder $f=NULL )
+    public function updateFormat( Folder $f=NULL ) : CascadeInstances
     {
         $this->checkSourceTargetSite();
             
@@ -596,13 +630,13 @@ class CascadeInstances
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Synchs all metadata set containers and metadata sets, and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function updateMetadataSetContainer()
+    public function updateMetadataSetContainer() : CascadeInstances
     {
         $this->checkSourceTargetSite();
             
@@ -631,14 +665,14 @@ class CascadeInstances
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Synchs all pages and returns the calling object. See <code>updateBlock</code> for more information.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function updatePage( Folder $f=NULL, $exception_thrown=true,
-        $update_data=true, $update_metadata=true )
+    public function updatePage( Folder $f=NULL, bool $exception_thrown=true,
+        bool $update_data=true, bool $update_metadata=true ) : CascadeInstances
     {
         $this->checkSourceTargetSite();
 
@@ -672,13 +706,14 @@ class CascadeInstances
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Synchs all configuration set containers and configuration sets, and returns the calling object. See <code>updateBlock</code> for more information.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function updatePageConfigurationSetContainer( $exception_thrown=true )
+    public function updatePageConfigurationSetContainer(
+        bool $exception_thrown=true ) : CascadeInstances
     {
         $this->checkSourceTargetSite();
             
@@ -709,13 +744,13 @@ class CascadeInstances
     }
     
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Synchs all references and returns the calling object. See <code>updateBlock</code> for more information.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function updateReference( Folder $f=NULL )
+    public function updateReference( Folder $f=NULL ) : CascadeInstances
     {
         $this->checkSourceTargetSite();
             
@@ -743,13 +778,13 @@ class CascadeInstances
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>ynchs all destination containers and destinations, and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function updateSiteDestinationContainer()
+    public function updateSiteDestinationContainer() : CascadeInstances
     {
         $this->checkSourceTargetSite();
             
@@ -779,13 +814,14 @@ class CascadeInstances
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Synchs all symlinks and returns the calling object. See <code>updateBlock</code> for more information.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function updateSymlink( Folder $f=NULL, $exception_thrown=true )
+    public function updateSymlink(
+        Folder $f=NULL, bool $exception_thrown=true ) : CascadeInstances
     {
         $this->checkSourceTargetSite();
             
@@ -814,13 +850,14 @@ class CascadeInstances
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Synchs all templates and returns the calling object. See <code>updateBlock</code> for more information.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function updateTemplate( Folder $f=NULL, $exception_thrown=true )
+    public function updateTemplate(
+        Folder $f=NULL, bool $exception_thrown=true ) : CascadeInstances
     {
         $this->checkSourceTargetSite();
             
@@ -849,13 +886,13 @@ class CascadeInstances
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Synchs all workflow definition containers and workflow definitions, and returns the calling object.</p></description>
 <example></example>
-<return-type></return-type>
-<exception></exception>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function updateWorkflowDefinitionContainer()
+    public function updateWorkflowDefinitionContainer() : CascadeInstances
     {
         $this->checkSourceTargetSite();
             
@@ -885,8 +922,16 @@ class CascadeInstances
 
     /* ===== static methods ===== */
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeReportMissingAssetsIn( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'base-cascade' ] ) )
             $base_cascade = $params[ 'base-cascade' ];
@@ -902,7 +947,8 @@ class CascadeInstances
         $other_path = $child->getPathPath();
         try
         {
-            $other_cascade->getAsset( $child->getType(), $other_path, $other_site->getName() );
+            $other_cascade->getAsset(
+                $child->getType(), $other_path, $other_site->getName() );
         }
         catch( \Exception $e )
         {
@@ -910,8 +956,16 @@ class CascadeInstances
         }
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception>CascadeInstancesErrorException</exception>
+</documentation>
+*/
     public static function assetTreeUpdateAssetFactory( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'source-cascade' ] ) )
             $source_cascade = $params[ 'source-cascade' ];
@@ -1060,8 +1114,16 @@ class CascadeInstances
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateAssetFactoryContainer( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -1094,8 +1156,16 @@ class CascadeInstances
             $target_parent, $source_afc_path );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateContentType( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -1172,8 +1242,16 @@ class CascadeInstances
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateContentTypeContainer( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -1206,8 +1284,16 @@ class CascadeInstances
             $target_parent, $source_ctc_path );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateDataDefinition( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -1246,8 +1332,16 @@ class CascadeInstances
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateDataDefinitionBlock( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'source-cascade' ] ) )
             $source_cascade = $params[ 'source-cascade' ];
@@ -1501,8 +1595,16 @@ class CascadeInstances
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateDataDefinitionContainer( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -1535,8 +1637,16 @@ class CascadeInstances
             $target_parent, $source_ddc_path );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateDestination( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'source-cascade' ] ) )
             $source_cascade = $params[ 'source-cascade' ];
@@ -1598,8 +1708,16 @@ class CascadeInstances
             edit();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateFeedBlock( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -1659,8 +1777,16 @@ class CascadeInstances
             $target_cascade, $source_site, $target_site, $source_block, $target_block, $exception_thrown );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateFile( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'source-site' ] ) )
             $source_site = $params[ 'source-site' ];
@@ -1721,8 +1847,16 @@ class CascadeInstances
             edit();
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateFolder( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'source-site' ] ) )
             $source_site = $params[ 'source-site' ];
@@ -1790,8 +1924,16 @@ class CascadeInstances
         $target_f->setShouldBePublished( $source_f->getShouldBePublished() )->edit();
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateFormat( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -1845,8 +1987,16 @@ class CascadeInstances
         }
     }
    
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception>CascadeInstancesErrorException</exception>
+</documentation>
+*/
     public static function assetTreeUpdateIndexBlock( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         $ct = NULL;
         $f  = NULL;
@@ -2016,8 +2166,16 @@ class CascadeInstances
             $target_cascade, $source_site, $target_site, $source_block, $target_block, $exception_thrown );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateMetadataSet( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -2073,8 +2231,16 @@ class CascadeInstances
             $source_ms->getDynamicMetadataFieldDefinitionsStdClass() );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateMetadataSetContainer( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -2107,8 +2273,16 @@ class CascadeInstances
             $target_parent, $source_msc_path );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception>CascadeInstancesErrorException</exception>
+</documentation>
+*/
     public static function assetTreeUpdatePage( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         $source_content = NULL;
         
@@ -2480,8 +2654,16 @@ class CascadeInstances
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception>CascadeInstancesErrorException</exception>
+</documentation>
+*/
     public static function assetTreeUpdatePageConfigurationSet( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'source-cascade' ] ) )
             $source_cascade = $params[ 'source-cascade' ];
@@ -2709,8 +2891,16 @@ class CascadeInstances
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdatePageConfigurationSetContainer( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -2743,8 +2933,16 @@ class CascadeInstances
             $target_parent, $source_pcsc_path );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateReference( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -2789,8 +2987,16 @@ class CascadeInstances
         $target_reference->setAsset( $target_ref_asset );
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateSiteDestinationContainer( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -2823,8 +3029,16 @@ class CascadeInstances
             $target_parent, $source_sdc_path );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateSymlink( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -2879,8 +3093,16 @@ class CascadeInstances
             $target_cascade, $source_site, $target_site, $source_symlink, $target_symlink, $exception_thrown );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception>CascadeInstancesErrorException</exception>
+</documentation>
+*/
     public static function assetTreeUpdateTemplate( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'source-site' ] ) )
             $source_site = $params[ 'source-site' ];
@@ -3033,8 +3255,16 @@ class CascadeInstances
         }
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateTextBlock( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -3097,8 +3327,16 @@ class CascadeInstances
             $target_cascade, $source_site, $target_site, $source_block, $target_block, $exception_thrown );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateWorkflowDefinition( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -3141,8 +3379,16 @@ class CascadeInstances
             edit();
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
     public static function assetTreeUpdateWorkflowDefinitionContainer( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -3175,8 +3421,16 @@ class CascadeInstances
             $target_parent, $source_wfc_path );
     }
 
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception>CascadeInstancesErrorException</exception>
+</documentation>
+*/
     public static function assetTreeUpdateXmlBlock( 
-        aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
             $target_cascade = $params[ 'target-cascade' ];
@@ -3246,13 +3500,20 @@ class CascadeInstances
             $target_cascade, $source_site, $target_site, $source_block, $target_block, $exception_thrown );
     }
     
+/**
+<documentation><description><p>This method is used by various static methods to set the metadata set.</p></description>
+<example></example>
+<return-type></return-type>
+<exception>CascadeInstancesErrorException</exception>
+</documentation>
+*/
     public static function setMetadataSet(
         Cascade $target_cascade,
         Site $source_site,
         Site $target_site,
         Asset $source_asset, 
         Asset $target_asset,
-        $exception_thrown=true )
+        bool $exception_thrown=true )
     {
         // get metadata set
         $source_ms      = $source_asset->getMetadataSet();
