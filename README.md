@@ -24,12 +24,6 @@ echo u\ReflectionUtility::getMethodSignatures( "SimpleXMLElement", true ), BR;
 u\ReflectionUtility::showFunctionSignature( "str_replace", true );
 </pre>
 
-<h2>Progress</h2>
-<ul>
-<li>All classes have been updated, except Report and CascadeInstances.</li>
-</ul>
-
-
 <h2>Resources</h2>
 <ol>
 <li>For more information, visit http://www.upstate.edu/cascade-admin/web-services/index.php</li>
