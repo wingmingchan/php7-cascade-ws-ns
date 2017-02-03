@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/3/2017 Fixed a bug in createDestination.
   * 1/30/2017 Added missing type hints.
   * 1/26/2016 Removed comments on Cascade 8.0 regarding searching.
   * 1/5/2017 Removed all search-related methods. Reimplemented the search method
@@ -860,6 +861,8 @@ representing either an existing destination, or a destination newly created by t
         // add site name if from Global
         if( $transport_site == NULL )
             $transport_path = "Global:" . $transport_path;
+        else
+        	$transport_path = "$transport_site:" . $transport_path;
         
         $asset->destination->transportPath       = $transport_path;
         $asset->destination->siteName            = $parent->getSiteName();
