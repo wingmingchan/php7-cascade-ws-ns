@@ -1471,7 +1471,9 @@ three being associated with <code>NULL</code>), or a text field of type
     
 /**
 <documentation><description><p>Returns a bool, indicating whether there are phantom nodes of type B in the page.</p></description>
-<example></example>
+<example>echo u\StringUtility::boolToString(
+    $cascade->getAsset(
+        a\Page::TYPE, "1e64191a8b7f08ee4bf6727368416cbe" )->hasPhantomNodes() );</example>
 <return-type>bool</return-type>
 <exception>WrongPageTypeException</exception>
 </documentation>
@@ -2384,7 +2386,7 @@ should be called as well.</p></description>
 
         return $this;
     }
-        
+
 /**
 <documentation><description><p>Sets the node's <code>fileId</code> and <code>filePath</code> properties, and returns the calling object.</p></description>
 <example>$p->setFile( $node_name, $f )->edit();</example>
