@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/22/2017 Added addGroupName.
   * 1/10/2017 Added JSON structure and JSON dump.
   * 9/7/2016 Added getDescription and setDescription.
   * 5/28/2015 Added namespaces.
@@ -137,6 +138,31 @@ class AssetFactoryContainer extends Container
         $this->getProperty()->applicableGroups = $group_string;
         return $this;
     }
+    
+/**
+<documentation><description><p>Adds the group name to <code>applicableGroups</code> and returns the calling object.</p></description>
+<example>$afc->addGroupName( "22q" )->edit();</example>
+<return-type>Asset</return-type>
+<exception>NullAssetException</exception>
+</documentation>
+*/
+    public function addGroupName( string $group_name ) : Asset
+    {
+    	// check the existence of the group
+        $group = Asset::getAsset( $this->getService(), Group::TYPE, $group_name );
+        
+        $group_string = $this->getProperty()->applicableGroups;
+        $group_array  = explode( ';', $group_string );
+        
+        if( !in_array( $group_name, $group_array ) )
+        {
+            $group_array[] = $group_name;
+        }
+        
+        $group_string = implode( ';', $group_array );
+        $this->getProperty()->applicableGroups = $group_string;
+        return $this;
+    }    
     
 /**
 <documentation><description><p>Returns <code>applicableGroups</code>.</p></description>
