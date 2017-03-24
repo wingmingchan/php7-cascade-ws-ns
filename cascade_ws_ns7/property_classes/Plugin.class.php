@@ -105,7 +105,7 @@ $af->edit();</example>
     }
 
 /**
-<documentation><description>Returns the <code>Parameter</code> object bearing that name.</p></description>
+<documentation><description><p>Returns the <code>Parameter</code> object bearing that name.</p></description>
 <example>if( $plugin->hasParameter( $param_name ) )
 {
     $param = $plugin->getParameter( $param_name );
