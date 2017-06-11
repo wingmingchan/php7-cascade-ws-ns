@@ -42,11 +42,583 @@ use cascade_ws_exception as e;
 <description><h2>Introduction</h2>
 <p>This class encapsulates the WSDL URL, the authentication object, and the SoapClient object, 
 and provides services of all operations defined in the WSDL.</p>
+<p>Operations:</p>
+<pre>
+&lt;complexType name="operation">
+  &lt;choice>
+    &lt;element name="create" type="impl:create"/>
+    &lt;element name="delete" type="impl:delete"/>
+    &lt;element name="edit" type="impl:edit"/>
+    &lt;element name="move" type="impl:move"/>
+    &lt;element name="publish" type="impl:publish"/>
+    &lt;element name="read" type="impl:read"/>
+    &lt;element name="readAccessRights" type="impl:readAccessRights"/>
+    &lt;element name="editAccessRights" type="impl:editAccessRights"/>
+    &lt;element name="readWorkflowSettings" type="impl:readWorkflowSettings"/>
+    &lt;element name="editWorkflowSettings" type="impl:editWorkflowSettings"/>
+    &lt;element name="listSubscribers" type="impl:listSubscribers"/>
+    &lt;element name="checkOut" type="impl:checkOut"/>
+    &lt;element name="checkIn" type="impl:checkIn"/>
+    &lt;element name="copy" type="impl:copy"/>
+    &lt;element name="siteCopy" type="impl:siteCopy"/>
+  &lt;/choice>
+&lt;/complexType>
+
+&lt;complexType name="operationResult">
+  &lt;sequence>
+    &lt;element maxOccurs="1" name="success" type="xsd:string"/>
+    &lt;element maxOccurs="1" name="message" nillable="true" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType>
+</pre>
+<p>Messages:</p>
+<pre>&lt;wsdl:message name="batchRequest">
+  &lt;wsdl:part element="impl:batch" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="batchResponse">
+  &lt;wsdl:part element="impl:batchResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="createRequest">
+  &lt;wsdl:part element="impl:create" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="createResponse">
+  &lt;wsdl:part element="impl:createResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="deleteRequest">
+  &lt;wsdl:part element="impl:delete" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="deleteResponse">
+  &lt;wsdl:part element="impl:deleteResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="editRequest">
+  &lt;wsdl:part element="impl:edit" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="editResponse">
+  &lt;wsdl:part element="impl:editResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="publishRequest">
+  &lt;wsdl:part element="impl:publish" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="publishResponse">
+  &lt;wsdl:part element="impl:publishResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="readRequest">
+  &lt;wsdl:part element="impl:read" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="readResponse">
+  &lt;wsdl:part element="impl:readResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="searchRequest">
+  &lt;wsdl:part element="impl:search" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="searchResponse">
+  &lt;wsdl:part element="impl:searchResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="readAccessRightsRequest">
+  &lt;wsdl:part element="impl:readAccessRights" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="readAccessRightsResponse">
+  &lt;wsdl:part element="impl:readAccessRightsResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="editAccessRightsRequest">
+  &lt;wsdl:part element="impl:editAccessRights" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="editAccessRightsResponse">
+  &lt;wsdl:part element="impl:editAccessRightsResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="readWorkflowSettingsRequest">
+  &lt;wsdl:part element="impl:readWorkflowSettings" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="readWorkflowSettingsResponse">
+  &lt;wsdl:part element="impl:readWorkflowSettingsResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="editWorkflowSettingsRequest">
+  &lt;wsdl:part element="impl:editWorkflowSettings" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="editWorkflowSettingsResponse">
+  &lt;wsdl:part element="impl:editWorkflowSettingsResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="listSubscribersRequest">
+  &lt;wsdl:part element="impl:listSubscribers" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="listSubscribersResponse">
+  &lt;wsdl:part element="impl:listSubscribersResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="listEditorConfigurationsRequest">
+  &lt;wsdl:part element="impl:listEditorConfigurations" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="listEditorConfigurationsResponse">
+  &lt;wsdl:part element="impl:listEditorConfigurationsResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="listMessagesRequest">
+  &lt;wsdl:part element="impl:listMessages" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="listMessagesResponse">
+  &lt;wsdl:part element="impl:listMessagesResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="markMessageRequest">
+  &lt;wsdl:part element="impl:markMessage" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="markMessageResponse">
+  &lt;wsdl:part element="impl:markMessageResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="deleteMessageRequest">
+  &lt;wsdl:part element="impl:deleteMessage" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="deleteMessageResponse">
+  &lt;wsdl:part element="impl:deleteMessageResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="sendMessageRequest">
+  &lt;wsdl:part element="impl:sendMessage" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="sendMessageResponse">
+  &lt;wsdl:part element="impl:sendMessageResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="checkOutRequest">
+  &lt;wsdl:part element="impl:checkOut" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="checkOutResponse">
+  &lt;wsdl:part element="impl:checkOutResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="checkInRequest">
+  &lt;wsdl:part element="impl:checkIn" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="checkInResponse">
+  &lt;wsdl:part element="impl:checkInResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="copyRequest">
+  &lt;wsdl:part element="impl:copy" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="copyResponse">
+  &lt;wsdl:part element="impl:copyResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="siteCopyRequest">
+  &lt;wsdl:part element="impl:siteCopy" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="siteCopyResponse">
+  &lt;wsdl:part element="impl:siteCopyResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="listSitesRequest">
+  &lt;wsdl:part element="impl:listSites" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="listSitesResponse">
+  &lt;wsdl:part element="impl:listSitesResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="moveRequest">
+  &lt;wsdl:part element="impl:move" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="moveResponse">
+  &lt;wsdl:part element="impl:moveResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="readWorkflowInformationRequest">
+  &lt;wsdl:part element="impl:readWorkflowInformation" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="readWorkflowInformationResponse">
+  &lt;wsdl:part element="impl:readWorkflowInformationResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="readAuditsRequest">
+  &lt;wsdl:part element="impl:readAudits" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="readAuditsResponse">
+  &lt;wsdl:part element="impl:readAuditsResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="performWorkflowTransitionRequest">
+  &lt;wsdl:part element="impl:performWorkflowTransition" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="performWorkflowTransitionResponse">
+  &lt;wsdl:part element="impl:performWorkflowTransitionResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="readPreferencesRequest">
+  &lt;wsdl:part element="impl:readPreferences" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="readPreferencesResponse">
+  &lt;wsdl:part element="impl:readPreferencesResponse" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="editPreferenceRequest">
+  &lt;wsdl:part element="impl:editPreference" name="parameters"/>
+&lt;/wsdl:message>
+&lt;wsdl:message name="editPreferenceResponse">
+  &lt;wsdl:part element="impl:editPreferenceResponse" name="parameters"/>
+&lt;/wsdl:message>
+</pre>
+<p>Port types:</p>
+<pre>
+&lt;wsdl:portType name="AssetOperationHandler">
+  &lt;wsdl:operation name="delete">
+    &lt;wsdl:input message="impl:deleteRequest" name="deleteRequest"/>
+    &lt;wsdl:output message="impl:deleteResponse" name="deleteResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="create">
+    &lt;wsdl:input message="impl:createRequest" name="createRequest"/>
+    &lt;wsdl:output message="impl:createResponse" name="createResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="publish">
+    &lt;wsdl:input message="impl:publishRequest" name="publishRequest"/>
+    &lt;wsdl:output message="impl:publishResponse" name="publishResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="edit">
+    &lt;wsdl:input message="impl:editRequest" name="editRequest"/>
+    &lt;wsdl:output message="impl:editResponse" name="editResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="batch">
+    &lt;wsdl:input message="impl:batchRequest" name="batchRequest"/>
+    &lt;wsdl:output message="impl:batchResponse" name="batchResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="read">
+    &lt;wsdl:input message="impl:readRequest" name="readRequest"/>
+    &lt;wsdl:output message="impl:readResponse" name="readResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="search">
+    &lt;wsdl:input message="impl:searchRequest" name="searchRequest"/>
+    &lt;wsdl:output message="impl:searchResponse" name="searchResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="readAccessRights">
+    &lt;wsdl:input message="impl:readAccessRightsRequest" name="readAccessRightsRequest"/>
+    &lt;wsdl:output message="impl:readAccessRightsResponse" name="readAccessRightsResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="editAccessRights">
+    &lt;wsdl:input message="impl:editAccessRightsRequest" name="editAccessRightsRequest"/>
+    &lt;wsdl:output message="impl:editAccessRightsResponse" name="editAccessRightsResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="readWorkflowSettings">
+    &lt;wsdl:input message="impl:readWorkflowSettingsRequest" name="readWorkflowSettingsRequest"/>
+    &lt;wsdl:output message="impl:readWorkflowSettingsResponse" name="readWorkflowSettingsResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="editWorkflowSettings">
+    &lt;wsdl:input message="impl:editWorkflowSettingsRequest" name="editWorkflowSettingsRequest"/>
+    &lt;wsdl:output message="impl:editWorkflowSettingsResponse" name="editWorkflowSettingsResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="listSubscribers">
+    &lt;wsdl:input message="impl:listSubscribersRequest" name="listSubscribersRequest"/>
+    &lt;wsdl:output message="impl:listSubscribersResponse" name="listSubscribersResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="listEditorConfigurations">
+    &lt;wsdl:input message="impl:listEditorConfigurationsRequest" name="listEditorConfigurationsRequest"/>
+    &lt;wsdl:output message="impl:listEditorConfigurationsResponse" name="listEditorConfigurationsResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="listMessages">
+    &lt;wsdl:input message="impl:listMessagesRequest" name="listMessagesRequest"/>
+    &lt;wsdl:output message="impl:listMessagesResponse" name="listMessagesResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="markMessage">
+    &lt;wsdl:input message="impl:markMessageRequest" name="markMessageRequest"/>
+    &lt;wsdl:output message="impl:markMessageResponse" name="markMessageResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="deleteMessage">
+    &lt;wsdl:input message="impl:deleteMessageRequest" name="deleteMessageRequest"/>
+    &lt;wsdl:output message="impl:deleteMessageResponse" name="deleteMessageResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="sendMessage">
+    &lt;wsdl:input message="impl:sendMessageRequest" name="sendMessageRequest"/>
+    &lt;wsdl:output message="impl:sendMessageResponse" name="sendMessageResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="checkOut">
+    &lt;wsdl:input message="impl:checkOutRequest" name="checkOutRequest"/>
+    &lt;wsdl:output message="impl:checkOutResponse" name="checkOutResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="checkIn">
+    &lt;wsdl:input message="impl:checkInRequest" name="checkInRequest"/>
+    &lt;wsdl:output message="impl:checkInResponse" name="checkInResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="copy">
+    &lt;wsdl:input message="impl:copyRequest" name="copyRequest"/>
+    &lt;wsdl:output message="impl:copyResponse" name="copyResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="siteCopy">
+    &lt;wsdl:input message="impl:siteCopyRequest" name="siteCopyRequest"/>
+    &lt;wsdl:output message="impl:siteCopyResponse" name="siteCopyResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="listSites">
+    &lt;wsdl:input message="impl:listSitesRequest" name="listSitesRequest"/>
+    &lt;wsdl:output message="impl:listSitesResponse" name="listSitesResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="move">
+    &lt;wsdl:input message="impl:moveRequest" name="moveRequest"/>
+    &lt;wsdl:output message="impl:moveResponse" name="moveResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="readWorkflowInformation">
+    &lt;wsdl:input message="impl:readWorkflowInformationRequest" name="readWorkflowInformationRequest"/>
+    &lt;wsdl:output message="impl:readWorkflowInformationResponse" name="readWorkflowInformationResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="readAudits">
+    &lt;wsdl:input message="impl:readAuditsRequest" name="readAuditsRequest"/>
+    &lt;wsdl:output message="impl:readAuditsResponse" name="readAuditsResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="performWorkflowTransition">
+    &lt;wsdl:input message="impl:performWorkflowTransitionRequest" name="performWorkflowTransitionRequest"/>
+    &lt;wsdl:output message="impl:performWorkflowTransitionResponse" name="performWorkflowTransitionResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="readPreferences">
+    &lt;wsdl:input message="impl:readPreferencesRequest" name="readPreferencesRequest"/>
+    &lt;wsdl:output message="impl:readPreferencesResponse" name="readPreferencesResponse"/>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="editPreference">
+    &lt;wsdl:input message="impl:editPreferenceRequest" name="editPreferenceRequest"/>
+    &lt;wsdl:output message="impl:editPreferenceResponse" name="editPreferenceResponse"/>
+  &lt;/wsdl:operation>
+&lt;/wsdl:portType>
+</pre>
+<p>Binding:</p>
+<pre>&lt;wsdl:binding name="AssetOperationServiceSoapBinding" type="impl:AssetOperationHandler">
+  &lt;wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+  
+  &lt;wsdl:operation name="batch">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="batchRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="batchResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="create">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="createRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="createResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="delete">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="deleteRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="deleteResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="edit">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="editRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="editResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="publish">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="publishRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="publishResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="read">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="readRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="readResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="search">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="searchRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="searchResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="readAccessRights">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="readAccessRightsRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="readAccessRightsResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="editAccessRights">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="editAccessRightsRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="editAccessRightsResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="readWorkflowSettings">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="readWorkflowSettingsRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="readWorkflowSettingsResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="editWorkflowSettings">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="editWorkflowSettingsRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="editWorkflowSettingsResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="listSubscribers">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="listSubscribersRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="listSubscribersResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="listEditorConfigurations">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="listEditorConfigurationsRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="listEditorConfigurationsResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="listMessages">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="listMessagesRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="listMessagesResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="markMessage">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="markMessageRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="markMessageResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="deleteMessage">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="deleteMessageRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="deleteMessageResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="sendMessage">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="sendMessageRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="sendMessageResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="checkOut">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="checkOutRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="checkOutResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="checkIn">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="checkInRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="checkInResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="copy">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="copyRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="copyResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="siteCopy">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="siteCopyRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="siteCopyResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="listSites">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="listSitesRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="listSitesResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="move">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="moveRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="moveResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="readWorkflowInformation">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="readWorkflowInformationRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="readWorkflowInformationResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="readAudits">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="readAuditsRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="readAuditsResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="performWorkflowTransition">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="performWorkflowTransitionRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="performWorkflowTransitionResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="readPreferences">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="readPreferencesRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="readPreferencesResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+  &lt;wsdl:operation name="editPreference">
+    &lt;wsdlsoap:operation soapAction=""/>
+    &lt;wsdl:input name="editPreferenceRequest">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:input>
+    &lt;wsdl:output name="editPreferenceResponse">
+      &lt;wsdlsoap:body use="literal"/>
+    &lt;/wsdl:output>
+  &lt;/wsdl:operation>
+&lt;/wsdl:binding>
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/tree/master/working-with-AssetOperationHandlerService">working-with-AssetOperationHandlerService</a></li></ul></postscript>
 </documentation>
-
-
 */
 class AssetOperationHandlerService
 {
@@ -146,7 +718,43 @@ Dynamically generates the read and get methods.
 /**
 Batch-executes the operations.
 @param array $operations The array of operations
-<documentation><description><p>Batch-executes the operations.</p></description>
+<documentation><description><p>Batch-executes the operations.</p>
+<p>Batch:</p>
+<pre>
+&lt;element name="batch">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" type="impl:authentication"/>
+      &lt;element maxOccurs="unbounded" name="operation" type="impl:operation"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="batchResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="unbounded" name="batchReturn" type="impl:batchResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="batchResult">
+  &lt;choice>
+    &lt;element maxOccurs="1" minOccurs="1" name="operationResult" type="impl:operationResult"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="checkOutResult" type="impl:checkOutResult"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="createResult" type="impl:createResult"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="listMessagesResult" type="impl:listMessagesResult"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="readResult" type="impl:readResult"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="readAccessRightsResult" type="impl:readAccessRightsResult"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="readWorkflowSettingsResult" type="impl:readWorkflowSettingsResult"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="readAuditsResult" type="impl:readAuditsResult"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="listSubscribersResult" type="impl:listSubscribersResult"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="searchResult" type="impl:searchResult"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="readWorkflowInformationResult" type="impl:readWorkflowInformationResult"/>
+  &lt;/choice>
+&lt;/complexType>
+</pre>
+</description>
 <example>$paths = array( 
              "/_cascade/blocks/code/text-block", 
              "_cascade/blocks/code/ajax-read-profile-php" );
@@ -186,7 +794,33 @@ try
 Checks in an asset with the given identifier.
 @param stdClass $identifier The identifier of the asset to be checked in
 @param string   $comments The comments to be added
-<documentation><description><p>Checks in an asset with the given identifier.</p></description>
+<documentation><description><p>Checks in an asset with the given identifier.</p>
+<p>Check in:</p>
+<pre>
+&lt;element name="checkIn">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="comments" nillable="false" type="xsd:string"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="checkInResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="checkInReturn" type="impl:operationResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="checkIn">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
+  &lt;/sequence>
+&lt;/complexType></pre>
+</description>
 <example>$path = "/files/AssetOperationHandlerService.class.php.zip";
 $id = $service->createId( a\File::TYPE, $path, "cascade-admin" );
 $service->checkIn( $id, 'Testing the checkIn method.' );
@@ -207,7 +841,42 @@ $service->checkIn( $id, 'Testing the checkIn method.' );
 /**
 Checks out an asset with the given identifier.
 @param stdClass $identifier The identifier of the asset to be checked out
-<documentation><description><p>Checks out an asset with the given identifier.</p></description>
+<documentation><description><p>Checks out an asset with the given identifier.</p>
+<p>Check out:</p>
+<pre>&lt;element name="checkOut">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="checkOutResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="checkOutReturn" type="impl:checkOutResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="checkOut">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="checkOutResult">
+  &lt;complexContent>
+    &lt;extension base="impl:operationResult">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="workingCopyIdentifier" nillable="true" type="impl:identifier"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+</pre>
+</description>
 <example>$path = "/files/AssetOperationHandlerService.class.php.zip";
 $id = $service->createId( a\File::TYPE, $path, "cascade-admin" );
 $service->checkOut( $id );
@@ -237,7 +906,43 @@ Copies the asset with the given identifier.
 @param stdClass $newIdentifier The new identifier of the new object
 @param string   $newName The new name assigned to the new object
 @param bool     $doWorkflow Whether to do any workflow
-<documentation><description><p>Copies the asset with the given identifier.</p></description>
+<documentation><description><p>Copies the asset with the given identifier.</p>
+<p>Copy:</p>
+<pre>&lt;element name="copy">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="copyParameters" nillable="false" type="impl:copyParameters"/>
+      &lt;element maxOccurs="1" minOccurs="0" name="workflowConfiguration" nillable="false" type="impl:workflow-configuration"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="copyResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="copyReturn" type="impl:operationResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="copy">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="copyParameters" nillable="false" type="impl:copyParameters"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="workflowConfiguration" nillable="false" type="impl:workflow-configuration"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="copyParameters">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="destinationContainerIdentifier" nillable="false" type="impl:identifier"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="doWorkflow" nillable="false" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="newName" nillable="false" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType></pre>
+</description>
 <example>// the block to be copy
 $block_id = $service->createId( a\TextBlock::TYPE, "_cascade/blocks/code/text-block", "cascade-admin" );
 // the parent folder where the new block should be placed
@@ -263,12 +968,46 @@ $service->copy( $block_id, $parent_id, $new_name, $do_workflow );
         $this->reply = $this->soapClient->copy( $copy_params );
         $this->storeResults( $this->reply->copyReturn );
     }
-    
 /**
 Creates the asset.
 @param stdClass $asset The asset to be created
 @return string The ID of the newly created asset
-<documentation><description><p>Creates the asset.</p></description>
+<documentation><description><p>Creates the asset.</p>
+<p>Create:</p>
+<pre>&lt;element name="create">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="authentication" type="impl:authentication"/>
+      &lt;element name="asset" type="impl:asset"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="createResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="createReturn" type="impl:createResult"/>
+  &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="create">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="asset" type="impl:asset"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="createResult">
+  &lt;complexContent>
+    &lt;extension base="impl:operationResult">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="createdAssetId" nillable="false" type="xsd:string"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+</pre>
+</description>
 <example>// get the image data
 $img_url     = "http://www.upstate.edu/scripts/faculty/thumbs/nadkarna.jpg";
 $img_binary  = file_get_contents( $img_url );
@@ -368,7 +1107,6 @@ Creates an id object for an asset.
         $identifier->type = $type;
         return $identifier;
     }
-    
 /**
 Creates an id object for an asset.
 @param string $id The id string of an asset
@@ -382,7 +1120,6 @@ Creates an id object for an asset.
     {
         return $this->createId( $type, $id );
     }
-
 /**
 Creates an id object for an asset.
 @param string $path The path and name of an asset
@@ -397,7 +1134,6 @@ Creates an id object for an asset.
     {
         return $this->createId( $type, $path, $site_name );
     }
-
 /**
 Creates a file stdClass object.
 @param string $parentFolderId the id object of the parent folder
@@ -420,11 +1156,37 @@ Creates a file stdClass object.
         $file->data           = $data;
         return $file;
     }
-
 /**
 Deletes the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be deleted
-<documentation><description><p>Deletes the asset with the given identifier.</p></description>
+<documentation><description><p>Deletes the asset with the given identifier.</p>
+<p>Delete:</p>
+<pre>
+&lt;element name="delete">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="authentication" type="impl:authentication"/>
+      &lt;element name="identifier" type="impl:identifier"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="deleteResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="deleteReturn" type="impl:operationResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="delete">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="workflowConfiguration" type="impl:workflow-configuration"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="impl:identifier"/>
+  &lt;/sequence>
+&lt;/complexType>
+</pre>
+</description>
 <example>$path = "/_cascade/blocks/code/text-block2";
 $service->delete( $service->createId( a\TextBlock::TYPE, $path, "cascade-admin" ) );
 </example>
@@ -439,11 +1201,30 @@ $service->delete( $service->createId( a\TextBlock::TYPE, $path, "cascade-admin" 
         $this->reply = $this->soapClient->delete( $delete_params );
         $this->storeResults( $this->reply->deleteReturn );
     }
-    
 /**
 Deletes the message with the given identifier.
 @param stdClass $identifier The identifier of the message to be deleted
-<documentation><description><p>Deletes the message with the given identifier.</p></description>
+<documentation><description><p>Deletes the message with the given identifier.</p>
+<p>Delete message:</p>
+<pre>&lt;element name="deleteMessage">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="deleteMessageResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="deleteMessageReturn" type="impl:operationResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+</pre>
+</description>
 <example>$mid = "9e10ae5b8b7ffe8364375ac78e212e42";
 $service->deleteMessage( $service->createId( c\T::MESSAGE, $mid ) );
 </example>
@@ -458,11 +1239,34 @@ $service->deleteMessage( $service->createId( c\T::MESSAGE, $mid ) );
         $this->reply = $this->soapClient->deleteMessage( $delete_message_params );
         $this->storeResults( $this->reply->deleteMessageReturn );
     }
-    
 /**
 Edits the given asset.
 @param stdClass $asset The asset to be edited
-<documentation><description><p>Edits the given asset.</p></description>
+<documentation><description><p>Edits the given asset.</p>
+<p>Edit:</p>
+<pre>&lt;element name="edit">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="authentication" type="impl:authentication"/>
+      &lt;element name="asset" type="impl:asset"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="editResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="editReturn" type="impl:operationResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="edit">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="asset" type="impl:asset"/>
+  &lt;/sequence>
+&lt;/complexType></pre>
+</description>
 <example>$asset = new \stdClass();
 $asset->xhtmlDataDefinitionBlock = $block;
 $service->edit( $asset );
@@ -478,12 +1282,13 @@ $service->edit( $asset );
         $this->reply = $this->soapClient->edit( $edit_params );
         $this->storeResults( $this->reply->editReturn );
     }
-    
 /**
 Edits the given accessRightsInformation.
 @param stdClass $accessRightsInformation the accessRightsInformation to be edited
 @param bool     $applyToChildren Whether to apply the settings to children
-<documentation><description><p>Edits the given accessRightsInformation.</p></description>
+<documentation><description><p>Edits the given accessRightsInformation.</p>
+
+</description>
 <example>$accessRightInfo->aclEntries->aclEntry = $aclEntries;
 // false: do not apply to children
 $service->editAccessRights( $accessRightInfo, false ); 
@@ -500,7 +1305,6 @@ $service->editAccessRights( $accessRightInfo, false );
         $this->reply = $this->soapClient->editAccessRights( $edit_params );
         $this->storeResults( $this->reply->editAccessRightsReturn );
     }
-    
 /**
 Edits the preferences.
 @param string $name The name of the preference
@@ -943,7 +1747,43 @@ Moves the asset with the given identifier.
 @param stdClass $newIdentifier The new container identifier
 @param string   $newName The new name assigned to the object moved
 @param bool     $doWorkflow Whether to do workflow
-<documentation><description><p>Moves the asset with the given identifier.</p></description>
+<documentation><description><p>Moves the asset with the given identifier.</p>
+<p>Move:</p>
+<pre>&lt;element name="move">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="moveParameters" nillable="false" type="impl:moveParameters"/>
+      &lt;element maxOccurs="1" minOccurs="0" name="workflowConfiguration" nillable="false" type="impl:workflow-configuration"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="moveResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="moveReturn" type="impl:operationResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="move">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="moveParameters" nillable="false" type="impl:moveParameters"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="workflowConfiguration" nillable="false" type="impl:workflow-configuration"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="moveParameters">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="destinationContainerIdentifier" type="impl:identifier"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="doWorkflow" nillable="false" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="newName" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType>
+</pre></description>
 <example>$service->move( $block_id, $parent_id, $new_name, $do_workflow );</example>
 <return-type>void</return-type></documentation>
 */
@@ -1013,7 +1853,41 @@ Publishes the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be published
 @param Destination $destination The destination(s) where the asset should be published
 <documentation>
-<description><p>Publishes the asset with the given identifier.</p></description>
+<description><p>Publishes the asset with the given identifier.</p>
+<p>Publish:</p>
+<pre>
+&lt;element name="publish">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" type="impl:authentication"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="publishInformation" type="impl:publishInformation"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="publishResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="publishReturn" type="impl:operationResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="publish">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="publishInformation" type="impl:publishInformation"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="publishInformation">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="impl:identifier"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="destinations" nillable="false" type="impl:assetIdentifiers"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="unpublish" nillable="true" type="xsd:boolean"/>
+  &lt;/sequence>
+&lt;/complexType>
+</pre>
+</description>
 <example>$folder_path = "projects/web-services/reports";
 $service->publish( $service->createId( a\Folder::TYPE, $folder_path, "cascade-admin" ) );</example>
 <return-type>void</return-type>
@@ -1045,7 +1919,43 @@ $service->publish( $service->createId( a\Folder::TYPE, $folder_path, "cascade-ad
 Reads the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be read
 <documentation>
-<description><p>Reads the asset with the given identifier.</p></description>
+<description><p>Reads the asset with the given identifier.</p>
+<p>Read:</p>
+<pre>
+&lt;element name="read">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="authentication" type="impl:authentication"/>
+      &lt;element name="identifier" type="impl:identifier"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="readResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="readReturn" type="impl:readResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="read">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="impl:identifier"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="readResult">
+  &lt;complexContent>
+    &lt;extension base="impl:operationResult">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="asset" type="impl:asset"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+<pre>
+</description>
 <example>$service->read( 
     $service->createId( a\Folder::TYPE, $path, "cascade-admin" ) );</example>
 <return-type>void</return-type>
@@ -1192,7 +2102,83 @@ Retrieves a property of an asset.
 /**
 Searches for some entity.
 @param stdClass $searchInfo The searchInfo object
-<documentation><description><p>Searches for some entity.</p></description>
+<documentation><description><p>Searches for some entity.</p>
+<p>Search:</p>
+<pre>&lt;element name="search">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="authentication" type="impl:authentication"/>
+      &lt;element name="searchInformation" type="impl:searchInformation"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="searchResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="searchReturn" type="impl:searchResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="searchResult">
+  &lt;complexContent>
+    &lt;extension base="impl:operationResult">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="matches" type="impl:search-matches"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;complexType name="search-matches">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="match" type="impl:identifier"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="searchInformation">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="searchTerms" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="siteId" nillable="false" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="siteName" nillable="false" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="searchFields" nillable="false" type="impl:searchFields"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="searchTypes" nillable="false" type="impl:searchTypes"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="searchFields">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="searchField" nillable="false" type="impl:searchFieldString"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="searchTypes">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="searchType" nillable="false" type="impl:entityTypeString"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;simpleType name="searchFieldString">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="name"/>
+    &lt;enumeration value="path"/>
+    &lt;enumeration value="createdBy"/>
+    &lt;enumeration value="modifiedBy"/>
+    &lt;enumeration value="displayName"/>
+    &lt;enumeration value="title"/>
+    &lt;enumeration value="summary"/>
+    &lt;enumeration value="teaser"/>
+    &lt;enumeration value="keywords"/>
+    &lt;enumeration value="description"/>
+    &lt;enumeration value="author"/>
+    &lt;enumeration value="blob"/>
+    &lt;enumeration value="velocityFormatContent"/>
+    &lt;enumeration value="xml"/>
+    &lt;enumeration value="link"/>
+  &lt;/restriction>
+&lt;/simpleType></pre>
+</description>
 <example>$search_for               = new \stdClass();
 $search_for->matchType    = c\T::MATCH_ANY;
 $search_for->searchGroups = true;
