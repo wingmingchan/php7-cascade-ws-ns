@@ -4,6 +4,7 @@
   Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   MIT Licensed
   Modification history:
+   6/11/2017 Started adding WSDL.
    9/2/2016 Changed checkOut so that it returns the id of the working copy.
    8/15/2016 Added comments to work with ReflectionUtility.
    7/6/2015 Added getPreferences, readPreferences, and editPreferences.
@@ -719,7 +720,7 @@ Dynamically generates the read and get methods.
 Batch-executes the operations.
 @param array $operations The array of operations
 <documentation><description><p>Batch-executes the operations.</p>
-<p>Batch:</p>
+<p>batch:</p>
 <pre>
 &lt;element name="batch">
   &lt;complexType>
@@ -789,13 +790,12 @@ try
         // the returned object is an array
         $this->storeResults();
     }
-    
 /**
 Checks in an asset with the given identifier.
 @param stdClass $identifier The identifier of the asset to be checked in
 @param string   $comments The comments to be added
 <documentation><description><p>Checks in an asset with the given identifier.</p>
-<p>Check in:</p>
+<p>checkIn:</p>
 <pre>
 &lt;element name="checkIn">
   &lt;complexType>
@@ -837,12 +837,11 @@ $service->checkIn( $id, 'Testing the checkIn method.' );
         $this->reply = $this->soapClient->checkIn( $checkin_param );
         $this->storeResults( $this->reply->checkInReturn );
     }
-    
 /**
 Checks out an asset with the given identifier.
 @param stdClass $identifier The identifier of the asset to be checked out
 <documentation><description><p>Checks out an asset with the given identifier.</p>
-<p>Check out:</p>
+<p>checkOut:</p>
 <pre>&lt;element name="checkOut">
   &lt;complexType>
     &lt;sequence>
@@ -899,7 +898,6 @@ $service->checkOut( $id );
         else
             return "";
     }
-    
 /**
 Copies the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be copied
@@ -907,7 +905,7 @@ Copies the asset with the given identifier.
 @param string   $newName The new name assigned to the new object
 @param bool     $doWorkflow Whether to do any workflow
 <documentation><description><p>Copies the asset with the given identifier.</p>
-<p>Copy:</p>
+<p>copy:</p>
 <pre>&lt;element name="copy">
   &lt;complexType>
     &lt;sequence>
@@ -973,7 +971,7 @@ Creates the asset.
 @param stdClass $asset The asset to be created
 @return string The ID of the newly created asset
 <documentation><description><p>Creates the asset.</p>
-<p>Create:</p>
+<p>create:</p>
 <pre>&lt;element name="create">
   &lt;complexType>
     &lt;sequence>
@@ -1034,7 +1032,6 @@ $service->create( $asset );
         
         return $this->reply->createReturn->createdAssetId;
     }
-    
 /**
 Creates an id object for an asset.
 @param string $type The type of the asset
@@ -1160,7 +1157,7 @@ Creates a file stdClass object.
 Deletes the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be deleted
 <documentation><description><p>Deletes the asset with the given identifier.</p>
-<p>Delete:</p>
+<p>delete:</p>
 <pre>
 &lt;element name="delete">
   &lt;complexType>
@@ -1205,7 +1202,7 @@ $service->delete( $service->createId( a\TextBlock::TYPE, $path, "cascade-admin" 
 Deletes the message with the given identifier.
 @param stdClass $identifier The identifier of the message to be deleted
 <documentation><description><p>Deletes the message with the given identifier.</p>
-<p>Delete message:</p>
+<p>deleteMessage:</p>
 <pre>&lt;element name="deleteMessage">
   &lt;complexType>
     &lt;sequence>
@@ -1222,7 +1219,6 @@ Deletes the message with the given identifier.
     &lt;/sequence>
   &lt;/complexType>
 &lt;/element>
-
 </pre>
 </description>
 <example>$mid = "9e10ae5b8b7ffe8364375ac78e212e42";
@@ -1243,7 +1239,7 @@ $service->deleteMessage( $service->createId( c\T::MESSAGE, $mid ) );
 Edits the given asset.
 @param stdClass $asset The asset to be edited
 <documentation><description><p>Edits the given asset.</p>
-<p>Edit:</p>
+<p>edit:</p>
 <pre>&lt;element name="edit">
   &lt;complexType>
     &lt;sequence>
@@ -1287,7 +1283,32 @@ Edits the given accessRightsInformation.
 @param stdClass $accessRightsInformation the accessRightsInformation to be edited
 @param bool     $applyToChildren Whether to apply the settings to children
 <documentation><description><p>Edits the given accessRightsInformation.</p>
+<p>editAccessRights:</p>
+<pre>&lt;element name="editAccessRights">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="accessRightsInformation" nillable="false" type="impl:accessRightsInformation"/>
+      &lt;element maxOccurs="1" minOccurs="0" name="applyToChildren" nillable="false" type="xsd:boolean"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
 
+&lt;element name="editAccessRightsResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="editAccessRightsReturn" type="impl:operationResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="editAccessRights">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="accessRightsInformation" nillable="true" type="impl:accessRightsInformation"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="applyToChildren" nillable="false" type="xsd:boolean"/>
+  &lt;/sequence>
+&lt;/complexType>
+</pre>
 </description>
 <example>$accessRightInfo->aclEntries->aclEntry = $aclEntries;
 // false: do not apply to children
@@ -1309,11 +1330,35 @@ $service->editAccessRights( $accessRightInfo, false );
 Edits the preferences.
 @param string $name The name of the preference
 @param string $name The value of the preference
-<documentation><description><p>Edits the preferences.</p></description>
-<example>$service->editPreferences( "system_pref_allow_font_assignment", "off" );</example>
+<documentation><description><p>Edits the preferences.</p>
+<p>editPreference:</p>
+<pre>&lt;element name="editPreference">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="preference" nillable="false" type="impl:preference"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="editPreferenceResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="editPreferenceReturn" type="impl:operationResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="editPreferenceResult">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="preference" nillable="false" type="impl:preference"/>
+  &lt;/sequence>
+&lt;/complexType>
+</pre></description>
+<example>$service->editPreference( "system_pref_allow_font_assignment", "off" );</example>
 <return-type>void</return-type></documentation>
 */
-    public function editPreferences( string $name, string $value ) 
+    public function editPreference( string $name, string $value ) 
     {
         $edit_preferences_param                    = new \stdClass();
         $edit_preferences_param->authentication    = $this->auth;
@@ -1324,13 +1369,52 @@ Edits the preferences.
         $this->reply = $this->soapClient->editPreference( $edit_preferences_param );
         $this->storeResults( $this->reply->editPreferenceReturn );
     }
-    
+/**
+Edits the preferences.
+@param string $name The name of the preference
+@param string $name The value of the preference
+<documentation><description><p>An alias of <code>editPreference</code>.</p>
+</description>
+<return-type>void</return-type></documentation>
+*/
+    public function editPreferences( string $name, string $value ) 
+    {
+        $this->editPreference( $name, $value );
+    }
 /**
 Edits the given workflowSettings.
 @param stdClass $workflowSettings The workflowSettings to be edited
 @param bool     $applyInheritWorkflowsToChildren Whether to apply inherited workflows to children
 @param bool     $applyRequireWorkflowToChildren Whether to apply required workflows to children
-<documentation><description><p>Edits the given workflowSettings.</p></description>
+<documentation><description><p>Edits the given workflowSettings.</p>
+<p>editWorkflowSettings:</p>
+<pre>&lt;element name="editWorkflowSettings">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="workflowSettings" nillable="false" type="impl:workflowSettings"/>
+      &lt;element maxOccurs="1" minOccurs="0" name="applyInheritWorkflowsToChildren" nillable="false" type="xsd:boolean"/>
+      &lt;element maxOccurs="1" minOccurs="0" name="applyRequireWorkflowToChildren" nillable="false" type="xsd:boolean"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="editWorkflowSettingsResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="editWorkflowSettingsReturn" type="impl:operationResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="editWorkflowSettings">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="workflowSettings" nillable="true" type="impl:workflowSettings"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="applyInheritWorkflowsToChildren" nillable="false" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="applyRequireWorkflowToChildren" nillable="false" type="xsd:boolean"/>
+  &lt;/sequence>
+&lt;/complexType></pre>
+</description>
 <example>$service->editWorkflowSettings( $workflowSettings, false, false );</example>
 <return-type>void</return-type></documentation>
 */
@@ -1346,7 +1430,6 @@ Edits the given workflowSettings.
         $this->reply = $this->soapClient->editWorkflowSettings( $edit_params );
         $this->storeResults( $this->reply->editWorkflowSettingsReturn );
     }
-    
 /**
 Creates an asset object, bridging this class and the Asset classes.
 @param string $type The type of the asset
@@ -1392,7 +1475,6 @@ Gets the audits object after the call of readAudits().
     {
         return $this->audits;
     }
-    
 /**
 Gets the ID of an asset newly created.
 @return string The ID string
@@ -1404,7 +1486,6 @@ Gets the ID of an asset newly created.
     {
         return $this->createdAssetId;
     }
-    
 /**
 Gets the last request XML.
 @return string The last request XML
@@ -1416,7 +1497,6 @@ Gets the last request XML.
     {
         return $this->lastRequest;
     }
-    
 /**
 Gets the last response.
 @return string The last response
@@ -1428,7 +1508,6 @@ Gets the last response.
     {
         return $this->lastResponse;
     }
-    
 /**
 Gets the messages object after the call of listMessages().
 @return stdClass The listed messages
@@ -1442,7 +1521,6 @@ u\DebugUtility::dump( $service->getListedMessages() );
     {
         return $this->listed_messages;
     }
-    
 /**
 Gets the message after an operation.
 @return string The message
@@ -1454,7 +1532,6 @@ Gets the message after an operation.
     {
         return $this->message;
     }
-    
 /**
 Gets the preferences after the call of readPreferences().
 @return stdClass The preferences object
@@ -1467,7 +1544,6 @@ u\DebugUtility::dump( $service->getPreferences() );</example>
     {
         return $this->preferences;
     }
-    
 /**
 Gets the accessRightInformation object after the call of readAccessRightInformation().
 @return stdClass The accessRightsInformation object
@@ -1479,7 +1555,6 @@ Gets the accessRightInformation object after the call of readAccessRightInformat
     {
         return $this->reply->readAccessRightsReturn->accessRightsInformation;
     }
-    
 /**
 Gets the asset object after the call of read().
 @return stdClass The asset read
@@ -1491,7 +1566,6 @@ Gets the asset object after the call of read().
     {
         return $this->reply->readReturn->asset;
     }
-    
 /**
 Gets the file object after the call of read().
 @return stdClass The file read
@@ -1503,7 +1577,6 @@ Gets the file object after the call of read().
     {
         return $this->reply->readReturn->asset->file;
     }
-       
 /**
 Gets the workflow object after the call of readWorkflow().
 @return stdClass The workflow read
@@ -1517,7 +1590,6 @@ $workflow = $service->getReadWorkflow();</example>
     {
         return $this->reply->readWorkflowInformationReturn->workflow;
     }
-    
 /**
 Gets the workflowSettings object after the call of readWorkflowSettings().
 @return stdClass The workflowSettings object
@@ -1532,7 +1604,6 @@ $workflowSettings = $service->getReadWorkflowSettings();
     {
         return $this->reply->readWorkflowSettingsReturn->workflowSettings;
     }
-    
 /**
 Gets the response object after an operation.
 @return stdClass The response object
@@ -1544,7 +1615,6 @@ Gets the response object after an operation.
     {
         return $this->reply;
     }
-    
 /**
 Gets the searchMatches object after the call of search().
 @return stdClass The searchMatches object
@@ -1560,7 +1630,6 @@ if( is_null( $service->getSearchMatches()->match ) )
     {
         return $this->searchMatches;
     }
-    
 /**
 Returns a bool after an operation.
 @return string The string 'true' or 'false'
@@ -1572,7 +1641,6 @@ Returns a bool after an operation.
     {
         return $this->success;
     }
-    
 /**
 Gets the type of an asset.
 @param string $id_string The 32-digit hex id string
@@ -1616,7 +1684,6 @@ echo $service->getType( $id ), BR;
         
         return "The id does not match any asset type.";
     }
-    
 /**
 Gets the WSDL URL string.
 @return string The WSDL URL string
@@ -1628,7 +1695,6 @@ Gets the WSDL URL string.
     {
         return $this->url;
     }
-    
 /**
 Returns a bool indicating whether the string is a 32-digit hex string.
 @param string $string The input string
@@ -1649,7 +1715,6 @@ Returns a bool indicating whether the string is a 32-digit hex string.
             return $matches[ 0 ] == $string;
         return false;
     }
-
 /**
 Returns true if an operation is successful.
 @return bool The result of an operation
@@ -1665,10 +1730,53 @@ if( $service->isSuccessful() )
     {
         return $this->success == 'true';
     }
-    
+/**
+<documentation><description><p>Lists editor configurations.</p>
+<p>:</p>
+<pre></pre>
+</description>
+<example></example>
+<return-type>void</return-type></documentation>
+*/
+	public function listEditorConfigurations()
+    {
+        $list_editor_configurations_params                 = new \stdClass();
+        $list_editor_configurations_params->authentication = $this->auth;
+        
+        $this->reply = $this->soapClient->listEditorConfigurations(
+        	$list_editor_configurations_params );
+        $this->storeResults( $this->reply->listEditorConfigurationsReturn );
+    }
 /**
 Lists all messages.
-<documentation><description><p>Lists all messages.</p></description>
+<documentation><description><p>Lists all messages.</p>
+<p>listMessages:</p>
+<pre>&lt;element name="listMessages">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="listMessagesResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="listMessagesReturn" type="impl:listMessagesResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="listMessagesResult">
+  &lt;complexContent>
+    &lt;extension base="impl:operationResult">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="messages" nillable="true" type="impl:messagesList"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType></pre>
+</description>
 <example>$service->listMessages();</example>
 <return-type>void</return-type></documentation>
 */
@@ -1685,10 +1793,37 @@ Lists all messages.
             $this->listed_messages = $this->reply->listMessagesReturn->messages;
         }
     }
-    
 /**
 Lists all sites.
-<documentation><description><p>Lists all sites.</p></description>
+<documentation><description><p>Lists all sites.</p>
+<p>listSites:</p>
+<pre>&lt;element name="listSites">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="listSitesResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="listSitesReturn" type="impl:listSitesResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="listSitesResult">
+  &lt;complexContent>
+    &lt;extension base="impl:operationResult">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="sites" type="impl:assetIdentifiers"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+</pre>
+</description>
 <example>$service->listSites();</example>
 <return-type>void</return-type></documentation>
 */
@@ -1700,11 +1835,44 @@ Lists all sites.
         $this->reply = $this->soapClient->listSites( $list_sites_params );
         $this->storeResults( $this->reply->listSitesReturn );
     }
-    
 /**
 Lists all subscribers of an asset.
 @param stdClass $identifier The identifier of the asset
-<documentation><description><p>Lists all subscribers of an asset.</p></description>
+<documentation><description><p>Lists all subscribers of an asset.</p>
+<p>listSubscribers:</p>
+<pre>&lt;element name="listSubscribers">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="authentication" type="impl:authentication"/>
+      &lt;element name="identifier" type="impl:identifier"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="listSubscribersResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="listSubscribersReturn" type="impl:listSubscribersResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="listSubscribers">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="listSubscribersResult">
+  &lt;complexContent>
+    &lt;extension base="impl:operationResult">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="subscribers" type="impl:assetIdentifiers"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType></pre>
+</description>
 <example>$service->listSubscribers( 
     $service->createId( $type, $path, $site_name ) );</example>
 <return-type>void</return-type></documentation>
@@ -1718,12 +1886,30 @@ Lists all subscribers of an asset.
         $this->reply = $this->soapClient->listSubscribers( $list_subscribers_params );
         $this->storeResults( $this->reply->listSubscribersReturn );
     }
-    
 /**
 Marks a message as 'read' or 'unread'.
 @param stdClass $identifier The identifier of the message
 @param string   $markType The string 'read' or 'unread'
-<documentation><description><p>Marks a message as 'read' or 'unread'.</p></description>
+<documentation><description><p>Marks a message as 'read' or 'unread'.</p>
+<p>markMessage:</p>
+<pre>&lt;element name="markMessage">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="markType" nillable="false" type="impl:message-mark-type"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="markMessageResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="markMessageReturn" type="impl:operationResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element></pre>
+</description>
 <example>$service->markMessage( 
     $service->createIdWithIdType( $id, c\T::MESSAGE ), 
     c\T::UNREAD );
@@ -1740,7 +1926,6 @@ Marks a message as 'read' or 'unread'.
         $this->reply = $this->soapClient->markMessage( $mark_message_params );
         $this->storeResults( $this->reply->markMessageReturn );
     }
-    
 /**
 Moves the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be moved
@@ -1748,7 +1933,7 @@ Moves the asset with the given identifier.
 @param string   $newName The new name assigned to the object moved
 @param bool     $doWorkflow Whether to do workflow
 <documentation><description><p>Moves the asset with the given identifier.</p>
-<p>Move:</p>
+<p>move:</p>
 <pre>&lt;element name="move">
   &lt;complexType>
     &lt;sequence>
@@ -1800,13 +1985,30 @@ Moves the asset with the given identifier.
         $this->reply = $this->soapClient->move( $move_params );
         $this->storeResults( $this->reply->moveReturn );
     }
-    
 /**
 Performs the workflow transition.
 @param string   $workflowId The current workflow ID
 @param string   $actionIdentifier The identifier of the action
 @param string   $transitionComment The comments
-<documentation><description><p>Performs the workflow transition.</p></description>
+<documentation><description><p>Performs the workflow transition.</p>
+<p>performWorkflowTransition:</p>
+<pre>&lt;element name="performWorkflowTransition">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="workflowTransitionInformation" nillable="false" type="impl:workflowTransitionInformation"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="performWorkflowTransitionResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="performWorkflowTransitionReturn" type="impl:operationResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element></pre>
+</description>
 <example>$service->performWorkflowTransition( $id, $action, 'Testing' );</example>
 <return-type>void</return-type></documentation>
 */
@@ -1825,7 +2027,6 @@ Performs the workflow transition.
         $this->reply = $this->soapClient->performWorkflowTransition( $transition_params );
         $this->storeResults( $this->reply->performWorkflowTransitionReturn );
     }
-    
 /**
 Prints the XML of the last request.
 <documentation><description><p>Prints the XML of the last request.</p></description>
@@ -1836,7 +2037,6 @@ Prints the XML of the last request.
     {
         print_r( $this->lastRequest );
     }
-    
 /**
 Prints the XML of the last response.
 <documentation><description><p>Prints the XML of the last response.</p></description>
@@ -1847,14 +2047,13 @@ Prints the XML of the last response.
     {
         print_r( $this->lastResponse );
     }
-    
 /**
 Publishes the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be published
 @param Destination $destination The destination(s) where the asset should be published
 <documentation>
 <description><p>Publishes the asset with the given identifier.</p>
-<p>Publish:</p>
+<p>publish:</p>
 <pre>
 &lt;element name="publish">
   &lt;complexType>
@@ -1914,13 +2113,12 @@ $service->publish( $service->createId( a\Folder::TYPE, $folder_path, "cascade-ad
         $this->reply = $this->soapClient->publish( $publish_param );
         $this->storeResults( $this->reply->publishReturn );
     }
-    
 /**
 Reads the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be read
 <documentation>
 <description><p>Reads the asset with the given identifier.</p>
-<p>Read:</p>
+<p>read:</p>
 <pre>
 &lt;element name="read">
   &lt;complexType>
@@ -1972,11 +2170,45 @@ Reads the asset with the given identifier.
         $this->reply = $this->soapClient->read( $read_param );
         $this->storeResults( $this->reply->readReturn );
     }
-
 /**
 Reads the access rights of the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be read
-<documentation><description><p>Reads the access rights of the asset with the given identifier.</p></description>
+<documentation><description><p>Reads the access rights of the asset with the given identifier.</p>
+<p>readAccessRights:</p>
+<pre>&lt;element name="readAccessRights">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="authentication" type="impl:authentication"/>
+      &lt;element name="identifier" type="impl:identifier"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="readAccessRightsResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="readAccessRightsReturn" type="impl:readAccessRightsResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="readAccessRights">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="readAccessRightsResult">
+  &lt;complexContent>
+    &lt;extension base="impl:operationResult">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="accessRightsInformation" nillable="false" type="impl:accessRightsInformation"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+</pre>
+</description>
 <example>$service->readAccessRights( 
     $service->createId( a\TextBlock::TYPE, $path, "cascade-admin" ) );
 </example>
@@ -1991,11 +2223,29 @@ Reads the access rights of the asset with the given identifier.
         $this->reply = $this->soapClient->readAccessRights( $read_param );
         $this->storeResults( $this->reply->readAccessRightsReturn );
     }
-    
 /**
 Reads the audits of the asset with the given parameters.
 @param stdClass $params The parameters of readAudits
-<documentation><description><p>Reads the audits of the asset with the given parameters.</p></description>
+<documentation><description><p>Reads the audits of the asset with the given parameters.</p>
+<p>readAudits:</p>
+<pre>&lt;element name="readAudits">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="auditParameters" nillable="false" type="impl:auditParameters"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="readAuditsResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="readAuditsReturn" type="impl:readAuditsResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+</pre>
+</description>
 <example>$page_id = "980d85f48b7f0856015997e492c9b83b";
 $audit_params = new \stdClass();
 $audit_params->identifier = $service->createId( a\Page::TYPE, $page_id );
@@ -2014,10 +2264,37 @@ $service->readAudits( $audit_params );
         $this->storeResults( $this->reply->readAuditsReturn );
         $this->audits  = $this->reply->readAuditsReturn->audits;
     }
-    
 /**
 Reads the preferences.
-<documentation><description><p>Reads the preferences.</p></description>
+<documentation><description><p>Reads the preferences.</p>
+<p>readPreferences:</p>
+<pre>&lt;element name="readPreferences">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="readPreferencesResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="readPreferencesReturn" type="impl:readPreferencesResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="readPreferencesResult">
+  &lt;complexContent>
+    &lt;extension base="impl:operationResult">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="preferences" nillable="true" type="impl:preferencesList"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+</pre>
+</description>
 <example>$service->readPreferences();</example>
 <return-type>void</return-type></documentation>
 */
@@ -2030,11 +2307,39 @@ Reads the preferences.
         $this->storeResults( $this->reply->readPreferencesReturn );
         $this->preferences  = $this->reply->readPreferencesReturn->preferences;
     }
-    
 /**
 Reads the workflow information associated with the given identifier.
 @param stdClass $identifier The identifier of the object to be read
-<documentation><description><p>Reads the workflow information associated with the given identifier.</p></description>
+<documentation><description><p>Reads the workflow information associated with the given identifier.</p>
+<p>readWorkflowInformation:</p>
+<pre>&lt;element name="readWorkflowInformation">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="readWorkflowInformationResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="readWorkflowInformationReturn" type="impl:readWorkflowInformationResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="readWorkflowInformationResult">
+  &lt;complexContent>
+    &lt;extension base="impl:operationResult">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="workflow" type="impl:workflow"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+</pre>
+</description>
 <example>$path = '/projects/web-services/reports/creating-format';
 $service->readWorkflowInformation( 
     $service->createId( a\Page::TYPE, $path, "cascade-admin" ) );</example>
@@ -2049,11 +2354,45 @@ $service->readWorkflowInformation(
         $this->reply = $this->soapClient->readWorkflowInformation( $read_param );
         $this->storeResults( $this->reply->readWorkflowInformationReturn );
     }    
-    
 /**
 Reads the workflow settings associated with the given identifier.
 @param stdClass $identifier The identifier of the object to be read
-<documentation><description><p>Reads the workflow settings associated with the given identifier.</p></description>
+<documentation><description><p>Reads the workflow settings associated with the given identifier.</p>
+<p>readWorkflowSettings:</p>
+<pre>&lt;element name="readWorkflowSettings">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="authentication" type="impl:authentication"/>
+      &lt;element name="identifier" type="impl:identifier"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="readWorkflowSettingsResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="readWorkflowSettingsReturn" type="impl:readWorkflowSettingsResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="readWorkflowSettings">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="readWorkflowSettingsResult">
+  &lt;complexContent>
+    &lt;extension base="impl:operationResult">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="workflowSettings" nillable="false" type="impl:workflowSettings"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+</pre>
+</description>
 <example>$site_name = "cascade-admin";
 $service->readWorkflowSettings( 
     $service->createId( a\Folder::TYPE, "/", $site_name ) );
@@ -2069,7 +2408,6 @@ $service->readWorkflowSettings(
         $this->reply = $this->soapClient->readWorkflowSettings( $read_param );
         $this->storeResults( $this->reply->readWorkflowSettingsReturn );
     }
-    
 /**
 Retrieves a property of an asset.
 @param stdClass $id The id of the property
@@ -2079,7 +2417,6 @@ Retrieves a property of an asset.
 <example>$page = $service->retrieve( $service->createId( a\Page::TYPE, $page_path, "cascade-admin" ) );</example>
 <return-type>stdClass</return-type></documentation>
 */
-
     function retrieve( \stdClass $id, string $property="" )
     {
         if( $property == "" )
@@ -2098,12 +2435,11 @@ Retrieves a property of an asset.
             return $this->reply->readReturn->asset->$property;
         return NULL;
     }
-    
 /**
 Searches for some entity.
 @param stdClass $searchInfo The searchInfo object
 <documentation><description><p>Searches for some entity.</p>
-<p>Search:</p>
+<p>search:</p>
 <pre>&lt;element name="search">
   &lt;complexType>
     &lt;sequence>
@@ -2196,11 +2532,29 @@ $service->search( $search_for );</example>
         $this->searchMatches = $this->reply->searchReturn->matches;
         $this->storeResults( $this->reply->searchReturn );
     }        
-    
 /**
 Sends a message.
 @param stdClass $message The message object to be sent
-<documentation><description><p>Sends a message.</p></description>
+<documentation><description><p>Sends a message.</p>
+<p>sendMessage:</p>
+<pre>&lt;element name="sendMessage">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="message" nillable="false" type="impl:message"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="sendMessageResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="sendMessageReturn" type="impl:operationResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+</pre>
+</description>
 <example>$message          = new \stdClass();
 $message->to      = 'test'; // a group
 $message->from    = 'chanw';
@@ -2219,13 +2573,40 @@ $service->sendMessage( $message );
         $this->reply = $this->soapClient->sendMessage( $send_message_param );
         $this->storeResults( $this->reply->sendMessageReturn );
     }    
-    
 /**
 Copies the site with the given identifier.
 @param string $original_id The ID string of the site to be copied
 @param string $original_name The name of the site to be copied
 @param string $new_name The name assigned to the new site
-<documentation><description><p>Copies the site with the given identifier.</p></description>
+<documentation><description><p>Copies the site with the given identifier.</p>
+<p>siteCopy:</p>
+<pre>&lt;element name="siteCopy">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
+      &lt;element maxOccurs="1" minOccurs="0" name="originalSiteId" type="xsd:string"/>
+      &lt;element maxOccurs="1" minOccurs="0" name="originalSiteName" type="xsd:string"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="newSiteName" nillable="false" type="xsd:string"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;element name="siteCopyResponse">
+  &lt;complexType>
+    &lt;sequence>
+      &lt;element name="siteCopyReturn" type="impl:operationResult"/>
+    &lt;/sequence>
+  &lt;/complexType>
+&lt;/element>
+
+&lt;complexType name="siteCopy">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="originalSiteId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="originalSiteName" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="newSiteName" nillable="false" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType></pre>
+</description>
 <example>$seed_site_id   = "a0d0fb818b7f08ee0990fe6e89648961";
 $seed_site_name = "_rwd_seed";
 $new_site_name  = "access-test";
@@ -2247,7 +2628,6 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
         $this->reply = $this->soapClient->siteCopy( $site_copy_params );
         $this->storeResults( $this->reply->siteCopyReturn );
     }
-    
 /**
 Unpublishes the asset with the given identifier.
 @param stdClass $identifier The identifier of the object to be unpublished

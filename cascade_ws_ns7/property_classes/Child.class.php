@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 9/17/2016 Added initialization of recycled.
   * 12/15/2015 Fixed a bug in getAsset.
   * 6/16/2015 Fixed a bug in toStdClass.
@@ -34,6 +35,13 @@ use cascade_ws_exception as e;
 <ul>
 <li>There are no <code>set</code> methods in this class.</li>
 </ul>
+<p>WSDL:</p>
+<pre>&lt;complexType name="container-children">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="child" type="impl:identifier"/>
+  &lt;/sequence>
+&lt;/complexType>
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/child.php">child.php</a></li></ul></postscript>
 </documentation>

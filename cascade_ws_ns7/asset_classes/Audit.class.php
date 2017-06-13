@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 8/26/2016 Added constant NAME_SPACE. Fixed a bug in getAuditedAsset.
   * 2/10/2016 Fixed a bug in getUser and changed the return value.
   * 5/28/2015 Added namespaces.
@@ -56,6 +57,46 @@ use cascade_ws_property  as p;
     type
     recycled
   date
+</pre>
+<p>WSDL:</p>
+<pre>&lt;simpleType name="auditTypes">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="login"/>
+    &lt;enumeration value="login_failed"/>
+    &lt;enumeration value="logout"/>
+    &lt;enumeration value="start_workflow"/>
+    &lt;enumeration value="advance_workflow"/>
+    &lt;enumeration value="edit"/>
+    &lt;enumeration value="copy"/>
+    &lt;enumeration value="create"/>
+    &lt;enumeration value="reference"/>
+    &lt;enumeration value="delete"/>
+    &lt;enumeration value="delete_unpublish"/>
+    &lt;enumeration value="check_in"/>
+    &lt;enumeration value="check_out"/>
+    &lt;enumeration value="activate_version"/>
+    &lt;enumeration value="publish"/>
+    &lt;enumeration value="unpublish"/>
+    &lt;enumeration value="recycle"/>
+    &lt;enumeration value="restore"/>
+    &lt;enumeration value="move"/>
+  &lt;/restriction>
+&lt;/simpleType>
+
+&lt;complexType name="audits">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="audit" type="impl:audit"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="audit">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="user" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="action" type="impl:auditTypes"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="identifier" type="impl:identifier"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="date" type="xsd:dateTime"/>
+  &lt;/sequence>
+&lt;/complexType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/audit.php">audit.php</a></li></ul></postscript>

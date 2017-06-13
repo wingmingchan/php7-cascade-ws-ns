@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 1/13/2017 Added JSON structure and JSON dump.
   * 10/12/2016 Fixed errors in documentation.
   * 9/13/2016 Fixed bugs in setExpirationFolder.
@@ -32,7 +33,7 @@ use cascade_ws_property  as p;
 <description><h2>Introduction</h2>
 <p>A <code>Folder</code> object represents a folder asset. This class is a sub-class of <a href="/web-services/api/asset-classes/container"><code>Container</code></a>.</p>
 <h2>Structure of <code>folder</code></h2>
-<pre>SOAP structure:
+<pre>SOAP:
 folder
   id
   name
@@ -78,7 +79,7 @@ folder
       type
       recycled
 
-JSON structure:
+JSON:
 folder
   children (array)
     stdClass
@@ -126,7 +127,19 @@ folder
   siteName
   name
   id
-</pre></description>
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="folder">
+  &lt;complexContent>
+    &lt;extension base="impl:publishable-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="children" nillable="true" type="impl:container-children"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+</pre>
+</description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/folder.php">folder.php</a></li></ul>
 <h2>JSON Dump</h2>
 <pre>

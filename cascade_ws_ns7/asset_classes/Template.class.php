@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/12/2017 Added WSDL.
   * 1/24/2017 Updated documentation.
   * 1/17/2017 Added JSON structure and JSON dump.
   * 3/14/2016 Minor bug fix.
@@ -89,6 +90,47 @@ template
 <ul>
 <li>There is no <code>set</code> method to work with targets.</li>
 </ul>
+<p>WSDL:</p>
+<pre>&lt;complexType name="template">
+  &lt;complexContent>
+    &lt;extension base="impl:folder-contained-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="targetId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="targetPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatId" nillable="true" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatPath" nillable="true" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatRecycled" nillable="true" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" name="xml" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="pageRegions" type="impl:page-regions"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;complexType name="page-regions">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="pageRegion" type="impl:pageRegion"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="pageRegion">
+  &lt;complexContent>
+    &lt;extension base="impl:base-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="blockId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="blockPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="blockRecycled" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="noBlock" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatRecycled" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="noFormat" type="xsd:boolean"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/template.php">template.php</a></li></ul>
 <h2>JSON Dump</h2>

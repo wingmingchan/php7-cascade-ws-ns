@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_property;
@@ -27,6 +28,15 @@ use cascade_ws_asset     as a;
 <ul>
 <li>There are no <code>set</code> methods in this class.</li>
 </ul>
+<p>WSDL:</p>
+<pre>
+&lt;complexType name="path">
+  &lt;sequence>
+    &lt;element maxOccurs="1" name="path" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="siteId" nillable="true" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="siteName" nillable="true" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType></pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
 </documentation>

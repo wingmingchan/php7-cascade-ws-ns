@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 1/28/2016 Added setAccessRights, denyAccessToAllGroups, denyAccessToAllUsers.
   * 5/28/2015 Added namespaces.
  */
@@ -34,6 +35,23 @@ use cascade_ws_asset     as a;
       type
       name
   allLevel
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="accessRightsInformation">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="aclEntries" nillable="false" type="impl:acl-entries"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="allLevel" nillable="false" type="impl:all-level"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;simpleType name="all-level">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="none"/>
+    &lt;enumeration value="read"/>
+    &lt;enumeration value="write"/>
+  &lt;/restriction>
+&lt;/simpleType>
 </pre>
 </description>
 <postscript>

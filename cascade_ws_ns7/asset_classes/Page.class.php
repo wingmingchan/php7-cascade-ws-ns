@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
   * 11/2/2016 Added hasPossibleValues, isMultipleField and isMultipleNode.
   * Rewrote code so that methods like getDataDefinitionId, getDataDefinitionPath do
@@ -54,7 +55,7 @@ use cascade_ws_property  as p;
 /**
 <documentation>
 <description><h2>Introduction</h2>
-<p>A <code>Page</code> object represents a page asset and is a sub-class of
+<p>The <code>Page</code> class can be used to represent a page asset and is a sub-class of
 <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/linkable.php"><code>Linkable</code></a>.
 This class can be used to manipulate pages with or without a data definition. The only
 test available to tell them apart is the <code>Page::hasStructuredData</code> method. When
@@ -244,6 +245,75 @@ page
   siteName
   name
   id   
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="page">
+  &lt;complexContent>
+    &lt;extension base="impl:publishable-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="configurationSetId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="configurationSetPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="contentTypeId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="contentTypePath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="structuredData" type="impl:structured-data"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="xhtml" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="pageConfigurations" nillable="false" type="impl:page-configurations"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="maintainAbsoluteLinks" type="xsd:boolean"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;complexType name="structured-data">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="definitionId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="definitionPath" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="structuredDataNodes" type="impl:structured-data-nodes"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="structured-data-nodes">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="structuredDataNode" type="impl:structured-data-node"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="structured-data-node">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="type" type="impl:structured-data-type"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="structuredDataNodes" type="impl:structured-data-nodes"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="text" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="assetType" type="impl:structured-data-asset-type"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="blockId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="blockPath" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="fileId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="filePath" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="pageId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="pagePath" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="symlinkId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="symlinkPath" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="recycled" type="xsd:boolean"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;simpleType name="structured-data-type">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="text"/>
+    &lt;enumeration value="asset"/>
+    &lt;enumeration value="group"/>
+  &lt;/restriction>
+&lt;/simpleType>
+
+&lt;simpleType name="structured-data-asset-type">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="block"/>
+    &lt;enumeration value="file"/>
+    &lt;enumeration value="page"/>
+    &lt;enumeration value="symlink"/>
+    &lt;enumeration value="page,file,symlink"/>
+  &lt;/restriction>
+&lt;/simpleType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page.php">page.php</a></li>

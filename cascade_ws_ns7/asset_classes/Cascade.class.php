@@ -2632,7 +2632,7 @@ if( count( $messages ) > 0 )
 <exception>NullAssetException</exception>
 </documentation>
 */
-    public function getRoleAssetById( string $role_id ) : Asset
+    public function getRoleAssetById( int $role_id ) : Asset
     {
         return $this->getAsset( Role::TYPE, $role_id );
     }

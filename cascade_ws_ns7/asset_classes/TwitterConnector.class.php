@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
   * 5/28/2015 Added namespaces.
  */
@@ -74,6 +75,24 @@ twitterConnector
   siteName
   name
   id
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="twitterConnector">
+  &lt;complexContent>
+    &lt;extension base="impl:statusUpdateConnector"/>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;complexType name="statusUpdateConnector">
+  &lt;complexContent>
+    &lt;extension base="impl:connector">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="destinationId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="destinationPath" type="xsd:string"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/twitter_connector.php">twitter_connector.php</a></li></ul>

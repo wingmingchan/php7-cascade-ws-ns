@@ -4,6 +4,8 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
+    Added getEditorConfigurationId and getEditorConfigurationPath.
   * 2/1/2017 Changed signature of addInlineEditableField, allowing NULL.
   * 1/10/2017 Added JSON structure and JSON dump.
   * 6/24/2016 Minor bug fix.
@@ -38,6 +40,8 @@ contentType
   metadataSetPath
   dataDefinitionId
   dataDefinitionPath
+  editorConfigurationId (8.4)
+  editorConfigurationPath (8.4)
   contentTypePageConfigurations
     contentTypePageConfiguration (NULL, stdClass or array of stdClass)
       pageConfigurationId
@@ -80,6 +84,80 @@ contentType
 <li>Here again I need to work with fully qualified identifiers for inline editable fields. Cascade uses the slashes in the path. This is actually good for me because I use semi-colons. Since different delimiters are used, the group path information from Cascade will be kept intact. Whenever needed, a translation between slashes and semi-colons can be performed.</li>
 <li>When dealing with data definitions, the result of concatenating group path and the name of the field, with all the slashes turned into semi-colons, is equivalent to my fully qualified identifier of the field in the data definition.</li>
 </ul>
+<p>WSDL:</p>
+<pre>&lt;complexType name="contentType">
+  &lt;complexContent>
+    &lt;extension base="impl:containered-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="pageConfigurationSetId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="pageConfigurationSetPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="metadataSetId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="metadataSetPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="dataDefinitionId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="dataDefinitionPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="editorConfigurationId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="editorConfigurationPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="contentTypePageConfigurations" nillable="true" type="impl:contentTypePageConfigurations"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="inlineEditableFields" nillable="true" type="impl:inlineEditableFields"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;complexType name="contentTypePageConfigurations">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="contentTypePageConfiguration" nillable="true" type="impl:contentTypePageConfiguration"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="contentTypePageConfiguration">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="pageConfigurationId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="pageConfigurationName" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="publishMode" type="impl:contentTypePageConfigurationPublishMode"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="destinations" nillable="true" type="impl:destination-list"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;simpleType name="contentTypePageConfigurationPublishMode">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="all-destinations"/>
+    &lt;enumeration value="selected-destinations"/>
+    &lt;enumeration value="do-not-publish"/>
+  &lt;/restriction>
+&lt;/simpleType>
+
+&lt;complexType name="destination-list">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="destination" type="impl:identifier"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="inlineEditableFields">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="inlineEditableField" nillable="true" type="impl:inlineEditableField"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="inlineEditableField">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="pageConfigurationName" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="pageRegionName" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="dataDefinitionGroupPath" nillable="true" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="type" type="impl:inlineEditableFieldType"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="name" nillable="true" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;simpleType name="inlineEditableFieldType">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="wired-metadata"/>
+    &lt;enumeration value="dynamic-metadata"/>
+    &lt;enumeration value="data-definition"/>
+    &lt;enumeration value="xhtml"/>
+  &lt;/restriction>
+&lt;/simpleType>
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/content_type.php">content_type.php</a></li></ul>
 <h2>JSON Dump</h2>
@@ -401,7 +479,30 @@ overriding the parent method to display the configuration set as well.</p></desc
     {
         return $this->getProperty()->dataDefinitionPath;
     }
-    
+
+/**
+<documentation><description><p>Returns <code>editorConfigurationId</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $ct->getEditorConfigurationId() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+	public function getEditorConfigurationId()
+	{
+		return $this->getProperty()->editorConfigurationId;
+	}
+	
+/**
+<documentation><description><p>Returns <code>editorConfigurationPath</code>.</p></description>
+<example>echo u\StringUtility::getCoalescedString( $ct->getEditorConfigurationPath() ), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+	public function getEditorConfigurationPath()
+	{
+		return $this->getProperty()->editorConfigurationPath;
+	}
 /**
 <documentation><description><p>Returns an array of inline editable field names. An inline editable field name consists of five parts: <code>pageConfigurationName;pageRegionName;dataDefinitionGroupPath;type;name</code>. For example, <code>RWD;DEFAULT;NULL;data-definition;post-title-chooser</code>.</p></description>
 <example>u\DebugUtility::dump( $ct->getInlineEditableFieldNames() );</example>

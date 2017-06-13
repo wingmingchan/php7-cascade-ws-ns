@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
   * 5/28/2015 Added namespaces.
       Swapped the last two arguments of PageConfiguration.
@@ -97,6 +98,80 @@ pageConfigurationSet
   id
 </pre>
 <p>There is an important issue related to page regions of a configuration. A configuration contains a page region only if the page region is attached with either a block or a format or both. If a region is not attached with a block or a format, then it will not show up in the configuration; namely, it does not exist. To test whether a certain region exists in a configuration, do that test through the associated <code>Template</code> object.</p>
+<p>WSDL:</p>
+<pre>&lt;complexType name="pageConfigurationSet">
+  &lt;complexContent>
+    &lt;extension base="impl:containered-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="pageConfigurations" type="impl:page-configurations"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;complexType name="page-configurations">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="1" name="pageConfiguration" type="impl:pageConfiguration"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="pageConfiguration">
+  &lt;complexContent>
+    &lt;extension base="impl:base-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="1" name="defaultConfiguration" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="templateId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="templatePath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatRecycled" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="pageRegions" type="impl:page-regions"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="outputExtension" nillable="true" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="serializationType" nillable="true" type="impl:serialization-type"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="includeXMLDeclaration" nillable="true" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="publishable" nillable="true" type="xsd:boolean"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;complexType name="page-regions">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="pageRegion" type="impl:pageRegion"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="pageRegion">
+  &lt;complexContent>
+    &lt;extension base="impl:base-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="blockId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="blockPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="blockRecycled" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="noBlock" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatRecycled" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="noFormat" type="xsd:boolean"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;simpleType name="serialization-type">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="HTML"/>
+    &lt;enumeration value="XML"/>
+    &lt;enumeration value="PDF"/>
+    &lt;enumeration value="RTF"/>
+    &lt;enumeration value="JSON"/>
+    &lt;enumeration value="JS"/>
+    &lt;enumeration value="CSS"/>
+  &lt;/restriction>
+&lt;/simpleType>
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page_configuration_set.php">page_configuration_set.php</a></li></ul>
 <h2>JSON Dump</h2>
@@ -517,7 +592,7 @@ the region does not exist. This includes the <code>DEFAULT</code> region.</p></d
     
 /**
 <documentation><description><p>Attaches the block to the named region of the named page
-configuration, and returns the calling object. Note that when a region is not attached with anything, that region does not exist in the configuration. To test whether a region exist, do the text through the associated <code>Template</code> object.</p></description>
+configuration, and returns the calling object. Note that when a region is not attached with anything, that region does not exist in the configuration. To test whether a region exist, do the test through the associated <code>Template</code> object.</p></description>
 <example>$pcs->setConfigurationPageRegionBlock( 'Mobile', 'DEFAULT',
     $cascade->getAsset( 
         a\DataBlock::TYPE, 

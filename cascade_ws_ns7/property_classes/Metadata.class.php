@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 1/31/2017 Fixed return type of getAuthor.
   * 1/20/2017 Added default value to setDynamicFieldValue.
   * 9/16/2016 Added $wired_fields and copyWiredFields.
@@ -62,6 +63,48 @@ are defined in a metadata set, the metadata <code>stdClass</code> object does no
 <li>The <code>stdClass</code> object passed into the constructor cannot be NULL.</li>
 <li>If a field requires a value, then the corresponding <code>setX</code> method cannot be called with an empty value.</li>
 </ul>
+<p>WSDL:</p>
+<pre>&lt;complexType name="metadata">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="author" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="displayName" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="endDate" nillable="true" type="xsd:dateTime"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="keywords" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="metaDescription" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="reviewDate" nillable="true" type="xsd:dateTime"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="startDate" nillable="true" type="xsd:dateTime"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="summary" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="teaser" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="title" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="dynamicFields" type="impl:dynamicMetadataFields"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="dynamicMetadataFields">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="dynamicField" type="impl:dynamicMetadataField"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="dynamicMetadataField">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="name" nillable="false" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="fieldValues" nillable="true" type="impl:fieldValues"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="fieldValues">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="fieldValue" nillable="true" type="impl:fieldValue"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="fieldValue">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="value" nillable="true" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType>
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/metadata.php">metadata.php</a></li>
 <li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/metadata_wired_field.php">metadata_wired_field.php</a></li>

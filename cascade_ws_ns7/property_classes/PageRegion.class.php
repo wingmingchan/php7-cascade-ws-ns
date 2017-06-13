@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
   * 7/16/2014 Started using DebugUtility::out and DebugUtility::dump.
  */
@@ -33,6 +34,31 @@ be found in a <a href="http://www.upstate.edu/cascade-admin/web-services/api/ass
     formatPath
     formatRecycled
     noFormat
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="page-regions">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="pageRegion" type="impl:pageRegion"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="pageRegion">
+  &lt;complexContent>
+    &lt;extension base="impl:base-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="blockId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="blockPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="blockRecycled" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="noBlock" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatRecycled" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="noFormat" type="xsd:boolean"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/page-region.php">page-region.php</a></li></ul></postscript>

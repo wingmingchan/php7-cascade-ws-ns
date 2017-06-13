@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_property;
@@ -39,6 +40,33 @@ Therefore, it may not be a good idea to use "Default" for checkboxes and multi-s
 The <code>toStdClass</code> method must generate the correct <code>\stdClass</code> object corresponding to these three cases.</li>
 <li>The <code>\stdClass</code> object passed into the constructor can be NULL.</li>
 </ul>
+<p>WSDL:</p>
+<pre>&lt;complexType name="dynamicMetadataFields">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="dynamicField" type="impl:dynamicMetadataField"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="dynamicMetadataField">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="name" nillable="false" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="fieldValues" nillable="true" type="impl:fieldValues"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="fieldValues">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="fieldValue" nillable="true" type="impl:fieldValue"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="fieldValue">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="value" nillable="true" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/metadata_dynamic_field.php">metadata_dynamic_field.php</a></li></ul></postscript>
 </documentation>

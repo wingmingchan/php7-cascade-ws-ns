@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 2/11/2016 Throwing exception from getParameter. Added addParameter and removeParameter.
   * 5/28/2015 Added namespaces.
  */
@@ -23,6 +24,20 @@ use cascade_ws_asset     as a;
   name
   parameters
     parameter
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="asset-factory-plugins">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="plugin" type="impl:asset-factory-plugin"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="asset-factory-plugin">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="parameters" type="impl:asset-factory-plugin-parameters"/>
+  &lt;/sequence>
+&lt;/complexType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>

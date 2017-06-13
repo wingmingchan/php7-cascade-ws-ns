@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/12/2017 Added WSDL.
   * 9/7/2016 Added accessAdminArea.
   * 9/6/2016 Removed newSiteWizard, siteMigration, recycleBinChecker, pathRepairTool.
   * 12/29/2015 Added member and methods for changeIdentity.
@@ -55,6 +56,48 @@ viewAllUsers
 viewMemberGroups
 viewSystemInfoAndLogs
 viewUsersInMemberGroups
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="global-abilities">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="bypassAllPermissionsChecks" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="accessSiteManagement" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="createSites" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="editAccessRights" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="accessAudits" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="accessAllSites" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="viewSystemInfoAndLogs" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="forceLogout" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="diagnosticTests" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="accessSecurityArea" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="optimizeDatabase" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="syncLdap" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="configureLogging" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="searchingIndexing" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="accessConfiguration" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="editSystemPreferences" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="broadcastMessages" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="viewUsersInMemberGroups" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="viewAllUsers" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="createUsers" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="deleteUsersInMemberGroups" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="deleteAllUsers" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="viewMemberGroups" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="viewAllGroups" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="createGroups" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="deleteMemberGroups" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="accessRoles" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="createRoles" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="deleteAnyGroup" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="editAnyUser" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="editUsersInMemberGroups" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="editAnyGroup" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="editMemberGroups" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="databaseExportTool" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="changeIdentity" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="accessDefaultEditorConfiguration" type="xsd:boolean"/>
+  &lt;/sequence>
+&lt;/complexType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>

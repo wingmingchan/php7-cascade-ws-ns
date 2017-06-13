@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_property;
@@ -59,6 +60,35 @@ use cascade_ws_asset     as a;
         string(5) "chanw"
       }
     }
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="acl-entries">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="aclEntry" nillable="false" type="impl:aclEntry"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="aclEntry">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="level" nillable="false" type="impl:acl-entry-level"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="type" nillable="false" type="impl:acl-entry-type"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="name" nillable="false" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;simpleType name="acl-entry-level">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="read"/>
+    &lt;enumeration value="write"/>
+  &lt;/restriction>
+&lt;/simpleType>
+
+&lt;simpleType name="acl-entry-type">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="user"/>
+    &lt;enumeration value="group"/>
+  &lt;/restriction>
+&lt;/simpleType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>

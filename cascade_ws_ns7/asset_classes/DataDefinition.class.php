@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 1/10/2017 Added JSON dump.
   * 11/4/2016 Added default value to createChildStd.
   * 9/22/2016 Added getStructuredDataStdClass.
@@ -142,6 +143,17 @@ Consider an example:</p>
 element. To retrieve this array, we just need to call the <code>getField</code> method and
 pass in the fully qualified identifier like
 <code>"simpleslideshow-image-caption"</code>.</p>
+<p>WSDL:</p>
+<pre>&lt;complexType name="dataDefinition">
+  &lt;complexContent>
+    &lt;extension base="impl:containered-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="xml" type="xsd:string"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/data_definition.php">data_definition.php</a></li></ul>
 <h2>JSON Dump</h2>

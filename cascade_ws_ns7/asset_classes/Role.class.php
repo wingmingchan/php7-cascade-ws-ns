@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/12/2017 Added WSDL.
   * 1/17/2017 Added JSON dump.
   * 5/28/2015 Added namespaces.
  */
@@ -32,6 +33,28 @@ use cascade_ws_property  as p;
 </pre>
 <h2>Design Issues</h2>
 <p>Since there are too many methods (85 <code>get</code> and 85 <code>set</code> methods) involved here, I decide not to repeat these methods in various classes. Instead, I provide two <code>get</code> methods, i.e., <code>getGlobalAbilities()</code> and <code>getSiteAbilities()</code> in this class, each returning an <code>Abilities</code> object, allowing us to manipulate these two objects directly. Therefore, there are no <code>set</code> methods in this class.</p>
+<p>WSDL:</p>
+<pre>&lt;complexType name="role">
+  &lt;complexContent>
+    &lt;extension base="impl:named-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="roleType" type="impl:role-types"/>
+        &lt;choice>
+          &lt;element maxOccurs="1" minOccurs="1" name="globalAbilities" type="impl:global-abilities"/>
+          &lt;element maxOccurs="1" minOccurs="1" name="siteAbilities" type="impl:site-abilities"/>
+        &lt;/choice>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;simpleType name="role-types">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="site"/>
+    &lt;enumeration value="global"/>
+  &lt;/restriction>
+&lt;/simpleType>
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/role.php">role.php</a></li></ul>
 <h2>JSON Dump</h2>

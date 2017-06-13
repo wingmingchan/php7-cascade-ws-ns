@@ -6,6 +6,7 @@
   * Modification history:
   * 12/16/2016 Changed return type of getSendReportToGroups and getSendReportToUsers
   * to mixed.
+  * 6/13/2017 Added WSDL.
   * 1/17/2016 Added scheduledPublishDestinationMode to the class.
   * 5/28/2015 Added namespaces.
  */
@@ -35,6 +36,33 @@ use cascade_ws_property as p;
 <p>Since these eight properties and related methods are shared by <code><a href="/web-services/api/asset-classes/destination"><code>Destination</code></a>, <a href="/web-services/api/asset-classes/publish-set"><code>PublishSet</code></a> and <a href="/web-services/api/asset-classes/site"><code>Site</code></a></code>, I decide to create an abstract class named <code>ScheduledPublishing</code>, which serves as the parent class of these three classes<a href="/web-services/api/asset-classes/site"></a>, and provides all the relevant methods in this class.</p>
 <h2>Design Issues</h2>
 <p>Due to a known <a href="https://hannonhill.jira.com/browse/CSI-861">bug</a> when PHP is used, the <code>scheduledPublishDestinations</code> property cannot be set properly. Thereofore, the <code>setScheduledPublishing</code> method defined in this class always sets the <code>scheduledPublishDestinationMode</code> property to <code>all-destinations</code>.</p>
+<p>WSDL:</p>
+<pre>&lt;simpleType name="scheduledDestinationMode">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="all-destinations"/>
+    &lt;enumeration value="selected-destinations"/>
+  &lt;/restriction>
+&lt;/simpleType>
+
+&lt;complexType name="daysOfWeek">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="dayOfWeek" type="impl:dayOfWeek"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;simpleType name="dayOfWeek">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="Monday"/>
+    &lt;enumeration value="Tuesday"/>
+    &lt;enumeration value="Wednesday"/>
+    &lt;enumeration value="Thursday"/>
+    &lt;enumeration value="Friday"/>
+    &lt;enumeration value="Saturday"/>
+    &lt;enumeration value="Sunday"/>
+  &lt;/restriction>
+&lt;/simpleType>
+
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/destination.php">destination.php</a></li></ul></postscript>
 </documentation>

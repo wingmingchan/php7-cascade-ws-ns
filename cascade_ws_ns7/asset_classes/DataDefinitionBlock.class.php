@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 1/11/2017 Added JSON structure and JSON dump.
   * 11/2/2016 Added searchTextByPattern and searchWYSIWYGByPattern.
   * 10/25/2016 Added hasPossibleValues, isMultipleField and isMultipleNode.
@@ -135,6 +136,69 @@ xhtmlDataDefinitionBlock
   siteName
   name
   id
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="xhtmlDataDefinitionBlock">
+  &lt;complexContent>
+    &lt;extension base="impl:block">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="structuredData" type="impl:structured-data"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="xhtml" type="xsd:string"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;complexType name="structured-data">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="definitionId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="definitionPath" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="structuredDataNodes" type="impl:structured-data-nodes"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="structured-data-nodes">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="structuredDataNode" type="impl:structured-data-node"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="structured-data-node">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="type" type="impl:structured-data-type"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="structuredDataNodes" type="impl:structured-data-nodes"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="text" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="assetType" type="impl:structured-data-asset-type"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="blockId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="blockPath" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="fileId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="filePath" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="pageId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="pagePath" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="symlinkId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="symlinkPath" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="recycled" type="xsd:boolean"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;simpleType name="structured-data-type">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="text"/>
+    &lt;enumeration value="asset"/>
+    &lt;enumeration value="group"/>
+  &lt;/restriction>
+&lt;/simpleType>
+
+&lt;simpleType name="structured-data-asset-type">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="block"/>
+    &lt;enumeration value="file"/>
+    &lt;enumeration value="page"/>
+    &lt;enumeration value="symlink"/>
+    &lt;enumeration value="page,file,symlink"/>
+  &lt;/restriction>
+&lt;/simpleType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul>

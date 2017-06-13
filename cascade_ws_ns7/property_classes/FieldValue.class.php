@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 9/13/2016 Fixed a bug in setValues.
   * 5/28/2015 Added namespaces.
  */
@@ -56,6 +57,19 @@ The <code>toStdClass</code> method must generate the correct <code>\stdClass</co
 <li>To avoid empty values mixing with non-empty values, <code>setValues</code> should not allow <code>\stdClass</code> objects
 with no values mixed with <code>\stdClass</code> objects with a value property. But if a single object is passed in, then the object can have no value.</li>
 </ul>
+<p>WSDL:</p>
+<pre>&lt;complexType name="fieldValues">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="fieldValue" nillable="true" type="impl:fieldValue"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="fieldValue">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="value" nillable="true" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType>
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/metadata_dynamic_field.php">metadata_dynamic_field.php</a></li></ul></postscript>
 </documentation>

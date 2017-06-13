@@ -28,7 +28,7 @@ use cascade_ws_asset     as a;
   recycled
 </pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript></postscript>
 </documentation>
 */
 class PublishableAssetIdentifier extends Property

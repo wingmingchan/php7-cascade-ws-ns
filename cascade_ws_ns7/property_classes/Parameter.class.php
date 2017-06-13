@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_property;
@@ -21,6 +22,20 @@ use cascade_ws_asset     as a;
 <pre>parameter
   name
   value
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="asset-factory-plugin-parameters">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="parameter" type="impl:asset-factory-plugin-parameter"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="asset-factory-plugin-parameter">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="value" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>

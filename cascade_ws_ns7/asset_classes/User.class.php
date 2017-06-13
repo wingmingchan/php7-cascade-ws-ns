@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/12/2017 Added WSDL.
   * 1/17/2017 Added JSON dump.
   * 1/26/2016 Added leaveGroup and isInGroup.
   * 5/28/2015 Added namespaces.
@@ -15,7 +16,6 @@ use cascade_ws_AOHS      as aohs;
 use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
 use cascade_ws_property  as p;
-
 /**
 <documentation>
 <description><h2>Introduction</h2>
@@ -33,6 +33,37 @@ use cascade_ws_property  as p;
   role
   defaultSiteId
   defaultSiteName
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="user-group-identifier">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="type" type="impl:entityTypeString"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="user">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="username" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="fullName" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="email" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="authType" type="impl:user-auth-types"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="password" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="enabled" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="groups" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="role" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="defaultSiteId" nillable="true" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="defaultSiteName" nillable="true" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;simpleType name="user-auth-types">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="normal"/>
+    &lt;enumeration value="ldap"/>
+    &lt;enumeration value="custom"/>
+  &lt;/restriction>
+&lt;/simpleType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/user.php">user.php</a></li></ul>

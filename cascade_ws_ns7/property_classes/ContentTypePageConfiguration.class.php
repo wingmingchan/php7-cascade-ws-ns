@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_property;
@@ -26,6 +27,36 @@ use cascade_ws_asset     as a;
 </pre>
 <h2>Design Issues</h2>
 <p>Currently this class cannot be used to modify the destinations.</p>
+<p>WSDL:</p>
+<pre>&lt;complexType name="contentTypePageConfigurations">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="contentTypePageConfiguration" nillable="true" type="impl:contentTypePageConfiguration"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="contentTypePageConfiguration">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="pageConfigurationId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="pageConfigurationName" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="publishMode" type="impl:contentTypePageConfigurationPublishMode"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="destinations" nillable="true" type="impl:destination-list"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;simpleType name="contentTypePageConfigurationPublishMode">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="all-destinations"/>
+    &lt;enumeration value="selected-destinations"/>
+    &lt;enumeration value="do-not-publish"/>
+  &lt;/restriction>
+&lt;/simpleType>
+
+&lt;complexType name="destination-list">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="destination" type="impl:identifier"/>
+  &lt;/sequence>
+&lt;/complexType>
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
 </documentation>

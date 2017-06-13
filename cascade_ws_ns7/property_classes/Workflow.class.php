@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 12/22/2016 Minor bug fixes.
   * 2/13/2016 Added start_date, end_date, and the get methods.
   * 5/28/2015 Added namespaces.
@@ -60,6 +61,53 @@ use cascade_ws_asset     as a;
           nextId
   startDate
   endDate
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="workflow">
+  &lt;complexContent>
+    &lt;extension base="impl:named-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="relatedEntity" type="impl:identifier"/>
+        &lt;element maxOccurs="1" minOccurs="1" name="currentStep" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="orderedSteps" type="impl:workflowSteps"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="unorderedSteps" type="impl:workflowSteps"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="startDate" nillable="true" type="xsd:dateTime"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="endDate" nillable="true" type="xsd:dateTime"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;complexType name="workflowStep">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="label" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="stepType" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="owner" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="actions" type="impl:workflowActions"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="workflowSteps">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="step" type="impl:workflowStep"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="workflowAction">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="label" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="actionType" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="nextId" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="workflowActions">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="1" name="action" type="impl:workflowAction"/>
+  &lt;/sequence>
+&lt;/complexType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/workflow.php">workflow.php</a></li>

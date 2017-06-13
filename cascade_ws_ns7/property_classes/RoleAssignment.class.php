@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_property;
@@ -23,6 +24,22 @@ use cascade_ws_asset     as a;
   roleName
   users
   groups
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="role-assignments">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="roleAssignment" type="impl:role-assignment"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="role-assignment">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="roleId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="roleName" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="users" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="groups" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>

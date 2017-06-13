@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/12/2017 Added WSDL.
   * 1/17/2017 Added JSON dump.
   * 5/28/2015 Added namespaces.
   * 7/30/2014 Added setAsset.
@@ -36,6 +37,19 @@ use cascade_ws_property  as p;
   referencedAssetId
   referencedAssetPath
   referencedAssetType
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="reference">
+  &lt;complexContent>
+    &lt;extension base="impl:folder-contained-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="referencedAssetId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="referencedAssetPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="1" name="referencedAssetType" type="impl:entityTypeString"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/reference.php">reference.php</a></li></ul>

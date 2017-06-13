@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 12/16/2016 Fixed a bug related to $this->msg_errors.
   * 5/28/2015 Added namespaces.
   * 6/2/2014 Added asset expiration.
@@ -30,6 +31,34 @@ use cascade_ws_property as p;
   subject
   body
   date
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="message">
+  &lt;complexContent>
+    &lt;extension base="impl:base-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="to" nillable="false" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="from" nillable="false" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="1" name="subject" nillable="false" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="date" nillable="false" type="xsd:dateTime"/>
+        &lt;element maxOccurs="1" minOccurs="1" name="body" nillable="false" type="xsd:string"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;complexType name="messagesList">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="message" nillable="false" type="impl:message"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;simpleType name="message-mark-type">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="read"/>
+    &lt;enumeration value="unread"/>
+  &lt;/restriction>
+&lt;/simpleType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/message.php">message.php</a></li></ul></postscript>

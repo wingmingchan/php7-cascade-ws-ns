@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 1/11/2017 Added JSON structure and JSON dump.
   * 5/28/2015 Added namespaces.
  */
@@ -49,19 +50,29 @@ dataDefinitionContainer
         siteId
       type
       recycled
-    parentContainerId
-    parentContainerPath
-    path
-    siteId
-    siteName
-    name
-    id
+  parentContainerId
+  parentContainerPath
+  path
+  siteId
+  siteName
+  name
+  id
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="dataDefinitionContainer">
+  &lt;complexContent>
+    &lt;extension base="impl:containered-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="children" nillable="true" type="impl:container-children"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/data_definition_container.php">data_definition_container.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>
-{ "asset":{
+<pre>{ "asset":{
     "dataDefinitionContainer":{
     "children":[ {
       "id":"e3aceb867f00000118d3acfcaabcc1f4",

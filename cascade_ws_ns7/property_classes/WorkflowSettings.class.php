@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 9/26/2016 Changed signatures of addWorkflowDefinition, added remove methods and aliases.
   * 6/23/2015 Added getInheritedWorkflowDefinitions, setInheritWorkflows.
   * 5/28/2015 Added namespaces.
@@ -49,6 +50,17 @@ use cascade_ws_asset     as a;
         siteName
       type (workflowdefinition)
       recycled
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="workflowSettings">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="workflowDefinitions" nillable="false" type="impl:assetIdentifiers"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="inheritWorkflows" nillable="false" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="requireWorkflow" nillable="false" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="inheritedWorkflowDefinitions" nillable="false" type="impl:assetIdentifiers"/>
+  &lt;/sequence>
+&lt;/complexType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/workflow_settings.php">workflow_settings.php</a></li></ul></postscript>

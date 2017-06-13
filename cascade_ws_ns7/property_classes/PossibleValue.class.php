@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 9/8/2016 Added isDefaultValue.
   * 5/28/2015 Added namespaces.
  */
@@ -82,6 +83,20 @@ the unique identifier of an item. That is to say, we cannot have two identical v
 <li>The <code>value</code> of the object is the object's identifier. Therefore, it cannot be modified, nor can it be empty.</li>
 <li>The <code>selectedByDefault</code> must be a bool value.</li>
 </ul>
+<p>WSDL:</p>
+<pre>&lt;complexType name="dynamic-metadata-field-definition-values">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="possibleValue" nillable="true" type="impl:dynamic-metadata-field-definition-value"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="dynamic-metadata-field-definition-value">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="value" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="selectedByDefault" type="xsd:boolean"/>
+  &lt;/sequence>
+&lt;/complexType>
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/possible_value.php">possible_value.php</a></li></ul></postscript>
 </documentation>

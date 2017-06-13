@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
   * 5/28/2015 Added namespaces.
  */
@@ -56,6 +57,18 @@ siteDestinationContainer
   siteName
   name
   id
+</pre>
+<p>WSDL:</p>
+<pre>
+&lt;complexType name="siteDestinationContainer">
+  &lt;complexContent>
+    &lt;extension base="impl:containered-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="children" nillable="true" type="impl:container-children"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/site_destination_container.php">site_destination_container.php</a></li></ul>

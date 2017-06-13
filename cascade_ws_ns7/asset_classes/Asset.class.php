@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 12/27/2016 Changed return type of getSiteName to mixed.
   * 12/9/2016 Added empty path in reloadProperty for Destination.
   * 11/11/2016 Added default value for $type to getAudits.
@@ -38,6 +39,200 @@ use cascade_ws_property as p;
 <description><h2>Introduction</h2>
 <p>The <code>Asset</code> class is the ancestor of all other asset classes.
 It is an abstract class and contains implementation of all methods shared by its descendants.</p>
+<p>WSDL:</p>
+<pre>&lt;complexType name="entity-type">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="name" type="impl:entityTypeString"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;simpleType name="entityTypeString">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="assetfactory"/>
+    &lt;enumeration value="assetfactorycontainer"/>
+    &lt;enumeration value="block"/>
+    &lt;enumeration value="block_FEED"/>
+    &lt;enumeration value="block_INDEX"/>
+    &lt;enumeration value="block_TEXT"/>
+    &lt;enumeration value="block_XHTML_DATADEFINITION"/>
+    &lt;enumeration value="block_XML"/>
+    &lt;enumeration value="block_TWITTER_FEED"/>
+    &lt;enumeration value="connectorcontainer"/>
+    &lt;enumeration value="twitterconnector"/>
+    &lt;enumeration value="facebookconnector"/>
+    &lt;enumeration value="wordpressconnector"/>
+    &lt;enumeration value="googleanalyticsconnector"/>
+    &lt;enumeration value="contenttype"/>
+    &lt;enumeration value="contenttypecontainer"/>
+    &lt;enumeration value="destination"/>
+    &lt;enumeration value="editorconfiguration"/>
+    &lt;enumeration value="file"/>
+    &lt;enumeration value="folder"/>
+    &lt;enumeration value="group"/>
+    &lt;enumeration value="message"/>
+    &lt;enumeration value="metadataset"/>
+    &lt;enumeration value="metadatasetcontainer"/>
+    &lt;enumeration value="page"/>
+    &lt;enumeration value="pageconfigurationset"/>
+    &lt;enumeration value="pageconfiguration"/>
+    &lt;enumeration value="pageregion"/>
+    &lt;enumeration value="pageconfigurationsetcontainer"/>
+    &lt;enumeration value="publishset"/>
+    &lt;enumeration value="publishsetcontainer"/>
+    &lt;enumeration value="reference"/>
+    &lt;enumeration value="role"/>
+    &lt;enumeration value="datadefinition"/>
+    &lt;enumeration value="datadefinitioncontainer"/>
+    &lt;enumeration value="format"/>
+    &lt;enumeration value="format_XSLT"/>
+    &lt;enumeration value="format_SCRIPT"/>
+    &lt;enumeration value="site"/>
+    &lt;enumeration value="sitedestinationcontainer"/>
+    &lt;enumeration value="symlink"/>
+    &lt;enumeration value="target"/>
+    &lt;enumeration value="template"/>
+    &lt;enumeration value="transport"/>
+    &lt;enumeration value="transport_fs"/>
+    &lt;enumeration value="transport_ftp"/>
+    &lt;enumeration value="transport_db"/>
+    &lt;enumeration value="transportcontainer"/>
+    &lt;enumeration value="user"/>
+    &lt;enumeration value="workflow"/>
+    &lt;enumeration value="workflowdefinition"/>
+    &lt;enumeration value="workflowdefinitioncontainer"/>
+  &lt;/restriction>
+&lt;/simpleType>
+
+&lt;complexType name="asset">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="workflowConfiguration" type="impl:workflow-configuration"/>
+    &lt;choice>
+      &lt;element maxOccurs="1" minOccurs="1" name="feedBlock" nillable="true" type="impl:feedBlock"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="indexBlock" nillable="true" type="impl:indexBlock"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="textBlock" nillable="true" type="impl:textBlock"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="xhtmlDataDefinitionBlock" nillable="true" type="impl:xhtmlDataDefinitionBlock"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="xmlBlock" nillable="true" type="impl:xmlBlock"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="file" nillable="true" type="impl:file"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="folder" nillable="true" type="impl:folder"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="page" nillable="true" type="impl:page"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="reference" nillable="true" type="impl:reference"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="xsltFormat" nillable="true" type="impl:xsltFormat"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="scriptFormat" nillable="true" type="impl:scriptFormat"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="symlink" nillable="true" type="impl:symlink"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="template" nillable="true" type="impl:template"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="user" nillable="true" type="impl:user"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="group" nillable="true" type="impl:group"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="role" nillable="true" type="impl:role"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="assetFactory" nillable="true" type="impl:assetFactory"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="assetFactoryContainer" nillable="true" type="impl:assetFactoryContainer"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="contentType" nillable="true" type="impl:contentType"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="contentTypeContainer" nillable="true" type="impl:contentTypeContainer"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="connectorContainer" nillable="true" type="impl:connectorContainer"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="twitterConnector" nillable="true" type="impl:twitterConnector"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="facebookConnector" nillable="true" type="impl:facebookConnector"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="wordPressConnector" nillable="true" type="impl:wordPressConnector"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="googleAnalyticsConnector" nillable="true" type="impl:googleAnalyticsConnector"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="pageConfigurationSet" nillable="true" type="impl:pageConfigurationSet"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="pageConfigurationSetContainer" nillable="true" type="impl:pageConfigurationSetContainer"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="dataDefinition" nillable="true" type="impl:dataDefinition"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="dataDefinitionContainer" nillable="true" type="impl:dataDefinitionContainer"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="metadataSet" nillable="true" type="impl:metadataSet"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="metadataSetContainer" nillable="true" type="impl:metadataSetContainer"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="publishSet" nillable="true" type="impl:publishSet"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="publishSetContainer" nillable="true" type="impl:publishSetContainer"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="target" nillable="true" type="impl:target"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="siteDestinationContainer" nillable="true" type="impl:siteDestinationContainer"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="destination" nillable="true" type="impl:destination"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="fileSystemTransport" nillable="true" type="impl:fileSystemTransport"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="ftpTransport" nillable="true" type="impl:ftpTransport"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="databaseTransport" nillable="true" type="impl:databaseTransport"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="transportContainer" nillable="true" type="impl:transportContainer"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="workflowDefinition" nillable="true" type="impl:workflowDefinition"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="workflowDefinitionContainer" nillable="true" type="impl:workflowDefinitionContainer"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="twitterFeedBlock" nillable="true" type="impl:twitterFeedBlock"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="site" nillable="true" type="impl:site"/>
+      &lt;element maxOccurs="1" minOccurs="1" name="editorConfiguration" nillable="true" type="impl:editorConfiguration"/>
+    &lt;/choice>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="workflow-configuration">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="workflowName" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="workflowDefinitionId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="workflowDefinitionPath" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="workflowComments" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="workflowStepConfigurations" type="impl:workflow-step-configurations"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="endDate" type="xsd:dateTime"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="workflow-step-configurations">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" name="workflowStepConfiguration" type="impl:workflow-step-configuration"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="workflow-step-configuration">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="stepIdentifier" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="stepAssignment" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="base-asset">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="id" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="named-asset">
+  &lt;complexContent>
+    &lt;extension base="impl:base-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;complexType name="expiring-asset">
+  &lt;complexContent>
+    &lt;extension base="impl:dublin-aware-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="expirationFolderId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="expirationFolderPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="expirationFolderRecycled" type="xsd:boolean"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;complexType name="dublin-aware-asset">
+  &lt;complexContent>
+    &lt;extension base="impl:folder-contained-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="metadata" type="impl:metadata"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="metadataSetId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="metadataSetPath" type="xsd:string"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;complexType name="publishable-asset">
+  &lt;complexContent>
+    &lt;extension base="impl:expiring-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="shouldBePublished" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="shouldBeIndexed" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="lastPublishedDate" nillable="true" type="xsd:dateTime"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="lastPublishedBy" nillable="true" type="xsd:string"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/asset.php">asset.php</a></li></ul></postscript>
 </documentation>

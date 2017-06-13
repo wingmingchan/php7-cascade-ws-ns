@@ -54,7 +54,7 @@ use cascade_ws_property  as p;
 /**
 <documentation>
 <description><h2>Introduction</h2>
-<p>A <code>Page</code> object represents a page asset and is a sub-class of
+<p>The <code>Page</code> class can be used to represent a page asset and is a sub-class of
 <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/linkable.php"><code>Linkable</code></a>.
 This class can be used to manipulate pages with or without a data definition. The only
 test available to tell them apart is the <code>Page::hasStructuredData</code> method. When
@@ -1483,7 +1483,9 @@ three being associated with <code>NULL</code>), or a text field of type
     
 /**
 <documentation><description><p>Returns a bool, indicating whether there are phantom nodes of type B in the page.</p></description>
-<example></example>
+<example>echo u\StringUtility::boolToString(
+    $cascade->getAsset(
+        a\Page::TYPE, "1e64191a8b7f08ee4bf6727368416cbe" )->hasPhantomNodes() );</example>
 <return-type>bool</return-type>
 <exception>WrongPageTypeException</exception>
 </documentation>
@@ -2396,7 +2398,7 @@ should be called as well.</p></description>
 
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Sets the node's <code>fileId</code> and <code>filePath</code> properties, and returns the calling object.</p></description>
 <example>$p->setFile( $node_name, $f )->edit();</example>

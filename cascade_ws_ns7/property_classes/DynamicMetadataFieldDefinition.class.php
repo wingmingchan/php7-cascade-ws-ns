@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 9/9/2016 Added isCheckbox, isDropdown, isMultiselect, isRadio, isText.
   * 9/8/2016 Added getDefaultValue, getDefaultValueString, hasDefaultValue, 
   * getPossibleValue, getPossibleValues. Fixed a bug.
@@ -39,6 +40,55 @@ use cascade_ws_exception as e;
 <li>A field can have no <code>PossibleValue</code> objects selected by default.</li>
 <li>When appending a value to the set of possible values, if the value already exists, just echo a message without throwing an exception.</li>
 </ul>
+<p>WSDL:</p>
+<pre>&lt;complexType name="dynamic-metadata-field-definitions">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="dynamicMetadataFieldDefinition" type="impl:dynamicMetadataFieldDefinition"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="dynamicMetadataFieldDefinition">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="label" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="fieldType" type="impl:dynamic-metadata-field-type"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="required" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="visibility" type="impl:metadata-field-visibility"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="possibleValues" type="impl:dynamic-metadata-field-definition-values"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="dynamic-metadata-field-definition-values">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="possibleValue" nillable="true" type="impl:dynamic-metadata-field-definition-value"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="dynamic-metadata-field-definition-value">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="value" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="selectedByDefault" type="xsd:boolean"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;simpleType name="metadata-field-visibility">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="inline"/>
+    &lt;enumeration value="hidden"/>
+    &lt;enumeration value="visible"/>
+  &lt;/restriction>
+&lt;/simpleType>
+
+&lt;simpleType name="dynamic-metadata-field-type">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="text"/>
+    &lt;enumeration value="radio"/>
+    &lt;enumeration value="dropdown"/>
+    &lt;enumeration value="checkbox"/>
+    &lt;enumeration value="multiselect"/>
+  &lt;/restriction>
+&lt;/simpleType>
+</pre>
 </description>
 <postscript><h2>Note</h2>
 <p>For a <code>dynamicMetadataFieldDefinition</code> property of type <code>text</code>,

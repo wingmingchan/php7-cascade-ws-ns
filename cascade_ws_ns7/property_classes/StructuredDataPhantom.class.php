@@ -1406,6 +1406,8 @@ chooser node, allowing users to choose a page.</p></description>
         return $this;
     }
     
+    /* removePhantomNodes left out intentionally */
+    
     public function replaceByPattern(
         string $pattern, string $replace, array $include=NULL ) : Property
     {

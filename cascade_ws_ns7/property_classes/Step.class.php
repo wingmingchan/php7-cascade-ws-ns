@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/12/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_property;
@@ -30,8 +31,40 @@ use cascade_ws_asset     as a;
       actionType
       nextId
 </pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="workflowStep">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="label" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="stepType" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="owner" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="actions" type="impl:workflowActions"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="workflowSteps">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="step" type="impl:workflowStep"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="workflowAction">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="label" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="actionType" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="nextId" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="workflowActions">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="1" name="action" type="impl:workflowAction"/>
+  &lt;/sequence>
+&lt;/complexType>
+</pre>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript></postscript>
 </documentation>
 */
 class Step

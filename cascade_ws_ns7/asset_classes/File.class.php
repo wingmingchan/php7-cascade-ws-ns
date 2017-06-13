@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 1/12/2017 Added JSON structure and JSON dump.
   * 9/6/2016 Added expiration folder-related code.
   * 1/4/2016 Fixed a bug in publish.
@@ -120,6 +121,20 @@ file
 <li>The <code>setData</code> method accepts any data, binary or textual.</li>
 <li>The <code>setText</code> method accepts only textual data.</li>
 </ul>
+<p>WSDL:</p>
+<pre>&lt;complexType name="file">
+  &lt;complexContent>
+    &lt;extension base="impl:publishable-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="text" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="data" type="xsd:base64Binary"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="rewriteLinks" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="maintainAbsoluteLinks" type="xsd:boolean"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/file.php">file.php</a></li></ul>
 <h2>JSON Dump</h2>

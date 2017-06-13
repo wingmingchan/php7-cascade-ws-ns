@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 1/12/2017 Added JSON structure and JSON dump.
   * 10/24/2016 Added construtor.
   * 5/28/2015 Added namespaces.
@@ -94,7 +95,19 @@ feedBlock
   siteName
   name
   id
-</pre></description>
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="feedBlock">
+  &lt;complexContent>
+    &lt;extension base="impl:block">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="feedURL" type="xsd:anyURI"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+</pre>
+</description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/feed_block.php">feed_block.php</a></li></ul>
 <h2>JSON Dump</h2>
 <pre>{ "asset":{

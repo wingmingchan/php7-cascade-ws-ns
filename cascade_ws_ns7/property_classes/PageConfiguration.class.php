@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 1/25/2017 Fixed in bug.
   * 12/29/2015 Added three more constants.
   * 5/28/2015 Added namespaces.
@@ -39,6 +40,58 @@ use cascade_ws_asset     as a;
     serializationType
     includeXMLDeclaration
     publishable
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="page-configurations">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="1" name="pageConfiguration" type="impl:pageConfiguration"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="pageConfiguration">
+  &lt;complexContent>
+    &lt;extension base="impl:base-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="1" name="defaultConfiguration" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="templateId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="templatePath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatRecycled" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="pageRegions" type="impl:page-regions"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="outputExtension" nillable="true" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="serializationType" nillable="true" type="impl:serialization-type"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="includeXMLDeclaration" nillable="true" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="publishable" nillable="true" type="xsd:boolean"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;complexType name="page-regions">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="pageRegion" type="impl:pageRegion"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="pageRegion">
+  &lt;complexContent>
+    &lt;extension base="impl:base-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="blockId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="blockPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="blockRecycled" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="noBlock" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatId" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatPath" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="formatRecycled" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="noFormat" type="xsd:boolean"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/page_configuration.php">page_configuration.php</a></li></ul></postscript>

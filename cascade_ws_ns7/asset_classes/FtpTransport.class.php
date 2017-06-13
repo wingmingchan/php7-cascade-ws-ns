@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON dump.
   * 5/28/2015 Added namespaces.
   * 7/8/2014 Fixed some bugs.
@@ -36,6 +37,23 @@ use cascade_ws_property  as p;
   directory
   doSFTP
   doPASV
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="ftpTransport">
+  &lt;complexContent>
+    &lt;extension base="impl:containered-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="1" name="hostName" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="1" name="port" type="xsd:positiveInteger"/>
+        &lt;element maxOccurs="1" minOccurs="1" name="username" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="1" name="password" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="directory" type="xsd:string"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="doSFTP" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="doPASV" type="xsd:boolean"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/ftp_transport.php">ftp_transport.php</a></li></ul>

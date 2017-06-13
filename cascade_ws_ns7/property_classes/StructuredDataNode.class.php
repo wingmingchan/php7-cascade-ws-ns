@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 10/17/2016 Bug fixes.
   * 6/2/2016 Added aliases. Replaced most string literals with constants.
   * 6/1/2016 Added isBlockChooser, isCalendarNode, isCheckboxNode, isDatetimeNode, isDropdownNode,
@@ -55,6 +56,49 @@ use cascade_ws_asset     as a;
 <li>A <code>StructuredDataNode</code> object contains a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/data-definition.php"><code>a\DataDefinition</code></a> object. When a text value assigned to a node, the text value is checked against the definition of the field to make sure it is a valid value.</li>
 <li>Possible values of a multiple-item field can be retrieved using the <code>getItems</code> method.</li>
 </ul>
+<pre>&lt;complexType name="structured-data-nodes">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="structuredDataNode" type="impl:structured-data-node"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="structured-data-node">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="type" type="impl:structured-data-type"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="structuredDataNodes" type="impl:structured-data-nodes"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="text" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="assetType" type="impl:structured-data-asset-type"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="blockId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="blockPath" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="fileId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="filePath" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="pageId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="pagePath" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="symlinkId" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="symlinkPath" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="recycled" type="xsd:boolean"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;simpleType name="structured-data-type">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="text"/>
+    &lt;enumeration value="asset"/>
+    &lt;enumeration value="group"/>
+  &lt;/restriction>
+&lt;/simpleType>
+
+&lt;simpleType name="structured-data-asset-type">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="block"/>
+    &lt;enumeration value="file"/>
+    &lt;enumeration value="page"/>
+    &lt;enumeration value="symlink"/>
+    &lt;enumeration value="page,file,symlink"/>
+  &lt;/restriction>
+&lt;/simpleType>
+</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/structured_data_node.php">structured_data_node.php</a></li></ul></postscript>
 </documentation>

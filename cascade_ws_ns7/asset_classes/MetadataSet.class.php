@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
   * 9/14/2016 Added removeField.
   * 9/9/2016 Added $wired_fields. Added default values to getMetadata.
@@ -28,7 +29,7 @@ use cascade_ws_property  as p;
 <description><h2>Introduction</h2>
 <p>A <code>MetadataSet</code> object represents a metadata set asset. See <a href="site://cascade-admin-old/projects/web-services/oop/classes/property-classes/dynamic-field">DynamicField</a> for an important note on the use of default values. Use <code>MetadataSet::setSelectedByDefault</code> carefully.</p>
 <h2>Structure of <code>metadataSet</code></h2>
-<pre>SOAP structure:
+<pre>SOAP:
 metadataSet
   id
   name
@@ -71,7 +72,7 @@ metadataSet
           value
           selectedByDefault
 
-JSON structure:
+JSON:
 metadataSet
   authorFieldRequired
   authorFieldVisibility
@@ -112,6 +113,87 @@ metadataSet
   siteName
   name
   id 
+</pre>
+<p>WSDL:</p>
+<pre>&lt;complexType name="metadataSet">
+  &lt;complexContent>
+    &lt;extension base="impl:containered-asset">
+      &lt;sequence>
+        &lt;element maxOccurs="1" minOccurs="0" name="authorFieldRequired" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="authorFieldVisibility" type="impl:metadata-field-visibility"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="descriptionFieldRequired" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="descriptionFieldVisibility" type="impl:metadata-field-visibility"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="displayNameFieldRequired" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="displayNameFieldVisibility" type="impl:metadata-field-visibility"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="endDateFieldRequired" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="endDateFieldVisibility" type="impl:metadata-field-visibility"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="expirationFolderFieldRequired" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="expirationFolderFieldVisibility" type="impl:metadata-field-visibility"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="keywordsFieldRequired" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="keywordsFieldVisibility" type="impl:metadata-field-visibility"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="reviewDateFieldRequired" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="reviewDateFieldVisibility" type="impl:metadata-field-visibility"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="startDateFieldRequired" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="startDateFieldVisibility" type="impl:metadata-field-visibility"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="summaryFieldRequired" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="summaryFieldVisibility" type="impl:metadata-field-visibility"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="teaserFieldRequired" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="teaserFieldVisibility" type="impl:metadata-field-visibility"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="titleFieldRequired" type="xsd:boolean"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="titleFieldVisibility" type="impl:metadata-field-visibility"/>
+        &lt;element maxOccurs="1" minOccurs="0" name="dynamicMetadataFieldDefinitions" type="impl:dynamic-metadata-field-definitions"/>
+      &lt;/sequence>
+    &lt;/extension>
+  &lt;/complexContent>
+&lt;/complexType>
+
+&lt;complexType name="dynamic-metadata-field-definitions">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="dynamicMetadataFieldDefinition" type="impl:dynamicMetadataFieldDefinition"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="dynamicMetadataFieldDefinition">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="label" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="fieldType" type="impl:dynamic-metadata-field-type"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="required" type="xsd:boolean"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="visibility" type="impl:metadata-field-visibility"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="possibleValues" type="impl:dynamic-metadata-field-definition-values"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="dynamic-metadata-field-definition-values">
+  &lt;sequence>
+    &lt;element maxOccurs="unbounded" minOccurs="0" name="possibleValue" nillable="true" type="impl:dynamic-metadata-field-definition-value"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="dynamic-metadata-field-definition-value">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="value" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="selectedByDefault" type="xsd:boolean"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;simpleType name="metadata-field-visibility">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="inline"/>
+    &lt;enumeration value="hidden"/>
+    &lt;enumeration value="visible"/>
+  &lt;/restriction>
+&lt;/simpleType>
+
+&lt;simpleType name="dynamic-metadata-field-type">
+  &lt;restriction base="xsd:string">
+    &lt;enumeration value="text"/>
+    &lt;enumeration value="radio"/>
+    &lt;enumeration value="dropdown"/>
+    &lt;enumeration value="checkbox"/>
+    &lt;enumeration value="multiselect"/>
+  &lt;/restriction>
+&lt;/simpleType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/metadata_set.php">metadata_set.php</a></li></ul>
