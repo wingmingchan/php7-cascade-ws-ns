@@ -35,7 +35,7 @@ use cascade_ws_exception as e;
 <ul>
 <li>There are no <code>set</code> methods in this class.</li>
 </ul>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="container-children">
   &lt;sequence>
     &lt;element maxOccurs="unbounded" minOccurs="0" name="child" type="impl:identifier"/>

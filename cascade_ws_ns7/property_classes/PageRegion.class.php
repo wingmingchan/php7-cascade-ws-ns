@@ -35,7 +35,7 @@ be found in a <a href="http://www.upstate.edu/cascade-admin/web-services/api/ass
     formatRecycled
     noFormat
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="page-regions">
   &lt;sequence>
     &lt;element maxOccurs="unbounded" minOccurs="0" name="pageRegion" type="impl:pageRegion"/>

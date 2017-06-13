@@ -27,7 +27,7 @@ use cascade_ws_asset     as a;
 </pre>
 <h2>Design Issues</h2>
 <p>Currently this class cannot be used to modify the destinations.</p>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="contentTypePageConfigurations">
   &lt;sequence>
     &lt;element maxOccurs="unbounded" minOccurs="0" name="contentTypePageConfiguration" nillable="true" type="impl:contentTypePageConfiguration"/>

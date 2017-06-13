@@ -31,7 +31,7 @@ use cascade_ws_asset     as a;
       actionType
       nextId
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="workflowStep">
   &lt;sequence>
     &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="xsd:string"/>

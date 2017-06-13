@@ -26,7 +26,7 @@ use cascade_ws_asset     as a;
   type
   name
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="inlineEditableFields">
   &lt;sequence>
     &lt;element maxOccurs="unbounded" minOccurs="0" name="inlineEditableField" nillable="true" type="impl:inlineEditableField"/>

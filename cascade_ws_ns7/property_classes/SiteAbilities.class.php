@@ -23,7 +23,7 @@ use cascade_ws_asset     as a;
 <pre>accessConnectors
 accessDestinations
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="site-abilities">
   &lt;sequence>
     &lt;element maxOccurs="1" minOccurs="0" name="bypassAllPermissionsChecks" type="xsd:boolean"/>

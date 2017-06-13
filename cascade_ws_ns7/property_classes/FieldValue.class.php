@@ -57,7 +57,7 @@ The <code>toStdClass</code> method must generate the correct <code>\stdClass</co
 <li>To avoid empty values mixing with non-empty values, <code>setValues</code> should not allow <code>\stdClass</code> objects
 with no values mixed with <code>\stdClass</code> objects with a value property. But if a single object is passed in, then the object can have no value.</li>
 </ul>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="fieldValues">
   &lt;sequence>
     &lt;element maxOccurs="unbounded" minOccurs="0" name="fieldValue" nillable="true" type="impl:fieldValue"/>

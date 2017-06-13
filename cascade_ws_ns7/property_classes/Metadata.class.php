@@ -63,7 +63,7 @@ are defined in a metadata set, the metadata <code>stdClass</code> object does no
 <li>The <code>stdClass</code> object passed into the constructor cannot be NULL.</li>
 <li>If a field requires a value, then the corresponding <code>setX</code> method cannot be called with an empty value.</li>
 </ul>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="metadata">
   &lt;sequence>
     &lt;element maxOccurs="1" minOccurs="0" name="author" type="xsd:string"/>

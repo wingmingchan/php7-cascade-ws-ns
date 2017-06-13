@@ -28,7 +28,7 @@ use cascade_ws_asset     as a;
 <ul>
 <li>There are no <code>set</code> methods in this class.</li>
 </ul>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>
 &lt;complexType name="path">
   &lt;sequence>

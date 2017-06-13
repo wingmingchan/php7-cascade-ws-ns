@@ -40,7 +40,7 @@ Therefore, it may not be a good idea to use "Default" for checkboxes and multi-s
 The <code>toStdClass</code> method must generate the correct <code>\stdClass</code> object corresponding to these three cases.</li>
 <li>The <code>\stdClass</code> object passed into the constructor can be NULL.</li>
 </ul>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="dynamicMetadataFields">
   &lt;sequence>
     &lt;element maxOccurs="unbounded" minOccurs="0" name="dynamicField" type="impl:dynamicMetadataField"/>

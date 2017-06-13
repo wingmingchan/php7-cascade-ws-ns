@@ -29,7 +29,7 @@ use cascade_ws_asset     as a;
       name
       value
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="connector-content-type-link-list">
   &lt;sequence>
     &lt;element maxOccurs="unbounded" minOccurs="0" name="connectorContentTypeLink" nillable="true" type="impl:connector-content-type-link"/>

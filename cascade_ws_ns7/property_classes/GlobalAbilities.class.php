@@ -57,7 +57,7 @@ viewMemberGroups
 viewSystemInfoAndLogs
 viewUsersInMemberGroups
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="global-abilities">
   &lt;sequence>
     &lt;element maxOccurs="1" minOccurs="0" name="bypassAllPermissionsChecks" type="xsd:boolean"/>

@@ -51,7 +51,7 @@ use cascade_ws_asset     as a;
       type (workflowdefinition)
       recycled
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="workflowSettings">
   &lt;sequence>
     &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>

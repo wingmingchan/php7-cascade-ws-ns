@@ -62,7 +62,7 @@ use cascade_ws_asset     as a;
   startDate
   endDate
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="workflow">
   &lt;complexContent>
     &lt;extension base="impl:named-asset">

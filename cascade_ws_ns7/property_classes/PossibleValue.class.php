@@ -83,7 +83,7 @@ the unique identifier of an item. That is to say, we cannot have two identical v
 <li>The <code>value</code> of the object is the object's identifier. Therefore, it cannot be modified, nor can it be empty.</li>
 <li>The <code>selectedByDefault</code> must be a bool value.</li>
 </ul>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="dynamic-metadata-field-definition-values">
   &lt;sequence>
     &lt;element maxOccurs="unbounded" minOccurs="0" name="possibleValue" nillable="true" type="impl:dynamic-metadata-field-definition-value"/>

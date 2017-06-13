@@ -25,7 +25,7 @@ use cascade_ws_asset     as a;
   users
   groups
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="role-assignments">
   &lt;sequence>
     &lt;element maxOccurs="unbounded" minOccurs="0" name="roleAssignment" type="impl:role-assignment"/>

@@ -25,7 +25,7 @@ use cascade_ws_asset     as a;
   parameters
     parameter
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="asset-factory-plugins">
   &lt;sequence>
     &lt;element maxOccurs="unbounded" minOccurs="0" name="plugin" type="impl:asset-factory-plugin"/>

@@ -41,7 +41,7 @@ use cascade_ws_asset     as a;
     includeXMLDeclaration
     publishable
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="page-configurations">
   &lt;sequence>
     &lt;element maxOccurs="unbounded" minOccurs="1" name="pageConfiguration" type="impl:pageConfiguration"/>

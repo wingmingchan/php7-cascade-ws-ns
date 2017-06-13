@@ -40,7 +40,7 @@ use cascade_ws_exception as e;
 <li>A field can have no <code>PossibleValue</code> objects selected by default.</li>
 <li>When appending a value to the set of possible values, if the value already exists, just echo a message without throwing an exception.</li>
 </ul>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="dynamic-metadata-field-definitions">
   &lt;sequence>
     &lt;element maxOccurs="unbounded" minOccurs="0" name="dynamicMetadataFieldDefinition" type="impl:dynamicMetadataFieldDefinition"/>

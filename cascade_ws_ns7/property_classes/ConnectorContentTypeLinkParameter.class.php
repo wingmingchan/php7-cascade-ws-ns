@@ -17,7 +17,7 @@ use cascade_ws_exception as e;
 /**
 <documentation><description><h2>Introduction</h2>
 <p><code>ConnectorContentTypeLinkParameter</code> is an empty sub-class of <a href="web-services/api/property-classes/parameter"><code>Parameter</code></a> used by <a href="web-services/api/asset-classes/wordpress-connector"><code>WordPressConnector</code></a>.</p>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="connector-content-type-link-param-list">
   &lt;sequence>
     &lt;element maxOccurs="unbounded" minOccurs="0" name="connectorContentTypeLinkParam" nillable="true" type="impl:connector-content-type-link-param"/>

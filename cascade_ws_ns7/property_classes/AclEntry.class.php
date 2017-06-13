@@ -61,7 +61,7 @@ use cascade_ws_asset     as a;
       }
     }
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="acl-entries">
   &lt;sequence>
     &lt;element maxOccurs="unbounded" minOccurs="0" name="aclEntry" nillable="false" type="impl:aclEntry"/>

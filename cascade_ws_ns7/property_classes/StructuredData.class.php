@@ -46,7 +46,7 @@ use cascade_ws_asset     as a;
 <ul>
 <li>A <code>StructuredData</code> object contains a <code>a\DataDefinition</code> object so that it can pass it along to its children.</li>
 </ul>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="structured-data">
   &lt;sequence>
     &lt;element maxOccurs="1" minOccurs="0" name="definitionId" type="xsd:string"/>
