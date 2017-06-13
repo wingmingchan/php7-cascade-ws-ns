@@ -41,6 +41,23 @@ use cascade_ws_exception as e;
     &lt;element maxOccurs="unbounded" minOccurs="0" name="child" type="impl:identifier"/>
   &lt;/sequence>
 &lt;/complexType>
+
+&lt;complexType name="identifier">
+  &lt;sequence>
+    &lt;element maxOccurs="1" minOccurs="0" name="id" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="path" type="impl:path"/>
+    &lt;element maxOccurs="1" minOccurs="1" name="type" type="impl:entityTypeString"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="recycled" type="xsd:boolean"/>
+  &lt;/sequence>
+&lt;/complexType>
+
+&lt;complexType name="path">
+  &lt;sequence>
+    &lt;element maxOccurs="1" name="path" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="siteId" nillable="true" type="xsd:string"/>
+    &lt;element maxOccurs="1" minOccurs="0" name="siteName" nillable="true" type="xsd:string"/>
+  &lt;/sequence>
+&lt;/complexType>
 </pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/child.php">child.php</a></li></ul></postscript>
