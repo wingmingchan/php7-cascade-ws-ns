@@ -36,7 +36,7 @@ use cascade_ws_property  as p;
   username
   password
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="databaseTransport">
   &lt;complexContent>
     &lt;extension base="impl:containered-asset">

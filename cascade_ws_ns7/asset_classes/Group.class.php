@@ -45,7 +45,7 @@ use cascade_ws_property  as p;
   users
   role
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="user-group-identifier">
   &lt;sequence>
     &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>

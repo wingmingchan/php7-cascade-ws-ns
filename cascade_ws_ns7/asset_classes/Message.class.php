@@ -32,7 +32,7 @@ use cascade_ws_property as p;
   body
   date
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="message">
   &lt;complexContent>
     &lt;extension base="impl:base-asset">

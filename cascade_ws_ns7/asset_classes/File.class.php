@@ -121,7 +121,7 @@ file
 <li>The <code>setData</code> method accepts any data, binary or textual.</li>
 <li>The <code>setText</code> method accepts only textual data.</li>
 </ul>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="file">
   &lt;complexContent>
     &lt;extension base="impl:publishable-asset">

@@ -39,7 +39,7 @@ use cascade_ws_property as p;
 <description><h2>Introduction</h2>
 <p>The <code>Asset</code> class is the ancestor of all other asset classes.
 It is an abstract class and contains implementation of all methods shared by its descendants.</p>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="entity-type">
   &lt;sequence>
     &lt;element maxOccurs="1" minOccurs="1" name="name" type="impl:entityTypeString"/>

@@ -38,7 +38,7 @@ use cascade_ws_property  as p;
   referencedAssetPath
   referencedAssetType
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="reference">
   &lt;complexContent>
     &lt;extension base="impl:folder-contained-asset">

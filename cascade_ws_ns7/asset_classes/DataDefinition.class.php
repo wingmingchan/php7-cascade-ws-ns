@@ -143,7 +143,7 @@ Consider an example:</p>
 element. To retrieve this array, we just need to call the <code>getField</code> method and
 pass in the fully qualified identifier like
 <code>"simpleslideshow-image-caption"</code>.</p>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="dataDefinition">
   &lt;complexContent>
     &lt;extension base="impl:containered-asset">

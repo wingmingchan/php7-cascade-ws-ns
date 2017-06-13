@@ -90,7 +90,7 @@ template
 <ul>
 <li>There is no <code>set</code> method to work with targets.</li>
 </ul>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="template">
   &lt;complexContent>
     &lt;extension base="impl:folder-contained-asset">

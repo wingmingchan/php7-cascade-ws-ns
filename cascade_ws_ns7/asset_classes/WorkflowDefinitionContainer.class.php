@@ -58,7 +58,7 @@ workflowDefinitionContainer
   name
   id
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="workflowDefinitionContainer">
   &lt;complexContent>
     &lt;extension base="impl:containered-asset">

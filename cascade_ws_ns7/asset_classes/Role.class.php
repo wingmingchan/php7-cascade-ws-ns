@@ -33,7 +33,7 @@ use cascade_ws_property  as p;
 </pre>
 <h2>Design Issues</h2>
 <p>Since there are too many methods (85 <code>get</code> and 85 <code>set</code> methods) involved here, I decide not to repeat these methods in various classes. Instead, I provide two <code>get</code> methods, i.e., <code>getGlobalAbilities()</code> and <code>getSiteAbilities()</code> in this class, each returning an <code>Abilities</code> object, allowing us to manipulate these two objects directly. Therefore, there are no <code>set</code> methods in this class.</p>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="role">
   &lt;complexContent>
     &lt;extension base="impl:named-asset">

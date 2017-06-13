@@ -61,7 +61,7 @@ googleAnalyticsConnector
   name
   id  
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="googleAnalyticsConnector">
   &lt;complexContent>
     &lt;extension base="impl:connector"/>

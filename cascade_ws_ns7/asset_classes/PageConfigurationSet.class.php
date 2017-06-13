@@ -98,7 +98,7 @@ pageConfigurationSet
   id
 </pre>
 <p>There is an important issue related to page regions of a configuration. A configuration contains a page region only if the page region is attached with either a block or a format or both. If a region is not attached with a block or a format, then it will not show up in the configuration; namely, it does not exist. To test whether a certain region exists in a configuration, do that test through the associated <code>Template</code> object.</p>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="pageConfigurationSet">
   &lt;complexContent>
     &lt;extension base="impl:containered-asset">

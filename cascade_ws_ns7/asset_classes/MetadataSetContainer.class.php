@@ -57,7 +57,7 @@ metadataSetContainer
   name
   id
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="metadataSetContainer">
   &lt;complexContent>
     &lt;extension base="impl:containered-asset">

@@ -97,7 +97,7 @@ textBlock
   siteName
   name
   id</pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="textBlock">
   &lt;complexContent>
     &lt;extension base="impl:block">

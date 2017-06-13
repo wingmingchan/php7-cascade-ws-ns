@@ -72,7 +72,7 @@ wordPressConnector
   name
   id
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="wordPressConnector">
   &lt;complexContent>
     &lt;extension base="impl:connector"/>

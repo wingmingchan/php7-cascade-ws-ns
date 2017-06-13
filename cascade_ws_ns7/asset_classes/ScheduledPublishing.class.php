@@ -36,7 +36,7 @@ use cascade_ws_property as p;
 <p>Since these eight properties and related methods are shared by <code><a href="/web-services/api/asset-classes/destination"><code>Destination</code></a>, <a href="/web-services/api/asset-classes/publish-set"><code>PublishSet</code></a> and <a href="/web-services/api/asset-classes/site"><code>Site</code></a></code>, I decide to create an abstract class named <code>ScheduledPublishing</code>, which serves as the parent class of these three classes<a href="/web-services/api/asset-classes/site"></a>, and provides all the relevant methods in this class.</p>
 <h2>Design Issues</h2>
 <p>Due to a known <a href="https://hannonhill.jira.com/browse/CSI-861">bug</a> when PHP is used, the <code>scheduledPublishDestinations</code> property cannot be set properly. Thereofore, the <code>setScheduledPublishing</code> method defined in this class always sets the <code>scheduledPublishDestinationMode</code> property to <code>all-destinations</code>.</p>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;simpleType name="scheduledDestinationMode">
   &lt;restriction base="xsd:string">
     &lt;enumeration value="all-destinations"/>

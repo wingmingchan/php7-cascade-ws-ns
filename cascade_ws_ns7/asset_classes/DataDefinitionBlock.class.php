@@ -137,7 +137,7 @@ xhtmlDataDefinitionBlock
   name
   id
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="xhtmlDataDefinitionBlock">
   &lt;complexContent>
     &lt;extension base="impl:block">

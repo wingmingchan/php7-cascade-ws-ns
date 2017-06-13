@@ -76,7 +76,7 @@ twitterConnector
   name
   id
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="twitterConnector">
   &lt;complexContent>
     &lt;extension base="impl:statusUpdateConnector"/>

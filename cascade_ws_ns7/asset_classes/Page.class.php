@@ -246,7 +246,7 @@ page
   name
   id   
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="page">
   &lt;complexContent>
     &lt;extension base="impl:publishable-asset">

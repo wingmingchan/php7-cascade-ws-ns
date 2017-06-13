@@ -38,7 +38,7 @@ use cascade_ws_property  as p;
   doSFTP
   doPASV
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="ftpTransport">
   &lt;complexContent>
     &lt;extension base="impl:containered-asset">

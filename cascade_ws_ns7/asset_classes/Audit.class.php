@@ -58,7 +58,7 @@ use cascade_ws_property  as p;
     recycled
   date
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;simpleType name="auditTypes">
   &lt;restriction base="xsd:string">
     &lt;enumeration value="login"/>

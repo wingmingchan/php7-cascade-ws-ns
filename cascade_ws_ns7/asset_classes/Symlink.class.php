@@ -97,7 +97,7 @@ symlink
   name
   id   
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="symlink">
   &lt;complexContent>
     &lt;extension base="impl:expiring-asset">

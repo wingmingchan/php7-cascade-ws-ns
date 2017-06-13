@@ -27,7 +27,7 @@ exception will be thrown. For example, the <code>setDestination</code> method is
 intended for <code>GoogleAnalyticsConnector</code> nor <code>WordPressConnector</code>
 objects. If the method is called by such an object, an exception will be thrown by this
 class.</p>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="connector">
   &lt;complexContent>
     &lt;extension base="impl:containered-asset">

@@ -58,7 +58,7 @@ siteDestinationContainer
   name
   id
 </pre>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>
 &lt;complexType name="siteDestinationContainer">
   &lt;complexContent>

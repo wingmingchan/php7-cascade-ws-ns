@@ -148,7 +148,7 @@ indexBlock
 <ul>
 <li>Although it is not hard to implement, I decide not to provide a <code>setType</code> method. Switching between folder indexing and content type indexing may not be a good idea.</li>
 </ul>
-<p>WSDL:</p>
+<h2>WSDL</h2>
 <pre>&lt;complexType name="indexBlock">
   &lt;complexContent>
     &lt;extension base="impl:block">
