@@ -41,30 +41,10 @@ use cascade_ws_exception as e;
 /**
 <documentation>
 <description><h2>Introduction</h2>
-<p>This class encapsulates the WSDL URL, the authentication object, and the SoapClient object, 
+<p>This class encapsulates the WSDL URL, the authentication object, and the SoapClient object,
 and provides services of all operations defined in the WSDL.</p>
-<p>Operations:</p>
+<p>operationResult:</p>
 <pre>
-&lt;complexType name="operation">
-  &lt;choice>
-    &lt;element name="create" type="impl:create"/>
-    &lt;element name="delete" type="impl:delete"/>
-    &lt;element name="edit" type="impl:edit"/>
-    &lt;element name="move" type="impl:move"/>
-    &lt;element name="publish" type="impl:publish"/>
-    &lt;element name="read" type="impl:read"/>
-    &lt;element name="readAccessRights" type="impl:readAccessRights"/>
-    &lt;element name="editAccessRights" type="impl:editAccessRights"/>
-    &lt;element name="readWorkflowSettings" type="impl:readWorkflowSettings"/>
-    &lt;element name="editWorkflowSettings" type="impl:editWorkflowSettings"/>
-    &lt;element name="listSubscribers" type="impl:listSubscribers"/>
-    &lt;element name="checkOut" type="impl:checkOut"/>
-    &lt;element name="checkIn" type="impl:checkIn"/>
-    &lt;element name="copy" type="impl:copy"/>
-    &lt;element name="siteCopy" type="impl:siteCopy"/>
-  &lt;/choice>
-&lt;/complexType>
-
 &lt;complexType name="operationResult">
   &lt;sequence>
     &lt;element maxOccurs="1" name="success" type="xsd:string"/>
@@ -738,6 +718,26 @@ Batch-executes the operations.
     &lt;/sequence>
   &lt;/complexType>
 &lt;/element>
+
+&lt;complexType name="operation">
+  &lt;choice>
+    &lt;element name="create" type="impl:create"/>
+    &lt;element name="delete" type="impl:delete"/>
+    &lt;element name="edit" type="impl:edit"/>
+    &lt;element name="move" type="impl:move"/>
+    &lt;element name="publish" type="impl:publish"/>
+    &lt;element name="read" type="impl:read"/>
+    &lt;element name="readAccessRights" type="impl:readAccessRights"/>
+    &lt;element name="editAccessRights" type="impl:editAccessRights"/>
+    &lt;element name="readWorkflowSettings" type="impl:readWorkflowSettings"/>
+    &lt;element name="editWorkflowSettings" type="impl:editWorkflowSettings"/>
+    &lt;element name="listSubscribers" type="impl:listSubscribers"/>
+    &lt;element name="checkOut" type="impl:checkOut"/>
+    &lt;element name="checkIn" type="impl:checkIn"/>
+    &lt;element name="copy" type="impl:copy"/>
+    &lt;element name="siteCopy" type="impl:siteCopy"/>
+  &lt;/choice>
+&lt;/complexType>
 
 &lt;complexType name="batchResult">
   &lt;choice>
