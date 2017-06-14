@@ -4,7 +4,7 @@
   Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   MIT Licensed
   Modification history:
-   6/11/2017 Started adding WSDL.
+   6/13/2017 Added WSDL.
    9/2/2016 Changed checkOut so that it returns the id of the working copy.
    8/15/2016 Added comments to work with ReflectionUtility.
    7/6/2015 Added getPreferences, readPreferences, and editPreferences.
@@ -2152,7 +2152,7 @@ Reads the asset with the given identifier.
     &lt;/extension>
   &lt;/complexContent>
 &lt;/complexType>
-<pre>
+</pre>
 </description>
 <example>$service->read( 
     $service->createId( a\Folder::TYPE, $path, "cascade-admin" ) );</example>
