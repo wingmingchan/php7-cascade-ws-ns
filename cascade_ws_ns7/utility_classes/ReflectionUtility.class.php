@@ -127,7 +127,9 @@ class information.</p></description>
             $class_doc .= S_LI . 
                 S_CODE . self::getSignature( $method ) . E_CODE .
                 self::getMethodXmlValue( $obj, $method->getName(), "description", "", "", $method ) .
-                self::getMethodXmlValue( $obj, $method->getName(), "example", S_PRE, E_PRE, $method, false ) .
+                self::getMethodXmlValue( $obj, $method->getName(), "example",
+                	"<p>Example:</p>" .
+                    S_PRE, E_PRE, $method, false ) .
                 E_LI;
         }
         
