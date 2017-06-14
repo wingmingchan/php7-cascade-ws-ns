@@ -43,6 +43,7 @@ use cascade_ws_exception as e;
 <description><h2>Introduction</h2>
 <p>This class encapsulates the WSDL URL, the authentication object, and the SoapClient object,
 and provides services of all operations defined in the WSDL.</p>
+<h2>WSDL</h2>
 <p>operationResult:</p>
 <pre>
 &lt;complexType name="operationResult">
