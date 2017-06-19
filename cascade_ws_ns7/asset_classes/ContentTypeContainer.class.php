@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/10/2017 Added JSON structure and JSON dump.
   * 5/28/2015 Added namespaces.
@@ -18,8 +19,10 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
-<p>A <code>ContentTypeContainer</code> object represents a content type container asset. This class is a sub-class of <a href="/web-services/api/asset-classes/container"><code>Container</code></a>.</p>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>ContentTypeContainer</code> object represents a content type container asset. This class is a sub-class of <a href=\"/web-services/api/asset-classes/container\"><code>Container</code></a>.</p>
 <h2>Structure of <code>contentTypeContainer</code></h2>
 <pre>SOAP:
 contentTypeContainer
@@ -57,17 +60,16 @@ contentTypeContainer
   name
   id
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="contentTypeContainer">
-  &lt;complexContent>
-    &lt;extension base="impl:containered-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="children" nillable="true" type="impl:container-children"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "contentTypeContainer" ),
+        array( "getComplexTypeXMLByName" => "container-children" ),
+        array( "getComplexTypeXMLByName" => "identifier" ),
+        array( "getComplexTypeXMLByName" => "path" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/content_type_container.php">content_type_container.php</a></li></ul>
 <h2>JSON Dump</h2>
