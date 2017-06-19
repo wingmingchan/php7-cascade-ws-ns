@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/12/2017 Added WSDL.
   * 9/24/2016 Changed isInContainer to isChildOf.
     Turned isInContainer to an alias of isDescendantOf.
@@ -20,7 +21,9 @@ use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
 
 /**
-<documentation><description><h2>Introduction</h2>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>The <code>ContainedAsset</code> class is an abstract sub-class of <code>Asset</code> and the superclass of all asset classes except the following three classes:</p>
 <ul>
 <li><code>Group</code></li>
@@ -30,39 +33,14 @@ use cascade_ws_exception as e;
 <p>These three classes do not have parent containers. Note that although <code>Site</code> is a sub-class of <code>ScheduledPublishing</code>,
 which is a sub-class of <code>ContainedAsset</code>, and hence inherits all methods defined in <code>ContainedAsset</code>, a site does not have a parent container.
 Calling any method defined in <code>ContainedAsset</code> on a <code>Site</code> object will cause an exception to be thrown from <code>ContainedAsset</code>.</p>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="folder-contained-asset">
-  &lt;complexContent>
-    &lt;extension base="impl:named-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="parentFolderId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="parentFolderPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="path" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="lastModifiedDate" nillable="true" type="xsd:dateTime"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="lastModifiedBy" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="createdDate" nillable="true" type="xsd:dateTime"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="createdBy" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="siteId" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="siteName" nillable="true" type="xsd:string"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-
-&lt;complexType name="containered-asset">
-  &lt;complexContent>
-    &lt;extension base="impl:named-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="parentContainerId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="parentContainerPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="path" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="siteId" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="siteName" nillable="true" type="xsd:string"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "folder-contained-asset" ),
+        array( "getComplexTypeXMLByName" => "containered-asset" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/contained_asset.php">contained_asset.php</a></li></ul></postscript>
 </documentation>
