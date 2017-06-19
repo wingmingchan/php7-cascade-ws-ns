@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/14/2017 Added WSDL.
   * 9/13/2016 Fixed bugs in setExpirationFolder.
   * 9/6/2016 Added expiration folder-related code.
@@ -23,19 +24,22 @@ use cascade_ws_constants as c;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>The <code>Block</code> class is the superclass of <code>TextBlock</code>,
 <code>DataDefinitionBlock</code> and so on.
 It is an abstract class and defines most of the methods shared by all types of blocks.</p>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="block">
-  &lt;complexContent>
-    &lt;extension base="impl:expiring-asset">
-      &lt;sequence/>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "block" ),
+        array( "getComplexTypeXMLByName" => "expiring-asset" ),
+        array( "getComplexTypeXMLByName" => "dublin-aware-asset" ),
+        array( "getComplexTypeXMLByName" => "folder-contained-asset" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/block.php">block.php</a></li>
 <li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/text_block.php">text_block.php</a></li>
