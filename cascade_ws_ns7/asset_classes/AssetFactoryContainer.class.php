@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 2/22/2017 Added addGroupName.
   * 1/10/2017 Added JSON structure and JSON dump.
@@ -20,8 +21,10 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
-<p>An <code>AssetFactoryContainer</code> object represents an asset factory container asset. This class is a sub-class of <a href="/web-services/api/asset-classes/container"><code>Container</code></a>.</p>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>An <code>AssetFactoryContainer</code> object represents an asset factory container asset. This class is a sub-class of <a href=\"/web-services/api/asset-classes/container\"><code>Container</code></a>.</p>
 <h2>Structure of <code>assetFactoryContainer</code></h2>
 <pre>SOAP:
 assetFactoryContainer
@@ -64,19 +67,16 @@ assetFactoryContainer
   name
   id
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="assetFactoryContainer">
-  &lt;complexContent>
-    &lt;extension base="impl:containered-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="applicableGroups" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="description" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="children" nillable="true" type="impl:container-children"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "assetFactoryContainer" ),
+        array( "getComplexTypeXMLByName" => "container-children" ),
+        array( "getComplexTypeXMLByName" => "identifier" ),
+        array( "getComplexTypeXMLByName" => "path" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/asset_factory_container.php">asset_factory_container.php</a></li></ul>
 <h2>JSON Dump</h2>
