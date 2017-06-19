@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 8/26/2016 Added constant NAME_SPACE. Fixed a bug in getAuditedAsset.
   * 2/10/2016 Fixed a bug in getUser and changed the return value.
@@ -20,9 +21,11 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>An <code>Audit</code> object represents an audit on an asset. This class is an independent class that does not extend another class.</p>
-<p>Reading audits using web services can be particularly useful. This is because for many asset types like data definitions and content types (the components that do not appear in the asset tree panel), the "Audits" tab is missing from the Cascade back-end. Audit records of these asset types can only be retrieved by web services.</p>
+<p>Reading audits using web services can be particularly useful. This is because for many asset types like data definitions and content types (the components that do not appear in the asset tree panel), the \"Audits\" tab is missing from the Cascade back-end. Audit records of these asset types can only be retrieved by web services.</p>
 <h2>Action Types</h2>
 <p>When reading audits, we can pass in a type string to restrict the returned audits to a certain action type. Possible actions are:</p>
 <ul>
@@ -46,7 +49,7 @@ use cascade_ws_property  as p;
 <li><code>constants\T::RESTORE</code></li>
 <li><code>constants\T::MOVE</code></li>
 </ul>
-<p>Both the <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/asset.php"><code>Asset</code></a> class and <a href="http://www.upstate.edu/cascade-admin/web-services/api/cascade.php"><code>Cascade</code></a> class have a method <code>getAudits</code> defined to retrieve the audits associated with an asset. The returned array stores <code>Audit</code> objects.</p>
+<p>Both the <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/asset.php\"><code>Asset</code></a> class and <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/cascade.php\"><code>Cascade</code></a> class have a method <code>getAudits</code> defined to retrieve the audits associated with an asset. The returned array stores <code>Audit</code> objects.</p>
 <h2>Structure of <code>audit</code></h2>
 <pre>audit
   user
@@ -58,46 +61,17 @@ use cascade_ws_property  as p;
     recycled
   date
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;simpleType name="auditTypes">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="login"/>
-    &lt;enumeration value="login_failed"/>
-    &lt;enumeration value="logout"/>
-    &lt;enumeration value="start_workflow"/>
-    &lt;enumeration value="advance_workflow"/>
-    &lt;enumeration value="edit"/>
-    &lt;enumeration value="copy"/>
-    &lt;enumeration value="create"/>
-    &lt;enumeration value="reference"/>
-    &lt;enumeration value="delete"/>
-    &lt;enumeration value="delete_unpublish"/>
-    &lt;enumeration value="check_in"/>
-    &lt;enumeration value="check_out"/>
-    &lt;enumeration value="activate_version"/>
-    &lt;enumeration value="publish"/>
-    &lt;enumeration value="unpublish"/>
-    &lt;enumeration value="recycle"/>
-    &lt;enumeration value="restore"/>
-    &lt;enumeration value="move"/>
-  &lt;/restriction>
-&lt;/simpleType>
-
-&lt;complexType name="audits">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="audit" type="impl:audit"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="audit">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="user" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="action" type="impl:auditTypes"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="identifier" type="impl:identifier"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="date" type="xsd:dateTime"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "audits" ),
+        array( "getComplexTypeXMLByName" => "audit" ),
+        array( "getSimpleTypeXMLByName"  => "auditTypes" ),
+        array( "getComplexTypeXMLByName" => "identifier" ),
+        array( "getComplexTypeXMLByName" => "path" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/audit.php">audit.php</a></li></ul></postscript>
 </documentation>
