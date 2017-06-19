@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
@@ -17,7 +18,9 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>The <code>Connector</code> class is the superclass of <code>GoogleAnalyticsConnector</code>,
 <code>TwitterConnector</code>, and <code>WordPressConnector</code>. It is an abstract
 class and defines methods commonly shared by its sub-classes. Note that there are methods
@@ -27,68 +30,21 @@ exception will be thrown. For example, the <code>setDestination</code> method is
 intended for <code>GoogleAnalyticsConnector</code> nor <code>WordPressConnector</code>
 objects. If the method is called by such an object, an exception will be thrown by this
 class.</p>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="connector">
-  &lt;complexContent>
-    &lt;extension base="impl:containered-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="auth1" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="auth2" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="url" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="verified" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="verifiedDate" nillable="true" type="xsd:dateTime"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="connectorParameters" type="impl:connector-parameter-list"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="connectorContentTypeLinks" type="impl:connector-content-type-link-list"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-
-&lt;complexType name="connector-parameter-list">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="connectorParameter" nillable="true" type="impl:connector-parameter"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="connector-parameter">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="name" nillable="true" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="value" nillable="true" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="connector-content-type-link-list">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="connectorContentTypeLink" nillable="true" type="impl:connector-content-type-link"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="connector-content-type-link">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="contentTypeId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="contentTypePath" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="pageConfigurationId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="pageConfigurationName" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="connectorContentTypeLinkParams" type="impl:connector-content-type-link-param-list"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="connector-content-type-link-param-list">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="connectorContentTypeLinkParam" nillable="true" type="impl:connector-content-type-link-param"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="connector-content-type-link-param">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="name" nillable="true" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="value" nillable="true" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "connector" ),
+        array( "getComplexTypeXMLByName" => "connector-parameter-list" ),
+        array( "getComplexTypeXMLByName" => "connector-parameter" ),
+        array( "getComplexTypeXMLByName" => "connector-content-type-link-list" ),
+        array( "getComplexTypeXMLByName" => "connector-content-type-link" ),
+        array( "getComplexTypeXMLByName" => "connector-content-type-link-param-list" ),
+        array( "getComplexTypeXMLByName" => "connector-content-type-link-param" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/connector.php">connector.php</a></li>
-
 </ul></postscript>
 </documentation>
 */
