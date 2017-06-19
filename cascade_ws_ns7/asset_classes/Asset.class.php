@@ -46,17 +46,17 @@ $doc_string = "<h2>Introduction</h2>
 It is an abstract class and contains implementation of all methods shared by its descendants.</p><h2>WSDL</h2>";
 $doc_string .=
     $service->getXMLFragments( array(
-    	array( "getComplexTypeXMLByName" => "entity-type" ),
-    	array( "getSimpleTypeXMLByName"  => "entityTypeString" ),
-    	array( "getComplexTypeXMLByName" => "asset" ),
-    	array( "getComplexTypeXMLByName" => "workflow-configuration" ),
-    	array( "getComplexTypeXMLByName" => "workflow-step-configurations" ),
-    	array( "getComplexTypeXMLByName" => "workflow-step-configuration" ),
-    	array( "getComplexTypeXMLByName" => "base-asset" ),
-    	array( "getComplexTypeXMLByName" => "named-asset" ),
-    	array( "getComplexTypeXMLByName" => "expiring-asset" ),
-    	array( "getComplexTypeXMLByName" => "dublin-aware-asset" ),
-    	array( "getComplexTypeXMLByName" => "publishable-asset" ),
+        array( "getComplexTypeXMLByName" => "entity-type" ),
+        array( "getSimpleTypeXMLByName"  => "entityTypeString" ),
+        array( "getComplexTypeXMLByName" => "asset" ),
+        array( "getComplexTypeXMLByName" => "workflow-configuration" ),
+        array( "getComplexTypeXMLByName" => "workflow-step-configurations" ),
+        array( "getComplexTypeXMLByName" => "workflow-step-configuration" ),
+        array( "getComplexTypeXMLByName" => "base-asset" ),
+        array( "getComplexTypeXMLByName" => "named-asset" ),
+        array( "getComplexTypeXMLByName" => "expiring-asset" ),
+        array( "getComplexTypeXMLByName" => "dublin-aware-asset" ),
+        array( "getComplexTypeXMLByName" => "publishable-asset" ),
     ) );
 return $doc_string;
 ?>
@@ -234,9 +234,9 @@ abstract class Asset
 */
     public function display() : Asset
     {
-    	$id   = $this->getId();
-    	$name = $this->getName();
-    	
+        $id   = $this->getId();
+        $name = $this->getName();
+        
         echo S_H2 . "Asset::display" . E_H2 .
              c\L::ID .            $id .                  BR .
              c\L::NAME .          $name .                BR .
@@ -611,7 +611,7 @@ echo "There are " . count( $subscribers ) . " subscribers.", BR;</example>
         // 2016/12/09 added path for Destination
         if( !isset( $this->identifier->path->path ) )
         {
-        	$this->identifier->path = new \stdClass();
+            $this->identifier->path = new \stdClass();
             $this->identifier->path->path = "";
         }
     
