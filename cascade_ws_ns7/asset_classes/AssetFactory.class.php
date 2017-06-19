@@ -104,11 +104,6 @@ $doc_string .=
         array( "getComplexTypeXMLByName" => "asset-factory-plugin" ),
         array( "getComplexTypeXMLByName" => "asset-factory-plugin-parameters" ),
         array( "getComplexTypeXMLByName" => "asset-factory-plugin-parameter" ),
-        //array( "getComplexTypeXMLByName" => "base-asset" ),
-        //array( "getComplexTypeXMLByName" => "named-asset" ),
-        //array( "getComplexTypeXMLByName" => "expiring-asset" ),
-        //array( "getComplexTypeXMLByName" => "dublin-aware-asset" ),
-        //array( "getComplexTypeXMLByName" => "publishable-asset" ),
     ) );
 return $doc_string;
 ?>
