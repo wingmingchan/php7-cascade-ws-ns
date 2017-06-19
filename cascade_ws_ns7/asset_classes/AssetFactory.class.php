@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 2/22/2017 Added addGroupName.
   * 1/10/2017 Added JSON structure.
@@ -32,7 +33,9 @@ use cascade_ws_exception as e;
 use cascade_ws_property as p;
 
 /**
-<documentation><description><h2>Introduction</h2>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>An <code>AssetFactory</code> object represents an asset factory asset.</p>
 <h2>Structure of <code>assetFactory</code></h2>
 <pre>SOAP:
@@ -92,40 +95,23 @@ assetFactory
   name
   id
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="assetFactory">
-  &lt;complexContent>
-    &lt;extension base="impl:containered-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="applicableGroups" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="1" name="assetType" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="baseAssetId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="baseAssetPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="baseAssetRecycled" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="description" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="placementFolderId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="placementFolderPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="placementFolderRecycled" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="allowSubfolderPlacement" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="folderPlacementPosition" type="xsd:nonNegativeInteger"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="overwrite" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="1" name="workflowMode" type="impl:asset-factory-workflow-mode"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="workflowDefinitionId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="workflowDefinitionPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="plugins" type="impl:asset-factory-plugins"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-
-&lt;simpleType name="asset-factory-workflow-mode">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="folder-controlled"/>
-    &lt;enumeration value="factory-controlled"/>
-    &lt;enumeration value="none"/>
-  &lt;/restriction>
-&lt;/simpleType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "assetFactory" ),
+        array( "getSimpleTypeXMLByName"  => "asset-factory-workflow-mode" ),
+        array( "getComplexTypeXMLByName" => "asset-factory-plugins" ),
+        array( "getComplexTypeXMLByName" => "asset-factory-plugin" ),
+        array( "getComplexTypeXMLByName" => "asset-factory-plugin-parameters" ),
+        array( "getComplexTypeXMLByName" => "asset-factory-plugin-parameter" ),
+        //array( "getComplexTypeXMLByName" => "base-asset" ),
+        //array( "getComplexTypeXMLByName" => "named-asset" ),
+        //array( "getComplexTypeXMLByName" => "expiring-asset" ),
+        //array( "getComplexTypeXMLByName" => "dublin-aware-asset" ),
+        //array( "getComplexTypeXMLByName" => "publishable-asset" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/asset_factory.php">asset_factory.php</a></li></ul>
 <h2>JSON Dump</h2>
