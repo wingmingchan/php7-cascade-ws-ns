@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/19/2017 Replaced WSDL code with call to getXMLFragments.
   * 6/16/2017 Added code to generate WSDL XML dynamically.
               Removed static WSDL fragments.
   * 6/13/2017 Added WSDL.
@@ -39,43 +40,24 @@ use cascade_ws_property as p;
 /**
 <documentation>
 <description>
-<?php global $eval, $service;
+<?php global $service;
 $doc_string = "<h2>Introduction</h2>
 <p>The <code>Asset</code> class is the ancestor of all other asset classes.
-It is an abstract class and contains implementation of all methods shared by its descendants.</p><h2>WSDL</h2><pre>";
+It is an abstract class and contains implementation of all methods shared by its descendants.</p><h2>WSDL</h2>";
 $doc_string .=
-    $eval->replaceBrackets($service->getComplexTypeXMLByName("entity-type"));
-$doc_string .= "\r";
-$doc_string .=
-    $eval->replaceBrackets($service->getSimpleTypeXMLByName("entityTypeString"));
-$doc_string .= "\r";
-$doc_string .=
-    $eval->replaceBrackets($service->getComplexTypeXMLByName("asset"));
-$doc_string .= "\r";
-$doc_string .=
-    $eval->replaceBrackets($service->getComplexTypeXMLByName("workflow-configuration"));
-$doc_string .= "\r";
-$doc_string .=
-    $eval->replaceBrackets($service->getComplexTypeXMLByName("workflow-step-configurations"));
-$doc_string .= "\r";
-$doc_string .=
-    $eval->replaceBrackets($service->getComplexTypeXMLByName("workflow-step-configuration"));
-$doc_string .= "\r";
-$doc_string .=
-    $eval->replaceBrackets($service->getComplexTypeXMLByName("base-asset"));
-$doc_string .= "\r";
-$doc_string .=
-    $eval->replaceBrackets($service->getComplexTypeXMLByName("named-asset"));
-$doc_string .= "\r";
-$doc_string .=
-    $eval->replaceBrackets($service->getComplexTypeXMLByName("expiring-asset"));
-$doc_string .= "\r";
-$doc_string .=
-    $eval->replaceBrackets($service->getComplexTypeXMLByName("dublin-aware-asset"));
-$doc_string .= "\r";
-$doc_string .=
-    $eval->replaceBrackets($service->getComplexTypeXMLByName("publishable-asset"));
-$doc_string .= "</pre>";
+    $service->getXMLFragments( array(
+    	array( "getComplexTypeXMLByName" => "entity-type" ),
+    	array( "getSimpleTypeXMLByName"  => "entityTypeString" ),
+    	array( "getComplexTypeXMLByName" => "asset" ),
+    	array( "getComplexTypeXMLByName" => "workflow-configuration" ),
+    	array( "getComplexTypeXMLByName" => "workflow-step-configurations" ),
+    	array( "getComplexTypeXMLByName" => "workflow-step-configuration" ),
+    	array( "getComplexTypeXMLByName" => "base-asset" ),
+    	array( "getComplexTypeXMLByName" => "named-asset" ),
+    	array( "getComplexTypeXMLByName" => "expiring-asset" ),
+    	array( "getComplexTypeXMLByName" => "dublin-aware-asset" ),
+    	array( "getComplexTypeXMLByName" => "publishable-asset" ),
+    ) );
 return $doc_string;
 ?>
 </description>
