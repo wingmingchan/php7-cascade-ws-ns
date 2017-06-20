@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/20/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/10/2017 Added JSON dump.
   * 11/4/2016 Added default value to createChildStd.
@@ -24,9 +25,11 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>A <code>DataDefinition</code> represents a data definition asset. This class is used by
-both <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/data-definition-block.php"><code>DataDefinitionBlock</code></a> and <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/page.php"><code>Page</code></a>.</p>
+both <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/data-definition-block.php\"><code>DataDefinitionBlock</code></a> and <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/page.php\"><code>Page</code></a>.</p>
 <h2>Structure of <code>dataDefinition</code></h2>
 <pre>dataDefinition
   id
@@ -39,29 +42,29 @@ both <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classe
   xml
 </pre>
 <h2>Definition-Data/Container Dichotomy</h2>
-<p>When I build the classes related to <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/data-definition-block.php"><code>DataDefinitionBlock</code></a>,
-I encounter the same issue of definition-data/container dichotomy again. The first time I run into this is when I build the <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/metadata-set.php"><code>MetadataSet</code></a>
+<p>When I build the classes related to <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/data-definition-block.php\"><code>DataDefinitionBlock</code></a>,
+I encounter the same issue of definition-data/container dichotomy again. The first time I run into this is when I build the <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/metadata-set.php\"><code>MetadataSet</code></a>
 and related classes. There, the definition-data/container dichotomy is much clearer.
 On the definition side, I build three classes:
-<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/possible-value.php"><code>p\PossibleValue</code></a>,
-<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-metadata-field-definition.php"><code>p\DynamicMetadataFieldDefinition</code></a>,
+<a href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/possible-value.php\"><code>p\PossibleValue</code></a>,
+<a href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-metadata-field-definition.php\"><code>p\DynamicMetadataFieldDefinition</code></a>,
 and <code>MetadataSet</code>. On the data/container side, I build three other classes:
-<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/field-value.php"><code>p\FieldValue</code></a>,
-<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-field.php"><code>p\DynamicField</code></a>,
-and <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/metadata.php"><code>p\Metadata</code></a>.
-(See <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/field-value.php"><code>FieldValue</code></a>
+<a href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/field-value.php\"><code>p\FieldValue</code></a>,
+<a href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-field.php\"><code>p\DynamicField</code></a>,
+and <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/metadata.php\"><code>p\Metadata</code></a>.
+(See <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/field-value.php\"><code>FieldValue</code></a>
 for more discussion.)</p>
 <p>Here when we look at data definition, we will have <code>DataDefinition</code> to
 represent the definitions, and <a
-href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/structured-data.php"><code>p\StructuredData</code></a>
+href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/structured-data.php\"><code>p\StructuredData</code></a>
 and <a
-href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/structured-data-node.php"><code>p\StructuredDataNode</code></a>
+href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/structured-data-node.php\"><code>p\StructuredDataNode</code></a>
 to encapsulate data/containers. To tell them apart, I will used the term <em>field</em>
 to talk about elements defined in a data definition. For example, consider the following simple data definition:</p>
 <pre>&lt;system-data-structure&gt;
-  &lt;group identifier="test-group" label="Test Group" multiple="true"&gt;
-    &lt;text identifier="test-text" label="Test Text" required="true" maxlength="100"
-      size="20" help-text="Test Text"/&gt;
+  &lt;group identifier=\"test-group\" label=\"Test Group\" multiple=\"true\"&gt;
+    &lt;text identifier=\"test-text\" label=\"Test Text\" required=\"true\" maxlength=\"100\"
+      size=\"20\" help-text=\"Test Text\"/&gt;
   &lt;/group&gt;
 &lt;/system-data-structure&gt;
 </pre>
@@ -86,8 +89,8 @@ what I call <em>fully qualified identifiers</em>. A fully qualified identifier o
 is in fact a string containing a set of identifiers, each pair separated by a semi-colon
 (in Cascade, the group-path contains slashes instead). This identifier is the full XPath
 from the top-level element all the way to the field. For example, the fully qualified
-identifiers of the two fields above are <code>"test-group"</code> and
-<code>"test-group;test-text"</code> respectively. Because fully qualified identifiers are
+identifiers of the two fields above are <code>test-group</code> and
+<code>test-group;test-text</code> respectively. Because fully qualified identifiers are
 in a way XPath expressions, they are never ambiguous.</p>
 <p>Back to the definition-data dichotomy. Fields in a <code>DataDefinition</code> object
 have fully qualified field identifiers. Nodes in a <code>p\StructuredData</code> object
@@ -124,36 +127,32 @@ group and text are multiple fields, then we can have fully qualifier identifiers
 <h2>Design Issues</h2>
 <p>The <code>edit</code> method of this class is paired with the <code>setXML</code>
 method. That is to say, only the definition XML of this object is editable. Here I adopt
-the "garbage in, garbage out" principle and <code>setXML</code> will accept any data. If
+the \"garbage in, garbage out\" principle and <code>setXML</code> will accept any data. If
 the data is rejected by Cascade, no warnings will be issued from the class.</p>
 <p>I translate every element in the data definition into an associative array.
 Consider an example:</p>
-<pre>&lt;text identifier="simpleslideshow-image-caption" label="Caption for the image"/&gt;
+<pre>&lt;text identifier=\"simpleslideshow-image-caption\" label=\"Caption for the image\"/&gt;
 </pre>
 <p>This element is represented as the following:</p>
-<pre>["simpleslideshow-image-caption"]=&gt;
+<pre>[\"simpleslideshow-image-caption\"]=&gt;
   array(3) {
-    ["name"]=&gt;string(4) "text"
-    ["identifier"]=&gt;string(29) "simpleslideshow-image-caption"
-    ["label"]=&gt;string(21) "Caption for the image"
+    [\"name\"]=&gt;string(4) \"text\"
+    [\"identifier\"]=&gt;string(29) \"simpleslideshow-image-caption\"
+    [\"label\"]=&gt;string(21) \"Caption for the image\"
   }
 </pre>
 <p>This array includes all the information in the XML element. The value of
 <code>name</code> is the element name. All other pairs represent the attributes of the
 element. To retrieve this array, we just need to call the <code>getField</code> method and
 pass in the fully qualified identifier like
-<code>"simpleslideshow-image-caption"</code>.</p>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="dataDefinition">
-  &lt;complexContent>
-    &lt;extension base="impl:containered-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="xml" type="xsd:string"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<code>\"simpleslideshow-image-caption\"</code>.</p>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "dataDefinition" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/data_definition.php">data_definition.php</a></li></ul>
 <h2>JSON Dump</h2>
