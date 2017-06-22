@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/20/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/11/2017 Added JSON structure and JSON dump.
   * 11/2/2016 Added searchTextByPattern and searchWYSIWYGByPattern.
@@ -31,8 +32,10 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
-<p>A <code>DataDefinitionBlock</code> object represents an asset of type <code>xhtmlDataDefinitionBlock</code>. This class is a sub-class of <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/block.php"><code>Block</code></a>.</p>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>DataDefinitionBlock</code> object represents an asset of type <code>xhtmlDataDefinitionBlock</code>. This class is a sub-class of <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/block.php\"><code>Block</code></a>.</p>
 <p>This class can be used to manipulate both data definition blocks and xhtml blocks. The only test available to tell them apart is the <code>DataDefinitionBlock::hasStructuredData</code> method. When it returns true, the block is a data definition block; else it is an xhtml block. We cannot consider the <code>xhtml</code> property because it can be <code>NULL</code> for both block sub-types.</p>
 <p>I could have split this class into two: <code>DataDefinitionBlock</code> and <code>XhtmlBlock</code>. But this difference between with and without using a data definition also exists in a page, and I do not think I should split the <code>Page</code> class into two. Therefore, I use the same class to deal with these two types of <code>xhtmlDataDefinitionBlock</code>.</p>
 <h2>Structure of <code>xhtmlDataDefinitionBlock</code></h2>
@@ -137,69 +140,18 @@ xhtmlDataDefinitionBlock
   name
   id
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="xhtmlDataDefinitionBlock">
-  &lt;complexContent>
-    &lt;extension base="impl:block">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="structuredData" type="impl:structured-data"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="xhtml" type="xsd:string"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-
-&lt;complexType name="structured-data">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="definitionId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="definitionPath" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="structuredDataNodes" type="impl:structured-data-nodes"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="structured-data-nodes">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="structuredDataNode" type="impl:structured-data-node"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="structured-data-node">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="type" type="impl:structured-data-type"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="structuredDataNodes" type="impl:structured-data-nodes"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="text" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="assetType" type="impl:structured-data-asset-type"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="blockId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="blockPath" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="fileId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="filePath" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="pageId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="pagePath" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="symlinkId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="symlinkPath" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="recycled" type="xsd:boolean"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;simpleType name="structured-data-type">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="text"/>
-    &lt;enumeration value="asset"/>
-    &lt;enumeration value="group"/>
-  &lt;/restriction>
-&lt;/simpleType>
-
-&lt;simpleType name="structured-data-asset-type">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="block"/>
-    &lt;enumeration value="file"/>
-    &lt;enumeration value="page"/>
-    &lt;enumeration value="symlink"/>
-    &lt;enumeration value="page,file,symlink"/>
-  &lt;/restriction>
-&lt;/simpleType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "xhtmlDataDefinitionBlock" ),
+        array( "getComplexTypeXMLByName" => "structured-data" ),
+        array( "getComplexTypeXMLByName" => "structured-data-nodes" ),
+        array( "getComplexTypeXMLByName" => "structured-data-node" ),
+        array( "getSimpleTypeXMLByName"  => "structured-data-type" ),
+        array( "getSimpleTypeXMLByName"  => "structured-data-asset-type" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul>
 <li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/data_block.php">data_block.php</a></li>
