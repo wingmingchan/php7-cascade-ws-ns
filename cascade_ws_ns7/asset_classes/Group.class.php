@@ -4,6 +4,8 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
+  * 6/15/2017 Removed all methods related to configurations per Cascade 8.4.
   * 6/12/2017 Added WSDL.
   * 1/17/2017 Added JSON dump.
   * 1/27/2016 Modified addUser, removeUser and hasUser, using StringUtility::getExplodedStringArray.
@@ -22,59 +24,30 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>A <code>Group</code> object represents a group asset.</p>
 <h2>Structure of <code>group</code></h2>
 <pre>group
   groupName
-  groupStartingPageId
-  groupStartingPagePath
-  groupStartingPageRecycled
-  groupBaseFolderId
-  groupBaseFolderPath
-  groupBaseFolderRecycled
-  groupAssetFactoryContainerId
-  groupAssetFactoryContainerPath
-  cssClasses
-  wysiwygAllowFontAssignment
-  wysiwygAllowFontFormatting
-  wysiwygAllowTextFormatting
-  wysiwygAllowViewSource
-  wysiwygAllowImageInsertion
-  wysiwygAllowTableInsertion
   users
   role
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="user-group-identifier">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="type" type="impl:entityTypeString"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="group">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="groupName" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="users" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="role" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "user-group-identifier" ),
+        array( "getComplexTypeXMLByName" => "group" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/group.php">group.php</a></li></ul>
 <h2>JSON Dump</h2>
 <pre>{ "asset":{
   "group":{
     "groupName":"22q",
-    "groupStartingPageRecycled":false,
-    "groupBaseFolderRecycled":false,
-    "wysiwygAllowFontAssignment":false,
-    "wysiwygAllowFontFormatting":true,
-    "wysiwygAllowTextFormatting":true,
-    "wysiwygAllowViewSource":false,
-    "wysiwygAllowImageInsertion":true,
-    "wysiwygAllowTableInsertion":true,
     "users":"marrinae",
     "roles":"Default" } },
   "success":true
@@ -181,80 +154,6 @@ class Group extends Asset
     }
     
 /**
-<documentation><description><p>Returns <code>cssClasses</code>.</p></description>
-<example>echo u\StringUtility::getCoalescedString( $g->getCssClasses() ), BR;</example>
-<return-type>mixed</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getCssClasses()
-    {
-        return $this->getProperty()->cssClasses;
-    }
-    
-/**
-<documentation><description><p>Returns <code>groupAssetFactoryContainerId</code>.</p></description>
-<example>echo u\StringUtility::getCoalescedString(
-    $g->getGroupAssetFactoryContainerId() ), BR;</example>
-<return-type>mixed</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getGroupAssetFactoryContainerId()
-    {
-        return $this->getProperty()->groupAssetFactoryContainerId;
-    }
-    
-/**
-<documentation><description><p>Returns <code>groupAssetFactoryContainerPath</code>.</p></description>
-<example>echo u\StringUtility::getCoalescedString(
-    $g->getGroupAssetFactoryContainerPath() ), BR;</example>
-<return-type>mixed</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getGroupAssetFactoryContainerPath()
-    {
-        return $this->getProperty()->groupAssetFactoryContainerPath;
-    }
-    
-/**
-<documentation><description><p>Returns <code>groupBaseFolderId</code>.</p></description>
-<example>echo u\StringUtility::getCoalescedString( $g->getGroupBaseFolderId() ), BR;</example>
-<return-type>mixed</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getGroupBaseFolderId()
-    {
-        return $this->getProperty()->groupBaseFolderId;
-    }
-    
-/**
-<documentation><description><p>Returns <code>groupBaseFolderPath</code>.</p></description>
-<example>echo u\StringUtility::getCoalescedString( $g->getGroupBaseFolderPath() ), BR;</example>
-<return-type>mixed</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getGroupBaseFolderPath()
-    {
-        return $this->getProperty()->groupBaseFolderPath;
-    }
-    
-/**
-<documentation><description><p>Returns <code>groupBaseFolderRecycled</code>.</p></description>
-<example></example>
-<return-type>bool</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getGroupBaseFolderRecycled() : bool
-    {
-        return $this->getProperty()->groupBaseFolderRecycled;
-    }
-    
-/**
 <documentation><description><p>Returns <code>groupName</code>.</p></description>
 <example>echo $g->getGroupName(), BR;</example>
 <return-type>string</return-type>
@@ -264,43 +163,6 @@ class Group extends Asset
     public function getGroupName() : string
     {
         return $this->getProperty()->groupName;
-    }
-    
-/**
-<documentation><description><p>Returns <code>groupStartingPageId</code>.</p></description>
-<example>echo u\StringUtility::getCoalescedString( $g->getGroupStartingPageId() ), BR;</example>
-<return-type>mixed</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getGroupStartingPageId()
-    {
-        return $this->getProperty()->groupStartingPageId;
-    }
-    
-/**
-<documentation><description><p>Returns <code>groupStartingPagePath</code>.</p></description>
-<example>echo u\StringUtility::getCoalescedString(
-    $g->getGroupStartingPagePath() ), BR;</example>
-<return-type>mixed</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getGroupStartingPagePath()
-    {
-        return $this->getProperty()->groupStartingPagePath;
-    }
-    
-/**
-<documentation><description><p>Returns <code>groupStartingPageRecycled</code>.</p></description>
-<example>echo u\StringUtility::boolToString( $g->getGroupStartingPageRecycled() ), BR;</example>
-<return-type>bool</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getGroupStartingPageRecycled() : bool
-    {
-        return $this->getProperty()->groupStartingPageRecycled;
     }
     
 /**
@@ -352,78 +214,6 @@ class Group extends Asset
     }
     
 /**
-<documentation><description><p>Returns <code>wysiwygAllowFontAssignment</code>.</p></description>
-<example>echo u\StringUtility::boolToString( $g->getWysiwygAllowFontAssignment() ), BR;</example>
-<return-type>bool</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getWysiwygAllowFontAssignment() : bool
-    {
-        return $this->getProperty()->wysiwygAllowFontAssignment;
-    }
-    
-/**
-<documentation><description><p>Returns <code>wysiwygAllowFontFormatting</code>.</p></description>
-<example>echo u\StringUtility::boolToString( $g->getWysiwygAllowFontFormatting() ), BR;</example>
-<return-type>bool</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getWysiwygAllowFontFormatting() : bool
-    {
-        return $this->getProperty()->wysiwygAllowFontFormatting;
-    }
-    
-/**
-<documentation><description><p>Returns <code>wysiwygAllowImageInsertion</code>.</p></description>
-<example>echo u\StringUtility::boolToString( $g->getWysiwygAllowImageInsertion() ), BR;</example>
-<return-type>bool</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getWysiwygAllowImageInsertion() : bool
-    {
-        return $this->getProperty()->wysiwygAllowImageInsertion;
-    }
-    
-/**
-<documentation><description><p>Returns <code>wysiwygAllowTableInsertion</code>.</p></description>
-<example>echo u\StringUtility::boolToString( $g->getWysiwygAllowTableInsertion() ), BR;</example>
-<return-type>bool</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getWysiwygAllowTableInsertion() : bool
-    {
-        return $this->getProperty()->wysiwygAllowTableInsertion;
-    }
-    
-/**
-<documentation><description><p>Returns <code>wysiwygAllowTextFormatting</code>.</p></description>
-<example>echo u\StringUtility::boolToString( $g->getWysiwygAllowTextFormatting() ), BR;</example>
-<return-type>bool</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getWysiwygAllowTextFormatting() : bool
-    {
-        return $this->getProperty()->wysiwygAllowTextFormatting;
-    }
-    
-/**
-<documentation><description><p>Returns <code>wysiwygAllowViewSource</code>.</p></description>
-<example>echo u\StringUtility::boolToString( $g->getWysiwygAllowViewSource() ), BR;</example>
-<return-type>bool</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getWysiwygAllowViewSource() : bool
-    {
-        return $this->getProperty()->wysiwygAllowViewSource;
-    }
-    
-/**
 <documentation><description><p>Returns a bool, indicating whether the group includes the user.</p></description>
 <example>echo u\StringUtility::boolToString(
     $g->hasUser( $cascade->getAsset( a\User::TYPE, 'chanw' ) ) ), BR;</example>
@@ -458,17 +248,17 @@ class Group extends Asset
         if( trim( $u_name ) == "" )
             throw new e\EmptyValueException();
         
-            // no users yet
-            if( $this->getProperty()->users == "" || $this->getProperty()->users == NULL )
-            {
-                return false;
-            }
-            else
-            {
-                $users = u\StringUtility::getExplodedStringArray(
-                    self::DELIMITER, $this->getUsers() );
-                return ( in_array( $u_name, $users ) );
-            }
+        // no users yet
+        if( $this->getProperty()->users == "" || $this->getProperty()->users == NULL )
+        {
+            return false;
+        }
+        else
+        {
+            $users = u\StringUtility::getExplodedStringArray(
+                self::DELIMITER, $this->getUsers() );
+            return ( in_array( $u_name, $users ) );
+        }
     }
     
 /**
@@ -537,144 +327,6 @@ class Group extends Asset
             $this->getProperty()->users = implode( self::DELIMITER, $temp );
         }
         return $this;
-    }
-    
-/* 
-setGroupBaseFolder, setGroupStartingPage, setGroupAssetFactoryContainer
-not implemented because they only work for Global site
-*/
-    
-/**
-<documentation><description><p>Sets <code>wysiwygAllowFontAssignment</code> and returns the calling object.</p></description>
-<example>$g->
-    setWysiwygAllowFontAssignment( false )->            
-    setWysiwygAllowFontFormatting( false )->            
-    setWysiwygAllowImageInsertion( true )->            
-    setWysiwygAllowTableInsertion( true )->            
-    setWysiwygAllowTextFormatting( false )->            
-    setWysiwygAllowViewSource( true )->            
-    edit()->dump();</example>
-<return-type>Asset</return-type>
-<exception>UnacceptableValueException</exception>
-</documentation>
-*/
-    public function setWysiwygAllowFontAssignment( bool $bool ) : Asset
-    {
-        $this->checkBoolean( $bool );   
-        $this->getProperty()->wysiwygAllowFontAssignment = $bool;
-        return $this;
-    }
-
-/**
-<documentation><description><p>Sets <code>wysiwygAllowFontFormatting</code> and returns the calling object.</p></description>
-<example>$g->
-    setWysiwygAllowFontAssignment( false )->            
-    setWysiwygAllowFontFormatting( false )->            
-    setWysiwygAllowImageInsertion( true )->            
-    setWysiwygAllowTableInsertion( true )->            
-    setWysiwygAllowTextFormatting( false )->            
-    setWysiwygAllowViewSource( true )->            
-    edit()->dump();</example>
-<return-type>Asset</return-type>
-<exception>UnacceptableValueException</exception>
-</documentation>
-*/
-    public function setWysiwygAllowFontFormatting( bool $bool ) : Asset
-    {
-        $this->checkBoolean( $bool );  
-        $this->getProperty()->wysiwygAllowFontFormatting = $bool;
-        return $this;
-    }
-
-/**
-<documentation><description><p>Sets <code>wysiwygAllowImageInsertion</code> and returns the calling object.</p></description>
-<example>$g->
-    setWysiwygAllowFontAssignment( false )->            
-    setWysiwygAllowFontFormatting( false )->            
-    setWysiwygAllowImageInsertion( true )->            
-    setWysiwygAllowTableInsertion( true )->            
-    setWysiwygAllowTextFormatting( false )->            
-    setWysiwygAllowViewSource( true )->            
-    edit()->dump();</example>
-<return-type>Asset</return-type>
-<exception>UnacceptableValueException</exception>
-</documentation>
-*/
-    public function setWysiwygAllowImageInsertion( bool $bool ) : Asset
-    {
-        $this->checkBoolean( $bool );
-        $this->getProperty()->wysiwygAllowImageInsertion = $bool;
-        return $this;
-    }
-
-/**
-<documentation><description><p>Sets <code>wysiwygAllowTableInsertion</code> and returns the calling object.</p></description>
-<example>$g->
-    setWysiwygAllowFontAssignment( false )->            
-    setWysiwygAllowFontFormatting( false )->            
-    setWysiwygAllowImageInsertion( true )->            
-    setWysiwygAllowTableInsertion( true )->            
-    setWysiwygAllowTextFormatting( false )->            
-    setWysiwygAllowViewSource( true )->            
-    edit()->dump();</example>
-<return-type>Asset</return-type>
-<exception>UnacceptableValueException</exception>
-</documentation>
-*/
-    public function setWysiwygAllowTableInsertion( bool $bool ) : Asset
-    {
-        $this->checkBoolean( $bool );   
-        $this->getProperty()->wysiwygAllowTableInsertion = $bool;
-        return $this;
-    }
-
-/**
-<documentation><description><p>Sets <code>setWysiwygAllowTextFormatting</code> and returns the calling object.</p></description>
-<example>$g->
-    setWysiwygAllowFontAssignment( false )->            
-    setWysiwygAllowFontFormatting( false )->            
-    setWysiwygAllowImageInsertion( true )->            
-    setWysiwygAllowTableInsertion( true )->            
-    setWysiwygAllowTextFormatting( false )->            
-    setWysiwygAllowViewSource( true )->            
-    edit()->dump();</example>
-<return-type>Asset</return-type>
-<exception>UnacceptableValueException</exception>
-</documentation>
-*/
-    public function setWysiwygAllowTextFormatting( bool $bool ) : Asset
-    {
-        $this->checkBoolean( $bool );  
-        $this->getProperty()->wysiwygAllowTextFormatting = $bool;
-        return $this;
-    }
-
-/**
-<documentation><description><p>Sets <code>wysiwygAllowViewSource</code> and returns the calling object.</p></description>
-<example>$g->
-    setWysiwygAllowFontAssignment( false )->            
-    setWysiwygAllowFontFormatting( false )->            
-    setWysiwygAllowImageInsertion( true )->            
-    setWysiwygAllowTableInsertion( true )->            
-    setWysiwygAllowTextFormatting( false )->            
-    setWysiwygAllowViewSource( true )->            
-    edit()->dump();</example>
-<return-type>Asset</return-type>
-<exception>UnacceptableValueException</exception>
-</documentation>
-*/
-    public function setWysiwygAllowViewSource( bool $bool ) : Asset
-    {
-        $this->checkBoolean( $bool );   
-        $this->getProperty()->wysiwygAllowViewSource = $bool;
-        return $this;
-    }
-    
-    private function checkBoolean( bool $bool )
-    {
-        if( !c\BooleanValues::isBoolean( $bool ) )
-            throw new e\UnacceptableValueException(
-                S_SPAN . "The value $bool must be a boolean." . E_SPAN );
     }
 }
 ?>
