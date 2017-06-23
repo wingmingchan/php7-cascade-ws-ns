@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/12/2017 Added JSON structure and JSON dump.
   * 9/6/2016 Added expiration folder-related code.
@@ -24,8 +25,10 @@ use cascade_ws_property as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
-<p>A <code>File</code> object represents a file asset. The <code>File</code> class is a sub-class of <a href="/web-services/api/asset-classes/linkable"><code>Linkable</code></a>.</p>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>File</code> object represents a file asset. The <code>File</code> class is a sub-class of <a href=\"/web-services/api/asset-classes/linkable\"><code>Linkable</code></a>.</p>
 <h2>Structure of <code>file</code></h2>
 <pre>SOAP structure:
 file
@@ -114,27 +117,19 @@ file
   siteName
   name
   id
-
 </pre>
 <h2>Design Issues</h2>
 <ul>
 <li>The <code>setData</code> method accepts any data, binary or textual.</li>
 <li>The <code>setText</code> method accepts only textual data.</li>
 </ul>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="file">
-  &lt;complexContent>
-    &lt;extension base="impl:publishable-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="text" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="data" type="xsd:base64Binary"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="rewriteLinks" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="maintainAbsoluteLinks" type="xsd:boolean"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "file" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/file.php">file.php</a></li></ul>
 <h2>JSON Dump</h2>
