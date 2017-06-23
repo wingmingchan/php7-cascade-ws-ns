@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/11/2017 Added JSON dump.
   * 5/28/2015 Added namespaces.
@@ -19,8 +20,10 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
-<p>A <code>Destination</code> object represents a destination asset. This class is a sub-class of <a href="/web-services/api/asset-classes/scheduled-publishing"><code>ScheduledPublishing</code></a>.</p>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>Destination</code> object represents a destination asset. This class is a sub-class of <a href=\"/web-services/api/asset-classes/scheduled-publishing\"><code>ScheduledPublishing</code></a>.</p>
 <h2>Structure of <code>destination</code></h2>
 <pre>destination
   id
@@ -51,40 +54,19 @@ use cascade_ws_property  as p;
 </pre>
 <h2>Design Issues</h2>
 <p>There is something special about all <code>ScheduledPublishing</code> assets: right after such an asset is read from Cascade, if we send the asset back to Cascade by calling <code>edit</code>, even without making any changes to it, Cascade will reject the asset. To fix this problem, we have to call <code>unset</code> to unset any property related to scheduled publishing if the property stores a <code>NULL</code> value. This must be done inside <code>edit</code>, or an exception will be thrown.</p>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="destination">
-  &lt;complexContent>
-    &lt;extension base="impl:named-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="parentContainerId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="parentContainerPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="transportId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="transportPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="applicableGroups" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="directory" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="enabled" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="checkedByDefault" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="publishASCII" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="usesScheduledPublishing" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="scheduledPublishDestinationMode" nillable="true" type="impl:scheduledDestinationMode"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="scheduledPublishDestinations" type="impl:destination-list"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="timeToPublish" type="xsd:time"/>
-        &lt;choice>
-        &lt;element maxOccurs="1" minOccurs="0" name="publishIntervalHours" type="xsd:nonNegativeInteger"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="publishDaysOfWeek" type="impl:daysOfWeek"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="cronExpression" type="xsd:string"/>
-        &lt;/choice>
-        &lt;element maxOccurs="1" minOccurs="0" name="sendReportToUsers" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="sendReportToGroups" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="sendReportOnErrorOnly" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="webUrl" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="siteId" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="siteName" nillable="true" type="xsd:string"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "destination" ),
+        array( "getSimpleTypeXMLByName"  => "scheduledDestinationMode" ),
+        array( "getComplexTypeXMLByName" => "destination-list" ),
+        array( "getComplexTypeXMLByName" => "identifier" ),
+        array( "getComplexTypeXMLByName" => "path" ),
+        array( "getComplexTypeXMLByName" => "daysOfWeek" ),
+        array( "getSimpleTypeXMLByName"  => "dayOfWeek" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/destination.php">destination.php</a></li></ul>
 <h2>JSON Dump</h2>
