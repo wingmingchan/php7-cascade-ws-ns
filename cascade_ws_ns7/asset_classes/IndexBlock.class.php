@@ -149,7 +149,8 @@ indexBlock
 <p>Note that there is a <code>pageXML</code> property but no <code>blockXML</code> property. This is a bug in Cascade, and I cannot provide any methods to access this missing property.</p>
 <h2>Design Issues</h2>
 <ul>
-<li>Although it is not hard to implement, I decide not to provide a <code>setType</code> method. Switching between folder indexing and content type indexing may not be a good idea.</li>
+<li>Although it is not hard to implement, I decide not to provide a <code>setType</code> method.
+Switching between folder indexing and content type indexing may not be a good idea.</li>
 </ul>
 <h2>WSDL</h2>";
 $doc_string .=
