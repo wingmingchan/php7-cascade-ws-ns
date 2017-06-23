@@ -25,7 +25,9 @@ use cascade_ws_property  as p;
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
 <p>A <code>Message</code> object represents a message. This class is an independent class that does not extend another class.</p>
-<p>Messages can be classified into various types, depending on what is included in the subject line. Currently, this class supports six types: \"Asset expiration\", \"Publish\", \"Un-publish\", \"Summary\", \"Workflow\", and \"Others\". These types are used mainly in <a href=\"web-services/api/message-arrays\"><code>MessageArrays</code></a> and <a href=\"web-services/api/cascade\"><code>Cascade</code></a>.</p>
+<p>Messages can be classified into various types, depending on what is included in the subject line.
+Currently, this class supports six types: \"Asset expiration\", \"Publish\", \"Un-publish\", \"Summary\", \"Workflow\", and \"Others\".
+These types are used mainly in <a href=\"web-services/api/message-arrays\"><code>MessageArrays</code></a> and <a href=\"web-services/api/cascade\"><code>Cascade</code></a>.</p>
 <h2>Structure of <code>message</code></h2>
 <pre>message
   id
