@@ -25,7 +25,8 @@ use cascade_ws_property  as p;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>IndexBlock</code> object represents an index block asset. This class is a sub-class of <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/block.php\"><code>Block</code></a>.</p>
+<p>A <code>IndexBlock</code> object represents an index block asset. This class is a
+sub-class of <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/block.php\"><code>Block</code></a>.</p>
 <p>There are two types of index blocks: \"folder\" and \"content-type\". Use the <code>IndexBlock::getIndexBlockType()</code> method to get the type, or use <code>IndexBlock::isFolder()</code> or <code>IndexBlock::isContent()</code> to test the type.</p>
 <h2>Structure of <code>indexBlock</code></h2>
 <pre>SOAP:
