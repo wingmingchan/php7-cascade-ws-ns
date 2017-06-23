@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
   * 10/24/2016 Added construtor.
@@ -21,9 +22,11 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
-<p>A <code>IndexBlock</code> object represents an index block asset. This class is a sub-class of <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/block.php"><code>Block</code></a>.</p>
-<p>There are two types of index blocks: "folder" and "content-type". Use the <code>IndexBlock::getIndexBlockType()</code> method to get the type, or use <code>IndexBlock::isFolder()</code> or <code>IndexBlock::isContent()</code> to test the type.</p>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>IndexBlock</code> object represents an index block asset. This class is a sub-class of <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/block.php\"><code>Block</code></a>.</p>
+<p>There are two types of index blocks: \"folder\" and \"content-type\". Use the <code>IndexBlock::getIndexBlockType()</code> method to get the type, or use <code>IndexBlock::isFolder()</code> or <code>IndexBlock::isContent()</code> to test the type.</p>
 <h2>Structure of <code>indexBlock</code></h2>
 <pre>SOAP:
 indexBlock
@@ -148,79 +151,18 @@ indexBlock
 <ul>
 <li>Although it is not hard to implement, I decide not to provide a <code>setType</code> method. Switching between folder indexing and content type indexing may not be a good idea.</li>
 </ul>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="indexBlock">
-  &lt;complexContent>
-    &lt;extension base="impl:block">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="indexBlockType" type="impl:index-block-type"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="indexedFolderId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="indexedFolderPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="indexedContentTypeId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="indexedContentTypePath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="indexedFolderRecycled" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="1" name="maxRenderedAssets" type="xsd:nonNegativeInteger"/>
-        &lt;element maxOccurs="1" minOccurs="1" name="depthOfIndex" type="xsd:nonNegativeInteger"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="renderingBehavior" type="impl:index-block-rendering-behavior"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="indexPages" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="indexBlocks" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="indexLinks" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="indexFiles" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="indexRegularContent" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="indexSystemMetadata" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="indexUserMetadata" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="indexAccessRights" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="indexUserInfo" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="indexWorkflowInfo" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="appendCallingPageData" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="sortMethod" type="impl:index-block-sort-method"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="sortOrder" type="impl:index-block-sort-order"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="pageXML" type="impl:index-block-page-xml"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-
-&lt;simpleType name="index-block-sort-method">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="folder-order"/>
-    &lt;enumeration value="alphabetical"/>
-    &lt;enumeration value="last-modified-date"/>
-    &lt;enumeration value="created-date"/>
-  &lt;/restriction>
-&lt;/simpleType>
-
-&lt;simpleType name="index-block-type">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="folder"/>
-    &lt;enumeration value="content-type"/>
-  &lt;/restriction>
-&lt;/simpleType>
-
-&lt;simpleType name="index-block-sort-order">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="ascending"/>
-    &lt;enumeration value="descending"/>
-  &lt;/restriction>
-&lt;/simpleType>
-
-&lt;simpleType name="index-block-page-xml">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="no-render"/>
-    &lt;enumeration value="render"/>
-    &lt;enumeration value="render-current-page-only"/>
-  &lt;/restriction>
-&lt;/simpleType>
-
-&lt;simpleType name="index-block-rendering-behavior">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="render-normally"/>
-    &lt;enumeration value="hierarchy"/>
-    &lt;enumeration value="hierarchy-with-siblings"/>
-    &lt;enumeration value="hierarchy-siblings-forward"/>
-  &lt;/restriction>
-&lt;/simpleType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "indexBlock" ),
+        array( "getSimpleTypeXMLByName"  => "index-block-sort-method" ),
+        array( "getSimpleTypeXMLByName"  => "index-block-type" ),
+        array( "getSimpleTypeXMLByName"  => "index-block-sort-order" ),
+        array( "getSimpleTypeXMLByName"  => "index-block-page-xml" ),
+        array( "getSimpleTypeXMLByName"  => "index-block-rendering-behavior" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/index_block_folder.php">index_block_folder.php</a></li>
 <li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/index_block_content.php">index_block_content.php</a></li></ul>
