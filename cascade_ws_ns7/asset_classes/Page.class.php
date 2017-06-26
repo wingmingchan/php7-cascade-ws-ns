@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/26/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
   * 11/2/2016 Added hasPossibleValues, isMultipleField and isMultipleNode.
@@ -54,15 +55,17 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>The <code>Page</code> class can be used to represent a page asset and is a sub-class of
-<a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/linkable.php"><code>Linkable</code></a>.
+<a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/linkable.php\"><code>Linkable</code></a>.
 This class can be used to manipulate pages with or without a data definition. The only
 test available to tell them apart is the <code>Page::hasStructuredData</code> method. When
 it returns true, the page is a page associated with a data definition; else it is not. We
 cannot consider the <code>xhtml</code> property because it can be <code>NULL</code> for
 both page sub-types. But note that a page that is associated with data definition and has absolutely no data, this method will return <code>false</code>. Then we have to try to retrieve the associated data definition by calling <code>getDataDefinition</code>, though this method may throw a <code>WrongPageTypeException</code>.</p>
-<p>As I point out in <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/data-definition-block.php"><code>DataDefinitionBlock</code></a>,
+<p>As I point out in <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/data-definition-block.php\"><code>DataDefinitionBlock</code></a>,
 even though we are dealing with two sub-types of pages or blocks, it does not make sense
 to split this class, or the <code>DataDefinitionBlock</code> class, into two. One class is
 enough to deal with these sub-types.</p>
@@ -246,75 +249,21 @@ page
   name
   id   
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="page">
-  &lt;complexContent>
-    &lt;extension base="impl:publishable-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="configurationSetId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="configurationSetPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="contentTypeId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="contentTypePath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="structuredData" type="impl:structured-data"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="xhtml" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="pageConfigurations" nillable="false" type="impl:page-configurations"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="maintainAbsoluteLinks" type="xsd:boolean"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-
-&lt;complexType name="structured-data">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="definitionId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="definitionPath" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="structuredDataNodes" type="impl:structured-data-nodes"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="structured-data-nodes">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="structuredDataNode" type="impl:structured-data-node"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="structured-data-node">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="type" type="impl:structured-data-type"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="structuredDataNodes" type="impl:structured-data-nodes"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="text" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="assetType" type="impl:structured-data-asset-type"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="blockId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="blockPath" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="fileId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="filePath" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="pageId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="pagePath" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="symlinkId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="symlinkPath" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="recycled" type="xsd:boolean"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;simpleType name="structured-data-type">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="text"/>
-    &lt;enumeration value="asset"/>
-    &lt;enumeration value="group"/>
-  &lt;/restriction>
-&lt;/simpleType>
-
-&lt;simpleType name="structured-data-asset-type">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="block"/>
-    &lt;enumeration value="file"/>
-    &lt;enumeration value="page"/>
-    &lt;enumeration value="symlink"/>
-    &lt;enumeration value="page,file,symlink"/>
-  &lt;/restriction>
-&lt;/simpleType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "page" ),
+        array( "getComplexTypeXMLByName" => "structured-data" ),
+        array( "getComplexTypeXMLByName" => "structured-data-nodes" ),
+        array( "getComplexTypeXMLByName" => "structured-data-node" ),
+        array( "getSimpleTypeXMLByName"  => "structured-data-type" ),
+        array( "getSimpleTypeXMLByName"  => "structured-data-asset-type" ),
+        array( "getComplexTypeXMLByName" => "pageConfigurations" ),
+        array( "getComplexTypeXMLByName" => "page-configurations" ),
+        array( "getComplexTypeXMLByName" => "pageConfiguration" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page.php">page.php</a></li>
 <li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page2.php">page2.php</a></li>
