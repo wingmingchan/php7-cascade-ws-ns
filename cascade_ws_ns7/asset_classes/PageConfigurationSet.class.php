@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/26/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
   * 5/28/2015 Added namespaces.
@@ -22,7 +23,9 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>A <code>PageConfigurationSet</code> object represents a page configuration set asset.</p>
 <h2>Structure of <code>pageConfigurationSet</code></h2>
 <pre>SOAP:
@@ -98,80 +101,18 @@ pageConfigurationSet
   id
 </pre>
 <p>There is an important issue related to page regions of a configuration. A configuration contains a page region only if the page region is attached with either a block or a format or both. If a region is not attached with a block or a format, then it will not show up in the configuration; namely, it does not exist. To test whether a certain region exists in a configuration, do that test through the associated <code>Template</code> object.</p>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="pageConfigurationSet">
-  &lt;complexContent>
-    &lt;extension base="impl:containered-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="pageConfigurations" type="impl:page-configurations"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-
-&lt;complexType name="page-configurations">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="1" name="pageConfiguration" type="impl:pageConfiguration"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="pageConfiguration">
-  &lt;complexContent>
-    &lt;extension base="impl:base-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="1" name="defaultConfiguration" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="templateId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="templatePath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="formatId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="formatPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="formatRecycled" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="pageRegions" type="impl:page-regions"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="outputExtension" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="serializationType" nillable="true" type="impl:serialization-type"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="includeXMLDeclaration" nillable="true" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="publishable" nillable="true" type="xsd:boolean"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-
-&lt;complexType name="page-regions">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="pageRegion" type="impl:pageRegion"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="pageRegion">
-  &lt;complexContent>
-    &lt;extension base="impl:base-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="blockId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="blockPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="blockRecycled" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="noBlock" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="formatId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="formatPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="formatRecycled" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="noFormat" type="xsd:boolean"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-
-&lt;simpleType name="serialization-type">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="HTML"/>
-    &lt;enumeration value="XML"/>
-    &lt;enumeration value="PDF"/>
-    &lt;enumeration value="RTF"/>
-    &lt;enumeration value="JSON"/>
-    &lt;enumeration value="JS"/>
-    &lt;enumeration value="CSS"/>
-  &lt;/restriction>
-&lt;/simpleType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "pageConfigurationSet" ),
+        array( "getComplexTypeXMLByName" => "page-configurations" ),
+        array( "getComplexTypeXMLByName" => "pageConfiguration" ),
+        array( "getComplexTypeXMLByName" => "page-regions" ),
+        array( "getComplexTypeXMLByName" => "pageRegion" ),
+        array( "getSimpleTypeXMLByName"  => "serialization-type" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page_configuration_set.php">page_configuration_set.php</a></li></ul>
 <h2>JSON Dump</h2>
