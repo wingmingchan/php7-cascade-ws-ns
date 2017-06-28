@@ -4,6 +4,10 @@
   Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   MIT Licensed
   Modification history:
+   6/19/2017 Added getXMLFragments.
+   6/15/2017 Removed lists of XML.
+             Added an DOMXpath object to process the WSDL.
+             Added methods to process the WSDL and return lists and XML strings.
    6/14/2017 Added lists of elements, simple types, and complex types.
    6/13/2017 Added WSDL.
    9/2/2016 Changed checkOut so that it returns the id of the working copy.
@@ -41,825 +45,46 @@ use cascade_ws_exception as e;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
-<p>This class encapsulates the WSDL URL, the authentication object, and the SoapClient object,
-and provides services of all operations defined in the WSDL.</p>
+<description><?php global $eval, $service;
+$doc_string = "
+<h2>Introduction</h2>
+<p>This class encapsulates the WSDL URL, the authentication object, and the SoapClient object, and provides services of all operations defined in the WSDL.</p>
 <h2>WSDL</h2>
-<p>Elements:</p>
-<ul>
-<li>batch</li>
-<li>batchResponse</li>
-<li>checkIn</li>
-<li>checkInResponse</li>
-<li>checkOut</li>
-<li>checkOutResponse</li>
-<li>copy</li>
-<li>copyResponse</li>
-<li>create</li>
-<li>createResponse</li>
-<li>delete</li>
-<li>deleteResponse</li>
-<li>deleteMessage</li>
-<li>deleteMessageResponse</li>
-<li>edit</li>
-<li>editResponse</li>
-<li>editAccessRights</li>
-<li>editAccessRightsResponse</li>
-<li>editPreference</li>
-<li>editPreferenceResponse</li>
-<li>editWorkflowSettings</li>
-<li>editWorkflowSettingsResponse</li>
-<li>listEditorConfigurations</li>
-<li>listEditorConfigurationsResponse</li>
-<li>listMessages</li>
-<li>listMessagesResponse</li>
-<li>listSites</li>
-<li>listSitesResponse</li>
-<li>listSubscribers</li>
-<li>listSubscribersResponse</li>
-<li>markMessage</li>
-<li>markMessageResponse</li>
-<li>move</li>
-<li>moveResponse</li>
-<li>performWorkflowTransition</li>
-<li>performWorkflowTransitionResponse</li>
-<li>publish</li>
-<li>publishResponse</li>
-<li>read</li>
-<li>readResponse</li>
-<li>readAccessRights</li>
-<li>readAccessRightsResponse</li>
-<li>readAudits</li>
-<li>readAuditsResponse</li>
-<li>readPreferences</li>
-<li>readPreferencesResponse</li>
-<li>readWorkflowInformation</li>
-<li>readWorkflowInformationResponse</li>
-<li>readWorkflowSettings</li>
-<li>readWorkflowSettingsResponse</li>
-<li>search</li>
-<li>searchResponse</li>
-<li>sendMessage</li>
-<li>sendMessageResponse</li>
-<li>siteCopy</li>
-<li>siteCopyResponse</li>
-</ul>
-<p>Simple types:</p>
-<ul>
-<li>acl-entry-level</li>
-<li>acl-entry-type</li>
-<li>all-level</li>
-<li>asset-factory-workflow-mode</li>
-<li>auditTypes</li>
-<li>contentTypePageConfigurationPublishMode</li>
-<li>dayOfWeek</li>
-<li>dynamic-metadata-field-type</li>
-<li>entityTypeString</li>
-<li>index-block-page-xml</li>
-<li>index-block-rendering-behavior</li>
-<li>index-block-sort-method</li>
-<li>index-block-sort-order</li>
-<li>index-block-type</li>
-<li>message-mark-type</li>
-<li>metadata-field-visibility</li>
-<li>recycleBinExpiration</li>
-<li>scheduledDestinationMode</li>
-<li>serialization-type</li>
-<li>structured-data-asset-type</li>
-<li>structured-data-type</li>
-<li>twitter-query-type</li>
-<li>user-auth-types</li>
-<li>workflowNamingBehavior</li>
-</ul>
-<p>Complex types:</p>
-<ul>
-<li>accessRightsInformation</li>
-<li>aclEntry</li>
-<li>acl-entries</li>
-<li>assetFactory</li>
-<li>asset-factory-plugin</li>
-<li>asset-factory-plugins</li>
-<li>asset-factory-plugin-parameter</li>
-<li>asset-factory-plugin-parameters</li>
-<li>assetFactoryContainer</li>
-<li>asset</li>
-<li>assetIdentifiers</li>
-<li>audit</li>
-<li>auditParameters</li>
-<li>audits</li>
-<li>authentication</li>
-<li>base-asset</li>
-<li>batchResult</li>
-<li>block</li>
-<li>checkIn</li>
-<li>checkOut</li>
-<li>checkOutResult</li>
-<li>connector</li>
-<li>connectorContainer</li>
-<li>connector-content-type-link</li>
-<li>connector-content-type-link-list</li>
-<li>connector-content-type-link-param</li>
-<li>connector-content-type-link-param-list</li>
-<li>connector-parameter</li>
-<li>connector-parameter-list</li>
-<li>container-children</li>
-<li>containered-asset</li>
-<li>contentType</li>
-<li>contentTypeContainer</li>
-<li>contentTypePageConfiguration</li>
-<li>contentTypePageConfigurations</li>
-<li>copy</li>
-<li>copyParameters</li>
-<li>create</li>
-<li>createResult</li>
-<li>dataDefinition</li>
-<li>dataDefinitionContainer</li>
-<li>databaseTransport</li>
-<li>daysOfWeek</li>
-<li>delete</li>
-<li>destination</li>
-<li>destination-list</li>
-<li>dublin-aware-asset</li>
-<li>dynamicMetadataField</li>
-<li>dynamicMetadataFields</li>
-<li>dynamicMetadataFieldDefinition</li>
-<li>dynamic-metadata-field-definitions</li>
-<li>dynamic-metadata-field-definition-value</li>
-<li>dynamic-metadata-field-definition-values</li>
-<li>edit</li>
-<li>editAccessRights</li>
-<li>editPreferenceResult</li>
-<li>editWorkflowSettings</li>
-<li>editorConfiguration</li>
-<li>entity-type</li>
-<li>expiring-asset</li>
-<li>feedBlock</li>
-<li>fieldValue</li>
-<li>fieldValues</li>
-<li>file</li>
-<li>fileSystemTransport</li>
-<li>folder</li>
-<li>ftpTransport</li>
-<li>folder-contained-asset</li>
-<li>global-abilities</li>
-<li>googleAnalyticsConnector</li>
-<li>group</li>
-<li>identifier</li>
-<li>indexBlock</li>
-<li>inlineEditableField</li>
-<li>inlineEditableFields</li>
-<li>listEditorConfigurationsResult</li>
-<li>listMessagesResult</li>
-<li>listSitesResult</li>
-<li>listSubscribers</li>
-<li>listSubscribersResult</li>
-<li>message</li>
-<li>messagesList</li>
-<li>metadata</li>
-<li>metadataSet</li>
-<li>metadataSetContainer</li>
-<li>move</li>
-<li>moveParameters</li>
-<li>named-asset</li>
-<li>operation</li>
-<li>operationResult</li>
-<li>page</li>
-<li>pageConfiguration</li>
-<li>page-configurations</li>
-<li>pageConfigurationSet</li>
-<li>pageConfigurationSetContainer</li>
-<li>page-regions</li>
-<li>pageRegion</li>
-<li>path</li>
-<li>preference</li>
-<li>preferencesList</li>
-<li>publish</li>
-<li>publishInformation</li>
-<li>publishSet</li>
-<li>publishSetContainer</li>
-<li>publishable-asset</li>
-<li>publishable-asset-list</li>
-<li>read</li>
-<li>readAccessRights</li>
-<li>readAccessRightsResult</li>
-<li>readAuditsResult</li>
-<li>readResult</li>
-<li>readPreferencesResult</li>
-<li>readWorkflowInformationResult</li>
-<li>readWorkflowSettings</li>
-<li>readWorkflowSettingsResult</li>
-<li>reference</li>
-<li>role</li>
-<li>role-assignment</li>
-<li>role-assignments</li>
-<li>role-types</li>
-<li>scriptFormat</li>
-<li>searchFieldString</li>
-<li>searchFields</li>
-<li>searchInformation</li>
-<li>search-matches</li>
-<li>searchResult</li>
-<li>searchTypes</li>
-<li>site</li>
-<li>site-abilities</li>
-<li>siteCopy</li>
-<li>siteDestinationContainer</li>
-<li>statusUpdateConnector</li>
-<li>structured-data</li>
-<li>structured-data-node</li>
-<li>structured-data-nodes</li>
-<li>symlink</li>
-<li>template</li>
-<li>textBlock</li>
-<li>transportContainer</li>
-<li>twitterConnector</li>
-<li>user</li>
-<li>user-group-identifier</li>
-<li>wordPressConnector</li>
-<li>workflow</li>
-<li>workflowAction</li>
-<li>workflowActions</li>
-<li>workflow-configuration</li>
-<li>workflowDefinition</li>
-<li>workflowDefinitionContainer</li>
-<li>workflowSettings</li>
-<li>workflowStep</li>
-<li>workflowSteps</li>
-<li>workflow-step-configuration</li>
-<li>workflow-step-configurations</li>
-<li>workflowTransitionInformation</li>
-<li>xhtmlDataDefinitionBlock</li>
-<li>xmlBlock</li>
-<li>xsltFormat</li>
-</ul>
-<p>operationResult:</p>
-<pre>
-&lt;complexType name="operationResult">
-  &lt;sequence>
-    &lt;element maxOccurs="1" name="success" type="xsd:string"/>
-    &lt;element maxOccurs="1" name="message" nillable="true" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
-<p>Messages:</p>
-<pre>&lt;wsdl:message name="batchRequest">
-  &lt;wsdl:part element="impl:batch" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="batchResponse">
-  &lt;wsdl:part element="impl:batchResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="createRequest">
-  &lt;wsdl:part element="impl:create" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="createResponse">
-  &lt;wsdl:part element="impl:createResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="deleteRequest">
-  &lt;wsdl:part element="impl:delete" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="deleteResponse">
-  &lt;wsdl:part element="impl:deleteResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="editRequest">
-  &lt;wsdl:part element="impl:edit" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="editResponse">
-  &lt;wsdl:part element="impl:editResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="publishRequest">
-  &lt;wsdl:part element="impl:publish" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="publishResponse">
-  &lt;wsdl:part element="impl:publishResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="readRequest">
-  &lt;wsdl:part element="impl:read" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="readResponse">
-  &lt;wsdl:part element="impl:readResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="searchRequest">
-  &lt;wsdl:part element="impl:search" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="searchResponse">
-  &lt;wsdl:part element="impl:searchResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="readAccessRightsRequest">
-  &lt;wsdl:part element="impl:readAccessRights" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="readAccessRightsResponse">
-  &lt;wsdl:part element="impl:readAccessRightsResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="editAccessRightsRequest">
-  &lt;wsdl:part element="impl:editAccessRights" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="editAccessRightsResponse">
-  &lt;wsdl:part element="impl:editAccessRightsResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="readWorkflowSettingsRequest">
-  &lt;wsdl:part element="impl:readWorkflowSettings" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="readWorkflowSettingsResponse">
-  &lt;wsdl:part element="impl:readWorkflowSettingsResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="editWorkflowSettingsRequest">
-  &lt;wsdl:part element="impl:editWorkflowSettings" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="editWorkflowSettingsResponse">
-  &lt;wsdl:part element="impl:editWorkflowSettingsResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="listSubscribersRequest">
-  &lt;wsdl:part element="impl:listSubscribers" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="listSubscribersResponse">
-  &lt;wsdl:part element="impl:listSubscribersResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="listEditorConfigurationsRequest">
-  &lt;wsdl:part element="impl:listEditorConfigurations" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="listEditorConfigurationsResponse">
-  &lt;wsdl:part element="impl:listEditorConfigurationsResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="listMessagesRequest">
-  &lt;wsdl:part element="impl:listMessages" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="listMessagesResponse">
-  &lt;wsdl:part element="impl:listMessagesResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="markMessageRequest">
-  &lt;wsdl:part element="impl:markMessage" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="markMessageResponse">
-  &lt;wsdl:part element="impl:markMessageResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="deleteMessageRequest">
-  &lt;wsdl:part element="impl:deleteMessage" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="deleteMessageResponse">
-  &lt;wsdl:part element="impl:deleteMessageResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="sendMessageRequest">
-  &lt;wsdl:part element="impl:sendMessage" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="sendMessageResponse">
-  &lt;wsdl:part element="impl:sendMessageResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="checkOutRequest">
-  &lt;wsdl:part element="impl:checkOut" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="checkOutResponse">
-  &lt;wsdl:part element="impl:checkOutResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="checkInRequest">
-  &lt;wsdl:part element="impl:checkIn" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="checkInResponse">
-  &lt;wsdl:part element="impl:checkInResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="copyRequest">
-  &lt;wsdl:part element="impl:copy" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="copyResponse">
-  &lt;wsdl:part element="impl:copyResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="siteCopyRequest">
-  &lt;wsdl:part element="impl:siteCopy" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="siteCopyResponse">
-  &lt;wsdl:part element="impl:siteCopyResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="listSitesRequest">
-  &lt;wsdl:part element="impl:listSites" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="listSitesResponse">
-  &lt;wsdl:part element="impl:listSitesResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="moveRequest">
-  &lt;wsdl:part element="impl:move" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="moveResponse">
-  &lt;wsdl:part element="impl:moveResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="readWorkflowInformationRequest">
-  &lt;wsdl:part element="impl:readWorkflowInformation" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="readWorkflowInformationResponse">
-  &lt;wsdl:part element="impl:readWorkflowInformationResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="readAuditsRequest">
-  &lt;wsdl:part element="impl:readAudits" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="readAuditsResponse">
-  &lt;wsdl:part element="impl:readAuditsResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="performWorkflowTransitionRequest">
-  &lt;wsdl:part element="impl:performWorkflowTransition" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="performWorkflowTransitionResponse">
-  &lt;wsdl:part element="impl:performWorkflowTransitionResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="readPreferencesRequest">
-  &lt;wsdl:part element="impl:readPreferences" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="readPreferencesResponse">
-  &lt;wsdl:part element="impl:readPreferencesResponse" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="editPreferenceRequest">
-  &lt;wsdl:part element="impl:editPreference" name="parameters"/>
-&lt;/wsdl:message>
-&lt;wsdl:message name="editPreferenceResponse">
-  &lt;wsdl:part element="impl:editPreferenceResponse" name="parameters"/>
-&lt;/wsdl:message>
-</pre>
-<p>Port types:</p>
-<pre>
-&lt;wsdl:portType name="AssetOperationHandler">
-  &lt;wsdl:operation name="delete">
-    &lt;wsdl:input message="impl:deleteRequest" name="deleteRequest"/>
-    &lt;wsdl:output message="impl:deleteResponse" name="deleteResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="create">
-    &lt;wsdl:input message="impl:createRequest" name="createRequest"/>
-    &lt;wsdl:output message="impl:createResponse" name="createResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="publish">
-    &lt;wsdl:input message="impl:publishRequest" name="publishRequest"/>
-    &lt;wsdl:output message="impl:publishResponse" name="publishResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="edit">
-    &lt;wsdl:input message="impl:editRequest" name="editRequest"/>
-    &lt;wsdl:output message="impl:editResponse" name="editResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="batch">
-    &lt;wsdl:input message="impl:batchRequest" name="batchRequest"/>
-    &lt;wsdl:output message="impl:batchResponse" name="batchResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="read">
-    &lt;wsdl:input message="impl:readRequest" name="readRequest"/>
-    &lt;wsdl:output message="impl:readResponse" name="readResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="search">
-    &lt;wsdl:input message="impl:searchRequest" name="searchRequest"/>
-    &lt;wsdl:output message="impl:searchResponse" name="searchResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="readAccessRights">
-    &lt;wsdl:input message="impl:readAccessRightsRequest" name="readAccessRightsRequest"/>
-    &lt;wsdl:output message="impl:readAccessRightsResponse" name="readAccessRightsResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="editAccessRights">
-    &lt;wsdl:input message="impl:editAccessRightsRequest" name="editAccessRightsRequest"/>
-    &lt;wsdl:output message="impl:editAccessRightsResponse" name="editAccessRightsResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="readWorkflowSettings">
-    &lt;wsdl:input message="impl:readWorkflowSettingsRequest" name="readWorkflowSettingsRequest"/>
-    &lt;wsdl:output message="impl:readWorkflowSettingsResponse" name="readWorkflowSettingsResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="editWorkflowSettings">
-    &lt;wsdl:input message="impl:editWorkflowSettingsRequest" name="editWorkflowSettingsRequest"/>
-    &lt;wsdl:output message="impl:editWorkflowSettingsResponse" name="editWorkflowSettingsResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="listSubscribers">
-    &lt;wsdl:input message="impl:listSubscribersRequest" name="listSubscribersRequest"/>
-    &lt;wsdl:output message="impl:listSubscribersResponse" name="listSubscribersResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="listEditorConfigurations">
-    &lt;wsdl:input message="impl:listEditorConfigurationsRequest" name="listEditorConfigurationsRequest"/>
-    &lt;wsdl:output message="impl:listEditorConfigurationsResponse" name="listEditorConfigurationsResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="listMessages">
-    &lt;wsdl:input message="impl:listMessagesRequest" name="listMessagesRequest"/>
-    &lt;wsdl:output message="impl:listMessagesResponse" name="listMessagesResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="markMessage">
-    &lt;wsdl:input message="impl:markMessageRequest" name="markMessageRequest"/>
-    &lt;wsdl:output message="impl:markMessageResponse" name="markMessageResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="deleteMessage">
-    &lt;wsdl:input message="impl:deleteMessageRequest" name="deleteMessageRequest"/>
-    &lt;wsdl:output message="impl:deleteMessageResponse" name="deleteMessageResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="sendMessage">
-    &lt;wsdl:input message="impl:sendMessageRequest" name="sendMessageRequest"/>
-    &lt;wsdl:output message="impl:sendMessageResponse" name="sendMessageResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="checkOut">
-    &lt;wsdl:input message="impl:checkOutRequest" name="checkOutRequest"/>
-    &lt;wsdl:output message="impl:checkOutResponse" name="checkOutResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="checkIn">
-    &lt;wsdl:input message="impl:checkInRequest" name="checkInRequest"/>
-    &lt;wsdl:output message="impl:checkInResponse" name="checkInResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="copy">
-    &lt;wsdl:input message="impl:copyRequest" name="copyRequest"/>
-    &lt;wsdl:output message="impl:copyResponse" name="copyResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="siteCopy">
-    &lt;wsdl:input message="impl:siteCopyRequest" name="siteCopyRequest"/>
-    &lt;wsdl:output message="impl:siteCopyResponse" name="siteCopyResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="listSites">
-    &lt;wsdl:input message="impl:listSitesRequest" name="listSitesRequest"/>
-    &lt;wsdl:output message="impl:listSitesResponse" name="listSitesResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="move">
-    &lt;wsdl:input message="impl:moveRequest" name="moveRequest"/>
-    &lt;wsdl:output message="impl:moveResponse" name="moveResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="readWorkflowInformation">
-    &lt;wsdl:input message="impl:readWorkflowInformationRequest" name="readWorkflowInformationRequest"/>
-    &lt;wsdl:output message="impl:readWorkflowInformationResponse" name="readWorkflowInformationResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="readAudits">
-    &lt;wsdl:input message="impl:readAuditsRequest" name="readAuditsRequest"/>
-    &lt;wsdl:output message="impl:readAuditsResponse" name="readAuditsResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="performWorkflowTransition">
-    &lt;wsdl:input message="impl:performWorkflowTransitionRequest" name="performWorkflowTransitionRequest"/>
-    &lt;wsdl:output message="impl:performWorkflowTransitionResponse" name="performWorkflowTransitionResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="readPreferences">
-    &lt;wsdl:input message="impl:readPreferencesRequest" name="readPreferencesRequest"/>
-    &lt;wsdl:output message="impl:readPreferencesResponse" name="readPreferencesResponse"/>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="editPreference">
-    &lt;wsdl:input message="impl:editPreferenceRequest" name="editPreferenceRequest"/>
-    &lt;wsdl:output message="impl:editPreferenceResponse" name="editPreferenceResponse"/>
-  &lt;/wsdl:operation>
-&lt;/wsdl:portType>
-</pre>
-<p>Binding:</p>
-<pre>&lt;wsdl:binding name="AssetOperationServiceSoapBinding" type="impl:AssetOperationHandler">
-  &lt;wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-  
-  &lt;wsdl:operation name="batch">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="batchRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="batchResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="create">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="createRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="createResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="delete">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="deleteRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="deleteResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="edit">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="editRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="editResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="publish">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="publishRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="publishResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="read">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="readRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="readResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="search">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="searchRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="searchResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="readAccessRights">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="readAccessRightsRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="readAccessRightsResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="editAccessRights">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="editAccessRightsRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="editAccessRightsResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="readWorkflowSettings">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="readWorkflowSettingsRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="readWorkflowSettingsResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="editWorkflowSettings">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="editWorkflowSettingsRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="editWorkflowSettingsResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="listSubscribers">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="listSubscribersRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="listSubscribersResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="listEditorConfigurations">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="listEditorConfigurationsRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="listEditorConfigurationsResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="listMessages">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="listMessagesRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="listMessagesResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="markMessage">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="markMessageRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="markMessageResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="deleteMessage">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="deleteMessageRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="deleteMessageResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="sendMessage">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="sendMessageRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="sendMessageResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="checkOut">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="checkOutRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="checkOutResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="checkIn">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="checkInRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="checkInResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="copy">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="copyRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="copyResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="siteCopy">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="siteCopyRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="siteCopyResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="listSites">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="listSitesRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="listSitesResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="move">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="moveRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="moveResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="readWorkflowInformation">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="readWorkflowInformationRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="readWorkflowInformationResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="readAudits">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="readAuditsRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="readAuditsResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="performWorkflowTransition">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="performWorkflowTransitionRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="performWorkflowTransitionResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="readPreferences">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="readPreferencesRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="readPreferencesResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-  &lt;wsdl:operation name="editPreference">
-    &lt;wsdlsoap:operation soapAction=""/>
-    &lt;wsdl:input name="editPreferenceRequest">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:input>
-    &lt;wsdl:output name="editPreferenceResponse">
-      &lt;wsdlsoap:body use="literal"/>
-    &lt;/wsdl:output>
-  &lt;/wsdl:operation>
-&lt;/wsdl:binding>
-</pre>
-</description>
+<h3>Elements</h3>";
+$doc_string .= $service->getElementNameList();
+$doc_string .= "<h3>Simple Types</h3>";
+$doc_string .= $service->getSimpleTypeNameList();
+$doc_string .= "<h3>Complex Types</h3>";
+$doc_string .= $service->getComplexTypeNameList();
+$doc_string .= "<h3>Operation Result</h3><pre>";
+$doc_string .=
+    $eval->replaceBrackets($service->getComplexTypeXMLByName("operationResult"));
+$doc_string .= "</pre><h3>Messages</h3><pre>";
+$doc_string .=  $eval->replaceBrackets($service->getMessages());
+$doc_string .= "</pre><h3>Port Type</h3><pre>";
+$doc_string .= $eval->replaceBrackets($service->getPortType());
+$doc_string .= "</pre><h3>Binding</h3><pre>";
+$doc_string .= $eval->replaceBrackets($service->getBinding());
+$doc_string .= "</pre>";
+return $doc_string; ?></description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/tree/master/working-with-AssetOperationHandlerService">working-with-AssetOperationHandlerService</a></li></ul></postscript>
 </documentation>
 */
 class AssetOperationHandlerService
 {
-    const DEBUG = false;
-    const DUMP  = false;
-    const NAME_SPACE = "cascade_ws_AOHS";
+    const DEBUG        = false;
+    const DUMP         = false;
+    const NAME_SPACE   = "cascade_ws_AOHS";
+    const BINDING_PATH = "//wsdl:definitions/wsdl:binding";
+    const COMPLEX_TYPE_PATH =
+        "//wsdl:definitions/wsdl:types/schema:schema/schema:complexType";
+    const ELEMENT_PATH     = "//wsdl:definitions/wsdl:types/schema:schema/schema:element";
+    const MESSAGE_PATH     = "//wsdl:definitions/wsdl:message";
+    const PORT_TYPE_PATH   = "//wsdl:definitions/wsdl:portType";
+    const SIMPLE_TYPE_PATH =
+        "//wsdl:definitions/wsdl:types/schema:schema/schema:simpleType";
+    
 /**
-The constructor.
-@param string $url The url of the WSDL
-@param stdClass $auth The authentication object
-@throws ServerException if the server connection cannot be established
 <documentation><description><p>The constructor.</p></description>
 <example>$service = new aohs\AssetOperationHandlerService( $wsdl, $auth );</example>
 <return-type>void</return-type></documentation>
@@ -896,14 +121,18 @@ The constructor.
         {
             throw new e\ServerException( S_SPAN . $er->getMessage() . E_SPAN );
         }
+        
+        $wsdl     = file_get_contents( $url );
+        $domDoc   = new \DOMDocument();
+        $domDoc->loadXML( $wsdl );
+        
+        $this->dom_xpath = new \DOMXpath( $domDoc );
+        $this->dom_xpath->registerNamespace( 'wsdl', 'http://schemas.xmlsoap.org/wsdl/' );
+        $this->dom_xpath->registerNamespace(
+            'schema', 'http://www.w3.org/2001/XMLSchema' );
     }
-    
+   
 /**
-Dynamically generates the read and get methods.
-@param string $func The function name
-@param array $params The parameters fed into the function
-@method stdClass getAssetFactory() Returns the asset factory read
-@method readAssetFactory( stdClass ) Reads an asset factory
 <documentation><description><p>Dynamically generates the read and get methods.</p></description>
 <example></example>
 <return-type>mixed</return-type></documentation>
@@ -946,64 +175,19 @@ Dynamically generates the read and get methods.
     }
     
 /**
-Batch-executes the operations.
-@param array $operations The array of operations
-<documentation><description><p>Batch-executes the operations.</p>
-<p>batch:</p>
-<pre>
-&lt;element name="batch">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" type="impl:authentication"/>
-      &lt;element maxOccurs="unbounded" name="operation" type="impl:operation"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="batchResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="unbounded" name="batchReturn" type="impl:batchResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="operation">
-  &lt;choice>
-    &lt;element name="create" type="impl:create"/>
-    &lt;element name="delete" type="impl:delete"/>
-    &lt;element name="edit" type="impl:edit"/>
-    &lt;element name="move" type="impl:move"/>
-    &lt;element name="publish" type="impl:publish"/>
-    &lt;element name="read" type="impl:read"/>
-    &lt;element name="readAccessRights" type="impl:readAccessRights"/>
-    &lt;element name="editAccessRights" type="impl:editAccessRights"/>
-    &lt;element name="readWorkflowSettings" type="impl:readWorkflowSettings"/>
-    &lt;element name="editWorkflowSettings" type="impl:editWorkflowSettings"/>
-    &lt;element name="listSubscribers" type="impl:listSubscribers"/>
-    &lt;element name="checkOut" type="impl:checkOut"/>
-    &lt;element name="checkIn" type="impl:checkIn"/>
-    &lt;element name="copy" type="impl:copy"/>
-    &lt;element name="siteCopy" type="impl:siteCopy"/>
-  &lt;/choice>
-&lt;/complexType>
-
-&lt;complexType name="batchResult">
-  &lt;choice>
-    &lt;element maxOccurs="1" minOccurs="1" name="operationResult" type="impl:operationResult"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="checkOutResult" type="impl:checkOutResult"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="createResult" type="impl:createResult"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="listMessagesResult" type="impl:listMessagesResult"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="readResult" type="impl:readResult"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="readAccessRightsResult" type="impl:readAccessRightsResult"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="readWorkflowSettingsResult" type="impl:readWorkflowSettingsResult"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="readAuditsResult" type="impl:readAuditsResult"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="listSubscribersResult" type="impl:listSubscribersResult"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="searchResult" type="impl:searchResult"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="readWorkflowInformationResult" type="impl:readWorkflowInformationResult"/>
-  &lt;/choice>
-&lt;/complexType>
-</pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Batch-executes the operations.</p><p>batch:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("batch"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("batchResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("operation"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("batchResult"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$paths = array( 
              "/_cascade/blocks/code/text-block", 
@@ -1039,36 +223,19 @@ try
         // the returned object is an array
         $this->storeResults();
     }
+
 /**
-Checks in an asset with the given identifier.
-@param stdClass $identifier The identifier of the asset to be checked in
-@param string   $comments The comments to be added
-<documentation><description><p>Checks in an asset with the given identifier.</p>
-<p>checkIn:</p>
-<pre>
-&lt;element name="checkIn">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="comments" nillable="false" type="xsd:string"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="checkInResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="checkInReturn" type="impl:operationResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="checkIn">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
-  &lt;/sequence>
-&lt;/complexType></pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Checks in an asset with the given identifier.</p><p>checkIn:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("checkIn"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("checkInResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("checkIn"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$path = "/files/AssetOperationHandlerService.class.php.zip";
 $id = $service->createId( a\File::TYPE, $path, "cascade-admin" );
@@ -1086,44 +253,21 @@ $service->checkIn( $id, 'Testing the checkIn method.' );
         $this->reply = $this->soapClient->checkIn( $checkin_param );
         $this->storeResults( $this->reply->checkInReturn );
     }
+
 /**
-Checks out an asset with the given identifier.
-@param stdClass $identifier The identifier of the asset to be checked out
-<documentation><description><p>Checks out an asset with the given identifier.</p>
-<p>checkOut:</p>
-<pre>&lt;element name="checkOut">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="checkOutResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="checkOutReturn" type="impl:checkOutResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="checkOut">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="checkOutResult">
-  &lt;complexContent>
-    &lt;extension base="impl:operationResult">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="workingCopyIdentifier" nillable="true" type="impl:identifier"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Checks out an asset with the given identifier.</p><p>checkOut:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("checkOut"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("checkOutResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("checkOut"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("checkOutResult"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$path = "/files/AssetOperationHandlerService.class.php.zip";
 $id = $service->createId( a\File::TYPE, $path, "cascade-admin" );
@@ -1147,48 +291,21 @@ $service->checkOut( $id );
         else
             return "";
     }
+
 /**
-Copies the asset with the given identifier.
-@param stdClass $identifier The identifier of the object to be copied
-@param stdClass $newIdentifier The new identifier of the new object
-@param string   $newName The new name assigned to the new object
-@param bool     $doWorkflow Whether to do any workflow
-<documentation><description><p>Copies the asset with the given identifier.</p>
-<p>copy:</p>
-<pre>&lt;element name="copy">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="copyParameters" nillable="false" type="impl:copyParameters"/>
-      &lt;element maxOccurs="1" minOccurs="0" name="workflowConfiguration" nillable="false" type="impl:workflow-configuration"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="copyResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="copyReturn" type="impl:operationResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="copy">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="copyParameters" nillable="false" type="impl:copyParameters"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="workflowConfiguration" nillable="false" type="impl:workflow-configuration"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="copyParameters">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="destinationContainerIdentifier" nillable="false" type="impl:identifier"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="doWorkflow" nillable="false" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="newName" nillable="false" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType></pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Copies the asset with the given identifier.</p><p>copy:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("copy"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("copyResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("copy"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("copyParameters"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>// the block to be copy
 $block_id = $service->createId( a\TextBlock::TYPE, "_cascade/blocks/code/text-block", "cascade-admin" );
@@ -1215,45 +332,21 @@ $service->copy( $block_id, $parent_id, $new_name, $do_workflow );
         $this->reply = $this->soapClient->copy( $copy_params );
         $this->storeResults( $this->reply->copyReturn );
     }
+
 /**
-Creates the asset.
-@param stdClass $asset The asset to be created
-@return string The ID of the newly created asset
-<documentation><description><p>Creates the asset.</p>
-<p>create:</p>
-<pre>&lt;element name="create">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="authentication" type="impl:authentication"/>
-      &lt;element name="asset" type="impl:asset"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="createResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="createReturn" type="impl:createResult"/>
-  &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="create">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="asset" type="impl:asset"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="createResult">
-  &lt;complexContent>
-    &lt;extension base="impl:operationResult">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="createdAssetId" nillable="false" type="xsd:string"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Creates the asset.</p><p>create:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("create"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("createResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("create"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("createResult"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>// get the image data
 $img_url     = "http://www.upstate.edu/scripts/faculty/thumbs/nadkarna.jpg";
@@ -1281,12 +374,8 @@ $service->create( $asset );
         
         return $this->reply->createReturn->createdAssetId;
     }
+
 /**
-Creates an id object for an asset.
-@param string $type The type of the asset
-@param string $id_path Either the id or the path of an asset
-@param string $siteName The site name
-@return stdClass The identifier
 <documentation><description><p>Creates an id object for an asset.</p></description>
 <example>$block_id = $service->createId( a\TextBlock::TYPE, "_cascade/blocks/code/text-block", "cascade-admin" );</example>
 <return-type>stdClass</return-type></documentation>
@@ -1353,11 +442,8 @@ Creates an id object for an asset.
         $identifier->type = $type;
         return $identifier;
     }
+
 /**
-Creates an id object for an asset.
-@param string $id The id string of an asset
-@param string $type The type of the asset
-@return stdClass The identifier
 <documentation><description><p>Creates an id object for an asset.</p></description>
 <example>$block_id = $service->createIdWithIdType( "388fa7a58b7ffe83164c93149320e775", a\TextBlock::TYPE );</example>
 <return-type>stdClass</return-type></documentation>
@@ -1366,12 +452,8 @@ Creates an id object for an asset.
     {
         return $this->createId( $type, $id );
     }
+
 /**
-Creates an id object for an asset.
-@param string $path The path and name of an asset
-@param string $siteName The site name
-@param string $type The type of the asset
-@return stdClass The identifier
 <documentation><description><p>Creates an id object for an asset.</p></description>
 <example>$block_id = $service->createIdWithPathSiteNameType( "_cascade/blocks/code/text-block", "cascade-admin", a\TextBlock::TYPE );</example>
 <return-type>stdClass</return-type></documentation>
@@ -1380,13 +462,8 @@ Creates an id object for an asset.
     {
         return $this->createId( $type, $path, $site_name );
     }
+
 /**
-Creates a file stdClass object.
-@param string $parentFolderId the id object of the parent folder
-@param string $siteName The site name
-@param string $name The name of the file
-@param binary $data The data of the file
-@return stdClass The file object
 <documentation><description><p>Creates a file stdClass object.</p></description>
 <example>$asset->file = $service->createFileWithParentIdSiteNameNameData( 
     $parent_id, $site_name, $img_name, $img_binary );</example>
@@ -1402,36 +479,19 @@ Creates a file stdClass object.
         $file->data           = $data;
         return $file;
     }
+
 /**
-Deletes the asset with the given identifier.
-@param stdClass $identifier The identifier of the object to be deleted
-<documentation><description><p>Deletes the asset with the given identifier.</p>
-<p>delete:</p>
-<pre>
-&lt;element name="delete">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="authentication" type="impl:authentication"/>
-      &lt;element name="identifier" type="impl:identifier"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="deleteResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="deleteReturn" type="impl:operationResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="delete">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="workflowConfiguration" type="impl:workflow-configuration"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="impl:identifier"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Deletes the asset with the given identifier.</p><p>delete:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("delete"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("deleteResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("delete"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$path = "/_cascade/blocks/code/text-block2";
 $service->delete( $service->createId( a\TextBlock::TYPE, $path, "cascade-admin" ) );
@@ -1447,28 +507,17 @@ $service->delete( $service->createId( a\TextBlock::TYPE, $path, "cascade-admin" 
         $this->reply = $this->soapClient->delete( $delete_params );
         $this->storeResults( $this->reply->deleteReturn );
     }
-/**
-Deletes the message with the given identifier.
-@param stdClass $identifier The identifier of the message to be deleted
-<documentation><description><p>Deletes the message with the given identifier.</p>
-<p>deleteMessage:</p>
-<pre>&lt;element name="deleteMessage">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
 
-&lt;element name="deleteMessageResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="deleteMessageReturn" type="impl:operationResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-</pre>
+/**
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Deletes the message with the given identifier.</p><p>deleteMessage:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("deleteMessage"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("deleteMessageResponse"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$mid = "9e10ae5b8b7ffe8364375ac78e212e42";
 $service->deleteMessage( $service->createId( c\T::MESSAGE, $mid ) );
@@ -1484,33 +533,19 @@ $service->deleteMessage( $service->createId( c\T::MESSAGE, $mid ) );
         $this->reply = $this->soapClient->deleteMessage( $delete_message_params );
         $this->storeResults( $this->reply->deleteMessageReturn );
     }
+
 /**
-Edits the given asset.
-@param stdClass $asset The asset to be edited
-<documentation><description><p>Edits the given asset.</p>
-<p>edit:</p>
-<pre>&lt;element name="edit">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="authentication" type="impl:authentication"/>
-      &lt;element name="asset" type="impl:asset"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="editResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="editReturn" type="impl:operationResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="edit">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="asset" type="impl:asset"/>
-  &lt;/sequence>
-&lt;/complexType></pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Edits the given asset.</p><p>edit:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("edit"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("editResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("edit"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$asset = new \stdClass();
 $asset->xhtmlDataDefinitionBlock = $block;
@@ -1527,37 +562,19 @@ $service->edit( $asset );
         $this->reply = $this->soapClient->edit( $edit_params );
         $this->storeResults( $this->reply->editReturn );
     }
+
 /**
-Edits the given accessRightsInformation.
-@param stdClass $accessRightsInformation the accessRightsInformation to be edited
-@param bool     $applyToChildren Whether to apply the settings to children
-<documentation><description><p>Edits the given accessRightsInformation.</p>
-<p>editAccessRights:</p>
-<pre>&lt;element name="editAccessRights">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="accessRightsInformation" nillable="false" type="impl:accessRightsInformation"/>
-      &lt;element maxOccurs="1" minOccurs="0" name="applyToChildren" nillable="false" type="xsd:boolean"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="editAccessRightsResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="editAccessRightsReturn" type="impl:operationResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="editAccessRights">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="accessRightsInformation" nillable="true" type="impl:accessRightsInformation"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="applyToChildren" nillable="false" type="xsd:boolean"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Edits the given accessRightsInformation.</p><p>editAccessRights:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("editAccessRights"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("editAccessRightsResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("editAccessRights"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$accessRightInfo->aclEntries->aclEntry = $aclEntries;
 // false: do not apply to children
@@ -1575,35 +592,20 @@ $service->editAccessRights( $accessRightInfo, false );
         $this->reply = $this->soapClient->editAccessRights( $edit_params );
         $this->storeResults( $this->reply->editAccessRightsReturn );
     }
+
 /**
-Edits the preferences.
-@param string $name The name of the preference
-@param string $name The value of the preference
-<documentation><description><p>Edits the preferences.</p>
-<p>editPreference:</p>
-<pre>&lt;element name="editPreference">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="preference" nillable="false" type="impl:preference"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="editPreferenceResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="editPreferenceReturn" type="impl:operationResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="editPreferenceResult">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="preference" nillable="false" type="impl:preference"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre></description>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Edits the preferences.</p><p>editPreference:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("editPreference"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("editPreferenceResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("editPreferenceResult"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
+</description>
 <example>$service->editPreference( "system_pref_allow_font_assignment", "off" );</example>
 <return-type>void</return-type></documentation>
 */
@@ -1618,10 +620,8 @@ Edits the preferences.
         $this->reply = $this->soapClient->editPreference( $edit_preferences_param );
         $this->storeResults( $this->reply->editPreferenceReturn );
     }
+
 /**
-Edits the preferences.
-@param string $name The name of the preference
-@param string $name The value of the preference
 <documentation><description><p>An alias of <code>editPreference</code>.</p>
 </description>
 <return-type>void</return-type></documentation>
@@ -1630,39 +630,19 @@ Edits the preferences.
     {
         $this->editPreference( $name, $value );
     }
+
 /**
-Edits the given workflowSettings.
-@param stdClass $workflowSettings The workflowSettings to be edited
-@param bool     $applyInheritWorkflowsToChildren Whether to apply inherited workflows to children
-@param bool     $applyRequireWorkflowToChildren Whether to apply required workflows to children
-<documentation><description><p>Edits the given workflowSettings.</p>
-<p>editWorkflowSettings:</p>
-<pre>&lt;element name="editWorkflowSettings">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="workflowSettings" nillable="false" type="impl:workflowSettings"/>
-      &lt;element maxOccurs="1" minOccurs="0" name="applyInheritWorkflowsToChildren" nillable="false" type="xsd:boolean"/>
-      &lt;element maxOccurs="1" minOccurs="0" name="applyRequireWorkflowToChildren" nillable="false" type="xsd:boolean"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="editWorkflowSettingsResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="editWorkflowSettingsReturn" type="impl:operationResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="editWorkflowSettings">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="workflowSettings" nillable="true" type="impl:workflowSettings"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="applyInheritWorkflowsToChildren" nillable="false" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="applyRequireWorkflowToChildren" nillable="false" type="xsd:boolean"/>
-  &lt;/sequence>
-&lt;/complexType></pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Edits the given workflowSettings.</p><p>editWorkflowSettings:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("editWorkflowSettings"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("editWorkflowSettingsResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("editWorkflowSettings"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$service->editWorkflowSettings( $workflowSettings, false, false );</example>
 <return-type>void</return-type></documentation>
@@ -1679,13 +659,8 @@ Edits the given workflowSettings.
         $this->reply = $this->soapClient->editWorkflowSettings( $edit_params );
         $this->storeResults( $this->reply->editWorkflowSettingsReturn );
     }
+
 /**
-Creates an asset object, bridging this class and the Asset classes.
-@param string $type The type of the asset
-@param string $id_path Either the ID string or the path of the asset
-@param binary $site_name The site name
-@return a\Asset The asset object
-@throw Exception if the asset cannot be retrieved
 <documentation><description><p>Creates an asset object, bridging this class and the Asset classes.</p></description>
 <example>$page = $service->getAsset( a\Page::TYPE, $page_id )</example>
 <exception>NoSuchTypeException</exception>
@@ -1714,8 +689,6 @@ Creates an asset object, bridging this class and the Asset classes.
     }
     
 /**
-Gets the audits object after the call of readAudits().
-@return stdClass The audits object
 <documentation><description><p>Gets the audits object after the call of readAudits().</p></description>
 <example>u\DebugUtility::dump( $service->getAudits() );</example>
 <return-type>stdClass</return-type></documentation>
@@ -1724,9 +697,38 @@ Gets the audits object after the call of readAudits().
     {
         return $this->audits;
     }
+
 /**
-Gets the ID of an asset newly created.
-@return string The ID string
+<documentation><description><p>Returns the XML of <code>wsdl:binding</code>.</p></description>
+<example>echo $eval->replaceBrackets( $service->getBinding() );</example>
+<return-type>string</return-type></documentation>
+*/
+    public function getBinding() : string
+    {
+        return $this->getXMLByPath( self::BINDING_PATH );
+    }
+    
+/**
+<documentation><description><p>Returns a list of complex type names.</p></description>
+<example>echo $service->getComplexTypeNameList();</example>
+<return-type>string</return-type></documentation>
+*/
+    public function getComplexTypeNameList() : string
+    {
+        return $this->getNameList( self::COMPLEX_TYPE_PATH );
+    }
+    
+/**
+<documentation><description><p>Returns the XML of the named complex type.</p></description>
+<example>echo $eval->replaceBrackets( $service->getComplexTypeXMLByName( "copyParameters" ) );</example>
+<return-type>string</return-type></documentation>
+*/
+    public function getComplexTypeXMLByName( string $name ) : string
+    {
+        return $this->getXMLByName( self::COMPLEX_TYPE_PATH, $name );
+    }
+    
+/**
 <documentation><description><p>Gets the ID of an asset newly created.</p></description>
 <example>echo $service->getCreatedAssetId();</example>
 <return-type>string</return-type></documentation>
@@ -1735,9 +737,38 @@ Gets the ID of an asset newly created.
     {
         return $this->createdAssetId;
     }
+
 /**
-Gets the last request XML.
-@return string The last request XML
+<documentation><description><p>Returns the <code>DOMXpath</code> object storing the WSDL.</p></description>
+<example></example>
+<return-type>DOMXpath</return-type></documentation>
+*/
+    public function getDOMXpath() : \DOMXpath
+    {
+        return $this->dom_xpath;
+    }
+
+/**
+<documentation><description><p>Returns a list of element names.</p></description>
+<example>echo $eval->replaceBrackets( $service->getComplexTypeXMLByName( "copyParameters" ) );</example>
+<return-type>string</return-type></documentation>
+*/
+    public function getElementNameList() : string
+    {
+        return $this->getNameList( self::ELEMENT_PATH );
+    }
+    
+/**
+<documentation><description><p>Returns the XML of the named element.</p></description>
+<example>echo $eval->replaceBrackets( $service->getElementXMLByName( "deleteMessage" ) );</example>
+<return-type>string</return-type></documentation>
+*/
+    public function getElementXMLByName( string $name ) : string
+    {
+        return $this->getXMLByName( self::ELEMENT_PATH, $name );
+    }
+    
+/**
 <documentation><description><p>Gets the last request XML.</p></description>
 <example>echo u\XMLUtility::replaceBrackets( $service->getLastRequest() );</example>
 <return-type>string</return-type></documentation>
@@ -1746,9 +777,8 @@ Gets the last request XML.
     {
         return $this->lastRequest;
     }
+
 /**
-Gets the last response.
-@return string The last response
 <documentation><description><p>Gets the last response.</p></description>
 <example>echo S_PRE, u\XMLUtility::replaceBrackets( $service->getLastResponse() ), E_PRE;</example>
 <return-type>string</return-type></documentation>
@@ -1757,9 +787,8 @@ Gets the last response.
     {
         return $this->lastResponse;
     }
+
 /**
-Gets the messages object after the call of listMessages().
-@return stdClass The listed messages
 <documentation><description><p>Gets the messages object after the call of listMessages().</p></description>
 <example>$service->listMessages();
 u\DebugUtility::dump( $service->getListedMessages() );
@@ -1770,9 +799,8 @@ u\DebugUtility::dump( $service->getListedMessages() );
     {
         return $this->listed_messages;
     }
+    
 /**
-Gets the message after an operation.
-@return string The message
 <documentation><description><p>Gets the message after an operation.</p></description>
 <example>echo $service->getMessage();</example>
 <return-type>mixed</return-type></documentation>
@@ -1781,9 +809,28 @@ Gets the message after an operation.
     {
         return $this->message;
     }
+
 /**
-Gets the preferences after the call of readPreferences().
-@return stdClass The preferences object
+<documentation><description><p>Returns the XML of <code>wsdl:message</code>.</p></description>
+<example>echo $eval->replaceBrackets( $service->getMessages() );</example>
+<return-type>string</return-type></documentation>
+*/
+    public function getMessages() : string
+    {
+        return $this->getXMLByPath( self::MESSAGE_PATH );
+    }
+
+/**
+<documentation><description><p>Returns the XML of <code>wsdl:portType</code>.</p></description>
+<example>echo $eval->replaceBrackets( $service->getPortType() );</example>
+<return-type>string</return-type></documentation>
+*/
+    public function getPortType()
+    {
+        return $this->getXMLByPath( self::PORT_TYPE_PATH );
+    }
+    
+/**
 <documentation><description><p>Gets the preferences after the call of readPreferences().</p></description>
 <example>$service->readPreferences();
 u\DebugUtility::dump( $service->getPreferences() );</example>
@@ -1793,9 +840,8 @@ u\DebugUtility::dump( $service->getPreferences() );</example>
     {
         return $this->preferences;
     }
+
 /**
-Gets the accessRightInformation object after the call of readAccessRightInformation().
-@return stdClass The accessRightsInformation object
 <documentation><description><p>Gets the accessRightInformation object after the call of readAccessRightInformation().</p></description>
 <example>$accessRightInfo = $service->getReadAccessRightInformation();</example>
 <return-type>stdClass</return-type></documentation>
@@ -1804,9 +850,8 @@ Gets the accessRightInformation object after the call of readAccessRightInformat
     {
         return $this->reply->readAccessRightsReturn->accessRightsInformation;
     }
+
 /**
-Gets the asset object after the call of read().
-@return stdClass The asset read
 <documentation><description><p>Gets the asset object after the call of read().</p></description>
 <example>$container = $service->getReadAsset()->assetFactoryContainer;</example>
 <return-type>stdClass</return-type></documentation>
@@ -1815,9 +860,8 @@ Gets the asset object after the call of read().
     {
         return $this->reply->readReturn->asset;
     }
+
 /**
-Gets the file object after the call of read().
-@return stdClass The file read
 <documentation><description><p>Gets the file object after the call of read().</p></description>
 <example>$file = $service->getReadFile();</example>
 <return-type>stdClass</return-type></documentation>
@@ -1826,9 +870,8 @@ Gets the file object after the call of read().
     {
         return $this->reply->readReturn->asset->file;
     }
+
 /**
-Gets the workflow object after the call of readWorkflow().
-@return stdClass The workflow read
 <documentation><description><p>Gets the workflow object after the call of readWorkflow().</p></description>
 <example>$service->readWorkflowInformation( 
     $service->createId( a\Page::TYPE, $path, "cascade-admin" ) );
@@ -1839,9 +882,8 @@ $workflow = $service->getReadWorkflow();</example>
     {
         return $this->reply->readWorkflowInformationReturn->workflow;
     }
+
 /**
-Gets the workflowSettings object after the call of readWorkflowSettings().
-@return stdClass The workflowSettings object
 <documentation><description><p></p></description>
 <example>$service->readWorkflowSettings( 
     $service->createId( a\Folder::TYPE, "/", $site_name ) );
@@ -1853,9 +895,8 @@ $workflowSettings = $service->getReadWorkflowSettings();
     {
         return $this->reply->readWorkflowSettingsReturn->workflowSettings;
     }
+
 /**
-Gets the response object after an operation.
-@return stdClass The response object
 <documentation><description><p>Gets the workflowSettings object after the call of readWorkflowSettings().</p></description>
 <example>$reply = $service->getReply();</example>
 <return-type>stdClass</return-type></documentation>
@@ -1864,9 +905,8 @@ Gets the response object after an operation.
     {
         return $this->reply;
     }
+
 /**
-Gets the searchMatches object after the call of search().
-@return stdClass The searchMatches object
 <documentation><description><p>Gets the searchMatches object after the call of search().</p></description>
 <example>$service->search( $search_for );
 if( is_null( $service->getSearchMatches()->match ) )
@@ -1879,9 +919,28 @@ if( is_null( $service->getSearchMatches()->match ) )
     {
         return $this->searchMatches;
     }
+
 /**
-Returns a bool after an operation.
-@return string The string 'true' or 'false'
+<documentation><description><p>Returns a list of simple type names.</p></description>
+<example>echo $service->getSimpleTypeNameList();</example>
+<return-type>string</return-type></documentation>
+*/
+    public function getSimpleTypeNameList() : string
+    {
+        return $this->getNameList( self::SIMPLE_TYPE_PATH );
+    }
+
+/**
+<documentation><description><p>Returns the XML of the named complex type.</p></description>
+<example>echo $eval->replaceBrackets( $service->getSimpleTypeXMLByName( "message-mark-type" ) );</example>
+<return-type>string</return-type></documentation>
+*/
+    public function getSimpleTypeXMLByName( string $name ) : string
+    {
+        return $this->getXMLByName( self::SIMPLE_TYPE_PATH, $name );
+    }
+
+/**
 <documentation><description><p>Returns a bool after an operation indicating whether the search is successful.</p></description>
 <example>if ( $service->getSuccess() )</example>
 <return-type>bool</return-type></documentation>
@@ -1890,10 +949,8 @@ Returns a bool after an operation.
     {
         return $this->success;
     }
+
 /**
-Gets the type of an asset.
-@param string $id_string The 32-digit hex id string
-@return string The type string
 <documentation><description><p>Gets the type of an asset.</p></description>
 <example>$id = "3896de848b7ffe83164c931422421045";
 echo $service->getType( $id ), BR;
@@ -1933,9 +990,8 @@ echo $service->getType( $id ), BR;
         
         return "The id does not match any asset type.";
     }
+
 /**
-Gets the WSDL URL string.
-@return string The WSDL URL string
 <documentation><description><p>Gets the WSDL URL string.</p></description>
 <example>echo $service->getUrl(), BR;</example>
 <return-type>string</return-type></documentation>
@@ -1944,10 +1000,38 @@ Gets the WSDL URL string.
     {
         return $this->url;
     }
+
 /**
-Returns a bool indicating whether the string is a 32-digit hex string.
-@param string $string The input string
-@return bool Whether the input string is a hex string
+<documentation><description><p>Returns the concatenated XML fragments, based on the
+supplied list of method names and element names.</p></description>
+<example>$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "entity-type" ),
+        array( "getSimpleTypeXMLByName"  => "entityTypeString" ),
+    ) );
+return $doc_string;
+</example>
+<return-type>string</return-type></documentation>
+*/
+    public function getXMLFragments( array $array ) : string
+    {
+        $doc_string = S_PRE;
+        $str_array  = array();
+        
+        foreach( $array as $sub_array )
+        {
+            foreach( $sub_array as $key => $value )
+            {
+                $str_array[] = u\XMLUtility::replaceBrackets( $this->$key( $value ) );
+            }
+        }
+        
+        $doc_string .= trim( implode( "\r", $str_array ), "\r" );
+        $doc_string .= E_PRE;
+        return $doc_string;
+    }
+
+/**
 <documentation><description><p>Returns a bool indicating whether the string is a 32-digit hex string.</p></description>
 <example>if( $service->isHexString( $id ) )
     echo $service->getType( $id ), BR;</example>
@@ -1964,9 +1048,8 @@ Returns a bool indicating whether the string is a 32-digit hex string.
             return $matches[ 0 ] == $string;
         return false;
     }
+
 /**
-Returns true if an operation is successful.
-@return bool The result of an operation
 <documentation><description><p>Returns true if an operation is successful.</p></description>
 <example>$service->readPreferences();
 if( $service->isSuccessful() )
@@ -1979,50 +1062,35 @@ if( $service->isSuccessful() )
     {
         return $this->success == 'true';
     }
+
 /**
 <documentation><description><p>Lists editor configurations.</p>
 </description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
-	public function listEditorConfigurations()
+    public function listEditorConfigurations()
     {
         $list_editor_configurations_params                 = new \stdClass();
         $list_editor_configurations_params->authentication = $this->auth;
         
         $this->reply = $this->soapClient->listEditorConfigurations(
-        	$list_editor_configurations_params );
+            $list_editor_configurations_params );
         $this->storeResults( $this->reply->listEditorConfigurationsReturn );
     }
+
 /**
-Lists all messages.
-<documentation><description><p>Lists all messages.</p>
-<p>listMessages:</p>
-<pre>&lt;element name="listMessages">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="listMessagesResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="listMessagesReturn" type="impl:listMessagesResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="listMessagesResult">
-  &lt;complexContent>
-    &lt;extension base="impl:operationResult">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="messages" nillable="true" type="impl:messagesList"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType></pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Lists all messages.</p><p>listMessages:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("listMessages"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("listMessagesResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("listMessagesResult"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$service->listMessages();</example>
 <return-type>void</return-type></documentation>
@@ -2040,36 +1108,19 @@ Lists all messages.
             $this->listed_messages = $this->reply->listMessagesReturn->messages;
         }
     }
+
 /**
-Lists all sites.
-<documentation><description><p>Lists all sites.</p>
-<p>listSites:</p>
-<pre>&lt;element name="listSites">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="listSitesResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="listSitesReturn" type="impl:listSitesResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="listSitesResult">
-  &lt;complexContent>
-    &lt;extension base="impl:operationResult">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="sites" type="impl:assetIdentifiers"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Lists all sites.</p><p>listSites:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("listSites"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("listSitesResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("listSitesResult"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$service->listSites();</example>
 <return-type>void</return-type></documentation>
@@ -2083,42 +1134,19 @@ Lists all sites.
         $this->storeResults( $this->reply->listSitesReturn );
     }
 /**
-Lists all subscribers of an asset.
-@param stdClass $identifier The identifier of the asset
-<documentation><description><p>Lists all subscribers of an asset.</p>
-<p>listSubscribers:</p>
-<pre>&lt;element name="listSubscribers">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="authentication" type="impl:authentication"/>
-      &lt;element name="identifier" type="impl:identifier"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="listSubscribersResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="listSubscribersReturn" type="impl:listSubscribersResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="listSubscribers">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="listSubscribersResult">
-  &lt;complexContent>
-    &lt;extension base="impl:operationResult">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="subscribers" type="impl:assetIdentifiers"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType></pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Lists all subscribers of an asset.</p><p>listSubscribers:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("listSubscribers"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("listSubscribersResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("listSubscribers"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("listSubscribersResult"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$service->listSubscribers( 
     $service->createId( $type, $path, $site_name ) );</example>
@@ -2133,29 +1161,17 @@ Lists all subscribers of an asset.
         $this->reply = $this->soapClient->listSubscribers( $list_subscribers_params );
         $this->storeResults( $this->reply->listSubscribersReturn );
     }
-/**
-Marks a message as 'read' or 'unread'.
-@param stdClass $identifier The identifier of the message
-@param string   $markType The string 'read' or 'unread'
-<documentation><description><p>Marks a message as 'read' or 'unread'.</p>
-<p>markMessage:</p>
-<pre>&lt;element name="markMessage">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="markType" nillable="false" type="impl:message-mark-type"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
 
-&lt;element name="markMessageResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="markMessageReturn" type="impl:operationResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element></pre>
+/**
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Marks a message as 'read' or 'unread'.</p><p>markMessage:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("markMessage"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("markMessageResponse"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$service->markMessage( 
     $service->createIdWithIdType( $id, c\T::MESSAGE ), 
@@ -2174,48 +1190,20 @@ Marks a message as 'read' or 'unread'.
         $this->storeResults( $this->reply->markMessageReturn );
     }
 /**
-Moves the asset with the given identifier.
-@param stdClass $identifier The identifier of the object to be moved
-@param stdClass $newIdentifier The new container identifier
-@param string   $newName The new name assigned to the object moved
-@param bool     $doWorkflow Whether to do workflow
-<documentation><description><p>Moves the asset with the given identifier.</p>
-<p>move:</p>
-<pre>&lt;element name="move">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="moveParameters" nillable="false" type="impl:moveParameters"/>
-      &lt;element maxOccurs="1" minOccurs="0" name="workflowConfiguration" nillable="false" type="impl:workflow-configuration"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="moveResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="moveReturn" type="impl:operationResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="move">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="moveParameters" nillable="false" type="impl:moveParameters"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="workflowConfiguration" nillable="false" type="impl:workflow-configuration"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="moveParameters">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="destinationContainerIdentifier" type="impl:identifier"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="doWorkflow" nillable="false" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="newName" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre></description>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Moves the asset with the given identifier.</p><p>move:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("move"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("moveResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("move"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("moveParameters"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
+</description>
 <example>$service->move( $block_id, $parent_id, $new_name, $do_workflow );</example>
 <return-type>void</return-type></documentation>
 */
@@ -2232,29 +1220,17 @@ Moves the asset with the given identifier.
         $this->reply = $this->soapClient->move( $move_params );
         $this->storeResults( $this->reply->moveReturn );
     }
-/**
-Performs the workflow transition.
-@param string   $workflowId The current workflow ID
-@param string   $actionIdentifier The identifier of the action
-@param string   $transitionComment The comments
-<documentation><description><p>Performs the workflow transition.</p>
-<p>performWorkflowTransition:</p>
-<pre>&lt;element name="performWorkflowTransition">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="workflowTransitionInformation" nillable="false" type="impl:workflowTransitionInformation"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
 
-&lt;element name="performWorkflowTransitionResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="performWorkflowTransitionReturn" type="impl:operationResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element></pre>
+/**
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Performs the workflow transition.</p><p>performWorkflowTransition:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("performWorkflowTransition"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("performWorkflowTransitionResponse"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$service->performWorkflowTransition( $id, $action, 'Testing' );</example>
 <return-type>void</return-type></documentation>
@@ -2274,8 +1250,8 @@ Performs the workflow transition.
         $this->reply = $this->soapClient->performWorkflowTransition( $transition_params );
         $this->storeResults( $this->reply->performWorkflowTransitionReturn );
     }
+
 /**
-Prints the XML of the last request.
 <documentation><description><p>Prints the XML of the last request.</p></description>
 <example>$service->printLastRequest();</example>
 <return-type>void</return-type></documentation>
@@ -2284,8 +1260,8 @@ Prints the XML of the last request.
     {
         print_r( $this->lastRequest );
     }
+
 /**
-Prints the XML of the last response.
 <documentation><description><p>Prints the XML of the last response.</p></description>
 <example>$service->printLastResponse();</example>
 <return-type>void</return-type></documentation>
@@ -2294,45 +1270,21 @@ Prints the XML of the last response.
     {
         print_r( $this->lastResponse );
     }
+
 /**
-Publishes the asset with the given identifier.
-@param stdClass $identifier The identifier of the object to be published
-@param Destination $destination The destination(s) where the asset should be published
-<documentation>
-<description><p>Publishes the asset with the given identifier.</p>
-<p>publish:</p>
-<pre>
-&lt;element name="publish">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" type="impl:authentication"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="publishInformation" type="impl:publishInformation"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="publishResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="publishReturn" type="impl:operationResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="publish">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="publishInformation" type="impl:publishInformation"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="publishInformation">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="impl:identifier"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="destinations" nillable="false" type="impl:assetIdentifiers"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="unpublish" nillable="true" type="xsd:boolean"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Publishes the asset with the given identifier.</p><p>publish:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("publish"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("publishResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("publish"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("publishInformation"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$folder_path = "projects/web-services/reports";
 $service->publish( $service->createId( a\Folder::TYPE, $folder_path, "cascade-admin" ) );</example>
@@ -2360,46 +1312,21 @@ $service->publish( $service->createId( a\Folder::TYPE, $folder_path, "cascade-ad
         $this->reply = $this->soapClient->publish( $publish_param );
         $this->storeResults( $this->reply->publishReturn );
     }
+
 /**
-Reads the asset with the given identifier.
-@param stdClass $identifier The identifier of the object to be read
-<documentation>
-<description><p>Reads the asset with the given identifier.</p>
-<p>read:</p>
-<pre>
-&lt;element name="read">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="authentication" type="impl:authentication"/>
-      &lt;element name="identifier" type="impl:identifier"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="readResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="readReturn" type="impl:readResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="read">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="impl:identifier"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="readResult">
-  &lt;complexContent>
-    &lt;extension base="impl:operationResult">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="asset" type="impl:asset"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Reads the asset with the given identifier.</p><p>read:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("read"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("readResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("read"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("readResult"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$service->read( 
     $service->createId( a\Folder::TYPE, $path, "cascade-admin" ) );</example>
@@ -2417,44 +1344,21 @@ Reads the asset with the given identifier.
         $this->reply = $this->soapClient->read( $read_param );
         $this->storeResults( $this->reply->readReturn );
     }
+
 /**
-Reads the access rights of the asset with the given identifier.
-@param stdClass $identifier The identifier of the object to be read
-<documentation><description><p>Reads the access rights of the asset with the given identifier.</p>
-<p>readAccessRights:</p>
-<pre>&lt;element name="readAccessRights">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="authentication" type="impl:authentication"/>
-      &lt;element name="identifier" type="impl:identifier"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="readAccessRightsResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="readAccessRightsReturn" type="impl:readAccessRightsResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="readAccessRights">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="readAccessRightsResult">
-  &lt;complexContent>
-    &lt;extension base="impl:operationResult">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="accessRightsInformation" nillable="false" type="impl:accessRightsInformation"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Reads the access rights of the asset with the given identifier.</p><p>readAccessRights:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("readAccessRights"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("readAccessRightsResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("readAccessRights"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("readAccessRightsResult"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$service->readAccessRights( 
     $service->createId( a\TextBlock::TYPE, $path, "cascade-admin" ) );
@@ -2470,28 +1374,17 @@ Reads the access rights of the asset with the given identifier.
         $this->reply = $this->soapClient->readAccessRights( $read_param );
         $this->storeResults( $this->reply->readAccessRightsReturn );
     }
-/**
-Reads the audits of the asset with the given parameters.
-@param stdClass $params The parameters of readAudits
-<documentation><description><p>Reads the audits of the asset with the given parameters.</p>
-<p>readAudits:</p>
-<pre>&lt;element name="readAudits">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="auditParameters" nillable="false" type="impl:auditParameters"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
 
-&lt;element name="readAuditsResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="readAuditsReturn" type="impl:readAuditsResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-</pre>
+/**
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Reads the audits of the asset with the given parameters.</p><p>readAudits:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("readAudits"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("readAuditsResponse"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$page_id = "980d85f48b7f0856015997e492c9b83b";
 $audit_params = new \stdClass();
@@ -2511,36 +1404,19 @@ $service->readAudits( $audit_params );
         $this->storeResults( $this->reply->readAuditsReturn );
         $this->audits  = $this->reply->readAuditsReturn->audits;
     }
+
 /**
-Reads the preferences.
-<documentation><description><p>Reads the preferences.</p>
-<p>readPreferences:</p>
-<pre>&lt;element name="readPreferences">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="readPreferencesResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="readPreferencesReturn" type="impl:readPreferencesResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="readPreferencesResult">
-  &lt;complexContent>
-    &lt;extension base="impl:operationResult">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="preferences" nillable="true" type="impl:preferencesList"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Reads the preferences.</p><p>readPreferences:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("readPreferences"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("readPreferencesResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("readPreferencesResult"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$service->readPreferences();</example>
 <return-type>void</return-type></documentation>
@@ -2554,38 +1430,19 @@ Reads the preferences.
         $this->storeResults( $this->reply->readPreferencesReturn );
         $this->preferences  = $this->reply->readPreferencesReturn->preferences;
     }
+
 /**
-Reads the workflow information associated with the given identifier.
-@param stdClass $identifier The identifier of the object to be read
-<documentation><description><p>Reads the workflow information associated with the given identifier.</p>
-<p>readWorkflowInformation:</p>
-<pre>&lt;element name="readWorkflowInformation">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="readWorkflowInformationResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="readWorkflowInformationReturn" type="impl:readWorkflowInformationResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="readWorkflowInformationResult">
-  &lt;complexContent>
-    &lt;extension base="impl:operationResult">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="workflow" type="impl:workflow"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Reads the workflow information associated with the given identifier.</p><p>readWorkflowInformation:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("readWorkflowInformation"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("readWorkflowInformationResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("readWorkflowInformationResult"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$path = '/projects/web-services/reports/creating-format';
 $service->readWorkflowInformation( 
@@ -2601,44 +1458,21 @@ $service->readWorkflowInformation(
         $this->reply = $this->soapClient->readWorkflowInformation( $read_param );
         $this->storeResults( $this->reply->readWorkflowInformationReturn );
     }    
+
 /**
-Reads the workflow settings associated with the given identifier.
-@param stdClass $identifier The identifier of the object to be read
-<documentation><description><p>Reads the workflow settings associated with the given identifier.</p>
-<p>readWorkflowSettings:</p>
-<pre>&lt;element name="readWorkflowSettings">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="authentication" type="impl:authentication"/>
-      &lt;element name="identifier" type="impl:identifier"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="readWorkflowSettingsResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="readWorkflowSettingsReturn" type="impl:readWorkflowSettingsResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="readWorkflowSettings">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="readWorkflowSettingsResult">
-  &lt;complexContent>
-    &lt;extension base="impl:operationResult">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="workflowSettings" nillable="false" type="impl:workflowSettings"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Reads the workflow settings associated with the given identifier.</p><p>readWorkflowSettings:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("readWorkflowSettings"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("readWorkflowSettingsResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("readWorkflowSettings"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("readWorkflowSettingsResult"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$site_name = "cascade-admin";
 $service->readWorkflowSettings( 
@@ -2655,11 +1489,8 @@ $service->readWorkflowSettings(
         $this->reply = $this->soapClient->readWorkflowSettings( $read_param );
         $this->storeResults( $this->reply->readWorkflowSettingsReturn );
     }
+
 /**
-Retrieves a property of an asset.
-@param stdClass $id The id of the property
-@param string $property The property name
-@return stdClass The property or NULL
 <documentation><description><p>Retrieves a property of an asset.</p></description>
 <example>$page = $service->retrieve( $service->createId( a\Page::TYPE, $page_path, "cascade-admin" ) );</example>
 <return-type>stdClass</return-type></documentation>
@@ -2682,85 +1513,32 @@ Retrieves a property of an asset.
             return $this->reply->readReturn->asset->$property;
         return NULL;
     }
+
 /**
-Searches for some entity.
-@param stdClass $searchInfo The searchInfo object
-<documentation><description><p>Searches for some entity.</p>
-<p>search:</p>
-<pre>&lt;element name="search">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="authentication" type="impl:authentication"/>
-      &lt;element name="searchInformation" type="impl:searchInformation"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="searchResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="searchReturn" type="impl:searchResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="searchResult">
-  &lt;complexContent>
-    &lt;extension base="impl:operationResult">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="matches" type="impl:search-matches"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-
-&lt;complexType name="search-matches">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="match" type="impl:identifier"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="searchInformation">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="searchTerms" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="siteId" nillable="false" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="siteName" nillable="false" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="searchFields" nillable="false" type="impl:searchFields"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="searchTypes" nillable="false" type="impl:searchTypes"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="searchFields">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="searchField" nillable="false" type="impl:searchFieldString"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="searchTypes">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="searchType" nillable="false" type="impl:entityTypeString"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;simpleType name="searchFieldString">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="name"/>
-    &lt;enumeration value="path"/>
-    &lt;enumeration value="createdBy"/>
-    &lt;enumeration value="modifiedBy"/>
-    &lt;enumeration value="displayName"/>
-    &lt;enumeration value="title"/>
-    &lt;enumeration value="summary"/>
-    &lt;enumeration value="teaser"/>
-    &lt;enumeration value="keywords"/>
-    &lt;enumeration value="description"/>
-    &lt;enumeration value="author"/>
-    &lt;enumeration value="blob"/>
-    &lt;enumeration value="velocityFormatContent"/>
-    &lt;enumeration value="xml"/>
-    &lt;enumeration value="link"/>
-  &lt;/restriction>
-&lt;/simpleType></pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Searches for some entity.</p><p>search:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("search"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("searchResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("searchResult"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("search-matches"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("searchInformation"));
+$doc_string .= "\r";
+// searchFields does not work in 7.14
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("searchFields"));
+$doc_string .= "\r";
+// searchTypes does not work in 7.14
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("searchTypes"));
+$doc_string .= "\r";
+// searchFieldString does not work in 7.14
+$doc_string .= $eval->replaceBrackets($service->getSimpleTypeXMLByName("searchFieldString"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$search_for               = new \stdClass();
 $search_for->matchType    = c\T::MATCH_ANY;
@@ -2779,28 +1557,18 @@ $service->search( $search_for );</example>
         $this->searchMatches = $this->reply->searchReturn->matches;
         $this->storeResults( $this->reply->searchReturn );
     }        
-/**
-Sends a message.
-@param stdClass $message The message object to be sent
-<documentation><description><p>Sends a message.</p>
-<p>sendMessage:</p>
-<pre>&lt;element name="sendMessage">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="message" nillable="false" type="impl:message"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
 
-&lt;element name="sendMessageResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="sendMessageReturn" type="impl:operationResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-</pre>
+/**
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Sends a message.</p><p>sendMessage:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("sendMessage"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("sendMessageResponse"));
+
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$message          = new \stdClass();
 $message->to      = 'test'; // a group
@@ -2820,39 +1588,19 @@ $service->sendMessage( $message );
         $this->reply = $this->soapClient->sendMessage( $send_message_param );
         $this->storeResults( $this->reply->sendMessageReturn );
     }    
+
 /**
-Copies the site with the given identifier.
-@param string $original_id The ID string of the site to be copied
-@param string $original_name The name of the site to be copied
-@param string $new_name The name assigned to the new site
-<documentation><description><p>Copies the site with the given identifier.</p>
-<p>siteCopy:</p>
-<pre>&lt;element name="siteCopy">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element maxOccurs="1" minOccurs="1" name="authentication" nillable="false" type="impl:authentication"/>
-      &lt;element maxOccurs="1" minOccurs="0" name="originalSiteId" type="xsd:string"/>
-      &lt;element maxOccurs="1" minOccurs="0" name="originalSiteName" type="xsd:string"/>
-      &lt;element maxOccurs="1" minOccurs="1" name="newSiteName" nillable="false" type="xsd:string"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;element name="siteCopyResponse">
-  &lt;complexType>
-    &lt;sequence>
-      &lt;element name="siteCopyReturn" type="impl:operationResult"/>
-    &lt;/sequence>
-  &lt;/complexType>
-&lt;/element>
-
-&lt;complexType name="siteCopy">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="originalSiteId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="originalSiteName" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="newSiteName" nillable="false" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType></pre>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Copies the site with the given identifier.</p><p>siteCopy:</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("siteCopy"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("siteCopyResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("siteCopy"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
 </description>
 <example>$seed_site_id   = "a0d0fb818b7f08ee0990fe6e89648961";
 $seed_site_name = "_rwd_seed";
@@ -2875,10 +1623,8 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
         $this->reply = $this->soapClient->siteCopy( $site_copy_params );
         $this->storeResults( $this->reply->siteCopyReturn );
     }
+
 /**
-Unpublishes the asset with the given identifier.
-@param stdClass $identifier The identifier of the object to be unpublished
-@param Destination $destination The destination where the asset should be unpublished
 <documentation><description><p>Unpublishes the asset with the given identifier.</p></description>
 <example>$service->unpublish( $service->createId( a\Page::TYPE, $page_path, "cascade-admin" ) );</example>
 <return-type>void</return-type></documentation>
@@ -2905,7 +1651,65 @@ Unpublishes the asset with the given identifier.
         $this->storeResults( $this->reply->publishReturn );
     }
     
-    // helper function
+    // helper functions
+    private function getNameList( string $path ) : string
+    {
+        $nodes = $this->dom_xpath->evaluate( $path );
+        $list  = "<ul>";
+        $names = array();
+        
+        if( sizeof( $nodes ) > 0 )
+        {
+            for( $i = 0; $i < $nodes->length; $i++ )
+            {
+                $names[] = $nodes->item( $i )->getAttribute( "name" );
+            }
+            
+            asort( $names );
+            
+            //u\DebugUtility::dump( $names );
+            
+            foreach( $names as $name )
+            {
+                $list .= "<li>$name</li>";
+            }
+        }
+        
+        $list .= "</ul>";
+        return $list;
+    }
+    
+    private function getXMLByName( string $path, string $name ) : string
+    {
+        $xpath_str = $path . "[@name='$name']";
+        $nodes     = $this->dom_xpath->evaluate( $xpath_str );
+        $xml_str   = "";
+        
+        if( $nodes->length > 0 )
+        {
+            $xml_str = $nodes[ 0 ]->ownerDocument->saveXML( $nodes[ 0 ] );
+        }
+        else
+        {
+            // not found
+        }
+
+        return $xml_str;
+    }
+
+    private function getXMLByPath( string $path_str ) : string
+    {
+        $elements  = $this->dom_xpath->evaluate( $path_str );
+        $xml_str   = "";
+        
+        if( sizeof( $elements ) > 0 )
+        {
+            foreach( $elements as $element )
+                $xml_str .= $element->ownerDocument->saveXML( $element );
+        }
+        return $xml_str;
+    }
+    
     private function storeResults( $return=NULL )
     {
         if( isset( $return ) )
@@ -3052,5 +1856,7 @@ Unpublishes the asset with the given identifier.
     private $get_methods  = array();
     /*@var array The array to store property stdClass objects */
     private $read_assets  = array();
+    /*@var DOMXpath The DOMXpath object to store the WSDL */
+    private $dom_xpath;
 }
 ?>
