@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/28/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/12/2017 Added WSDL.
   * 1/17/2017 Added JSON dump.
   * 5/28/2015 Added namespaces.
@@ -19,7 +20,9 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>An <code>Reference</code> object represents an a reference asset. Only publishable assets (pages, files, and folders) can have references.</p>
 <h2>Structure of <code>reference</code></h2>
 <pre>reference
@@ -38,7 +41,15 @@ use cascade_ws_property  as p;
   referencedAssetPath
   referencedAssetType
 </pre>
-<h2>WSDL</h2>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "reference" ),
+    ) );
+return $doc_string;
+?>
+
+
 <pre>&lt;complexType name="reference">
   &lt;complexContent>
     &lt;extension base="impl:folder-contained-asset">
