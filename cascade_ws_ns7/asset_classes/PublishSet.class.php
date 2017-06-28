@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/28/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
   * 1/4/2016 Fixed a bug in publish.
@@ -20,8 +21,10 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
-<p>A <code>PublishSet</code> object represents a publish set asset. This class is a sub-class of <a href="/web-services/api/asset-classes/scheduled-publishing"><code>ScheduledPublishing</code></a>.</p>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>PublishSet</code> object represents a publish set asset. This class is a sub-class of <a href=\"/web-services/api/asset-classes/scheduled-publishing\"><code>ScheduledPublishing</code></a>.</p>
 <h2>Structure of <code>publishSet</code></h2>
 <pre>SOAP:
 publishSet
@@ -118,37 +121,17 @@ publishSet
 </pre>
 <h2>Design Issues</h2>
 <p>There is something special about all <code>ScheduledPublishing</code> assets: right after such an asset is read from Cascade, if we send the asset back to Cascade by calling <code>edit</code>, even without making any changes to it, Cascade will reject the asset. To fix this problem, we have to call <code>unset</code> to unset any property related to scheduled publishing if the property stores a <code>NULL</code> value. This must be done inside <code>edit</code>, or an exception will be thrown.</p>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="publishSet">
-  &lt;complexContent>
-    &lt;extension base="impl:containered-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="files" type="impl:publishable-asset-list"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="folders" type="impl:publishable-asset-list"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="pages" type="impl:publishable-asset-list"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="usesScheduledPublishing" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="scheduledPublishDestinationMode" nillable="true" type="impl:scheduledDestinationMode"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="scheduledPublishDestinations" type="impl:destination-list"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="timeToPublish" type="xsd:time"/>
-        &lt;choice>
-        &lt;element maxOccurs="1" minOccurs="0" name="publishIntervalHours" type="xsd:nonNegativeInteger"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="publishDaysOfWeek" type="impl:daysOfWeek"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="cronExpression" type="xsd:string"/>
-        &lt;/choice>
-        &lt;element maxOccurs="1" minOccurs="0" name="sendReportToUsers" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="sendReportToGroups" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="sendReportOnErrorOnly" type="xsd:boolean"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-
-&lt;complexType name="publishable-asset-list">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="publishableAssetIdentifier" type="impl:identifier"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "publishSet" ),
+        array( "getComplexTypeXMLByName" => "publishable-asset-list" ),
+        array( "getSimpleTypeXMLByName"  => "scheduledDestinationMode" ),
+        array( "getComplexTypeXMLByName" => "daysOfWeek" ),
+        array( "getSimpleTypeXMLByName"  => "dayOfWeek" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/publish_set.php">publish_set.php</a></li></ul>
 <h2>JSON Dump</h2>
