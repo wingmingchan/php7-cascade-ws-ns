@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/29/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
   * 10/12/2016 Removed folder-related code because it is in Linkable.
@@ -20,8 +21,10 @@ use cascade_ws_property as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
-<p>A <code>Symlink</code> represents a symlink asset. This class is a sub-class of <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/linkable.php"><code>Linkable</code></a>.</p>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>Symlink</code> represents a symlink asset. This class is a sub-class of <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/linkable.php\"><code>Linkable</code></a>.</p>
 <h2>Structure of <code>symlink</code></h2>
 <pre>SOAP:
 symlink
@@ -97,17 +100,13 @@ symlink
   name
   id   
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="symlink">
-  &lt;complexContent>
-    &lt;extension base="impl:expiring-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="linkURL" type="xsd:anyURI"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "symlink" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/symlink.php">symlink.php</a></li></ul>
 <h2>JSON Dump</h2>
