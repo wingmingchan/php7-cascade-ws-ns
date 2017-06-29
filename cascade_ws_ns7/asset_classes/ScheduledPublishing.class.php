@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/29/2017 Replaced static WSDL code with call to getXMLFragments.
   * 12/16/2016 Changed return type of getSendReportToGroups and getSendReportToUsers
   * to mixed.
   * 6/13/2017 Added WSDL.
@@ -13,14 +14,16 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>A destination, a publish set, and a site share a common feature: all three can have scheduled publishing enabled. The properties related to scheduled publishing are the following:</p>
 <ul>
 <li><code>usesScheduledPublishing</code></li>
@@ -33,36 +36,18 @@ use cascade_ws_property as p;
 <li><code>sendReportOnErrorOnly</code></li>
 </ul>
 <p>To turn on scheduled publishing, one of the three temporal settings (<code>publishIntervalHours</code>, <code>publishDaysOfWeek</code>, or <code>cronExpression</code>) must be supplied. And there is one more requirement: when a temporal setting is supplied, the other two must be unset. Assigning <code>NULL</code> to them will not work.</p>
-<p>Since these eight properties and related methods are shared by <code><a href="/web-services/api/asset-classes/destination"><code>Destination</code></a>, <a href="/web-services/api/asset-classes/publish-set"><code>PublishSet</code></a> and <a href="/web-services/api/asset-classes/site"><code>Site</code></a></code>, I decide to create an abstract class named <code>ScheduledPublishing</code>, which serves as the parent class of these three classes<a href="/web-services/api/asset-classes/site"></a>, and provides all the relevant methods in this class.</p>
+<p>Since these eight properties and related methods are shared by <a href=\"/web-services/api/asset-classes/destination\"><code>Destination</code></a>, <a href=\"/web-services/api/asset-classes/publish-set\"><code>PublishSet</code></a> and <a href=\"/web-services/api/asset-classes/site\"><code>Site</code></a></code>, I decide to create an abstract class named <code>ScheduledPublishing</code>, which serves as the parent class of these three classes, and provides all the relevant methods in this class.</p>
 <h2>Design Issues</h2>
-<p>Due to a known <a href="https://hannonhill.jira.com/browse/CSI-861">bug</a> when PHP is used, the <code>scheduledPublishDestinations</code> property cannot be set properly. Thereofore, the <code>setScheduledPublishing</code> method defined in this class always sets the <code>scheduledPublishDestinationMode</code> property to <code>all-destinations</code>.</p>
-<h2>WSDL</h2>
-<pre>&lt;simpleType name="scheduledDestinationMode">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="all-destinations"/>
-    &lt;enumeration value="selected-destinations"/>
-  &lt;/restriction>
-&lt;/simpleType>
-
-&lt;complexType name="daysOfWeek">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="dayOfWeek" type="impl:dayOfWeek"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;simpleType name="dayOfWeek">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="Monday"/>
-    &lt;enumeration value="Tuesday"/>
-    &lt;enumeration value="Wednesday"/>
-    &lt;enumeration value="Thursday"/>
-    &lt;enumeration value="Friday"/>
-    &lt;enumeration value="Saturday"/>
-    &lt;enumeration value="Sunday"/>
-  &lt;/restriction>
-&lt;/simpleType>
-
-</pre>
+<p>Due to a known <a href=\"https://hannonhill.jira.com/browse/CSI-861\">bug</a> when PHP is used, the <code>scheduledPublishDestinations</code> property cannot be set properly. Thereofore, the <code>setScheduledPublishing</code> method defined in this class always sets the <code>scheduledPublishDestinationMode</code> property to <code>all-destinations</code>.</p>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getSimpleTypeXMLByName"  => "scheduledDestinationMode" ),
+        array( "getComplexTypeXMLByName" => "daysOfWeek" ),
+        array( "getSimpleTypeXMLByName"  => "dayOfWeek" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/destination.php">destination.php</a></li></ul></postscript>
 </documentation>
