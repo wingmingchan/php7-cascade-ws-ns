@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/29/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/12/2017 Added WSDL.
   * 1/17/2017 Added JSON dump.
   * 5/28/2015 Added namespaces.
@@ -18,8 +19,10 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
-<p>A <code>ScriptFormat</code> represents a script format asset. The class <code>ScriptFormat</code> is a sub-class of <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/format.php"><code>Format</code></a>.</p>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>ScriptFormat</code> represents a script format asset. The class <code>ScriptFormat</code> is a sub-class of <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/format.php\"><code>Format</code></a>.</p>
 <h2>Structure of <code>scriptFormat</code></h2>
 <pre>scriptFormat
   id
@@ -35,17 +38,13 @@ use cascade_ws_property  as p;
   siteName
   script
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="scriptFormat">
-  &lt;complexContent>
-    &lt;extension base="impl:folder-contained-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="script" type="xsd:string"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "scriptFormat" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/script_format.php">script_format.php</a></li></ul>
 <h2>JSON Dump</h2>
