@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/29/2017 Rewrote code for 8.4.1.
   * 6/12/2017 Added WSDL.
   * 9/7/2016 Added accessAdminArea.
   * 9/6/2016 Removed newSiteWizard, siteMigration, recycleBinChecker, pathRepairTool.
@@ -19,18 +20,21 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
-<p>A <code>GlobalAbilities</code> object represents the <code>globalAbilities</code> property found in a role asset. This class is a sub-class of <a href="/web-services/api/property-classes/abilities"><code>Abilities</code></a>.</p>
+<documentation>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>GlobalAbilities</code> object represents the <code>globalAbilities</code> property found in a role asset.</p>
 <h2>Properties of <code>globalAbilities</code> (Sorted)</h2>
-<p>Besides the 49 properties (Cascade 8) shared with the sibling class <a href="/web-services/api/property-classes/site-abilities"><code>SiteAbilities</code></a> (which are defined in the parent class <a href="/web-services/api/property-classes/abilities"><code>Abilities</code></a>), this class also has its own unique properties (33 of them):</p>
-<pre>accessAdminArea
-accessAllSites
+<pre>accessAllSites
+accessAudits
 accessConfiguration
+accessDefaultEditorConfiguration
 accessRoles
 accessSecurityArea
 accessSiteManagement
-accessTargetsDestinations
 broadcastMessages
+bypassAllPermissionsChecks
 changeIdentity
 configureLogging
 createGroups
@@ -42,6 +46,8 @@ deleteAllUsers
 deleteAnyGroup
 deleteMemberGroups
 deleteUsersInMemberGroups
+diagnosticTests
+editAccessRights
 editAnyGroup
 editAnyUser
 editMemberGroups
@@ -57,53 +63,18 @@ viewMemberGroups
 viewSystemInfoAndLogs
 viewUsersInMemberGroups
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="global-abilities">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="bypassAllPermissionsChecks" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="accessSiteManagement" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="createSites" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="editAccessRights" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="accessAudits" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="accessAllSites" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="viewSystemInfoAndLogs" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="forceLogout" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="diagnosticTests" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="accessSecurityArea" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="optimizeDatabase" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="syncLdap" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="configureLogging" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="searchingIndexing" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="accessConfiguration" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="editSystemPreferences" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="broadcastMessages" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="viewUsersInMemberGroups" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="viewAllUsers" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="createUsers" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="deleteUsersInMemberGroups" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="deleteAllUsers" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="viewMemberGroups" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="viewAllGroups" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="createGroups" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="deleteMemberGroups" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="accessRoles" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="createRoles" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="deleteAnyGroup" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="editAnyUser" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="editUsersInMemberGroups" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="editAnyGroup" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="editMemberGroups" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="databaseExportTool" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="changeIdentity" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="accessDefaultEditorConfiguration" type="xsd:boolean"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "global-abilities" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
 </documentation>
 */
-class GlobalAbilities extends Abilities
+class GlobalAbilities
 {
 /**
 <documentation><description><p>The constructor.</p></description>
@@ -121,16 +92,16 @@ class GlobalAbilities extends Abilities
     {
         if( isset( $a ) )
         {
-            parent::__construct( $a );
-            
-            $this->access_admin_area             = $a->accessAdminArea;
             $this->access_all_sites              = $a->accessAllSites;
+            $this->access_audits                 = $a->accessAudits;
             $this->access_configuration          = $a->accessConfiguration;
+            $this->access_default_editor_configuration =
+                $a->accessDefaultEditorConfiguration;
             $this->access_roles                  = $a->accessRoles;
             $this->access_security_area          = $a->accessSecurityArea;
             $this->access_site_management        = $a->accessSiteManagement;
-            $this->access_targets_destinations   = $a->accessTargetsDestinations;
             $this->broadcast_messages            = $a->broadcastMessages;
+            $this->bypass_all_permissions_checks = $a->bypassAllPermissionsChecks;
             $this->change_identity               = $a->changeIdentity;
             $this->configure_logging             = $a->configureLogging;
             $this->create_groups                 = $a->createGroups;
@@ -142,6 +113,8 @@ class GlobalAbilities extends Abilities
             $this->delete_any_group              = $a->deleteAnyGroup;
             $this->delete_member_groups          = $a->deleteMemberGroups;
             $this->delete_users_in_member_groups = $a->deleteUsersInMemberGroups;
+            $this->diagnostic_tests              = $a->diagnosticTests;
+            $this->edit_access_rights            = $a->editAccessRights;
             $this->edit_any_group                = $a->editAnyGroup;
             $this->edit_any_user                 = $a->editAnyUser;
             $this->edit_member_groups            = $a->editMemberGroups;
@@ -160,17 +133,6 @@ class GlobalAbilities extends Abilities
     }
     
 /**
-<documentation><description><p>Returns <code>accessAdminArea</code>.</p></description>
-<example></example>
-<return-type>bool</return-type>
-</documentation>
-*/
-    public function getAccessAdminArea() : bool
-    {
-        return $this->access_admin_area;
-    }
-    
-/**
 <documentation><description><p>Returns <code>accessAllSites</code>.</p></description>
 <example></example>
 <return-type>bool</return-type>
@@ -182,6 +144,17 @@ class GlobalAbilities extends Abilities
     }
 
 /**
+<documentation><description><p>Returns <code>accessAudits</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function getAccessAudits() : bool
+    {
+        return $this->access_audits;
+    }
+
+/**
 <documentation><description><p>Returns <code>accessConfiguration</code>.</p></description>
 <example></example>
 <return-type>bool</return-type>
@@ -190,6 +163,17 @@ class GlobalAbilities extends Abilities
     public function getAccessConfiguration() : bool
     {
         return $this->access_configuration;
+    }
+
+/**
+<documentation><description><p>Returns <code>accessDefaultEditorConfiguration</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function getAccessDefaultEditorConfiguration() : bool
+    {
+        return $this->access_default_editor_configuration;
     }
 
 /**
@@ -226,17 +210,6 @@ class GlobalAbilities extends Abilities
     }
 
 /**
-<documentation><description><p>Returns <code>accessTargetsDestinations</code>.</p></description>
-<example></example>
-<return-type>bool</return-type>
-</documentation>
-*/
-    public function getAccessTargetsDestinations() : bool
-    {
-        return $this->access_targets_destinations;
-    }
-
-/**
 <documentation><description><p>Returns <code>broadcastMessages</code>.</p></description>
 <example></example>
 <return-type>bool</return-type>
@@ -245,6 +218,17 @@ class GlobalAbilities extends Abilities
     public function getBroadcastMessages() : bool
     {
         return $this->broadcast_messages;
+    }
+
+/**
+<documentation><description><p>Returns <code>bypassAllPermissionsChecks</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function getBypassAllPermissionsChecks() : bool
+    {
+        return $this->bypass_all_permissions_checks;
     }
 
 /**
@@ -366,6 +350,28 @@ class GlobalAbilities extends Abilities
     public function getDeleteUsersInMemberGroups() : bool
     {
         return $this->delete_users_in_member_groups;
+    }
+
+/**
+<documentation><description><p>Returns <code>diagnosticTests</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function getDiagnosticTests() : bool
+    {
+        return $this->diagnostic_tests;
+    }
+
+/**
+<documentation><description><p>Returns <code>editAccessRights</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function getAccessRights() : bool
+    {
+        return $this->edit_access_rights;
     }
 
 /**
@@ -523,20 +529,6 @@ class GlobalAbilities extends Abilities
     }
 
 /**
-<documentation><description><p>Sets <code>accessAdminArea</code> and returns the calling object.</p></description>
-<example></example>
-<return-type>Property</return-type>
-<exception>UnacceptableValueException</exception>
-</documentation>
-*/
-    public function setAccessAdminArea( bool $bool ) : Property
-    {
-        $this->checkBoolean( $bool );
-        $this->access_admin_area = $bool;
-        return $this;
-    }
-    
-/**
 <documentation><description><p>Sets <code>accessAllSites</code> and returns the calling object.</p></description>
 <example></example>
 <return-type>Property</return-type>
@@ -551,6 +543,20 @@ class GlobalAbilities extends Abilities
     }
 
 /**
+<documentation><description><p>Sets <code>accessAudits</code> and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setAccessAudits( bool $bool ) : Property
+    {
+        $this->checkBoolean( $bool );
+        $this->access_audits = $bool;
+        return $this;
+    }
+
+/**
 <documentation><description><p>Sets <code>accessConfiguration</code> and returns the calling object.</p></description>
 <example></example>
 <return-type>Property</return-type>
@@ -561,6 +567,20 @@ class GlobalAbilities extends Abilities
     {
         $this->checkBoolean( $bool );
         $this->access_configuration = $bool;
+        return $this;
+    }
+
+/**
+<documentation><description><p>Sets <code>accessDefaultEditorConfiguration</code> and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setAccessDefaultEditorConfiguration( bool $bool ) : Property
+    {
+        $this->checkBoolean( $bool );
+        $this->access_default_editor_configuration = $bool;
         return $this;
     }
 
@@ -607,20 +627,6 @@ class GlobalAbilities extends Abilities
     }
 
 /**
-<documentation><description><p>Sets <code>accessTargetsDestinations</code> and returns the calling object.</p></description>
-<example></example>
-<return-type>Property</return-type>
-<exception>UnacceptableValueException</exception>
-</documentation>
-*/
-    public function setAccessTargetsDestinations( bool $bool ) : Property
-    {
-        $this->checkBoolean( $bool );
-        $this->access_targets_destinations = $bool;
-        return $this;
-    }
-
-/**
 <documentation><description><p>Sets <code>broadcastMessages</code> and returns the calling object.</p></description>
 <example></example>
 <return-type>Property</return-type>
@@ -633,7 +639,22 @@ class GlobalAbilities extends Abilities
         $this->broadcast_messages = $bool;
         return $this;
     }
-    /**
+
+/**
+<documentation><description><p>Sets <code>bypassAllPermissionsChecks</code> and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setBypassAllPermissionsChecks( bool $bool ) : Property
+    {
+        $this->checkBoolean( $bool );
+        $this->bypass_all_permissions_checks = $bool;
+        return $this;
+    }
+
+/**
 <documentation><description><p>Sets <code>changeIdentity</code> and returns the calling object.</p></description>
 <example></example>
 <return-type>Property</return-type>
@@ -646,7 +667,8 @@ class GlobalAbilities extends Abilities
         $this->change_identity = $bool;
         return $this;
     }
-    /**
+
+/**
 <documentation><description><p>Sets <code>configureLogging</code> and returns the calling object.</p></description>
 <example></example>
 <return-type>Property</return-type>
@@ -783,6 +805,34 @@ class GlobalAbilities extends Abilities
     {
         $this->checkBoolean( $bool );
         $this->delete_users_in_member_groups = $bool;
+        return $this;
+    }
+
+/**
+<documentation><description><p>Sets <code>diagnosticTests</code> and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setDiagnosticTests( bool $bool ) : Property
+    {
+        $this->checkBoolean( $bool );
+        $this->diagnostic_tests = $bool;
+        return $this;
+    }
+
+/**
+<documentation><description><p>Sets <code>editAccessRights</code> and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setEditAccessRights( bool $bool ) : Property
+    {
+        $this->checkBoolean( $bool );
+        $this->edit_access_rights = $bool;
         return $this;
     }
 
@@ -990,16 +1040,18 @@ class GlobalAbilities extends Abilities
 */
     public function toStdClass() : \stdClass
     {
-        $obj = parent::toStdClass();
+        $obj = new \stdClass();
 
-        $obj->accessAdminArea           = $this->access_admin_area;
         $obj->accessAllSites            = $this->access_all_sites;
+        $obj->accessAudits              = $this->access_audits;
         $obj->accessConfiguration       = $this->access_configuration;
+        $obj->accessDefaultEditorConfiguration =
+            $this->access_default_editor_configuration;
         $obj->accessRoles               = $this->access_roles;
         $obj->accessSecurityArea        = $this->access_security_area;
         $obj->accessSiteManagement      = $this->access_site_management;
-        $obj->accessTargetsDestinations = $this->access_targets_destinations;
         $obj->broadcastMessages         = $this->broadcast_messages;
+        $obj->bypassAllPermissionsChecks = $this->bypass_all_permissions_checks;
         $obj->changeIdentity            = $this->change_identity;
         $obj->configureLogging          = $this->configure_logging;
         $obj->createGroups              = $this->create_groups;
@@ -1011,6 +1063,8 @@ class GlobalAbilities extends Abilities
         $obj->deleteAnyGroup            = $this->delete_any_group;
         $obj->deleteMemberGroups        = $this->delete_member_groups;
         $obj->deleteUsersInMemberGroups = $this->delete_users_in_member_groups;
+        $obj->diagnosticTests           = $this->diagnostic_tests;
+        $obj->editAccessRights          = $this->edit_access_rights;
         $obj->editAnyGroup              = $this->edit_any_group;
         $obj->editAnyUser               = $this->edit_any_user;
         $obj->editMemberGroups          = $this->edit_member_groups;
@@ -1036,37 +1090,40 @@ class GlobalAbilities extends Abilities
                 S_SPAN . "The value $bool must be a boolean." . E_SPAN );
     }
     
-    private $access_site_management;
-    private $create_sites;
-    private $access_targets_destinations;
     private $access_all_sites;
-    private $view_system_info_and_logs;
-    private $force_logout;
-    private $access_security_area;
-    private $optimize_database;
-    private $sync_ldap;
-    private $configure_logging;
-    private $searching_indexing;
+    private $access_audits;
     private $access_configuration;
-    private $edit_system_preferences;
-    private $broadcast_messages;
-    private $view_users_in_member_groups;
-    private $view_all_users;
-    private $create_users;
-    private $delete_users_in_member_groups;
-    private $delete_all_users;
-    private $view_member_groups;
-    private $view_all_groups;
-    private $create_groups;
-    private $delete_member_groups;
+    private $access_default_editor_configuration;
     private $access_roles;
-    private $create_roles;
-    private $delete_any_group;
-    private $edit_any_user;
-    private $edit_users_in_member_groups;
-    private $edit_any_group;
-    private $edit_member_groups;
-    private $database_export_tool;
+    private $access_security_area;
+    private $access_site_management;
+    private $broadcast_messages;
+    private $bypass_all_permissions_checks;
     private $change_identity;
+    private $configure_logging;
+    private $create_groups;
+    private $create_roles;
+    private $create_sites;
+    private $create_users;
+    private $database_export_tool;
+    private $delete_all_users;
+    private $delete_any_group;
+    private $delete_member_groups;
+    private $delete_users_in_member_groups;
+    private $diagnostic_tests;
+    private $edit_access_rights;
+    private $edit_any_group;
+    private $edit_any_user;
+    private $edit_member_groups;
+    private $edit_system_preferences;
+    private $edit_users_in_member_groups;
+    private $force_logout;
+    private $optimize_database;
+    private $searching_indexing;
+    private $sync_ldap;
+    private $view_all_groups;
+    private $view_all_users;
+    private $view_member_groups;
+    private $view_system_info_and_logs;
+    private $view_users_in_member_groups;
 }
-?>
