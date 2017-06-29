@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/29/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
     Added getDefaultEditorConfigurationId and getDefaultEditorConfigurationPath.
   * 1/17/2017 Added JSON structure and JSON dump.
@@ -22,8 +23,10 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
-<p>An <code>Site</code> object represents a site asset. This class is a sub-class of <a href="/web-services/api/asset-classes/scheduled-publishing"><code>ScheduledPublishing</code></a>.</p>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>An <code>Site</code> object represents a site asset. This class is a sub-class of <a href=\"/web-services/api/asset-classes/scheduled-publishing\"><code>ScheduledPublishing</code></a>.</p>
 <h2>Structure of <code>site</code></h2>
 <pre>SOAP:
 site
@@ -127,78 +130,16 @@ site
 </pre>
 <h2>Design Issues</h2>
 <p>There is something special about all <code>ScheduledPublishing</code> assets: right after such an asset is read from Cascade, if we send the asset back to Cascade by calling <code>edit</code>, even without making any changes to it, Cascade will reject the asset. To fix this problem, we have to call <code>unset</code> to unset any property related to scheduled publishing if the property stores a <code>NULL</code> value. This must be done inside <code>edit</code>, or an exception will be thrown.</p>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="site">
-  &lt;complexContent>
-    &lt;extension base="impl:named-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="url" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="defaultMetadataSetId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="defaultMetadataSetPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="siteAssetFactoryContainerId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="siteAssetFactoryContainerPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="defaultEditorConfigurationId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="defaultEditorConfigurationPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="siteStartingPageId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="siteStartingPagePath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="siteStartingPageRecycled" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="roleAssignments" type="impl:role-assignments"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="usesScheduledPublishing" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="scheduledPublishDestinationMode" nillable="true" type="impl:scheduledDestinationMode"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="scheduledPublishDestinations" type="impl:destination-list"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="timeToPublish" type="xsd:time"/>
-        &lt;choice>
-        &lt;element maxOccurs="1" minOccurs="0" name="publishIntervalHours" type="xsd:nonNegativeInteger"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="publishDaysOfWeek" type="impl:daysOfWeek"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="cronExpression" type="xsd:string"/>
-        &lt;/choice>
-        &lt;element maxOccurs="1" minOccurs="0" name="sendReportToUsers" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="sendReportToGroups" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="sendReportOnErrorOnly" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="1" name="recycleBinExpiration" type="impl:recycleBinExpiration"/>
-        &lt;element maxOccurs="1" minOccurs="1" name="unpublishOnExpiration" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="1" name="linkCheckerEnabled" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="1" name="externalLinkCheckOnPublish" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="rootFolderId" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="rootAssetFactoryContainerId" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="rootPageConfigurationSetContainerId" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="rootContentTypeContainerId" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="rootConnectorContainerId" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="rootDataDefinitionContainerId" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="rootMetadataSetContainerId" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="rootPublishSetContainerId" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="rootSiteDestinationContainerId" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="rootTransportContainerId" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="rootWorkflowDefinitionContainerId" nillable="true" type="xsd:string"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-
-&lt;simpleType name="recycleBinExpiration">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="1"/>
-    &lt;enumeration value="15"/>
-    &lt;enumeration value="30"/>
-    &lt;enumeration value="never"/>
-  &lt;/restriction>
-&lt;/simpleType>
-
-&lt;complexType name="role-assignments">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="roleAssignment" type="impl:role-assignment"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="role-assignment">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="roleId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="roleName" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="users" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="groups" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "site" ),
+        array( "getSimpleTypeXMLByName"  => "recycleBinExpiration" ),
+        array( "getComplexTypeXMLByName" => "role-assignments" ),
+        array( "getComplexTypeXMLByName" => "role-assignment" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/site.php">site.php</a></li></ul>
 <h2>JSON Dump</h2>
