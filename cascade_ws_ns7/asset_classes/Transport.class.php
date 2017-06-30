@@ -9,15 +9,15 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
 <description><h2>Introduction</h2>
-<p>The <code>Transport</code> class is the superclass of <a href="/web-services/api/asset-classes/database-transport"><code>DatabaseTransport</code></a>, <a href="/web-services/api/asset-classes/file-system-transport"><code>FileSystemTransport</code></a>, and <a href="/web-services/api/asset-classes/ftp-transport"><code>FtpTransport</code></a>. It is an abstract class and defines all shared methods of its sub-classes.</p>
+<p>The <code>Transport</code> class is the superclass of <a href="/cascade-admin/web-services/api/asset-classes/database-transport.php"><code>DatabaseTransport</code></a>, <a href="/cascade-admin/web-services/api/asset-classes/file-system-transport.php"><code>FileSystemTransport</code></a>, and <a href="/cascade-admin/web-services/api/asset-classes/ftp-transport.php"><code>FtpTransport</code></a>. It is an abstract class and defines all shared methods of its sub-classes.</p>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/ftp_transport.php">ftp_transport.php</a></li>
 </ul></postscript>
