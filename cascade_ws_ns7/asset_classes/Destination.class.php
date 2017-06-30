@@ -23,7 +23,7 @@ use cascade_ws_property  as p;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>Destination</code> object represents a destination asset. This class is a sub-class of <a href=\"/web-services/api/asset-classes/scheduled-publishing\"><code>ScheduledPublishing</code></a>.</p>
+<p>A <code>Destination</code> object represents a destination asset. This class is a sub-class of <a href=\"/cascade-admin/web-services/api/asset-classes/scheduled-publishing.php\"><code>ScheduledPublishing</code></a>.</p>
 <h2>Structure of <code>destination</code></h2>
 <pre>destination
   id
