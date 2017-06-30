@@ -24,7 +24,7 @@ use cascade_ws_property  as p;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>An <code>AssetFactoryContainer</code> object represents an asset factory container asset. This class is a sub-class of <a href=\"/web-services/api/asset-classes/container\"><code>Container</code></a>.</p>
+<p>An <code>AssetFactoryContainer</code> object represents an asset factory container asset. This class is a sub-class of <a href=\"/cascade-admin/web-services/api/asset-classes/container.php\"><code>Container</code></a>.</p>
 <h2>Structure of <code>assetFactoryContainer</code></h2>
 <pre>SOAP:
 assetFactoryContainer
