@@ -12,17 +12,17 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>DataDefinitionContainer</code> object represents a data definition container asset. This class is a sub-class of <a href=\"/web-services/api/asset-classes/container\"><code>Container</code></a>.</p>
+<p>A <code>DataDefinitionContainer</code> object represents a data definition container asset. This class is a sub-class of <a href=\"/cascade-admin/web-services/api/asset-classes/container.php\"><code>Container</code></a>.</p>
 <h2>Structure of <code>dataDefinitionContainer</code></h2>
 <pre>SOAP:
 dataDefinitionContainer
