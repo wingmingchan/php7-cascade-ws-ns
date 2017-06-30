@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/30/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/12/2017 Added WSDL.
   * 1/17/2017 Added JSON dump.
   * 1/26/2016 Added leaveGroup and isInGroup.
@@ -18,8 +19,10 @@ use cascade_ws_exception as e;
 use cascade_ws_property  as p;
 /**
 <documentation>
-<description><h2>Introduction</h2>
-<p>A <code>User</code> object represents a user asset. Note that if a user's type is <code>ldap</code>, then the user cannot be edited. (See <a href="https://hannonhill.jira.com/browse/CSI-722">Allow editing users authenticated through LDAP</a>.)</p>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>User</code> object represents a user asset. Note that if a user's type is <code>ldap</code>, then the user cannot be edited. (See <a href=\"https://hannonhill.jira.com/browse/CSI-722\">Allow editing users authenticated through LDAP</a>.)</p>
 <h2>Structure of <code>user</code></h2>
 <pre>user
   username
@@ -34,37 +37,15 @@ use cascade_ws_property  as p;
   defaultSiteId
   defaultSiteName
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="user-group-identifier">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="type" type="impl:entityTypeString"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="user">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="username" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="fullName" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="email" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="authType" type="impl:user-auth-types"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="password" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="enabled" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="groups" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="role" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="defaultSiteId" nillable="true" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="defaultSiteName" nillable="true" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;simpleType name="user-auth-types">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="normal"/>
-    &lt;enumeration value="ldap"/>
-    &lt;enumeration value="custom"/>
-  &lt;/restriction>
-&lt;/simpleType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "user-group-identifier" ),
+        array( "getComplexTypeXMLByName" => "user" ),
+        array( "getSimpleTypeXMLByName"  => "user-auth-types" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/user.php">user.php</a></li></ul>
 <h2>JSON Dump</h2>
