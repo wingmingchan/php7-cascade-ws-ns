@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/30/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
   * 10/24/2016 Fixed a namespace, added constructor.
@@ -13,16 +14,18 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>A <code>TextBlock</code> object represents a text block asset. This class is a sub-class of
-<a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/block.php"><code>Block</code></a>.</p>
+<a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/block.php\"><code>Block</code></a>.</p>
 <h2>Structure of <code>textBlock</code></h2>
 <pre>SOAP:
 textBlock
@@ -97,17 +100,13 @@ textBlock
   siteName
   name
   id</pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="textBlock">
-  &lt;complexContent>
-    &lt;extension base="impl:block">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="text" type="xsd:string"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "textBlock" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/text_block.php">text_block.php</a></li></ul>
 <h2>JSON Dump</h2>
