@@ -21,7 +21,7 @@ use cascade_ws_property  as p;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>MetadataSetContainer</code> object represents a metadata set container asset. This class is a sub-class of <a href=\"/web-services/api/asset-classes/container\"><code>Container</code></a>.</p>
+<p>A <code>MetadataSetContainer</code> object represents a metadata set container asset. This class is a sub-class of <a href=\"/cascade-admin/web-services/api/asset-classes/container.php\"><code>Container</code></a>.</p>
 <h2>Structure of <code>metadataSetContainer</code></h2>
 <pre>SOAP:
 metadataSetContainer

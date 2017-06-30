@@ -30,7 +30,7 @@ use cascade_ws_property  as p;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>MetadataSet</code> object represents a metadata set asset. See <a href=\"site://cascade-admin-old/projects/web-services/oop/classes/property-classes/dynamic-field\">DynamicField</a> for an important note on the use of default values. Use <code>MetadataSet::setSelectedByDefault</code> carefully.</p>
+<p>A <code>MetadataSet</code> object represents a metadata set asset. See <a href=\"/cascade-admin/web-services/api/property-classes/dynamic-field.php\">DynamicField</a> for an important note on the use of default values. Use <code>MetadataSet::setSelectedByDefault</code> carefully.</p>
 <h2>Structure of <code>metadataSet</code></h2>
 <pre>SOAP:
 metadataSet
