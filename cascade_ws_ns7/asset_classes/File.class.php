@@ -28,7 +28,7 @@ use cascade_ws_property as p;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>File</code> object represents a file asset. The <code>File</code> class is a sub-class of <a href=\"/web-services/api/asset-classes/linkable\"><code>Linkable</code></a>.</p>
+<p>A <code>File</code> object represents a file asset. The <code>File</code> class is a sub-class of <a href=\"/cascade-admin/web-services/api/asset-classes/linkable.php\"><code>Linkable</code></a>.</p>
 <h2>Structure of <code>file</code></h2>
 <pre>SOAP structure:
 file
