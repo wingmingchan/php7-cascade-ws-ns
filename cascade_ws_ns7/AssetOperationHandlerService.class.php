@@ -4,6 +4,7 @@
   Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   MIT Licensed
   Modification history:
+   7/3/2017 Removed example from search.
    6/19/2017 Added getXMLFragments.
    6/15/2017 Removed lists of XML.
              Added an DOMXpath object to process the WSDL.
@@ -1540,11 +1541,7 @@ $doc_string .= "</pre>";
 return $doc_string;
 ?>
 </description>
-<example>$search_for               = new \stdClass();
-$search_for->matchType    = c\T::MATCH_ANY;
-$search_for->searchGroups = true;
-$search_for->assetName    = $group;
-$service->search( $search_for );</example>
+<example></example>
 <return-type>void</return-type></documentation>
 */
     public function search( \stdClass $searchInfo ) 
