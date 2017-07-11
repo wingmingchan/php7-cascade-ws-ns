@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 9/9/2016 Added isCheckbox, isDropdown, isMultiselect, isRadio, isText.
   * 9/8/2016 Added getDefaultValue, getDefaultValueString, hasDefaultValue, 
@@ -19,8 +20,10 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 
 /**
-<documentation><description><h2>Introduction</h2>
-<p>A <code>DynamicMetadataFieldDefinition</code> object represents a <code>dynamicMetadataFieldDefinition</code> property found in a <a href="site://cascade-admin-old/projects/web-services/oop/classes/asset-classes/metadata-set"><code>a\MetadataSet</code></a> object. It can contain <a href="/web-services/api/property-classes/possible-value"><code>PossibleValue</code></a> objects.</p>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>DynamicMetadataFieldDefinition</code> object represents a <code>dynamicMetadataFieldDefinition</code> property found in a <a href=\"/cascade-admin/web-services/api/asset-classes/metadata-set.php\"><code>a\MetadataSet</code></a> object. It can contain <a href=\"/cascade-admin/web-services/api/property-classes/possible-value.php\"><code>PossibleValue</code></a> objects.</p>
 <h2>Structure of <code>dynamicMetadataFieldDefinition</code></h2>
 <pre>dynamicMetadataFieldDefinition (stdClass or array of stdClass)
   name
@@ -40,55 +43,18 @@ use cascade_ws_exception as e;
 <li>A field can have no <code>PossibleValue</code> objects selected by default.</li>
 <li>When appending a value to the set of possible values, if the value already exists, just echo a message without throwing an exception.</li>
 </ul>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="dynamic-metadata-field-definitions">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="dynamicMetadataFieldDefinition" type="impl:dynamicMetadataFieldDefinition"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="dynamicMetadataFieldDefinition">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="label" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="fieldType" type="impl:dynamic-metadata-field-type"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="required" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="visibility" type="impl:metadata-field-visibility"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="possibleValues" type="impl:dynamic-metadata-field-definition-values"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="dynamic-metadata-field-definition-values">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="possibleValue" nillable="true" type="impl:dynamic-metadata-field-definition-value"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="dynamic-metadata-field-definition-value">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="value" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="selectedByDefault" type="xsd:boolean"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;simpleType name="metadata-field-visibility">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="inline"/>
-    &lt;enumeration value="hidden"/>
-    &lt;enumeration value="visible"/>
-  &lt;/restriction>
-&lt;/simpleType>
-
-&lt;simpleType name="dynamic-metadata-field-type">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="text"/>
-    &lt;enumeration value="radio"/>
-    &lt;enumeration value="dropdown"/>
-    &lt;enumeration value="checkbox"/>
-    &lt;enumeration value="multiselect"/>
-  &lt;/restriction>
-&lt;/simpleType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "dynamic-metadata-field-definitions" ),
+        array( "getComplexTypeXMLByName" => "dynamicMetadataFieldDefinition" ),
+        array( "getComplexTypeXMLByName" => "dynamic-metadata-field-definition-values" ),
+        array( "getSimpleTypeXMLByName"  => "dynamic-metadata-field-type" ),
+        array( "getSimpleTypeXMLByName"  => "metadata-field-visibility" ),
+        array( "getComplexTypeXMLByName" => "dynamic-metadata-field-definition-value" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Note</h2>
 <p>For a <code>dynamicMetadataFieldDefinition</code> property of type <code>text</code>,
