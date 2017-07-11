@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
@@ -16,8 +17,10 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
-<p>A <code>ContentTypePageConfiguration</code> object represents a <code>contentTypePageConfiguration</code> property found in a <a href="web-services/api/asset-classes/content-type"><code>ContentType</code></a> object.</p>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>ContentTypePageConfiguration</code> object represents a <code>contentTypePageConfiguration</code> property found in a <a href=\"/cascade-admin/web-services/api/asset-classes/content-type.php\"><code>ContentType</code></a> object.</p>
 <h2>Structure of <code>ContentTypePageConfiguration</code></h2>
 <pre>ContentTypePageConfiguration
   pageConfigurationId
@@ -27,38 +30,19 @@ use cascade_ws_asset     as a;
 </pre>
 <h2>Design Issues</h2>
 <p>Currently this class cannot be used to modify the destinations.</p>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="contentTypePageConfigurations">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="contentTypePageConfiguration" nillable="true" type="impl:contentTypePageConfiguration"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="contentTypePageConfiguration">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="pageConfigurationId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="pageConfigurationName" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="publishMode" type="impl:contentTypePageConfigurationPublishMode"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="destinations" nillable="true" type="impl:destination-list"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;simpleType name="contentTypePageConfigurationPublishMode">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="all-destinations"/>
-    &lt;enumeration value="selected-destinations"/>
-    &lt;enumeration value="do-not-publish"/>
-  &lt;/restriction>
-&lt;/simpleType>
-
-&lt;complexType name="destination-list">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="destination" type="impl:identifier"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "contentTypePageConfigurations" ),
+        array( "getComplexTypeXMLByName" => "contentTypePageConfiguration" ),
+        array( "getSimpleTypeXMLByName"  => "contentTypePageConfigurationPublishMode" ),
+        array( "getComplexTypeXMLByName" => "destination-list" ),
+        array( "getComplexTypeXMLByName" => "destination" ),
+    ) );
+return $doc_string;
+?>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript></postscript>
 </documentation>
 */
 class ContentTypePageConfiguration extends Property
