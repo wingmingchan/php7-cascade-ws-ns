@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
@@ -16,7 +17,9 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>An <code>AclEntry</code> object represents an <code>aclEntry</code> property found in an <code>AccessRightsInformation</code> object.</p>
 <h2>Structure of <code>aclEntry</code></h2>
 <pre>aclEntry
@@ -25,71 +28,52 @@ use cascade_ws_asset     as a;
   name
 </pre>
 <ul>
-<li>level: "read" or "write"</li>
-<li>type: "group" or "user"</li>
+<li>level: \"read\" or \"write\"</li>
+<li>type: \"group\" or \"user\"</li>
 <li>name: name of the group or user</li>
 </ul>
 <p>Example:</p>
-<pre>["aclEntry"]=&gt;
+<pre>[\"aclEntry\"]=&gt;
     array(3) {
       [0]=&gt;
       object(stdClass)#70 (3) {
-        ["level"]=&gt;
-        string(4) "read"
-        ["type"]=&gt;
-        string(5) "group"
-        ["name"]=&gt;
-        string(13) "CWT-Designers"
+        [\"level\"]=&gt;
+        string(4) \"read\"
+        [\"type\"]=&gt;
+        string(5) \"group\"
+        [\"name\"]=&gt;
+        string(13) \"CWT-Designers\"
       }
       [1]=&gt;
       object(stdClass)#71 (3) {
-        ["level"]=&gt;
-        string(5) "write"
-        ["type"]=&gt;
-        string(4) "user"
-        ["name"]=&gt;
-        string(10) "chanw-test"
+        [\"level\"]=&gt;
+        string(5) \"write\"
+        [\"type\"]=&gt;
+        string(4) \"user\"
+        [\"name\"]=&gt;
+        string(10) \"chanw-test\"
       }
       [2]=&gt;
       object(stdClass)#68 (3) {
-        ["level"]=&gt;
-        string(5) "write"
-        ["type"]=&gt;
-        string(4) "user"
-        ["name"]=&gt;
-        string(5) "chanw"
+        [\"level\"]=&gt;
+        string(5) \"write\"
+        [\"type\"]=&gt;
+        string(4) \"user\"
+        [\"name\"]=&gt;
+        string(5) \"chanw\"
       }
     }
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="acl-entries">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="aclEntry" nillable="false" type="impl:aclEntry"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="aclEntry">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="level" nillable="false" type="impl:acl-entry-level"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="type" nillable="false" type="impl:acl-entry-type"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="name" nillable="false" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;simpleType name="acl-entry-level">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="read"/>
-    &lt;enumeration value="write"/>
-  &lt;/restriction>
-&lt;/simpleType>
-
-&lt;simpleType name="acl-entry-type">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="user"/>
-    &lt;enumeration value="group"/>
-  &lt;/restriction>
-&lt;/simpleType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "acl-entries" ),
+        array( "getComplexTypeXMLByName" => "aclEntry" ),
+        array( "getSimpleTypeXMLByName"  => "acl-entry-level" ),
+        array( "getSimpleTypeXMLByName"  => "acl-entry-type" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
 </documentation>
