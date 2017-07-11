@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
@@ -15,22 +16,18 @@ use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
 
 /**
-<documentation><description><h2>Introduction</h2>
-<p><code>ConnectorContentTypeLinkParameter</code> is an empty sub-class of <a href="web-services/api/property-classes/parameter"><code>Parameter</code></a> used by <a href="web-services/api/asset-classes/wordpress-connector"><code>WordPressConnector</code></a>.</p>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="connector-content-type-link-param-list">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="connectorContentTypeLinkParam" nillable="true" type="impl:connector-content-type-link-param"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="connector-content-type-link-param">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="name" nillable="true" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="value" nillable="true" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p><code>ConnectorContentTypeLinkParameter</code> is an empty sub-class of <a href=\"/cascade-admin/web-services/api/property-classes/parameter.php\"><code>Parameter</code></a> used by <a href=\"/cascade-admin/web-services/api/asset-classes/wordpress-connector.php\"><code>WordPressConnector</code></a>.</p>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "connector-content-type-link-param-list" ),
+        array( "getComplexTypeXMLByName" => "connector-content-type-link-param" ),
+    ) );
+return $doc_string;
+?>
 </description>
 </documentation>
 */
