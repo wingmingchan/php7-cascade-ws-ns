@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 9/17/2016 Added initialization of recycled.
   * 12/15/2015 Fixed a bug in getAsset.
@@ -22,8 +23,10 @@ use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
  
 /**
-<documentation><description><h2>Introduction</h2>
-<p>A <code>Child</code> object represents a <code>child</code> property found in a <a href="site://cascade-admin-old/projects/web-services/oop/classes/asset-classes/container"><code>Container</code></a> object. <a href="/web-services/api/property-classes/identifier"><code>Identifier</code></a> is an empty sub-class (i.e., class alias) of <code>Child</code>.</p>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>Child</code> object represents a <code>child</code> property found in a <a href=\"/cascade-admin/web-services/api/asset-classes/container.php\"><code>Container</code></a> object. <a href=\"/cascade-admin/web-services/api/property-classes/identifier.php\"><code>Identifier</code></a> is an empty sub-class (i.e., class alias) of <code>Child</code>.</p>
 <h2>Structure of <code>child</code></h2>
 <pre>child
   id
@@ -35,30 +38,15 @@ use cascade_ws_exception as e;
 <ul>
 <li>There are no <code>set</code> methods in this class.</li>
 </ul>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="container-children">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="child" type="impl:identifier"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="identifier">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="id" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="path" type="impl:path"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="type" type="impl:entityTypeString"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="recycled" type="xsd:boolean"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="path">
-  &lt;sequence>
-    &lt;element maxOccurs="1" name="path" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="siteId" nillable="true" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="siteName" nillable="true" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "container-children" ),
+        array( "getComplexTypeXMLByName" => "identifier" ),
+        array( "getComplexTypeXMLByName" => "path" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/child.php">child.php</a></li></ul></postscript>
 </documentation>
