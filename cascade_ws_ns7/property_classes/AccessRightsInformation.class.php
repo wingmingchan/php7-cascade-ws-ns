@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/28/2016 Added setAccessRights, denyAccessToAllGroups, denyAccessToAllUsers.
   * 5/28/2015 Added namespaces.
@@ -17,7 +18,9 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>An <code>AccessRightsInformation</code> object represents an <code>accessRightsInformation</code> property returned from Cascade when the access rights information of an asset is read. See below for an example read dump.</p>
 <h2>Structure of <code>accessRightsInformation</code></h2>
 <pre>accessRightsInformation
@@ -36,23 +39,20 @@ use cascade_ws_asset     as a;
       name
   allLevel
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="accessRightsInformation">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="aclEntries" nillable="false" type="impl:acl-entries"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="allLevel" nillable="false" type="impl:all-level"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;simpleType name="all-level">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="none"/>
-    &lt;enumeration value="read"/>
-    &lt;enumeration value="write"/>
-  &lt;/restriction>
-&lt;/simpleType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "accessRightsInformation" ),
+        array( "getComplexTypeXMLByName" => "identifier" ),
+        array( "getComplexTypeXMLByName" => "path" ),
+        array( "getComplexTypeXMLByName" => "acl-entries" ),
+        array( "getComplexTypeXMLByName" => "aclEntry" ),
+        array( "getSimpleTypeXMLByName"  => "acl-entry-level" ),
+        array( "getSimpleTypeXMLByName"  => "acl-entry-type" ),
+        array( "getSimpleTypeXMLByName"  => "all-level" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript>
 <h2>Read Dump</h2>
