@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
@@ -16,8 +17,10 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
-<p>A <code>ConnectorContentTypeLink</code> object represents a <code>connectorContentTypeLink</code> property found in a <a href="web-services/api/asset-classes/connector"><code>Connector</code></a> asset.</p>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>ConnectorContentTypeLink</code> object represents a <code>connectorContentTypeLink</code> property found in a <a href=\"/cascade-admin/web-services/api/asset-classes/connector.php\"><code>Connector</code></a> asset.</p>
 <h2>Structure of <code>connectorContentTypeLink</code></h2>
 <pre>connectorContentTypeLink
   contentTypeId
@@ -29,38 +32,18 @@ use cascade_ws_asset     as a;
       name
       value
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="connector-content-type-link-list">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="connectorContentTypeLink" nillable="true" type="impl:connector-content-type-link"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="connector-content-type-link">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="contentTypeId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="contentTypePath" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="pageConfigurationId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="pageConfigurationName" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="connectorContentTypeLinkParams" type="impl:connector-content-type-link-param-list"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="connector-content-type-link-param-list">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="connectorContentTypeLinkParam" nillable="true" type="impl:connector-content-type-link-param"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="connector-content-type-link-param">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="name" nillable="true" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="value" nillable="true" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "connector-content-type-link-list" ),
+        array( "getComplexTypeXMLByName" => "connector-content-type-link" ),
+        array( "getComplexTypeXMLByName" => "connector-content-type-link-param-list" ),
+        array( "getComplexTypeXMLByName" => "connector-content-type-link-param" ),
+    ) );
+return $doc_string;
+?>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript></postscript>
 </documentation>
 */
 class ConnectorContentTypeLink extends Property
