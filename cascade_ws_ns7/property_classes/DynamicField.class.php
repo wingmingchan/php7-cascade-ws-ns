@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
@@ -15,19 +16,21 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
  
 /**
-<documentation><description><h2>Introduction</h2>
-<p>Just like a <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/field-value.php"><code>FieldValue</code></a> object that
-contains data and corresponds to a <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/possible-value.php"><code>PossibleValue</code></a> object in the definition,
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>Just like a <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/field-value.php\"><code>FieldValue</code></a> object that
+contains data and corresponds to a <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/possible-value.php\"><code>PossibleValue</code></a> object in the definition,
 a <code>DynamicField</code> object contains <code>FieldValue</code> objects and corresponds to
-a <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-metadata-field-definition.php"><code>DynamicMetadataFieldDefinition</code></a> object
-(see <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/field-value.php"><code>FieldValue</code></a>).
-A <code>DynamicField</code> object represents the <code>dynamicField</code> property of a <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/metadata.php"><code>Metadata</code></a>
+a <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-metadata-field-definition.php\"><code>DynamicMetadataFieldDefinition</code></a> object
+(see <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/field-value.php\"><code>FieldValue</code></a>).
+A <code>DynamicField</code> object represents the <code>dynamicField</code> property of a <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/metadata.php\"><code>Metadata</code></a>
 object inside an asset that can be associated with a metadata set.</p>
 <h2>Important Note About Default</h2>
-<p>When using checkboxes and multi-selectors, pay attention to default values assigned to them. If there is one or more items in a field that are marked as "Default",
-then at all times at least one item in the field must be selected. If all items are unselected manually, then the one(s) marked as "Default" will be selected,
+<p>When using checkboxes and multi-selectors, pay attention to default values assigned to them. If there is one or more items in a field that are marked as \"Default\",
+then at all times at least one item in the field must be selected. If all items are unselected manually, then the one(s) marked as \"Default\" will be selected,
 no matter what. Web service code used to unselect all items of such a field will of course fail. But this will be the case even when working with them in the back-end of Cascade.
-Therefore, it may not be a good idea to use "Default" for checkboxes and multi-selectors.</p>
+Therefore, it may not be a good idea to use \"Default\" for checkboxes and multi-selectors.</p>
 <h2>Structure of <code>dynamicField</code></h2>
 <pre>dynamicField (NULL, stdClass or array of stdClass)
   name
@@ -40,33 +43,16 @@ Therefore, it may not be a good idea to use "Default" for checkboxes and multi-s
 The <code>toStdClass</code> method must generate the correct <code>\stdClass</code> object corresponding to these three cases.</li>
 <li>The <code>\stdClass</code> object passed into the constructor can be NULL.</li>
 </ul>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="dynamicMetadataFields">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="dynamicField" type="impl:dynamicMetadataField"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="dynamicMetadataField">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="name" nillable="false" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="fieldValues" nillable="true" type="impl:fieldValues"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="fieldValues">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="fieldValue" nillable="true" type="impl:fieldValue"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="fieldValue">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="value" nillable="true" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "dynamicMetadataFields" ),
+        array( "getComplexTypeXMLByName" => "dynamicMetadataField" ),
+        array( "getComplexTypeXMLByName" => "fieldValues" ),
+        array( "getComplexTypeXMLByName" => "fieldValue" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/metadata_dynamic_field.php">metadata_dynamic_field.php</a></li></ul></postscript>
 </documentation>
