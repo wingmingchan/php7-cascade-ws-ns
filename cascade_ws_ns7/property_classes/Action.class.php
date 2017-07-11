@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/12/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
@@ -16,7 +17,9 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>An <code>Action</code> object represents an action in a step of a workflow instance.</p>
 <h2>Structure of <code>action</code></h2>
 <pre>action
@@ -25,22 +28,14 @@ use cascade_ws_asset     as a;
   actionType
   nextId
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="workflowAction">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="label" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="actionType" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="nextId" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="workflowActions">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="1" name="action" type="impl:workflowAction"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "workflowActions" ),
+        array( "getComplexTypeXMLByName" => "workflowAction" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript></postscript>
 </documentation>
