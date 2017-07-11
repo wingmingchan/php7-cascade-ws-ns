@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
@@ -16,8 +17,10 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
-<p>An <code>InlineEditableField</code> object represents an <code>inlineEditableField</code> property that can be found in a <a href="web-services/api/asset-classes/content-type"><code>a\ContentType</code></a> object.</p>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>An <code>InlineEditableField</code> object represents an <code>inlineEditableField</code> property that can be found in a <a href=\"/cascade-admin/web-services/api/asset-classes/content-type.php\"><code>a\ContentType</code></a> object.</p>
 <h2>Structure of <code>inlineEditableField</code></h2>
 <pre>inlineEditableField
   pageConfigurationName
@@ -26,32 +29,15 @@ use cascade_ws_asset     as a;
   type
   name
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="inlineEditableFields">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="inlineEditableField" nillable="true" type="impl:inlineEditableField"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="inlineEditableField">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="pageConfigurationName" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="pageRegionName" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="dataDefinitionGroupPath" nillable="true" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="type" type="impl:inlineEditableFieldType"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="name" nillable="true" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;simpleType name="inlineEditableFieldType">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="wired-metadata"/>
-    &lt;enumeration value="dynamic-metadata"/>
-    &lt;enumeration value="data-definition"/>
-    &lt;enumeration value="xhtml"/>
-  &lt;/restriction>
-&lt;/simpleType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "inlineEditableFields" ),
+        array( "getComplexTypeXMLByName" => "inlineEditableField" ),
+        array( "getSimpleTypeXMLByName"  => "inlineEditableFieldType" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
 </documentation>
