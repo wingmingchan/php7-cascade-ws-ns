@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/31/2017 Fixed return type of getAuthor.
   * 1/20/2017 Added default value to setDynamicFieldValue.
@@ -19,19 +20,21 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_asset as a;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_asset     as a;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
  
 /**
-<documentation><description><h2>Introduction</h2>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>A <code>Metadata</code> object represents the <code>metadata</code> property of an asset that can be associated with a metadata set.
 It contains zero or more <code>DynamicField</code> objects.</p>
 <p>As mentioned in <code>FieldValue</code>, we need to take care of the two sides of metadata, i.e., definition and data/container,
 when we deal with an asset that can have metadata. When the <code>metadata</code> property is modified, this class must guarantee
 that all modifications are allowed by the definition; i.e., that the containers are defined, and that the data are allowed in these containers.
-Therefore, besides storing the <code>metadata</code> property, a <code>Metadata</code> object can also store the global <code>$service</code> object
+Therefore, besides storing the <code>metadata</code> property, a <code>Metadata</code> object can also store the global <code>\$service</code> object
 and the id of its corresponding metadata set. When a <code>setX</code> method is called, it will retrieve the corresponding <code>a\MetadataSet</code> object
 and look at the definition. For example, if a value is added to a <code>dynamicField</code>, this value must be defined
 in the corresponding <code>DynamicMetadataFieldDefinition</code> object.</p>
@@ -59,52 +62,21 @@ are defined in a metadata set, the metadata <code>stdClass</code> object does no
 <code>expirationFolderId</code> and <code>expirationFolderPath</code> are properties of assets.</p>
 <h2>Design Issues</h2>
 <ul>
-<li>The <code>$service</code> object and the corresponding <code>a\MetadataSet</code> object are needed only when a <code>setX</code> method is called.</li>
+<li>The <code>\$service</code> object and the corresponding <code>a\MetadataSet</code> object are needed only when a <code>setX</code> method is called.</li>
 <li>The <code>stdClass</code> object passed into the constructor cannot be NULL.</li>
 <li>If a field requires a value, then the corresponding <code>setX</code> method cannot be called with an empty value.</li>
 </ul>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="metadata">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="author" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="displayName" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="endDate" nillable="true" type="xsd:dateTime"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="keywords" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="metaDescription" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="reviewDate" nillable="true" type="xsd:dateTime"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="startDate" nillable="true" type="xsd:dateTime"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="summary" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="teaser" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="title" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="dynamicFields" type="impl:dynamicMetadataFields"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="dynamicMetadataFields">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="dynamicField" type="impl:dynamicMetadataField"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="dynamicMetadataField">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="name" nillable="false" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="fieldValues" nillable="true" type="impl:fieldValues"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="fieldValues">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="fieldValue" nillable="true" type="impl:fieldValue"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="fieldValue">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="value" nillable="true" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "metadata" ),
+        array( "getComplexTypeXMLByName" => "dynamicMetadataFields" ),
+        array( "getComplexTypeXMLByName" => "dynamicMetadataField" ),
+        array( "getComplexTypeXMLByName" => "fieldValues" ),
+        array( "getComplexTypeXMLByName" => "fieldValue" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/metadata.php">metadata.php</a></li>
 <li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/metadata_wired_field.php">metadata_wired_field.php</a></li>
