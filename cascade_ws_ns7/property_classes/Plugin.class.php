@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/14/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 2/11/2016 Throwing exception from getParameter. Added addParameter and removeParameter.
   * 5/28/2015 Added namespaces.
@@ -17,28 +18,26 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
-<p>A <code>Plugin</code> object represents a <code>plugin</code> property found in an <a href="web-services/api/asset-classes/asset-factory"><code>a\AssetFactory</code></a> object.</p>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>Plugin</code> object represents a <code>plugin</code> property found in an <a href=\"/cascade-admin/web-services/api/asset-classes/asset-factory.php\"><code>a\AssetFactory</code></a> object.</p>
 <h2>Structure of <code>plugin</code></h2>
 <pre>plugin
   name
   parameters
     parameter
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="asset-factory-plugins">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="plugin" type="impl:asset-factory-plugin"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="asset-factory-plugin">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="parameters" type="impl:asset-factory-plugin-parameters"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "asset-factory-plugins" ),
+        array( "getComplexTypeXMLByName" => "asset-factory-plugin" ),
+        array( "getComplexTypeXMLByName" => "asset-factory-plugin-parameters" ),
+        array( "getComplexTypeXMLByName" => "asset-factory-plugin-parameter" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
 </documentation>
