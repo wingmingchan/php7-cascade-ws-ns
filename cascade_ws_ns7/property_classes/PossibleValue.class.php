@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/14/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 9/8/2016 Added isDefaultValue.
   * 5/28/2015 Added namespaces.
@@ -16,45 +17,47 @@ use cascade_ws_utility as u;
 use cascade_ws_exception as e;
 
 /**
-<documentation><description><h2>Introduction</h2>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>A <code>PossibleValue</code> object represents a <code>possibleValue</code> property found in
-a <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-metadata-field-definition.php"><code>DynamicMetadataFieldDefintion</code></a> object
-inside a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/metadata-set.php"><code>a\MetadataSet</code></a> object.</p>
+a <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-metadata-field-definition.php\"><code>DynamicMetadataFieldDefintion</code></a> object
+inside a <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/metadata-set.php\"><code>a\MetadataSet</code></a> object.</p>
 <p>To understand what this class represents, let us look at a small part of the dump of a metadata set:</p>
 <pre>      object(stdClass)#56 (6) {
-        ["name"]=&gt;
-        string(17) "exclude-from-left"
-        ["label"]=&gt;
-        string(22) "Exclude from Left Menu"
-        ["fieldType"]=&gt;
-        string(8) "checkbox"
-        ["required"]=&gt;
+        [\"name\"]=&gt;
+        string(17) \"exclude-from-left\"
+        [\"label\"]=&gt;
+        string(22) \"Exclude from Left Menu\"
+        [\"fieldType\"]=&gt;
+        string(8) \"checkbox\"
+        [\"required\"]=&gt;
         bool(false)
-        ["visibility"]=&gt;
-        string(6) "inline"
-        ["possibleValues"]=&gt;
+        [\"visibility\"]=&gt;
+        string(6) \"inline\"
+        [\"possibleValues\"]=&gt;
         object(stdClass)#55 (1) {
-          ["possibleValue"]=&gt;
+          [\"possibleValue\"]=&gt;
           array(3) {
             [0]=&gt;
             object(stdClass)#54 (2) {
-              ["value"]=&gt;
-              string(3) "Yes"
-              ["selectedByDefault"]=&gt;
+              [\"value\"]=&gt;
+              string(3) \"Yes\"
+              [\"selectedByDefault\"]=&gt;
               bool(false)
             }
             [1]=&gt;
             object(stdClass)#50 (2) {
-              ["value"]=&gt;
-              string(5) "Maybe"
-              ["selectedByDefault"]=&gt;
+              [\"value\"]=&gt;
+              string(5) \"Maybe\"
+              [\"selectedByDefault\"]=&gt;
               bool(false)
             }
             [2]=&gt;
             object(stdClass)#52 (2) {
-              ["value"]=&gt;
-              string(2) "No"
-              ["selectedByDefault"]=&gt;
+              [\"value\"]=&gt;
+              string(2) \"No\"
+              [\"selectedByDefault\"]=&gt;
               bool(true)
             }
           }
@@ -65,13 +68,13 @@ inside a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-cl
 <pre>&lt;checkbox&gt;
     &lt;item&gt;Yes&lt;/item&gt;
     &lt;item&gt;Maybe&lt;/item&gt;
-    &lt;item default="true"&gt;No&lt;/item&gt;
+    &lt;item default=\"true\"&gt;No&lt;/item&gt;
 &lt;/checkbox&gt;
 </pre>
 <p>When the metadata set is associated with a page, for example, this inlined dynamic field will provide three checkboxes,
-labeled "<code>Yes</code>", "<code>Maybe</code>", and "<code>No</code>" respectively, with "<code>No</code>" selected by default.
+labeled \"<code>Yes</code>\", \"<code>Maybe</code>\", and \"<code>No</code>\" respectively, with \"<code>No</code>\" selected by default.
 So a possible value represents an item or a possible choice, in a dynamic field (like a checkbox or group of checkboxes,
-a group of radio buttons, a dropdown, or a multiselect) of a metadata set. Note that a value like "<code>No</code>" is in fact
+a group of radio buttons, a dropdown, or a multiselect) of a metadata set. Note that a value like \"<code>No</code>\" is in fact
 the unique identifier of an item. That is to say, we cannot have two identical values in the same field. Also note that for a group of radio buttons and a dropdown, at most only one item can be selected as the default value of the field.</p>
 <h2>Structure of <code>possibleValue</code></h2>
 <pre>possibleValue (stdClass or array of stdClass)
@@ -83,20 +86,14 @@ the unique identifier of an item. That is to say, we cannot have two identical v
 <li>The <code>value</code> of the object is the object's identifier. Therefore, it cannot be modified, nor can it be empty.</li>
 <li>The <code>selectedByDefault</code> must be a bool value.</li>
 </ul>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="dynamic-metadata-field-definition-values">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="possibleValue" nillable="true" type="impl:dynamic-metadata-field-definition-value"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="dynamic-metadata-field-definition-value">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="value" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="selectedByDefault" type="xsd:boolean"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "dynamic-metadata-field-definition-values" ),
+        array( "getComplexTypeXMLByName" => "dynamic-metadata-field-definition-value" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/possible_value.php">possible_value.php</a></li></ul></postscript>
 </documentation>
