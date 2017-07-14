@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/14/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
   * 7/16/2014 Started using DebugUtility::out and DebugUtility::dump.
@@ -18,9 +19,11 @@ use cascade_ws_asset     as a;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>A <code>PageRegion</code> object represents a <code>pageRegion</code> property that can
-be found in a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/template.php"><code>a\Template</code></a> object or a <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/page-configuration.php"><code>PageConfiguration</code></a> object. Since both a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/page-configuration-set.php"><code>a\PageConfigurationSet</code></a> object and a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/page.php"><code>a\Page</code></a> object contain <code>PageConfiguration</code> objects, both contain <code>PageRegion</code> objects. A page region is used to associate a block and/or a format to a template, a configuration, or a page.</p>
+be found in a <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/template.php\"><code>a\Template</code></a> object or a <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/page-configuration.php\"><code>PageConfiguration</code></a> object. Since both a <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/page-configuration-set.php\"><code>a\PageConfigurationSet</code></a> object and a <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/page.php\"><code>a\Page</code></a> object contain <code>PageConfiguration</code> objects, both contain <code>PageRegion</code> objects. A page region is used to associate a block and/or a format to a template, a configuration, or a page.</p>
 <h2>Structure of <code>pageRegion</code></h2>
 <pre>pageRegions
   pageRegion (NULL, stdClass or array of stdClass)
@@ -35,31 +38,14 @@ be found in a <a href="http://www.upstate.edu/cascade-admin/web-services/api/ass
     formatRecycled
     noFormat
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="page-regions">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="pageRegion" type="impl:pageRegion"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="pageRegion">
-  &lt;complexContent>
-    &lt;extension base="impl:base-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="blockId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="blockPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="blockRecycled" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="noBlock" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="formatId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="formatPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="formatRecycled" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="noFormat" type="xsd:boolean"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "page-regions" ),
+        array( "getComplexTypeXMLByName" => "pageRegion" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/page-region.php">page-region.php</a></li></ul></postscript>
 </documentation>
