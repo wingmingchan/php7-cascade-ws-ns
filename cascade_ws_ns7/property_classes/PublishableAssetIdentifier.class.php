@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/14/2017 Added call to getXMLFragments.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_property;
@@ -15,8 +16,10 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
-<p>A <code>PublishableAssetIdentifier</code> object represents a <code>publishableAssetIdentifier</code> property found in a <a href="web-services/api/asset-classes/publish-set"><code>a\PublishSet</code></a> object. It is used to identify publishable assets of type page, file, and folder.</p>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>PublishableAssetIdentifier</code> object represents a <code>publishableAssetIdentifier</code> property found in a <a href=\"/cascade-admin/web-services/api/asset-classes/publish-set.php\"><code>a\PublishSet</code></a> object. It is used to identify publishable assets of type page, file, and folder.</p>
 <h2>Structure of <code>publishableAssetIdentifier</code></h2>
 <pre>publishableAssetIdentifier (NULL, object or array)
   id
@@ -27,6 +30,15 @@ use cascade_ws_asset     as a;
   type
   recycled
 </pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "publishable-asset-list" ),
+        array( "getComplexTypeXMLByName" => "identifier" ),
+        array( "getComplexTypeXMLByName" => "path" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript></postscript>
 </documentation>
