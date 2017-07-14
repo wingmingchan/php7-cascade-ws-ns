@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/14/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
@@ -16,8 +17,10 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
-<p>A <code>Path</code> object represents a <code>path</code> (the parent) property found in a <a href="/web-services/api/property-classes/child"><code>Child</code></a> object inside a <a href="web-services/api/asset-classes/folder"><code>a\Folder</code></a> object.</p>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>Path</code> object represents a <code>path</code> (the parent) property found in a <a href=\"/cascade-admin/web-services/api/property-classes/child.php\"><code>Child</code></a> object inside a <a href=\"/cascade-admin/web-services/api/asset-classes/folder.php\"><code>a\Folder</code></a> object.</p>
 <h2>Structure of <code>path</code></h2>
 <pre>path
   path
@@ -28,17 +31,15 @@ use cascade_ws_asset     as a;
 <ul>
 <li>There are no <code>set</code> methods in this class.</li>
 </ul>
-<h2>WSDL</h2>
-<pre>
-&lt;complexType name="path">
-  &lt;sequence>
-    &lt;element maxOccurs="1" name="path" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="siteId" nillable="true" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="siteName" nillable="true" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType></pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "path" ),
+    ) );
+return $doc_string;
+?>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript></postscript>
 </documentation>
 */
 class Path extends Property
