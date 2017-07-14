@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/25/2017 Fixed in bug.
   * 12/29/2015 Added three more constants.
@@ -21,7 +22,9 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>A <code>PageConfiguration</code> object represents a <code>pageConfiguration</code> property found in a page configuration set.</p>
 <h2>Structure of <code>pageConfiguration</code></h2>
 <pre>pageConfigurations
@@ -41,58 +44,16 @@ use cascade_ws_asset     as a;
     includeXMLDeclaration
     publishable
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="page-configurations">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="1" name="pageConfiguration" type="impl:pageConfiguration"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="pageConfiguration">
-  &lt;complexContent>
-    &lt;extension base="impl:base-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="1" name="defaultConfiguration" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="templateId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="templatePath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="formatId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="formatPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="formatRecycled" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="pageRegions" type="impl:page-regions"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="outputExtension" nillable="true" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="serializationType" nillable="true" type="impl:serialization-type"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="includeXMLDeclaration" nillable="true" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="publishable" nillable="true" type="xsd:boolean"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-
-&lt;complexType name="page-regions">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="pageRegion" type="impl:pageRegion"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="pageRegion">
-  &lt;complexContent>
-    &lt;extension base="impl:base-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="name" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="blockId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="blockPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="blockRecycled" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="noBlock" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="formatId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="formatPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="formatRecycled" type="xsd:boolean"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="noFormat" type="xsd:boolean"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "page-configurations" ),
+        array( "getComplexTypeXMLByName" => "pageConfiguration" ),
+        array( "getComplexTypeXMLByName" => "page-regions" ),
+        array( "getComplexTypeXMLByName" => "pageRegion" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/page_configuration.php">page_configuration.php</a></li></ul></postscript>
 </documentation>
