@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/18/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 9/26/2016 Changed signatures of addWorkflowDefinition, added remove methods and aliases.
   * 6/23/2015 Added getInheritedWorkflowDefinitions, setInheritWorkflows.
@@ -18,7 +19,9 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>A <code>WorkflowSettings</code> object represents a <code>workflowSettings</code> property associated with an asset (e.g., a folder).</p>
 <h2>Structure of <code>workflowSettings</code></h2>
 <pre>workflowSettings
@@ -51,17 +54,16 @@ use cascade_ws_asset     as a;
       type (workflowdefinition)
       recycled
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="workflowSettings">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" nillable="false" type="impl:identifier"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="workflowDefinitions" nillable="false" type="impl:assetIdentifiers"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="inheritWorkflows" nillable="false" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="requireWorkflow" nillable="false" type="xsd:boolean"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="inheritedWorkflowDefinitions" nillable="false" type="impl:assetIdentifiers"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "workflowSettings" ),
+        array( "getComplexTypeXMLByName" => "assetIdentifiers" ),
+        array( "getComplexTypeXMLByName" => "identifier" ),
+        array( "getComplexTypeXMLByName" => "path" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/workflow_settings.php">workflow_settings.php</a></li></ul></postscript>
 </documentation>
