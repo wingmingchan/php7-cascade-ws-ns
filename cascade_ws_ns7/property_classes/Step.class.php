@@ -16,7 +16,9 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>A <code>Step</code> object represents a step in a workflow instance.</p>
 <h2>Structure of <code>step</code></h2>
 <pre>step
@@ -31,38 +33,16 @@ use cascade_ws_asset     as a;
       actionType
       nextId
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="workflowStep">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="label" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="stepType" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="owner" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="actions" type="impl:workflowActions"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="workflowSteps">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="step" type="impl:workflowStep"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="workflowAction">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="label" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="actionType" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="nextId" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="workflowActions">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="1" name="action" type="impl:workflowAction"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "workflowSteps" ),
+        array( "getComplexTypeXMLByName" => "workflowStep" ),
+        array( "getComplexTypeXMLByName" => "workflowActions" ),
+        array( "getComplexTypeXMLByName" => "workflowAction" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript></postscript>
 </documentation>
