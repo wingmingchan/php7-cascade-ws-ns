@@ -16,9 +16,9 @@ use cascade_ws_asset     as a;
 
 /**
 <documentation><description><h2>Introduction</h2>
-<p>A <code>StepDefinition</code> object represents a step definition, an XML element in a <a href="web-services/api/asset-classes/workflow-definition"><code>a\WorkflowDefinition</code></a> object. This class is not a sub-class of <code>Property</code> and does not implement the <code>toStdClass</code> method. Instead, it provides a <code>toXml</code> method, which converts the data of the object back to an XML string.</p>
+<p>A <code>StepDefinition</code> object represents a step definition, an XML element in a <a href="/cascade-admin/web-services/api/asset-classes/workflow-definition.php"><code>a\WorkflowDefinition</code></a> object. This class is not a sub-class of <code>Property</code> and does not implement the <code>toStdClass</code> method. Instead, it provides a <code>toXml</code> method, which converts the data of the object back to an XML string.</p>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript></postscript>
 </documentation>
 */
 class StepDefinition
