@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/18/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 10/17/2016 Bug fixes.
   * 6/2/2016 Added aliases. Replaced most string literals with constants.
@@ -25,8 +26,10 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
-<p>A <code>StructuredDataNode</code> object represents a <code>structuredDataNode</code> property found in a <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/structured-data.php"><code>StructuredData</code></a> object inside a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/data-definition-block.php"><code>a\DataDefinitionBlock</code></a> object. This property can also be found in a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/page.php"><code>a\Page</code></a> object.</p>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>StructuredDataNode</code> object represents a <code>structuredDataNode</code> property found in a <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/structured-data.php\"><code>StructuredData</code></a> object inside a <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/data-definition-block.php\"><code>a\DataDefinitionBlock</code></a> object. This property can also be found in a <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/page.php\"><code>a\Page</code></a> object.</p>
 <p>A <code>StructuredDataNode</code> object can have descendants of the same <code>StructuredDataNode</code> type. Therefore, there must be recursion in the constructor and the <code>toStdClass</code> method.</p>
 <h2>Structure of <code>structureDataNode</code></h2>
 <pre>structuredDataNode (stdClass or array of stdClass)
@@ -53,52 +56,19 @@ use cascade_ws_asset     as a;
 <p>For a field allowing multiple instances, the fully qualified identifier of the first instance is suffixed with '<code>;0</code>', the second instance is suffixed with '<code>;1</code>' and so on. Therefore, if our text field in the group <code>test-group</code> is a multiple text field, then the fully qualified identifier of the first instance of the text will be <code>test-group;test-text;0</code>. Note that this fully qualified identifier remain unchanged even if we add more instances to other fields preceding it. The '<code>;0</code>' part indicates that this is the first instance of this field. Now I can use these fully qualified identifiers as keys for quick look-up.</p>
 <h2>Design Issues</h2>
 <ul>
-<li>A <code>StructuredDataNode</code> object contains a <a href="http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/data-definition.php"><code>a\DataDefinition</code></a> object. When a text value assigned to a node, the text value is checked against the definition of the field to make sure it is a valid value.</li>
+<li>A <code>StructuredDataNode</code> object contains a <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/data-definition.php\"><code>a\DataDefinition</code></a> object. When a text value assigned to a node, the text value is checked against the definition of the field to make sure it is a valid value.</li>
 <li>Possible values of a multiple-item field can be retrieved using the <code>getItems</code> method.</li>
 </ul>
-<pre>&lt;complexType name="structured-data-nodes">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="structuredDataNode" type="impl:structured-data-node"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="structured-data-node">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="type" type="impl:structured-data-type"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="structuredDataNodes" type="impl:structured-data-nodes"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="text" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="assetType" type="impl:structured-data-asset-type"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="blockId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="blockPath" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="fileId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="filePath" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="pageId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="pagePath" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="symlinkId" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="symlinkPath" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="recycled" type="xsd:boolean"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;simpleType name="structured-data-type">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="text"/>
-    &lt;enumeration value="asset"/>
-    &lt;enumeration value="group"/>
-  &lt;/restriction>
-&lt;/simpleType>
-
-&lt;simpleType name="structured-data-asset-type">
-  &lt;restriction base="xsd:string">
-    &lt;enumeration value="block"/>
-    &lt;enumeration value="file"/>
-    &lt;enumeration value="page"/>
-    &lt;enumeration value="symlink"/>
-    &lt;enumeration value="page,file,symlink"/>
-  &lt;/restriction>
-&lt;/simpleType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "structured-data-nodes" ),
+        array( "getComplexTypeXMLByName" => "structured-data-node" ),
+        array( "getSimpleTypeXMLByName"  => "structured-data-type" ),
+        array( "getSimpleTypeXMLByName"  => "structured-data-asset-type" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/structured_data_node.php">structured_data_node.php</a></li></ul></postscript>
 </documentation>
