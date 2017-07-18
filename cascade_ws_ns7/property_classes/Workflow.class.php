@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/18/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 12/22/2016 Minor bug fixes.
   * 2/13/2016 Added start_date, end_date, and the get methods.
@@ -19,8 +20,10 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
-<p>A <code>Workflow</code> object represents a workflow instance. It contains <a href="/web-services/api/property-classes/step"><code>Step</code></a> objects, which in turn contain <a href="/web-services/api/property-classes/action"><code>Action</code></a> objects. All properties in this class are read-only. There are no <code>set</code> methods implemented.</p>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>Workflow</code> object represents a workflow instance. It contains <a href=\"/cascade-admin/web-services/api/property-classes/step.php\"><code>Step</code></a> objects, which in turn contain <a href=\"/cascade-admin/web-services/api/property-classes/action.php\"><code>Action</code></a> objects. All properties in this class are read-only. There are no <code>set</code> methods implemented.</p>
 <p>A <code>workflow</code> object can be obtained by calling the <code>getWorkflow</code> method through an <code>Asset</code> object (e.g., a <code>Page</code> object).</p>
 <h2>Structure of <code>workflow</code></h2>
 <pre>workflow
@@ -62,53 +65,17 @@ use cascade_ws_asset     as a;
   startDate
   endDate
 </pre>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="workflow">
-  &lt;complexContent>
-    &lt;extension base="impl:named-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="1" name="relatedEntity" type="impl:identifier"/>
-        &lt;element maxOccurs="1" minOccurs="1" name="currentStep" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="orderedSteps" type="impl:workflowSteps"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="unorderedSteps" type="impl:workflowSteps"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="startDate" nillable="true" type="xsd:dateTime"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="endDate" nillable="true" type="xsd:dateTime"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-
-&lt;complexType name="workflowStep">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="label" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="stepType" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="owner" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="0" name="actions" type="impl:workflowActions"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="workflowSteps">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="step" type="impl:workflowStep"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="workflowAction">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="1" name="identifier" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="label" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="actionType" type="xsd:string"/>
-    &lt;element maxOccurs="1" minOccurs="1" name="nextId" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="workflowActions">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="1" name="action" type="impl:workflowAction"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "workflow" ),
+        array( "getComplexTypeXMLByName" => "workflowSteps" ),
+        array( "getComplexTypeXMLByName" => "workflowStep" ),
+        array( "getComplexTypeXMLByName" => "workflowActions" ),
+        array( "getComplexTypeXMLByName" => "workflowAction" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/workflow.php">workflow.php</a></li>
 <li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/recipes/workflow/transition.php">transition.php</a></li></ul></postscript>
