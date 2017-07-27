@@ -4,7 +4,6 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>, Peter Thomas <thomaspe.upstate.edu>
   * MIT Licensed
   * Modification history:
-  * 5/25/2016 Updated documentation.
   * 9/15/2016 Added outputDate, outputDuration and setTimeSpaceLimits.
   * 8/26/2016 Added constant NAME_SPACE.
   * 8/24/2016 Added documentation comments and changed the output to SCRIPT_FILENAME.

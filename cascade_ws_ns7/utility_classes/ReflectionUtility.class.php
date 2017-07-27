@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/14/2017 Added eval to execute code embedded in documentation.
   * 9/28/2016 Added isPassedByReference call to getSignature.
   * 9/15/2016 Added quotes to string default values in parameters.
   * 9/12/2016 Added code to getClassName to deal with scalar types.
@@ -57,8 +58,8 @@ class information.</p></description>
     {
         $class_doc = "";
         $r         = new \ReflectionClass( $obj );
-        $class_doc .= self::getClassDescription( $obj, $r );
         
+        $class_doc .= self::getClassDescription( $obj, $r );
         $constants = $r->getConstants();
         
         if( isset( $constants ) && count( $constants ) > 0 )
@@ -140,7 +141,7 @@ class information.</p></description>
         
         if( $with_hr )
             $class_doc .= HR;
-        
+
         return $class_doc;
     }
 
@@ -780,6 +781,13 @@ method signatures.</p></description>
                         $str = str_replace( "</postscript>", "", $str );
                     }
                     
+                    // added 6/14/2017
+                    if( strpos( $str, '<?php' ) !== false )
+                    	$str = eval( ' ?>' . $str . '<?php ' );
+                    
+                    if( is_null( $str ) )
+                    	$str = "";
+                    	
                     return $str;
                 }
             }

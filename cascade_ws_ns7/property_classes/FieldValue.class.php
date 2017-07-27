@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 9/13/2016 Fixed a bug in setValues.
   * 5/28/2015 Added namespaces.
@@ -11,15 +12,17 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
 
 /**
-<documentation><description><h2>Introduction</h2>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>A <code>FieldValue</code> object represents a <code>fieldValue</code> property found in a
-<a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-field.php"><code>DynamicField</code></a> object inside
-a <a href="http://www.upstate.edu/cascade-admin/web-services/api/property-classes/metadata.php"><code>Metadata</code></a> object
+<a href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/dynamic-field.php\"><code>DynamicField</code></a> object inside
+a <a href=\"http://www.upstate.edu/cascade-admin/web-services/api/property-classes/metadata.php\"><code>Metadata</code></a> object
 inside an asset that can be associated with a metadata set.</p>
 <h2>Definition-Data/Container Dichotomy</h2>
 <p>When working with metadata, we need to deal with its two sides at the same time. On the one hand, we are dealing with definitions of containers and types of data.
@@ -57,19 +60,14 @@ The <code>toStdClass</code> method must generate the correct <code>\stdClass</co
 <li>To avoid empty values mixing with non-empty values, <code>setValues</code> should not allow <code>\stdClass</code> objects
 with no values mixed with <code>\stdClass</code> objects with a value property. But if a single object is passed in, then the object can have no value.</li>
 </ul>
-<h2>WSDL</h2>
-<pre>&lt;complexType name="fieldValues">
-  &lt;sequence>
-    &lt;element maxOccurs="unbounded" minOccurs="0" name="fieldValue" nillable="true" type="impl:fieldValue"/>
-  &lt;/sequence>
-&lt;/complexType>
-
-&lt;complexType name="fieldValue">
-  &lt;sequence>
-    &lt;element maxOccurs="1" minOccurs="0" name="value" nillable="true" type="xsd:string"/>
-  &lt;/sequence>
-&lt;/complexType>
-</pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "fieldValues" ),
+        array( "getComplexTypeXMLByName" => "fieldValue" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/metadata_dynamic_field.php">metadata_dynamic_field.php</a></li></ul></postscript>
 </documentation>

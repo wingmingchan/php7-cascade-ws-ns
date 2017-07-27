@@ -52,7 +52,25 @@ Returns a string, with all the angular brackets replaced by &amp;lt; and &amp;gt
         $xml = str_replace( '<', '&lt;', $xml );
         $xml = str_replace( '>', '&gt;', $xml );
         
-        return $xml;
+        return self::formatXML( self::removeWhitespace( $xml ) );
+    }
+    
+    public static function removeWhitespace( string $str ) : string
+    {
+        // remove all extra whitespace characters
+        $str = trim( preg_replace( '/\s\s+/', '', $str ) );
+        $str = str_replace( "REQUIRED", " REQUIRED",
+            str_replace( "NOT REQUIRED", " NOT REQUIRED", $str ) );
+        // keep one whitespace characters
+        $str = trim( preg_replace( '/\s\s+/', ' ', $str ) );
+
+        return $str;
+    }
+    
+    public static function formatXML( $str )
+    {
+        $str = str_replace( "&lt;", "\r&lt;", $str );
+        return $str;
     }
 }
 ?>
