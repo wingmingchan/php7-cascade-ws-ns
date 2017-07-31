@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/31/2017 Added help text related fields, get and set methods.
   * 6/26/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
@@ -43,26 +44,36 @@ metadataSet
   siteName
   authorFieldRequired
   authorFieldVisibility
+  authorFieldHelpText (8.5)
   descriptionFieldRequired
   descriptionFieldVisibility
+  descriptionFieldHelpText (8.5)
   displayNameFieldRequired
   displayNameFieldVisibility
+  displayNameFieldHelpText (8.5)
   endDateFieldRequired
   endDateFieldVisibility
+  endDateFieldHelpText (8.5)
   expirationFolderFieldRequired (8)
   expirationFolderFieldVisibility (8)
+  expirationFolderFieldHelpText (8.5)
   keywordsFieldRequired
   keywordsFieldVisibility
+  keywordsFieldHelpText (8.5)
   reviewDateFieldRequired
   reviewDateFieldVisibility
+  reviewDateFieldHelpText (8.5)
   startDateFieldRequired
   startDateFieldVisibility
+  startDateFieldHelpText (8.5)
   summaryFieldRequired
-  summaryFieldVisibility
+  summaryFieldVisibility (8.5)
   teaserFieldRequired
   teaserFieldVisibility
+  teaserFieldHelpText (8.5)
   titleFieldRequired
   titleFieldVisibility
+  titleFieldHelpText (8.5)
   dynamicMetadataFieldDefinitions
     dynamicMetadataFieldDefinition (NULL, stdClass or array of stdClass)
       name
@@ -448,6 +459,18 @@ and returns the calling object.</p></description>
     }
     
 /**
+<documentation><description><p>Returns <code>authorFieldHelpText</code>.</p></description>
+<example>echo $ms->getAuthorFieldHelpText() . BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getAuthorFieldHelpText()
+    {
+        return $this->getProperty()->authorFieldHelpText;
+    }
+    
+/**
 <documentation><description><p>Returns <code>authorFieldRequired</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $ms->getAuthorFieldRequired() ) . BR;</example>
 <return-type>bool</return-type>
@@ -472,6 +495,18 @@ and returns the calling object.</p></description>
     }
     
 /**
+<documentation><description><p>Returns <code>descriptionFieldHelpText</code>.</p></description>
+<example>echo $ms->getDescriptionFieldHelpText() . BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getDescriptionFieldHelpText()
+    {
+        return $this->getProperty()->descriptionFieldHelpText;
+    }
+    
+/**
 <documentation><description><p>Returns <code>descriptionFieldRequired</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $ms->getDescriptionFieldRequired() ) . BR;</example>
 <return-type>bool</return-type>
@@ -493,6 +528,18 @@ and returns the calling object.</p></description>
     public function getDescriptionFieldVisibility() : string
     {
         return $this->getProperty()->descriptionFieldVisibility;
+    }
+    
+/**
+<documentation><description><p>Returns <code>displayNameFieldHelpText</code>.</p></description>
+<example>echo $ms->getDisplayNameFieldHelpText() . BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getDisplayNameFieldHelpText()
+    {
+        return $this->getProperty()->displayNameFieldHelpText;
     }
     
 /**
@@ -585,6 +632,18 @@ If the field is a text field, this method returns an empty string.</p></descript
     }
 
 /**
+<documentation><description><p>Returns <code>endDateFieldHelpText</code>.</p></description>
+<example>echo $ms->getEndDateFieldHelpText() . BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getEndDateFieldHelpText()
+    {
+        return $this->getProperty()->endDateFieldHelpText;
+    }
+    
+/**
 <documentation><description><p>Returns <code>endDateFieldRequired</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $ms->getEndDateFieldRequired() ) . BR;</example>
 <return-type>bool</return-type>
@@ -607,7 +666,19 @@ If the field is a text field, this method returns an empty string.</p></descript
     {
         return $this->getProperty()->endDateFieldVisibility;
     }
-/*    
+
+/**
+<documentation><description><p>Returns <code>expirationFolderFieldHelpText</code>.</p></description>
+<example>echo $ms->getExpirationFolderFieldHelpText() . BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getExpirationFolderFieldHelpText()
+    {
+        return $this->getProperty()->expirationFolderFieldHelpText;
+    }
+    
 /**
 <documentation><description><p>Returns <code>expirationFolderFieldRequired</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $ms->getExpirationFolderFieldRequired() ) . BR;</example>
@@ -632,6 +703,18 @@ If the field is a text field, this method returns an empty string.</p></descript
         return $this->getProperty()->expirationFolderFieldVisibility;
     }
    
+/**
+<documentation><description><p>Returns <code>keywordsFieldHelpText</code>.</p></description>
+<example>echo $ms->getKeywordsFieldHelpText() . BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getKeywordsFieldHelpText()
+    {
+        return $this->getProperty()->keywordsFieldHelpText;
+    }
+    
 /**
 <documentation><description><p>Returns <code>keywordsFieldRequired</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $ms->getKeywordsFieldRequired() ) . BR;</example>
@@ -708,7 +791,6 @@ Note that the object is populated with default values in dynamic fields.</p></de
         return $metadata;
     }
     
-    
 /**
 <documentation><description><p>Returns an array of names of wired fields that are not hidden, used by the <code>WordPressConnector</code> class.</p></description>
 <example></example>
@@ -739,6 +821,18 @@ Note that the object is populated with default values in dynamic fields.</p></de
     }
     
 /**
+<documentation><description><p>Returns <code>reviewDateFieldHelpText</code>.</p></description>
+<example>echo $ms->getReviewDateFieldHelpText() . BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getReviewDateFieldHelpText()
+    {
+        return $this->getProperty()->reviewDateFieldHelpText;
+    }
+    
+/**
 <documentation><description><p>Returns <code>reviewDateFieldRequired</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $ms->getReviewDateFieldRequired() ) . BR;</example>
 <return-type>bool</return-type>
@@ -760,6 +854,18 @@ Note that the object is populated with default values in dynamic fields.</p></de
     public function getReviewDateFieldVisibility() : string
     {
         return $this->getProperty()->reviewDateFieldVisibility;
+    }
+    
+/**
+<documentation><description><p>Returns <code>startDateFieldHelpText</code>.</p></description>
+<example>echo $ms->getStartDateFieldHelpText() . BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getStartDateFieldHelpText()
+    {
+        return $this->getProperty()->startDateFieldHelpText;
     }
     
 /**
@@ -787,6 +893,18 @@ Note that the object is populated with default values in dynamic fields.</p></de
     }
     
 /**
+<documentation><description><p>Returns <code>summaryFieldHelpText</code>.</p></description>
+<example>echo $ms->getSummaryFieldHelpText() . BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getSummaryFieldHelpText()
+    {
+        return $this->getProperty()->summaryFieldHelpText;
+    }
+    
+/**
 <documentation><description><p>Returns <code>summaryFieldRequired</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $ms->getSummaryFieldRequired() ) . BR;</example>
 <return-type>bool</return-type>
@@ -811,6 +929,18 @@ Note that the object is populated with default values in dynamic fields.</p></de
     }
     
 /**
+<documentation><description><p>Returns <code>teaserFieldHelpText</code>.</p></description>
+<example>echo $ms->getTeaserFieldHelpText() . BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getTeaserFieldHelpText()
+    {
+        return $this->getProperty()->teaserFieldHelpText;
+    }
+    
+/**
 <documentation><description><p>Returns <code>teaserFieldRequired</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $ms->getTeaserFieldRequired() ) . BR;</example>
 <return-type>bool</return-type>
@@ -832,6 +962,18 @@ Note that the object is populated with default values in dynamic fields.</p></de
     public function getTeaserFieldVisibility() : string
     {
         return $this->getProperty()->teaserFieldVisibility;
+    }
+    
+/**
+<documentation><description><p>Returns <code>titleFieldHelpText</code>.</p></description>
+<example>echo $ms->getTitleFieldHelpText() . BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getTitleFieldHelpText()
+    {
+        return $this->getProperty()->titleFieldHelpText;
     }
     
 /**
@@ -987,6 +1129,19 @@ Note that the object is populated with default values in dynamic fields.</p></de
     }
     
 /**
+<documentation><description><p>Sets <code>authorFieldHelpText</code> and returns the calling object.</p></description>
+<example>$ms->setAuthorFieldHelpText( "The author name" )->edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setAuthorFieldHelpText( string $author_field_help_text="" ) : Asset
+    {
+        $this->getProperty()->authorFieldHelpText = $author_field_help_text;
+        return $this;
+    }
+    
+/**
 <documentation><description><p>Sets <code>authorFieldRequired</code> and returns the calling object.</p></description>
 <example>$ms->setAuthorFieldRequired( false )->edit();</example>
 <return-type>Asset</return-type>
@@ -1021,6 +1176,19 @@ Note that the object is populated with default values in dynamic fields.</p></de
     }
     
 /**
+<documentation><description><p>Sets <code>descriptionFieldHelpText</code> and returns the calling object.</p></description>
+<example>$ms->setDescriptionFieldHelpText( "Description" )->edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setDescriptionFieldHelpText( string $description_field_help_text="" ) : Asset
+    {
+        $this->getProperty()->descriptionFieldHelpText = $description_field_help_text;
+        return $this;
+    }
+    
+/**
 <documentation><description><p>Sets <code>descriptionFieldVisibility</code> and returns the calling object.</p></description>
 <example>$ms->setDescriptionFieldRequired( false )->edit();</example>
 <return-type>Asset</return-type>
@@ -1051,6 +1219,19 @@ Note that the object is populated with default values in dynamic fields.</p></de
                 S_SPAN . "The value $description_field_visibility is not acceptable." . E_SPAN );
         
         $this->getProperty()->descriptionFieldVisibility = $description_field_visibility;
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Sets <code>displayNameFieldHelpText</code> and returns the calling object.</p></description>
+<example>$ms->setDisplayNameFieldHelpText( "Display Name" )->edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setDisplayNameFieldHelpText( string $display_name_field_help_text="" ) : Asset
+    {
+        $this->getProperty()->displayNameFieldHelpText = $display_name_field_help_text;
         return $this;
     }
     
@@ -1127,6 +1308,19 @@ This method is used to replace the <code>dynamicMetadataFieldDefinitions</code> 
     }
     
 /**
+<documentation><description><p>Sets <code>endDateFieldHelpText</code> and returns the calling object.</p></description>
+<example>$ms->setEndDateFieldHelpText( "End Date" )->edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setEndDateFieldHelpText( string $end_date_field_help_text="" ) : Asset
+    {
+        $this->getProperty()->endDateFieldHelpText = $end_date_field_help_text;
+        return $this;
+    }
+    
+/**
 <documentation><description><p>Sets <code>endDateFieldRequired</code> and returns the calling object.</p></description>
 <example>$ms->setEndDateFieldRequired( false )->edit();</example>
 <return-type>Asset</return-type>
@@ -1159,7 +1353,20 @@ This method is used to replace the <code>dynamicMetadataFieldDefinitions</code> 
         $this->getProperty()->endDateFieldVisibility = $end_date_field_visibility;
         return $this;
     }
-/* commented out because they don't work until 7.14.3
+
+/**
+<documentation><description><p>Sets <code>expirationFolderFieldHelpText</code> and returns the calling object.</p></description>
+<example>$ms->setExpirationFolderFieldHelpText( "Expiration Folder" )->edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setExpirationFolderFieldHelpText( string $expiration_folder_field_help_text="" ) : Asset
+    {
+        $this->getProperty()->expirationFolderFieldHelpText = $expiration_folder_field_help_text;
+        return $this;
+    }
+
 /**
 <documentation><description><p>Sets <code>expirationFolderFieldRequired</code> and returns the calling object.</p></description>
 <example>$ms->setExpirationFolderFieldRequired( false )->edit();</example>
@@ -1194,6 +1401,19 @@ This method is used to replace the <code>dynamicMetadataFieldDefinitions</code> 
         return $this;
     }
    
+/**
+<documentation><description><p>Sets <code>keywordsFieldHelpText</code> and returns the calling object.</p></description>
+<example>$ms->setKeywordsFieldHelpText( "Keywords" )->edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setKeywordsFieldHelpText( string $keywords_field_help_text="" ) : Asset
+    {
+        $this->getProperty()->keywordsFieldHelpText = $keywords_field_help_text;
+        return $this;
+    }
+
 /**
 <documentation><description><p>Sets <code>keywordsFieldRequired</code> and returns the calling object.</p></description>
 <example>$ms->setKeywordsFieldRequired( false )->edit();</example>
@@ -1285,6 +1505,19 @@ This method is used to replace the <code>dynamicMetadataFieldDefinitions</code> 
     }
     
 /**
+<documentation><description><p>Sets <code>reviewDateFieldHelpText</code> and returns the calling object.</p></description>
+<example>$ms->setReviewDateFieldHelpText( "Review Date" )->edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setReviewDateFieldHelpText( string $review_date_field_help_text="" ) : Asset
+    {
+        $this->getProperty()->reviewDateFieldHelpText = $review_date_field_help_text;
+        return $this;
+    }
+
+/**
 <documentation><description><p>Sets <code>reviewDateFieldRequired</code> and returns the calling object.</p></description>
 <example>$ms->setReviewDateFieldRequired( false )->edit();</example>
 <return-type>Asset</return-type>
@@ -1354,6 +1587,19 @@ the method also sets the <code>selectedByDefault</code> of all other values of t
     }
     
 /**
+<documentation><description><p>Sets <code>startDateFieldHelpText</code> and returns the calling object.</p></description>
+<example>$ms->setStartDateFieldHelpText( "Start Date" )->edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setStartDateFieldHelpText( string $start_date_field_help_text="" ) : Asset
+    {
+        $this->getProperty()->startDateFieldHelpText = $start_date_field_help_text;
+        return $this;
+    }
+
+/**
 <documentation><description><p>Sets <code>startDateFieldRequired</code> and returns the calling object.</p></description>
 <example>$ms->setStartDateFieldRequired( false )->edit();</example>
 <return-type>Asset</return-type>
@@ -1387,6 +1633,19 @@ the method also sets the <code>selectedByDefault</code> of all other values of t
         return $this;
     }
     
+/**
+<documentation><description><p>Sets <code>summaryFieldHelpText</code> and returns the calling object.</p></description>
+<example>$ms->setSummaryFieldHelpText( "Summary" )->edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setSummaryFieldHelpText( string $summary_field_help_text="" ) : Asset
+    {
+        $this->getProperty()->summaryFieldHelpText = $summary_field_help_text;
+        return $this;
+    }
+
 /**
 <documentation><description><p>Sets <code>summaryFieldRequired</code> and returns the calling object.</p></description>
 <example>$ms->setSummaryFieldRequired( false )->edit();</example>
@@ -1422,6 +1681,19 @@ the method also sets the <code>selectedByDefault</code> of all other values of t
     }
     
 /**
+<documentation><description><p>Sets <code>teaserFieldHelpText</code> and returns the calling object.</p></description>
+<example>$ms->setTeaserFieldHelpText( "Teaser" )->edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setTeaserFieldHelpText( string $teaser_field_help_text="" ) : Asset
+    {
+        $this->getProperty()->teaserFieldHelpText = $teaser_field_help_text;
+        return $this;
+    }
+
+/**
 <documentation><description><p>Sets <code>teaserFieldRequired</code> and returns the calling object.</p></description>
 <example>$ms->setTeaserFieldRequired( false )->edit();</example>
 <return-type>Asset</return-type>
@@ -1455,6 +1727,19 @@ the method also sets the <code>selectedByDefault</code> of all other values of t
         return $this;
     }
     
+/**
+<documentation><description><p>Sets <code>titleFieldHelpText</code> and returns the calling object.</p></description>
+<example>$ms->setTitleFieldHelpText( "Title" )->edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setTitleFieldHelpText( string $title_field_help_text="" ) : Asset
+    {
+        $this->getProperty()->titleFieldHelpText = $title_field_help_text;
+        return $this;
+    }
+
 /**
 <documentation><description><p>Sets <code>titleFieldRequired</code> and returns the calling object.</p></description>
 <example>$ms->setTitleFieldRequired( false )->edit();</example>
