@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/31/2017 Added getIncludeInStaleContent and setIncludeInStaleContent. Still a bug in 8.5.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/13/2017 Added JSON structure and JSON dump.
@@ -81,7 +82,8 @@ folder
       path
       type
       recycled
-
+  includeInStaleContent (8.5) ## bug!
+  
 JSON:
 folder
   children (array)
@@ -220,6 +222,7 @@ class Folder extends Container
         parent::__construct( $service, $identifier );
         
         $this->processMetadata();
+        //$this->include_in_stale_content = $this->getProperty()->includeInStaleContent;
     }
     
 /**
@@ -423,6 +426,18 @@ echo E_PRE . HR;</example>
     public function getFolderChildrenIds() : array
     {
         return $this->getContainerChildrenIds();
+    }
+
+/**
+<documentation><description><p>Returns <code>includeInStaleContent</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getIncludeInStaleContent() : bool
+    {
+        return $this->include_in_stale_content;
     }
 
 /**
@@ -762,6 +777,19 @@ and returns the calling object. Note that this method does not called <code>edit
     }
         
 /**
+<documentation><description><p>Sets <code>includeInStaleContent</code> and returns the calling object.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setIncludeInStaleContent( bool $include_in_stale_content=false ) : Asset
+    {
+        $this->include_in_stale_content = $include_in_stale_content;
+        return $this;
+    }
+
+/**
 <documentation><description><p>Sets the <code>metadata</code> property, calls
 <code>edit</code>, and returns the calling object.</p></description>
 <example>$folder->setMetadataSet( $new_ms )->setMetadata( $new_m );</example>
@@ -861,6 +889,7 @@ calling object.</p></description>
 
     private $metadata;
     private $children;
+    private $include_in_stale_content;
     private $workflow_settings;
 }
 ?>
