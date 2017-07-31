@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/31/2017 Added getHelpText and setHelpText.
   * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 9/9/2016 Added isCheckbox, isDropdown, isMultiselect, isRadio, isText.
@@ -33,6 +34,7 @@ $doc_string = "<h2>Introduction</h2>
   visibility
   possibleValues
     possibleValue (NULL, stdClass or array of stdClass)
+  helpText (8.5)
 </pre>
 <h2>Design Issues</h2>
 <ul>
@@ -88,6 +90,7 @@ object of type <code>text</code>.</p>
             $this->field_type      = $obj->fieldType;
             $this->required        = $obj->required;
             $this->visibility      = $obj->visibility;
+            $this->help_text       = $obj->helpText;
         
             // $obj->possibleValues->possibleValue can be NULL
             if( isset( $obj->possibleValues ) && isset( $obj->possibleValues->possibleValue ) )
@@ -181,6 +184,17 @@ $ms->edit();</example>
     public function getFieldType() : string
     {
         return $this->field_type;
+    }
+
+/**
+<documentation><description><p>Returns <code>helpText</code>.</p></description>
+<example>u\DebugUtility::out( $dmfd->getHelpText() );</example>
+<return-type>mixed</return-type>
+</documentation>
+*/
+    public function getHelpText()
+    {
+        return $this->help_text;
     }
 
 /**
@@ -436,6 +450,19 @@ $ms->edit();</example>
     }
     
 /**
+<documentation><description><p>Sets <code>helpText</code> and returns the calling object.</p></description>
+<example>$dmfd->setHelpText( "Different Languages" );
+$ms->edit();</example>
+<return-type>Property</return-type>
+</documentation>
+*/
+    public function setHelpText( string $help_text="" ) : Property
+    {
+        $this->help_text = $help_text;
+        return $this;
+    }
+    
+/**
 <documentation><description><p>Sets <code>label</code> and returns the calling object.</p></description>
 <example>$dmfd->setLabel( "Different Languages" );
 $ms->edit();</example>
@@ -606,6 +633,7 @@ $ms->edit();</example>
         $obj->fieldType                     = $this->field_type;
         $obj->required                      = $this->required;
         $obj->visibility                    = $this->visibility;
+        $obj->helpText                      = $this->help_text;
         $obj->possibleValues                = new \stdClass();
         $obj->possibleValues->possibleValue = array();
         
@@ -719,5 +747,6 @@ $ms->edit();</example>
     private $visibility;
     private $possible_values; // PossibleValue objects
     private $values;          // array of strings
+    private $help_text;
 }
 ?>
