@@ -406,7 +406,7 @@ and returns the calling object.</p></description>
     }
 
 /**
-<documentation><description><p>eturns the type of the block bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a block.</p></description>
+<documentation><description><p>Returns the type of the block bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a block.</p></description>
 <example>echo a\Block::getBlockType( $service, $id ), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
