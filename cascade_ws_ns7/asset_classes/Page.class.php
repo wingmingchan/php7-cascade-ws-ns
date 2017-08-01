@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 8/1/2017 Added getBlock.
   * 6/26/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
@@ -599,6 +600,19 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
         return $this->structured_data->getAssetNodeType( $identifier );
     }
     
+/**
+<documentation><description><p>Returns block attached to the node or <code>null</code>.</p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception>WrongBlockTypeException</exception>
+</documentation>
+*/
+    public function getBlock( string $identifier )
+    {
+        $this->checkStructuredData();
+        return $this->structured_data->getBlock( $identifier );
+    }
+   
 /**
 <documentation><description><p>Returns an array storing information about blocks and
 formats attached to regions of the named configuration at the page level.</p></description>
