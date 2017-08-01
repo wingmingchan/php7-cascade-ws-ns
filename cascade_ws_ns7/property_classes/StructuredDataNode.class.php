@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 8/1/2017 Added getBlock.
   * 7/18/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 10/17/2016 Bug fixes.
@@ -357,7 +358,24 @@ class StructuredDataNode extends Property
     {
         return $this->asset_type;
     }
-    
+
+/**
+<documentation><description><p>Returns the block attached to this node or <code>null</code>.</p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+
+    public function getBlock( aohs\AssetOperationHandlerService $service )
+    {
+    	if( !is_null( $this->block_id ) )
+    	{
+    		return a\Block::getBlock( $service, $this->block_id );
+    	}
+        return null;
+    }
+
 /**
 <documentation><description><p>Returns <code>blockId</code>.</p></description>
 <example></example>
