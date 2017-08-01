@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 8/1/2017 Added getBlock.
   * 7/18/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 11/3/2016 Added code to copyData to bypass phantom values.
@@ -274,6 +275,19 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
         }
 
         return $node->getAssetType();
+    }
+    
+/**
+<documentation><description><p>Returns the block attached to the named node or <code>null</code>.</p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getBlock( string $node_name )
+    {
+    	if( isset( $this->node_map[ $node_name ] ) )
+    		return $this->node_map[ $node_name ]->getBlock( $this->service );
     }
     
 /**
