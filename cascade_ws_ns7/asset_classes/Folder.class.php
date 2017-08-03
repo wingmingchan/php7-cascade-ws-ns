@@ -222,7 +222,12 @@ class Folder extends Container
         parent::__construct( $service, $identifier );
         
         $this->processMetadata();
-        //$this->include_in_stale_content = $this->getProperty()->includeInStaleContent;
+        
+        // for 8.5, 8/4/2017
+        if( isset( $this->getProperty()->includeInStaleContent ) )
+        	$this->include_in_stale_content = $this->getProperty()->includeInStaleContent;
+        else
+        	$this->include_in_stale_content = false;
     }
     
 /**
@@ -268,6 +273,12 @@ and returns the calling object. Note that this method does not called <code>edit
     {
         $asset  = new \stdClass();
         $folder = $this->getProperty();
+        
+        // for 8.5, 8/4/2017
+        if( !isset( $folder->includeInStaleContent ) )
+        {
+        	$folder->includeInStaleContent = $this->include_in_stale_content;
+        }
         
         if( $folder->path == "/" )
         {
