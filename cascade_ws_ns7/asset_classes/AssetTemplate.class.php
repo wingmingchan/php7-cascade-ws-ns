@@ -213,6 +213,7 @@ class AssetTemplate
         $folder->name             = "";
         $folder->siteName         = "";
         $folder->parentFolderPath = "";
+        $folder->includeInStaleContent = false;
 
         $asset         = new \stdClass ();
         $asset->folder = $folder;
