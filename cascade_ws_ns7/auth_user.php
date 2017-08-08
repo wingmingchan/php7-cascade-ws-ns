@@ -13,15 +13,15 @@ $auth->password = $_SERVER[ 'PHP_AUTH_PW' ];
 /*
 // uncomment this if needed; also uncomment ", $context" below
 $context =
-	array( 'trace' => 1,
-    	'proxy_host' => "111.222.33.44",
-    	'proxy_port' => "80",
-    	'stream_context' => stream_context_create(
-      		array( 'https' =>
-        		array( 'proxy' => "tcp:// 111.222.33.44:80", 'request_fulluri' => true )
-    		)
-    	)
-	);
+    array( 'trace' => 1,
+        'proxy_host' => "111.222.33.44",
+        'proxy_port' => "80",
+        'stream_context' => stream_context_create(
+              array( 'https' =>
+                array( 'proxy' => "tcp:// 111.222.33.44:80", 'request_fulluri' => true )
+            )
+        )
+    );
 */
 try
 {
