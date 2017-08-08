@@ -112,10 +112,10 @@ class AssetOperationHandlerService
         
         try
         {
-        	if( is_array( $context ) )
-        		$this->soapClient = new \SoapClient( $this->url, $context );
-        	else
-            	$this->soapClient = new \SoapClient( $this->url, array( 'trace' => 1 ) );
+            if( is_array( $context ) )
+                $this->soapClient = new \SoapClient( $this->url, $context );
+            else
+                $this->soapClient = new \SoapClient( $this->url, array( 'trace' => 1 ) );
         }
         catch( \Exception $e )
         {
