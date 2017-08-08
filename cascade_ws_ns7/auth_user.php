@@ -1,5 +1,5 @@
 <?php 
-require_once( 'cascade_ws_ns/ws_lib.php' );
+require_once( 'cascade_ws_ns7/ws_lib.php' );
 
 use cascade_ws_AOHS as aohs;
 use cascade_ws_asset as a;
