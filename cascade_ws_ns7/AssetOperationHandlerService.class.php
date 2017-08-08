@@ -90,7 +90,7 @@ class AssetOperationHandlerService
 <example>$service = new aohs\AssetOperationHandlerService( $wsdl, $auth );</example>
 <return-type>void</return-type></documentation>
 */
-    public function __construct( string $url, \stdClass $auth )
+    public function __construct( string $url, \stdClass $auth, $context=NULL )
     {
         $this->url            = $url;
         $this->auth           = $auth;
@@ -112,7 +112,10 @@ class AssetOperationHandlerService
         
         try
         {
-            $this->soapClient = new \SoapClient( $this->url, array( 'trace' => 1 ) );
+        	if( is_array( $context ) )
+        		$this->soapClient = new \SoapClient( $this->url, $context );
+        	else
+            	$this->soapClient = new \SoapClient( $this->url, array( 'trace' => 1 ) );
         }
         catch( \Exception $e )
         {

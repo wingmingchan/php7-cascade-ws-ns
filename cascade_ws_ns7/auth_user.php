@@ -7,22 +7,26 @@ use cascade_ws_exception as e;
 
 $wsdl = "http://localhost:8080/ws/services/AssetOperationService?wsdl";
 $auth           = new \stdClass();
-$auth->username = $_SERVER['PHP_AUTH_USER'];
-$auth->password = $_SERVER['PHP_AUTH_PW'];
+$auth->username = $_SERVER[ 'PHP_AUTH_USER' ];
+$auth->password = $_SERVER[ 'PHP_AUTH_PW' ];
 
-$context = stream_context_create( [
-    'ssl' => [
-    	// set some SSL/TLS specific options
-    	'verify_peer'       => false,
-    	'verify_peer_name'  => false,
-    	'allow_self_signed' => true
-    ]
-]);
-
+/*
+// uncomment this if needed; also uncomment ", $context" below
+$context =
+	array( 'trace' => 1,
+    	'proxy_host' => "111.222.33.44",
+    	'proxy_port' => "80",
+    	'stream_context' => stream_context_create(
+      		array( 'https' =>
+        		array( 'proxy' => "tcp:// 111.222.33.44:80", 'request_fulluri' => true )
+    		)
+    	)
+	);
+*/
 try
 {
     // set up global objects
-    $service = new aohs\AssetOperationHandlerService( $wsdl, $auth );
+    $service = new aohs\AssetOperationHandlerService( $wsdl, $auth /*, $context */ );
     $cascade = new a\Cascade( $service );
     $report  = new a\Report( $cascade );
     $eval    = new u\EvalUtility();
