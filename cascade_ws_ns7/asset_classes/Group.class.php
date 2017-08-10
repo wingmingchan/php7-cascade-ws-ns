@@ -34,6 +34,8 @@ $doc_string = "<h2>Introduction</h2>
   users
   role
 </pre>
+<h2>Design Issues</h2>
+<p>As of Cascade 8.4.1, all <code>get</code> and <code>set</code> methods of this class, other than those related to users and roles, have been removed.</p>
 <h2>WSDL</h2>";
 $doc_string .=
     $service->getXMLFragments( array(
