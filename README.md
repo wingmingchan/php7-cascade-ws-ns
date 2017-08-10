@@ -1,7 +1,7 @@
 # php7-cascade-ws-ns
 My Cascade web service library, using namespaces, written in PHP 7 for both Cascade 8.4.1 and Cascade 8.5. Since I have started working on 8.5, I will not update 8.4.1 anymore.
 
-<p>Last modified: 8/4/2017, 12:30 PM</p>
+<p>Last modified: 8/10/2017, 10:25 AM</p>
 <p>Note that new code related to editor configurations does not work, due to a bug in Cascade.</p>
 
 <p>This version of the library makes use of features in PHP 7.</p>
