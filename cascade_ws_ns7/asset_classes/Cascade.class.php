@@ -2761,7 +2761,7 @@ if( count( $messages ) > 0 )
 
 /**
 <documentation><description><p>Returns an array of roles (<a href="http://www.upstate.edu/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects) bearing the name. If <code>$name</code> is not supplied, then this method becomes an alias of <code>getRoles()</code>. The name should be a string containing wild-card characters or the full name of the role.</p></description>
-<example>u\DebugUtility::dump( $cascade->getUsersByName( "chanw" ) );</example>
+<example>u\DebugUtility::dump( $cascade->getRolesByName( "administrator" ) );</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
