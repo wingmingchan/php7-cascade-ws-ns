@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 8/10/2017 Added getRolesByName and fixed minor bugs in getGroupsByName and getUsersByName.
   * 2/3/2017 Fixed a bug in createDestination.
   * 1/30/2017 Added missing type hints.
   * 1/26/2016 Removed comments on Cascade 8.0 regarding searching.
@@ -2521,7 +2522,8 @@ for example, if the value is "CWT", then groups like "CWT-Designers", "Site-CWT-
         
         if ( $this->service->isSuccessful() )
         {
-            if( isset( $this->service->getSearchMatches()->match ) )
+            if( $this->service->getSearchMatches() &&
+            	isset( $this->service->getSearchMatches()->match ) )
             {
                 $groups = $this->service->getSearchMatches()->match;
         
@@ -2757,6 +2759,44 @@ if( count( $messages ) > 0 )
         return $this->roles;
     }    
 
+/**
+<documentation><description><p>Returns an array of roles (<a href="http://www.upstate.edu/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects) bearing the name. If <code>$name</code> is not supplied, then this method becomes an alias of <code>getRoles()</code>. The name should be a string containing wild-card characters or the full name of the role.</p></description>
+<example>u\DebugUtility::dump( $cascade->getUsersByName( "chanw" ) );</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getRolesByName( string $name="" ) : array
+    {
+        if( $name == "" )
+            return $this->getRoles();
+            
+        $role_ids = array();
+		
+		$search_for = AssetTemplate::getSearchInformation();
+		$search_for->searchTerms = $name;
+		$search_for->searchTypes->searchType   = Role::TYPE;
+		$search_for->searchFields->searchField = "name";
+			
+        $this->service->search( $search_for );
+        
+        if ( $this->service->isSuccessful() )
+        {
+            if( $this->service->getSearchMatches() &&
+            	isset( $this->service->getSearchMatches()->match ) )
+            {
+                $roles = $this->service->getSearchMatches()->match;
+        
+                if( count( $roles ) == 1 )
+                    $role_ids[] = new p\Identifier( $roles );
+                else
+                    foreach( $roles as $role )
+                        $role_ids[] = new p\Identifier( $role );
+            }
+        }
+        return $role_ids;
+    }    
+   
 /**
 <documentation><description><p>Returns the <code>$service</code> object passes into the constructor.</p></description>
 <example></example>
@@ -2996,26 +3036,19 @@ foreach( $sites as $site )
     {
         if( $name == "" )
             return $this->getUsers();
-
-		$search_for = AssetTemplate::getSearchInformation();
 		
+		$user_ids   = array();
 		$search_for = AssetTemplate::getSearchInformation();
 		$search_for->searchTerms = $name;
 		$search_for->searchTypes->searchType   = User::TYPE;
 		$search_for->searchFields->searchField = "name";
 			
-/*
-        $user_ids                 = array();
-        $search_for               = new \stdClass();
-        $search_for->matchType    =c\T::MATCH_ANY;
-        $search_for->searchUsers  = true;
-        $search_for->assetName    = $name;
-*/
         $this->service->search( $search_for );
         
         if ( $this->service->isSuccessful() )
         {
-            if( !is_null( $this->service->getSearchMatches()->match ) )
+            if( $this->service->getSearchMatches() &&
+            	isset( $this->service->getSearchMatches()->match ) )
             {
                 $users = $this->service->getSearchMatches()->match;
         
@@ -3027,7 +3060,7 @@ foreach( $sites as $site )
             }
         }
         return $user_ids;
-    }    
+    }
     
 /**
 <documentation><description><p>Returns an array of <code>Message</code> objects of type "Workflow".</p></description>
