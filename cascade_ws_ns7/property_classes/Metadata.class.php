@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/8/2017 Fixed a bug in the initialization.
   * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/31/2017 Fixed return type of getAuthor.
@@ -122,9 +123,8 @@ class Metadata extends Property
             $this->service                = $service;
             $this->metadata_set           = NULL;
             $this->metadata_set_id        = $metadata_set_id;
-            
-
-        
+        	$this->dynamic_field_names    = array();
+        	
             if( isset( $obj->dynamicFields ) ) // could be NULL
             {
                 $this->processDynamicFields( $obj->dynamicFields->dynamicField );
@@ -1100,7 +1100,6 @@ string "NULL" will be used as the value.</p></description>
     private function processDynamicFields( $fields )
     {
         $this->dynamic_fields      = array();
-        $this->dynamic_field_names = array();
 
         if( !is_array( $fields ) )
         {
