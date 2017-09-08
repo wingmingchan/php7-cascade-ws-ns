@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/8/2017 Fixed a bug in createFile.
   * 8/10/2017 Added getRolesByName and fixed minor bugs in getGroupsByName and getUsersByName.
   * 2/3/2017 Fixed a bug in createDestination.
   * 1/30/2017 Added missing type hints.
@@ -993,7 +994,7 @@ information. If both do, <code>$text</code> takes precedence.</p></description>
 </documentation>
 */
     public function createFile(
-        Folder $parent, string $name, string $text="", $data=NULL ) : Asset
+        Folder $parent, string $name, $text="", $data=NULL ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(                 
@@ -1003,12 +1004,12 @@ information. If both do, <code>$text</code> takes precedence.</p></description>
             throw new e\CreationErrorException(
                 S_SPAN . c\M::EMPTY_TEXT_DATA . E_SPAN );
             
-        $asset                              = AssetTemplate::getReference();
+        $asset                            = AssetTemplate::getFile();
         $asset->file->name                = $name;
         $asset->file->parentFolderPath    = $parent->getPath();
         $asset->file->siteName            = $parent->getSiteName();
         
-        if( trim( $text ) != "" )
+        if( !is_null( $text ) && trim( $text ) != "" )
             $asset->file->text = trim( $text );
         else
             $asset->file->data = $data;
