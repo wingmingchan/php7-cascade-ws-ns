@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  # 9/8/2017 Changed getPageLevelBlockFormat to static.
   * 2/3/2017 Added documentation.
   * 2/16/2016 Minor bug fix.
   * 5/28/2015 Added namespaces.
@@ -3595,7 +3596,7 @@ See <code>updateBlock</code> for more information.</p></description>
                 S_SPAN . c\M::TARGET_SITE_NOT_SET . E_SPAN );
     }    
     
-    private function getPageLevelBlockFormat( Cascade $c, Page $p )
+    private static function getPageLevelBlockFormat( Cascade $c, Page $p )
     {
         $map          = array();
         $config_set   = $p->getConfigurationSet();
