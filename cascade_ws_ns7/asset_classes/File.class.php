@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/8/2017 Fixed a bug in setText.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/12/2017 Added JSON structure and JSON dump.
@@ -501,9 +502,10 @@ object.</p></description>
 <exception></exception>
 </documentation>
 */
-    public function setText( string $text ) : Asset
+    public function setText( $text ) : Asset
     {
-        $this->getProperty()->text = $text;
+    	if( !is_null( $text ) )
+        	$this->getProperty()->text = $text;
         
         return $this;
     }
