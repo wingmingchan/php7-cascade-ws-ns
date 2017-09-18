@@ -1,5 +1,5 @@
 # php7-cascade-ws-ns
-<p>My Cascade web service library, using namespaces, written in PHP 7 for both Cascade 8.4.1, Cascade 8.5, and Cascade 8.6. Since the current working version is 8.6, I will not update 8.4.1 and 8.5 anymore.</p>
+<p>My Cascade web service library, using namespaces, written in PHP 7 for Cascade 8.4.1, Cascade 8.5, and Cascade 8.6. Since the current working version is 8.6, I will not update 8.4.1 and 8.5 anymore.</p>
 
 <p>Note that since I do not work with cloud transport at Upstate and there is no way for me to test such a transport, I do not provide the CloudTransport class, though it is not hard to implement.</p>
 
