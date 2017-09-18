@@ -3,7 +3,7 @@
 
 <p>Note that since I do not work with cloud transport at Upstate and there is no way for me to test such a transport, I do not provide the CloudTransport class, though it is not hard to implement.</p>
 
-<p>Last modified: 9/14/2017, 12:10 PM</p>
+<p>Last modified: 9/18/2017, 11:30 AM</p>
 <p>Note that new code related to editor configurations does not work, due to a bug in Cascade.</p>
 
 <p>This version of the library makes use of features in PHP 7.</p>
