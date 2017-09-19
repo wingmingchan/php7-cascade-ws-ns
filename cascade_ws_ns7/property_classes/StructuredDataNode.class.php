@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/19/2017 Fixed a bug in processStructuredDataNodes.
   * 8/1/2017 Added getBlock.
   * 7/18/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -242,6 +243,7 @@ class StructuredDataNode extends Property
 */
     public function addChildNode( string $node_id ) : Property
     {
+    	
         if( self::DEBUG ) { u\DebugUtility::dump( $this->structured_data_nodes ); }
     
         if( $this->structured_data_nodes == NULL )
@@ -267,11 +269,11 @@ class StructuredDataNode extends Property
         $cloned_node = $this->structured_data_nodes[ $last_pos ]->cloneNode();
         if( self::DEBUG ) { u\DebugUtility::dump( $cloned_node->toStdClass() ); }
 
-
         $this->structured_data_nodes[] = $cloned_node;
         $this->node_map = array_merge( 
             $this->node_map, array( $cloned_node->getIdentifier() => $cloned_node ) );
-
+            
+        
         return $this;
     }
     
@@ -321,12 +323,13 @@ class StructuredDataNode extends Property
                 
             case c\T::GROUP:
                 echo "Type: " . $this->type . BR .
-                    "Identifier: " . $this->identifier . BR;
+                     "Identifier: " . $this->identifier . BR,
+                     "Children size: " . count( $this->structured_data_nodes ) . BR;
                 break;
                 
             case c\T::TEXT:
                 echo "Type: " . $this->type . BR .
-                    "Identifier: " . $this->identifier . BR;
+                     "Identifier: " . $this->identifier . BR;
                 break;
         }
         return $this;
@@ -1846,7 +1849,7 @@ class StructuredDataNode extends Property
         string $parent_id, array &$node_array,
         $node_std, a\DataDefinition $data_definition=NULL )
     {
-        if( self::DEBUG ) { u\DebugUtility::out( "Parent ID: " . $parent_id ); }  
+        if( self::DEBUG ) { u\DebugUtility::out( "Parent ID: " . $parent_id ); }
         
         if( !is_array( $node_std ) )
         {
@@ -1861,12 +1864,13 @@ class StructuredDataNode extends Property
         $previous_identifier;
         $current_identifier;
         $cur_index = 0;
+        $processed_mul_ids = array();
         
         // work out the id of the current node for the data definition
         // no digits in the fully qualified identifiers
         for( $i = 0; $i < $node_count; $i++ )
         {
-            $fq_identifier = $node_std[$i]->identifier;
+            $fq_identifier = $node_std[ $i ]->identifier;
             
             if( $parent_id != '' )
             {
@@ -1886,39 +1890,43 @@ class StructuredDataNode extends Property
                     $temp . self::DELIMITER . $node_std[$i]->identifier;
             }
         
-            $is_multiple         = $data_definition->isMultiple( $fq_identifier );
-            if( isset( $current_identifier ) )
-                $previous_identifier = $current_identifier;
-            $current_identifier  = $node_std[$i]->identifier;
+            $is_multiple       = $data_definition->isMultiple( $fq_identifier );
+            
+            if( $is_multiple )
+            {
+            	if( !in_array( $fq_identifier, array_keys( $processed_mul_ids ) ) )
+            	{
+            		$processed_mul_ids[ $fq_identifier ] = 0;
+            	}
+            	else
+            	{
+            		$processed_mul_ids[ $fq_identifier ] += 1;
+            	}
+            }
             
             // a multiple text or group, work out fully qualified identifier
             if( $is_multiple )
             {
-                // an old one, keep counting
-                if( isset( $previous_identifier ) && 
-                    $previous_identifier == $current_identifier ) 
-                {
-                    $cur_index++;
-                }
-                else // a new one, start from 0 again
-                {
-                    $cur_index = 0;
-                }
+				$cur_index = $processed_mul_ids[ $fq_identifier ];
+            }
+            else
+            {
+            	$cur_index = 0;
             }
             
             if( $parent_id != '' )
             {
-                $n = new StructuredDataNode( 
+                $n = new StructuredDataNode(
                     $node_std[$i], NULL, $data_definition, $cur_index, $parent_id );
             }
             else
             {
-                $n = new StructuredDataNode( 
+                $n = new StructuredDataNode(
                     $node_std[$i], NULL, $data_definition, $cur_index );
             }
             
-            $n->parent_id = $parent_id;
             
+            $n->parent_id = $parent_id;
             $node_array[ $i ] = $n;
         }
     }
