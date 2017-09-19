@@ -160,6 +160,7 @@ same data.</p></description>
         
         $first_node = $this->node_map[ $first_node_id ];
         $field_id   = StructuredDataNode::getFieldIdentifier( $first_node_id );
+        
         if( self::DEBUG ) { u\DebugUtility::out( "Field ID: " . $field_id ); }
         
         // non-ambiguous path, no multipled-parent
@@ -182,7 +183,6 @@ same data.</p></description>
         }
 
         $parent_node->addChildNode( $first_node_id );
-        
         $temp = $this->node_map;
         asort( $temp );
         $this->identifiers = array_keys( $temp );
@@ -244,7 +244,6 @@ same data.</p></description>
             $this->data_definition );
         $this->node_map    = $this->getIdentifierNodeMap();
         $this->identifiers = array_keys( $this->node_map );
-
         return $this;
     }
     
@@ -1992,8 +1991,8 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
     
     private function appendNodeToField( string $field_name ) : Property
     {
+    	
         if( self::DEBUG ) { u\DebugUtility::out( $field_name ); }
-        //echo $field_name . BR;
 
         if( !$this->data_definition->hasIdentifier( $field_name ) )
         {
@@ -2039,11 +2038,12 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
         {
             $this->getNode( $par_id )->addChildNode( $field_name );
         }
+        
         // add new identifier to identifiers
         $temp = $this->node_map;
         asort( $temp );
         $this->identifiers = array_keys( $temp );
-
+        
         return $this;
     }
     
