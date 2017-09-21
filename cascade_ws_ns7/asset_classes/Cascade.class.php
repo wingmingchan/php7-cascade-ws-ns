@@ -1005,6 +1005,7 @@ information. If both do, <code>$text</code> takes precedence.</p></description>
                 S_SPAN . c\M::EMPTY_TEXT_DATA . E_SPAN );
             
         $asset                            = AssetTemplate::getFile();
+        $asset->file                      = new \stdClass();
         $asset->file->name                = $name;
         $asset->file->parentFolderPath    = $parent->getPath();
         $asset->file->siteName            = $parent->getSiteName();
