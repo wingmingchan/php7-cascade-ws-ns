@@ -1002,7 +1002,8 @@ information. If both do, <code>$text</code> takes precedence.</p></description>
             throw new e\CreationErrorException(
                 S_SPAN . c\M::EMPTY_TEXT_DATA . E_SPAN );
             
-        $asset                              = AssetTemplate::getReference();
+        $asset                            = AssetTemplate::getReference();
+        $asset->file                      = new \stdClass();
         $asset->file->name                = $name;
         $asset->file->parentFolderPath    = $parent->getPath();
         $asset->file->siteName            = $parent->getSiteName();
