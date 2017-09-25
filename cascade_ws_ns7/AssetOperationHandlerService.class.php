@@ -793,6 +793,17 @@ return $doc_string;
     }
 
 /**
+<documentation><description><p>Gets the editor configurations after the call of listEditorConfigurations().</p></description>
+<example>
+</example>
+<return-type>mixed</return-type></documentation>
+*/
+    public function getListedEditorConfigurations()
+    {
+        return $this->listed_editor_configurations;
+    }
+
+/**
 <documentation><description><p>Gets the messages object after the call of listMessages().</p></description>
 <example>$service->listMessages();
 u\DebugUtility::dump( $service->getListedMessages() );
@@ -1068,19 +1079,27 @@ if( $service->isSuccessful() )
     }
 
 /**
-<documentation><description><p>Lists editor configurations.</p>
+<documentation><description><p>Lists editor configurations. The <code>$id</code> should
+be an <code>stdClass</code> object, the ID of a site.</p>
 </description>
 <example></example>
 <return-type>void</return-type></documentation>
 */
-    public function listEditorConfigurations()
+    public function listEditorConfigurations( \stdClass $id )
     {
         $list_editor_configurations_params                 = new \stdClass();
         $list_editor_configurations_params->authentication = $this->auth;
+        $list_editor_configurations_params->identifier     = $id;
         
         $this->reply = $this->soapClient->listEditorConfigurations(
             $list_editor_configurations_params );
         $this->storeResults( $this->reply->listEditorConfigurationsReturn );
+
+        if( $this->isSuccessful() )
+        {
+            $this->listed_editor_configurations =
+                $this->reply->listEditorConfigurationsReturn->editorConfigurations;
+        }
     }
 
 /**
@@ -1746,6 +1765,8 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
     private $audits;
     /*@var stdClass The searchMatches object */
     private $searchMatches;
+    /*@var stdClass The listed editor configurations */
+    private $listed_editor_configurations;
     /*@var stdClass The listed messages */
     private $listed_messages;
     

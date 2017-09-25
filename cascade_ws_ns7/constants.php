@@ -529,6 +529,8 @@ class T // types
     const DYNAMIC_METADATA                 = "dynamic-metadata";
     const DYNAMICMETADATA                  = "dynamic-metadata";
     const EDIT                             = "edit";
+    const EDITOR_CONFIGURATION             = "editorconfiguration";
+    const EDITORCONFIGURATION              = "editorconfiguration";
     /* php does not allow this */
     //const EMPTY                          = "empty"; 
     const EXTERNAL                         = "symlink";
