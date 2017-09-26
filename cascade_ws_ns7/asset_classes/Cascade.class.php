@@ -58,7 +58,9 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>The <code>Cascade</code> class is designed to create, retrieve and delete assets. It
 also provides methods to deal with a few specific types of entities:
 sites, access rights, roles, groups, users, audits, and messages, as well as a few
@@ -81,10 +83,10 @@ representing the assets. These methods do not throw exceptions when the assets c
 found. In these cases, the methods return <code>NULL</code>.</p>
 <h2>Manipulating Sites</h2>
 <p>A <code>Cascade</code> object stores all site information. Since a Cascade instance
-might have hundreds of sites, I do not want to create <a href="http://www.upstate.edu/web-services/api/asset-classes/site.php"><code>Site</code></a>
+might have hundreds of sites, I do not want to create <a href=\"http://www.upstate.edu/web-services/api/asset-classes/site.php\"><code>Site</code></a>
 objects directly inside a <code>Cascade</code> object. Instead, when the
 <code>Cascade</code> object is created, it only stores site information in
-<a href="http://www.upstate.edu/web-services/api/property-classes/identifier.php"><code>Identifier</code></a>
+<a href=\"http://www.upstate.edu/web-services/api/property-classes/identifier.php\"><code>Identifier</code></a>
 objects, which are much smaller than <code>Site</code> objects. When <code>Site</code>
 objects are needed, they can be obtained by calling <code>Identifier::getAsset()</code>
 or <code>Cascade::getAsset</code>. Therefore, the <code>Cascade::getSites</code> method
@@ -97,7 +99,7 @@ to continue what we want to do even if the operation fails in a site or two. Sin
 exist, we may want to just ignore the exception and move on. One simple technique can be
 used to achieve this. We can use a <code>try...catch</code> block inside
 <code>foreach</code>:</p>
-<pre class="code">require_once('cascade_ws_ns/auth_chanw.php');
+<pre class=\"code\">require_once('cascade_ws_ns/auth_chanw.php');
 
 use cascade_ws_constants as c;
 use cascade_ws_asset     as a;
@@ -116,19 +118,19 @@ try
             // try to modify the same factory of every site
             $af = $cascade-&gt;getAsset( 
                 a\AssetFactory::TYPE, 
-                "Upstate/Upload PDF-Max 10M", 
+                \"Upstate/Upload PDF-Max 10M\", 
                 $site-&gt;getPathPath() );
 
             $af-&gt;setPluginParameterValue(
-                "com.cms.assetfactory.FileLimitPlugin",
-                "assetfactory.plugin.filelimit.param.name.size",
-                "10000"
+                \"com.cms.assetfactory.FileLimitPlugin\",
+                \"assetfactory.plugin.filelimit.param.name.size\",
+                \"10000\"
             )-&gt;edit();
         }
         catch( \Exception $e ) // if the factory does not exist
         {
             echo $site-&gt;getPathPath() . 
-                " failed to modify Upload PDF-Max 10M" . BR;
+                \" failed to modify Upload PDF-Max 10M\" . BR;
             continue;
         }
     }
@@ -144,7 +146,7 @@ catch( \Error $er )
 </pre>
 <h2>Manipulating Access Rights</h2>
 <p>There are two ways to deal with access rights through the <code>$cascade</code> object.
-We can retrieve the <a href="http://www.upstate.edu/web-services/api/property-classes/access-rights-information.php"><code>p\AccessRightsInformation</code></a>
+We can retrieve the <a href=\"http://www.upstate.edu/web-services/api/property-classes/access-rights-information.php\"><code>p\AccessRightsInformation</code></a>
 object and manipulate that object directly. Or we can use the <code>$cascade</code> object without going through the <code>p\AccessRightsInformation</code> object.</p>
 <p>Note that since the <code>$cascade</code> object can be used to manipulate the access rights of a large amount of assets,
 it cannot store all this information. This means that every time before <code>Cascade::setAccessRights</code> is called on a different asset,
@@ -166,10 +168,10 @@ For example, we can retrieve a <code>Role</code> object by using <code>Cascade::
 
 <h2>Working With Audits</h2>
 <p>This class provides a <code>getAudits</code> methods that returns an array of
-<a href="http://www.upstate.edu/web-services/api/audit.php"><code>Audit</code></a> object.</p>
+<a href=\"http://www.upstate.edu/web-services/api/audit.php\"><code>Audit</code></a> object.</p>
 <h2>Working With Messages</h2>
 <p>This class provides a number of methods to retrieve and delete messages.
-See <a href="http://www.upstate.edu/web-services/api/message.php">Message</a> for methods working with individual messages.</p>
+See <a href=\"http://www.upstate.edu/web-services/api/message.php\">Message</a> for methods working with individual messages.</p>
 <h2>Creating Assets</h2>
 <p>In the <code>Cascade</code> class, there are more than forty <code>createX</code> methods, where <code>X</code> is a type of asset.
 Some examples are <code>Cascade::createAssetFactory</code>, <code>Cascade::createTextBlock</code> and <code>Cascade::createXsltFormat</code>.
@@ -187,11 +189,20 @@ a name of a concrete sub-class of the <code>Asset</code> class, like <code>Asset
 A method like <code>Cascade::getIndexBlock</code> requires the identifier of the asset to be retrieved,
 but it does not require type information. If the asset exists, the method returns the object representing the asset;
 else it returns <code>NULL</code>. Therefore, these methods can be used to test the existence of assets without involving exceptions. Example:</p>
-<pre class="code">$a = $cascade-&gt;
+<pre class=\"code\">$a = $cascade-&gt;
     getAssetFactory( 'Upstate/New Default 3-Column Page', 'cascade-admin' );
 if( isset( $a ) ) echo $a-&gt;getId() . BR;
 </pre>
-<p>The only exception in this group of methods is <code>Cascade::getSite</code>, which is independently defined and throws an exception if the site does not exist.</p>
+<p>The only exception in this group of methods is <code>Cascade::getSite</code>, which is independently defined and throws an exception if the site does not exist.</p><h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "searchInformation" ),
+        array( "getComplexTypeXMLByName" => "searchFields" ),
+        array( "getComplexTypeXMLByName" => "searchTypes" ),
+        array( "getSimpleTypeXMLByName"  => "searchFieldString" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/cascade.php">cascade.php</a></li></ul></postscript>
 </documentation>
@@ -1004,6 +1015,7 @@ information. If both do, <code>$text</code> takes precedence.</p></description>
             throw new e\CreationErrorException(
                 S_SPAN . c\M::EMPTY_TEXT_DATA . E_SPAN );
             
+		//echo ini_get( "error_reporting" );
         $asset                            = AssetTemplate::getFile();
         $asset->file->name                = $name;
         $asset->file->parentFolderPath    = $parent->getPath();

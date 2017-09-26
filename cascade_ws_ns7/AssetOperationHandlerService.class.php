@@ -57,6 +57,16 @@ $doc_string .= "<h3>Simple Types</h3>";
 $doc_string .= $service->getSimpleTypeNameList();
 $doc_string .= "<h3>Complex Types</h3>";
 $doc_string .= $service->getComplexTypeNameList();
+//$doc_string .= "<h3>authentication</h3>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "authentication" ),
+        array( "getComplexTypeXMLByName" => "identifier" ),
+        array( "getComplexTypeXMLByName" => "path" ),
+        array( "getComplexTypeXMLByName" => "operation" ),
+    ) );
+
+
 $doc_string .= "<h3>Operation Result</h3><pre>";
 $doc_string .=
     $eval->replaceBrackets($service->getComplexTypeXMLByName("operationResult"));
@@ -1079,8 +1089,22 @@ if( $service->isSuccessful() )
     }
 
 /**
-<documentation><description><p>Lists editor configurations. The <code>$id</code> should
-be an <code>stdClass</code> object, the ID of a site.</p>
+<documentation><description>
+<?php global $eval, $service;
+$doc_string = "<p>Lists editor configurations. The <code>$id</code> should
+be an <code>stdClass</code> object, the ID of a site.</p><pre>";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("listEditorConfigurations"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getElementXMLByName("listEditorConfigurationsResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("listEditorConfigurationsResult"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("editorConfiguration"));
+$doc_string .= "</pre>";
+return $doc_string;
+?>
+
+
 </description>
 <example></example>
 <return-type>void</return-type></documentation>
@@ -1405,6 +1429,10 @@ $doc_string = "<p>Reads the audits of the asset with the given parameters.</p><p
 $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("readAudits"));
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("readAuditsResponse"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("auditParameters"));
+$doc_string .= "\r";
+$doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("readAuditsResult"));
 $doc_string .= "</pre>";
 return $doc_string;
 ?>

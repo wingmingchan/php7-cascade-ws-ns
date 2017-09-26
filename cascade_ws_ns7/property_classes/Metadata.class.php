@@ -75,6 +75,7 @@ $doc_string .=
         array( "getComplexTypeXMLByName" => "dynamicMetadataField" ),
         array( "getComplexTypeXMLByName" => "fieldValues" ),
         array( "getComplexTypeXMLByName" => "fieldValue" ),
+        array( "getSimpleTypeXMLByName"  => "metadata-field-visibility" ),
     ) );
 return $doc_string;
 ?>

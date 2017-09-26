@@ -16,9 +16,18 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
-<p>The <code>Transport</code> class is the superclass of <a href="/web-services/api/asset-classes/database-transport.php"><code>DatabaseTransport</code></a>, <a href="/web-services/api/asset-classes/file-system-transport.php"><code>FileSystemTransport</code></a>, and <a href="/web-services/api/asset-classes/ftp-transport.php"><code>FtpTransport</code></a>. It is an abstract class and defines all shared methods of its sub-classes.</p>
-</description>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>The <code>Transport</code> class is the superclass of <a href=\"/web-services/api/asset-classes/database-transport.php\"><code>DatabaseTransport</code></a>, <a href=\"/web-services/api/asset-classes/file-system-transport.php\"><code>FileSystemTransport</code></a>, and <a href=\"/web-services/api/asset-classes/ftp-transport.php\"><code>FtpTransport</code></a>. It is an abstract class and defines all shared methods of its sub-classes.</p><h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getSimpleTypeXMLByName"  => "authMode" ),
+        array( "getSimpleTypeXMLByName"  => "ftpProtocolType" ),
+        array( "getComplexTypeXMLByName" => "entity-type" ),
+    ) );
+return $doc_string;
+?></description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/ftp_transport.php">ftp_transport.php</a></li>
 </ul></postscript>
 </documentation>

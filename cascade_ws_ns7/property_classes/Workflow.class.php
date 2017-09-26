@@ -73,6 +73,10 @@ $doc_string .=
         array( "getComplexTypeXMLByName" => "workflowStep" ),
         array( "getComplexTypeXMLByName" => "workflowActions" ),
         array( "getComplexTypeXMLByName" => "workflowAction" ),
+        array( "getComplexTypeXMLByName" => "workflowTransitionInformation" ),
+        array( "getComplexTypeXMLByName" => "workflow-configuration" ),
+        array( "getComplexTypeXMLByName" => "workflow-step-configurations" ),
+        array( "getComplexTypeXMLByName" => "workflow-step-configuration" ),
     ) );
 return $doc_string;
 ?>
