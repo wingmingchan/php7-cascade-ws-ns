@@ -4,7 +4,8 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
-  # 9/8/2017 Changed getPageLevelBlockFormat to static.
+  * 9/26/2017 Added reportMissingAssetsWithTypeArrayIn.
+  * 9/8/2017 Changed getPageLevelBlockFormat to static.
   * 2/3/2017 Added documentation.
   * 2/16/2016 Minor bug fix.
   * 5/28/2015 Added namespaces.
@@ -23,10 +24,10 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
@@ -245,12 +246,12 @@ class CascadeInstances
     
 /**
 <documentation><description><p>Returns an array containing information of missing assets in the <code>$other</code> instance. The value for <code>$other</code> is either <code>T::SOURCE</code> or <code>T::TARGET</code>. When <code>T::SOURCE</code> is passed in for <code>$other</code>, it means the target site is treated as the base for comparison, and the returned array contains information about assets that exist in the target site, but missing from the source site. When <code>T::TARGET</code> is passed in for <code>$other</code>, then the source site is treated as the base for comparison, and we get a report on assets that are missing from the target site. The <code>$type</code> can be any type defined in the asset classes.</p></description>
-<example></example>
-<return-type>array</return-type>
+<example>u\DebugUtility::dump( $instances->reportMissingAssetsIn( c\T::SOURCE, a\ScriptFormat::TYPE ) );</example>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function reportMissingAssetsIn( string $other, string $type ) : array
+    public function reportMissingAssetsIn( string $other, string $type, array &$results=NULL )
     {
         $this->checkSourceTargetSite();
             
@@ -290,7 +291,16 @@ class CascadeInstances
             $at     = $this->$base_site->$method();
         }
         
-        $results          = array();
+        if( is_null( $results ) )
+        {
+            $results = array();
+            $array_passed_in = true;
+        }
+        else
+        {
+            $array_passed_in = false;
+        }
+        
         $results[ $type ] = array();
         
         $at->traverse(
@@ -308,6 +318,42 @@ class CascadeInstances
             $results
         );
 
+        if( $array_passed_in )
+            return true;
+        else
+            return $results;
+    }
+
+/**
+<documentation><description><p>Returns an array containing information of missing assets
+in the <code>$other</code> instance. The value for <code>$other</code> is either
+<code>T::SOURCE</code> or <code>T::TARGET</code>. When <code>T::SOURCE</code> is passed in
+for <code>$other</code>, it means the target site is treated as the base for comparison,
+and the returned array contains information about assets that exist in the target site,
+but missing from the source site. When <code>T::TARGET</code> is passed in for
+<code>$other</code>, then the source site is treated as the base for comparison, and we
+get a report on assets that are missing from the target site. The <code>$type_array</code> can be an array containing any type defined in the asset classes.</p></description>
+<example>u\DebugUtility::dump( 
+    $instances->reportMissingAssetsWithTypeArrayIn(
+        c\T::SOURCE, array( a\Page::TYPE, a\ScriptFormat::TYPE ) ) );</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function reportMissingAssetsWithTypeArrayIn(
+        string $other, array $type_array ) : array
+    {
+        $results = array();
+        
+        if( count( $type_array ) > 0 )
+        {
+            foreach( $type_array as $type )
+            {
+                echo $type, BR;
+
+                $this->reportMissingAssetsIn( $other, $type, $results );
+            }
+        }
         return $results;
     }
 
