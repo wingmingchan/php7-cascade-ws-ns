@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  *  9/27/2017 Added cloud transport-related constants.
   *  9/18/2017 Added constants for 8.6.
   *  11/1/2016 Added PAGE_METADATA_SET.
   *  9/26/2016 Added EXPIRATION_FOLDER_RECYCLED.
@@ -165,6 +166,8 @@ class M // messages for exceptions
     const EMPTY_ASSET_METADATA           = "The asset metadata cannot be empty. ";
     const EMPTY_ASSET_NAME               = "The asset name cannot be empty. ";
     const EMPTY_AUDIT                    = "The audit cannot be empty. ";
+    const EMPTY_BASE_PATH                = "The base path cannot be empty. ";
+    const EMPTY_BUCKET_NAME              = "The bucket name cannot be empty. ";
     const EMPTY_BLOCK_NAME               = "The block name cannot be empty. ";
     const EMPTY_COMMENT                  = "The comment cannot be empty. ";
     const EMPTY_CONFIGURATION_NAME       = "The configuration name cannot be empty. ";
@@ -189,7 +192,8 @@ class M // messages for exceptions
     const EMPTY_HASH_TAG                 = "The hash tag cannot be empty. ";
     const EMPTY_HOST_NAME                = "The host name cannot be empty. ";
     const EMPTY_IDENTIFIER               = "The identifier cannot be empty. ";
-    const EMPTY_LABEL                   = "The label cannot be empty. ";
+    const EMPTY_KEY                      = "The key cannot be empty. ";
+    const EMPTY_LABEL                    = "The label cannot be empty. ";
     const EMPTY_METADATA_SET_NAME        = "The metadata set name cannot be empty. ";
     const EMPTY_METADATA_SET_CONTAINER_NAME = "The metadata set container name cannot be empty. ";
     const EMPTY_NAME                     = "The name cannot be empty. ";
@@ -289,6 +293,8 @@ class P // property names
     const ASSETFACTORY                     = "assetFactory";
     const ASSET_FACTORY_CONTAINER          = "assetFactoryContainer";
     const ASSETFACTORYCONTAINER            = "assetFactoryContainer";
+    const CLOUD_TRANSPORT                  = "cloudTransport";
+    const CLOUDTRANSPORT                   = "cloudTransport";
     const CONFIGURATION_SET                = "pageConfigurationSet";
     const CONFIGURATIONSET                 = "pageConfigurationSet";
     const CONFIGURATION_SET_CONTAINER      = "pageConfigurationSetContainer";
@@ -678,6 +684,8 @@ class T // types
     const THIRTY                           = "30";
     const THURSDAY                         = "Thursday";
     const TRANSPORT                        = "transport";
+    const TRANSPORT_CLOUD                  = "transport_cloud";
+    const TRANSPORTCLOUD                   = "transport_cloud";
     const TRANSPORT_DB                     = "transport_db";
     const TRANSPORTDB                      = "transport_db";
     const TRANSPORT_FS                     = "transport_fs";
@@ -760,6 +768,7 @@ class T // types
             T::SYMLINK                       => 'Symlink',
             T::TEMPLATE                      => 'Template',
             T::TEXTBLOCK                     => 'TextBlock',
+            T::TRANSPORTCLOUD                => 'CloudTransport',
             T::TRANSPORTDB                   => 'DatabaseTransport',
             T::TRANSPORTFS                   => 'FileSystemTransport',
             T::TRANSPORTFTP                  => 'FtpTransport',
@@ -802,6 +811,7 @@ class T // types
             T::SYMLINK                       => T::FOLDER,
             T::TEMPLATE                      => T::FOLDER,
             T::TEXTBLOCK                     => T::FOLDER,
+            T::TRANSPORTCLOUD                => T::TRANSPORTCONTAINER,
             T::TRANSPORTDB                   => T::TRANSPORTCONTAINER,
             T::TRANSPORTFS                   => T::TRANSPORTCONTAINER,
             T::TRANSPORTFTP                  => T::TRANSPORTCONTAINER,
@@ -846,6 +856,7 @@ class T // types
             T::SYMLINK                       => P::SYMLINK,
             T::TEMPLATE                      => P::TEMPLATE,
             T::TEXTBLOCK                     => P::TEXTBLOCK,
+            T::TRANSPORTCLOUD                => P::CLOUDTRANSPORT,
             T::TRANSPORTDB                   => P::DATABASETRANSPORT,
             T::TRANSPORTFS                   => P::FILESYSTEMTRANSPORT,
             T::TRANSPORTFTP                  => P::FTPTRANSPORT,
