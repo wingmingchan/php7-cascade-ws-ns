@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  *  9/28/2017 Added cloud transport-related constants.
   *  9/27/2017 Added cloud transport-related constants.
   *  9/18/2017 Added constants for 8.6.
   *  11/1/2016 Added PAGE_METADATA_SET.
@@ -169,6 +170,7 @@ class M // messages for exceptions
     const EMPTY_BASE_PATH                = "The base path cannot be empty. ";
     const EMPTY_BUCKET_NAME              = "The bucket name cannot be empty. ";
     const EMPTY_BLOCK_NAME               = "The block name cannot be empty. ";
+    const EMPTY_COULD_TRANSPORT_NAME     = "The cloud transport name cannot be empty. ";
     const EMPTY_COMMENT                  = "The comment cannot be empty. ";
     const EMPTY_CONFIGURATION_NAME       = "The configuration name cannot be empty. ";
     const EMPTY_CONNECTOR_NAME           = "The connector name cannot be empty. ";
