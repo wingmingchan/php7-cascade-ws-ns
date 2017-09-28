@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/28/2017 Added createCloudTransport.
   * 9/8/2017 Fixed a bug in createFile.
   * 8/10/2017 Added getRolesByName and fixed minor bugs in getGroupsByName and getUsersByName.
   * 2/3/2017 Fixed a bug in createDestination.
@@ -511,6 +512,50 @@ representing either an existing asset factory container, or an asset factory con
     }
     
 /**
+<documentation><description><p>Returns a <code>CloudTransport</code> object,
+representing either an existing cloud transport, or a cloud transport newly created by the method.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception>CreationErrorException</exception>
+</documentation>
+*/
+    public function createCloudTransport(
+        TransportContainer $parent,
+        string $name,
+        string $key, 
+        string $secret, 
+        string $bucketName, 
+        string $basePath=NULL
+	) : Asset
+    {
+        if( trim( $name ) == "" )
+            throw new e\CreationErrorException( 
+                S_SPAN . c\M::EMPTY_COULD_TRANSPORT_NAME . E_SPAN );
+        if( trim( $key ) == "" )
+            throw new e\CreationErrorException( 
+                S_SPAN . c\M::EMPTY_KEY . E_SPAN );
+        if( trim( $secret ) == "" )
+            throw new e\CreationErrorException( 
+                S_SPAN . c\M::EMPTY_SECRET . E_SPAN );
+        if( trim( $bucketName ) == "" )
+            throw new e\CreationErrorException( 
+                S_SPAN . c\M::EMPTY_BUCKET_NAME . E_SPAN );
+            
+        $asset                                      = AssetTemplate::getCloudTransport();
+        $asset->cloudTransport->name                = $name;
+        $asset->cloudTransport->siteName            = $parent->getSiteName();
+        $asset->cloudTransport->parentContainerPath = $parent->getPath();
+        $asset->cloudTransport->key                 = $key;
+        $asset->cloudTransport->secret              = $secret;
+        $asset->cloudTransport->bucketName          = $bucketName;
+        $asset->cloudTransport->basePath            = $basePath;
+        
+        return $this->createAsset(
+            $asset, CloudTransport::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
+    }
+
+/**
 <documentation><description><p>Returns a <code>ConnectorContainer</code> object,
 representing either an existing connector container, or a connector container newly created by the method.</p></description>
 <example>$cc = $cascade->createConnectorContainer(
@@ -719,7 +764,7 @@ representing either an existing database transport, or a database transport newl
             $asset, DatabaseTransport::TYPE, $this->getPath( $parent, $name ), 
             $parent->getSiteName() );
     }
-    
+
 /**
 <documentation><description><p>Returns a <code>DataDefinition</code> object,
 representing either an existing data definition, or a data definition newly created by the method.
