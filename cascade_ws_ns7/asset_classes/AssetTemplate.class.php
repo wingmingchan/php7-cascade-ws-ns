@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 9/28/2017 Added getCloudTransport.
   * 1/5/2017 Added getSearchInformation.
   * 8/26/2016 Added constant NAME_SPACE.
   * 3/15/2016 Fixed a bug in getFeedBlock.
@@ -44,6 +45,22 @@ class AssetTemplate
         return $asset;
     }
     
+    public static function getCloudTransport() : \stdClass
+    {
+        $transport             = new \stdClass ();
+        $transport->name                = "";
+        $transport->siteName            = "";
+        $transport->parentContainerPath = "";
+        $transport->key                 = "";
+        $transport->secret              = "";
+        $transport->bucketName          = "";
+        $transport->basePath            = NULL;
+
+        $asset                 = new \stdClass ();
+        $asset->cloudTransport = $transport;
+        return $asset;
+    }
+
     public static function getContentType() : \stdClass
     {
         $ct                           = new \stdClass ();
@@ -58,7 +75,7 @@ class AssetTemplate
         $asset->contentType = $ct;
         return $asset;
     }
-    
+
     public static function getContainer( $property ) : \stdClass
     {
         $c                      = new \stdClass ();
@@ -70,7 +87,7 @@ class AssetTemplate
         $asset->$property = $c;
         return $asset;
     }
-    
+
     public static function getDatabaseTransport() : \stdClass
     {
         $transport                      = new \stdClass ();
@@ -87,7 +104,7 @@ class AssetTemplate
         $asset->databaseTransport = $transport;
         return $asset;
     }
-    
+
     public static function getDataDefinition() : \stdClass
     {
         $dd                      = new \stdClass ();
