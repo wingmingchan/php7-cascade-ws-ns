@@ -10,7 +10,7 @@
 <p>The library has been upgraded to PHP 7 for two main reasons:</p>
 <ul>
 <li>When using parameter types and return types, I can have tighter control over client code</li>
-<li>I can use the type information, together with the ReflectionUtility class, to generate documentation pages; for an example of a generated page, see http://www.upstate.edu/cascade-admin/web-services/api/asset-classes/asset.php</li>
+<li>I can use the type information, together with the ReflectionUtility class, to generate documentation pages; for an example of a generated page, see http://www.upstate.edu/web-services/api/asset-classes/asset.php</li>
 </ul>
 <p>When a class is upgraded with required information, the following type of code is made possible:</p>
 <pre>
