@@ -4,6 +4,7 @@
   Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   MIT Licensed
   Modification history:
+   10/12/2017 Updated documentation.
    7/3/2017 Removed example from search.
    6/19/2017 Added getXMLFragments.
    6/15/2017 Removed lists of XML.
@@ -49,7 +50,61 @@ use cascade_ws_exception as e;
 <description><?php global $eval, $service;
 $doc_string = "
 <h2>Introduction</h2>
-<p>This class encapsulates the WSDL URL, the authentication object, and the SoapClient object, and provides services of all operations defined in the WSDL.</p>
+<p>This class encapsulates the WSDL URL, the authentication object, and the SoapClient object, and provides services of all operations defined in the WSDL. There are 28 operations defined in the WSDL:</p>
+<ul>
+<li>batch</li>
+<li>checkIn</li>
+<li>checkOut</li>
+<li>copy</li>
+<li>create</li>
+<li>delete</li>
+<li>deleteMessage</li>
+<li>edit</li>
+<li>editAccessRights</li>
+<li>editPreference</li>
+<li>editWorkflowSettings</li>
+<li>listEditorConfigurations</li>
+<li>listMessages</li>
+<li>listSites</li>
+<li>listSubscribers</li>
+<li>markMessage</li>
+<li>move</li>
+<li>performWorkflowTransition</li>
+<li>publish</li>
+<li>read</li>
+<li>readAccessRights</li>
+<li>readAudits</li>
+<li>readPreferences</li>
+<li>readWorkflowInformation</li>
+<li>readWorkflowSettings</li>
+<li>search</li>
+<li>sendMessage</li>
+<li>siteCopy</li>
+</ul><p>All 28 operations have been encapsulated in this class. The general format of a method encapsulating an operation is the following:</p>
+<ol>
+<li>Create the parameters for the operation</li>
+<li>Call the corresponding operation through the SOAP client</li>
+<li>Store the results</li>
+</ol>
+<p>Here is the code of <code>batch</code>, for example:</p>
+<pre>
+    function batch( array \$operations )
+    {
+        \$batch_param                 = new \stdClass();
+        \$batch_param->authentication = \$this->auth;
+        \$batch_param->operation      = \$operations;
+        
+        \$this->reply = \$this->soapClient->batch( \$batch_param );
+        // the returned object is an array
+        \$this->storeResults();
+    }
+</pre>
+<p>Besides encapsulating the 28 operations, there are also other utility methods:</p>
+<ul>
+<li><code>createX</code> methods to create IDs (stdClass objects) for asset retrieval</li>
+<li><code>get</code> methods to retrieve XML fragments from the WSDL</li>
+<li>Other minor methods</li>
+</ul>
 <h2>WSDL</h2>
 <h3>Elements</h3>";
 $doc_string .= $service->getElementNameList();
@@ -79,6 +134,10 @@ $doc_string .= $eval->replaceBrackets($service->getBinding());
 $doc_string .= "</pre>";
 return $doc_string; ?></description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/tree/master/working-with-AssetOperationHandlerService">working-with-AssetOperationHandlerService</a></li></ul></postscript>
+<advanced>
+
+
+</advanced>
 </documentation>
 */
 class AssetOperationHandlerService
@@ -86,6 +145,8 @@ class AssetOperationHandlerService
     const DEBUG        = false;
     const DUMP         = false;
     const NAME_SPACE   = "cascade_ws_AOHS";
+    
+    // these constants are used to retrieve parts of the WSDL
     const BINDING_PATH = "//wsdl:definitions/wsdl:binding";
     const COMPLEX_TYPE_PATH =
         "//wsdl:definitions/wsdl:types/schema:schema/schema:complexType";
