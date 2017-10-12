@@ -421,7 +421,7 @@ nodes are needed.</p></description>
         if( !$number > 0 )
         {
             throw new e\UnacceptableValueException( 
-                S_SPAN . "The value $number is not a number." . E_SPAN );
+                S_SPAN . "The value $number is not a positive integer." . E_SPAN );
         }
         
         if( !$this->hasNode( $identifier ) )
