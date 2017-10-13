@@ -142,7 +142,7 @@ class StructuredDataNode extends Property
             }
             else
             {
-            	$this->required = false;
+                $this->required = false;
             }
             
             // type mostly for setText
@@ -158,7 +158,7 @@ class StructuredDataNode extends Property
             }
             else
             {
-            	$this->multi_line = false;
+                $this->multi_line = false;
             }
             
             // is it wysiwyg?
@@ -168,7 +168,7 @@ class StructuredDataNode extends Property
             }
             else
             {
-            	$this->wysiwyg = false;
+                $this->wysiwyg = false;
             }
             
             // add the index if this is a multiple field
@@ -243,7 +243,6 @@ class StructuredDataNode extends Property
 */
     public function addChildNode( string $node_id ) : Property
     {
-    	
         if( self::DEBUG ) { u\DebugUtility::dump( $this->structured_data_nodes ); }
     
         if( $this->structured_data_nodes == NULL )
@@ -272,8 +271,7 @@ class StructuredDataNode extends Property
         $this->structured_data_nodes[] = $cloned_node;
         $this->node_map = array_merge( 
             $this->node_map, array( $cloned_node->getIdentifier() => $cloned_node ) );
-            
-        
+
         return $this;
     }
     
@@ -372,10 +370,10 @@ class StructuredDataNode extends Property
 
     public function getBlock( aohs\AssetOperationHandlerService $service )
     {
-    	if( !is_null( $this->block_id ) )
-    	{
-    		return a\Block::getBlock( $service, $this->block_id );
-    	}
+        if( !is_null( $this->block_id ) )
+        {
+            return a\Block::getBlock( $service, $this->block_id );
+        }
         return null;
     }
 
@@ -1453,64 +1451,64 @@ class StructuredDataNode extends Property
             }
             else if( $this->text_type == self::TEXT_TYPE_CALENDAR ) // month-day-year
             {
-            	if( !is_null( $text ) && $text != "" )
-            	{
-					$date_array = explode( '-', $text );
-				
-					// must have three parts
-					if( count( $date_array ) != 3 )
-					{
-						throw new e\UnacceptableValueException( 
-							S_SPAN . "$text is not an acceptable date value." . E_SPAN );
-					}
-				
-					list( $month, $day, $year ) = $date_array;
-				
-					// convert strings to integers
-					$month = intval( $month );
-					$day   = intval( $day );
-					$year  = intval( $year );
-				
-					// check the date
-					if( !checkdate( $month, $day, $year ) )
-					{
-						throw new e\UnacceptableValueException( 
-							S_SPAN . "$text is not an acceptable date value." . E_SPAN );
-					}
-				
-					// compare years, Cascade only has a range of 20 years
-					$today     = getdate();
-					$this_year = $today[ 'year' ];
-				
-					if( abs( $this_year - $year ) > 10 )
-					{
-						throw new e\UnacceptableValueException( 
-							S_SPAN . "$text is not an acceptable date value." . E_SPAN );
-					}
-				
-					// convert integers back to strings
-					if( $month < 10 )
-					{
-						$month_string = '0' . $month;
-					}
-					else
-					{
-						$month_string = $month;
-					}
-				
-					if( $day < 10 )
-					{
-						$day_string = '0' . $day;
-					}
-					else
-					{
-						$day_string = $day;
-					}
-				
-					$this->text = $month_string . '-' . $day_string . '-' . $year;
-				}
-				else
-					$this->text = $text;
+                if( !is_null( $text ) && $text != "" )
+                {
+                    $date_array = explode( '-', $text );
+                
+                    // must have three parts
+                    if( count( $date_array ) != 3 )
+                    {
+                        throw new e\UnacceptableValueException( 
+                            S_SPAN . "$text is not an acceptable date value." . E_SPAN );
+                    }
+                
+                    list( $month, $day, $year ) = $date_array;
+                
+                    // convert strings to integers
+                    $month = intval( $month );
+                    $day   = intval( $day );
+                    $year  = intval( $year );
+                
+                    // check the date
+                    if( !checkdate( $month, $day, $year ) )
+                    {
+                        throw new e\UnacceptableValueException( 
+                            S_SPAN . "$text is not an acceptable date value." . E_SPAN );
+                    }
+                
+                    // compare years, Cascade only has a range of 20 years
+                    $today     = getdate();
+                    $this_year = $today[ 'year' ];
+                
+                    if( abs( $this_year - $year ) > 10 )
+                    {
+                        throw new e\UnacceptableValueException( 
+                            S_SPAN . "$text is not an acceptable date value." . E_SPAN );
+                    }
+                
+                    // convert integers back to strings
+                    if( $month < 10 )
+                    {
+                        $month_string = '0' . $month;
+                    }
+                    else
+                    {
+                        $month_string = $month;
+                    }
+                
+                    if( $day < 10 )
+                    {
+                        $day_string = '0' . $day;
+                    }
+                    else
+                    {
+                        $day_string = $day;
+                    }
+                
+                    $this->text = $month_string . '-' . $day_string . '-' . $year;
+                }
+                else
+                    $this->text = $text;
             }
             else
             {
@@ -1540,8 +1538,8 @@ class StructuredDataNode extends Property
             {
                 if( $this->text_type == self::TEXT_TYPE_CHECKBOX )
                 {
-                	$text = str_replace( self::CHECKBOX_PREFIX, "", $text );
-                	
+                    $text = str_replace( self::CHECKBOX_PREFIX, "", $text );
+                    
                     // unacceptable input
                     if( $text != $this->items && $text != '' && 
                         $text != self::CHECKBOX_PREFIX )
@@ -1894,24 +1892,24 @@ class StructuredDataNode extends Property
             
             if( $is_multiple )
             {
-            	if( !in_array( $fq_identifier, array_keys( $processed_mul_ids ) ) )
-            	{
-            		$processed_mul_ids[ $fq_identifier ] = 0;
-            	}
-            	else
-            	{
-            		$processed_mul_ids[ $fq_identifier ] += 1;
-            	}
+                if( !in_array( $fq_identifier, array_keys( $processed_mul_ids ) ) )
+                {
+                    $processed_mul_ids[ $fq_identifier ] = 0;
+                }
+                else
+                {
+                    $processed_mul_ids[ $fq_identifier ] += 1;
+                }
             }
             
             // a multiple text or group, work out fully qualified identifier
             if( $is_multiple )
             {
-				$cur_index = $processed_mul_ids[ $fq_identifier ];
+                $cur_index = $processed_mul_ids[ $fq_identifier ];
             }
             else
             {
-            	$cur_index = 0;
+                $cur_index = 0;
             }
             
             if( $parent_id != '' )

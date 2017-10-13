@@ -605,7 +605,7 @@ $dd->setXML( $xml )->edit();</example>
                     $child, $child_type, $child_identifier );
                 
                 //if( isset( $this->attributes[ $child_identifier ][ 'default' ] ) )
-                	//echo "Default is set", BR;
+                    //echo "Default is set", BR;
                 
                 $obj->structuredDataNodes->structuredDataNode = $child_std;
                 
@@ -699,8 +699,8 @@ $dd->setXML( $xml )->edit();</example>
         
         if( isset( $child_attributes[ 'default' ] ) )
         {
-    		$child_std->text = $child_attributes[ 'default' ]->__toString();
-    	}
+            $child_std->text = $child_attributes[ 'default' ]->__toString();
+        }
 
         return $child_std;
     }
