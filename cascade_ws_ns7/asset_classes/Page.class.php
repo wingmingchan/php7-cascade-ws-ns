@@ -2266,7 +2266,7 @@ should be called as well.</p></description>
 */
     public function setContentType( ContentType $c, bool $exception=true ) : Asset
     {
-           // nothing to do if already set
+        // nothing to do if already set
         if( $c->getId() == $this->getContentType()->getId() )
         {
             echo "Nothing to do" . BR;

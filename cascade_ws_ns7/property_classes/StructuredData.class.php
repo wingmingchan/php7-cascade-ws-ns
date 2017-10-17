@@ -84,7 +84,7 @@ class StructuredData extends Property
         $data3=NULL )
     {
         // a data definition block will have a data definition id in the sd object
-        // a page will need to pass into the data definition id
+        // a page will need to pass in the data definition id
         if( isset( $sd ) )
         {
             // store the data
