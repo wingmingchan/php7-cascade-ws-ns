@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 10/20/2017 Fixed a bug in deleteAsset.
   * 9/28/2017 Added createCloudTransport.
   * 9/8/2017 Fixed a bug in createFile.
   * 8/10/2017 Added getRolesByName and fixed minor bugs in getGroupsByName and getUsersByName.
@@ -2260,7 +2261,7 @@ either an existing index block of type "folder", or an index block newly created
         
         if( !$this->service->isSuccessful() )
             throw new e\DeletionErrorException( 
-                S_SPAN . c\M::DELETE_ASSET_FAILURE . E_SPAN . $e );
+                S_SPAN . c\M::DELETE_ASSET_FAILURE . E_SPAN );
 
         unset( $a );
         return $this;
