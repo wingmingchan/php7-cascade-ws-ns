@@ -29,7 +29,6 @@ try
     $service = new aohs\AssetOperationHandlerService( $wsdl, $auth /*, $context */ );
     $cascade = new a\Cascade( $service );
     $report  = new a\Report( $cascade );
-    $eval    = new u\EvalUtility();
 
     // create an asset for one-time use
     $asset = new \stdClass();
