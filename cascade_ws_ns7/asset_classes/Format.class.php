@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 11/28/2017 Changed parent class to FolderContainedAsset.
   * 5/28/2015 Added namespaces.
  */
 namespace cascade_ws_asset;
@@ -23,7 +24,7 @@ use cascade_ws_property  as p;
 </ul></postscript>
 </documentation>
 */
-abstract class Format extends ContainedAsset
+abstract class Format extends FolderContainedAsset
 {
     const DEBUG = false;
 

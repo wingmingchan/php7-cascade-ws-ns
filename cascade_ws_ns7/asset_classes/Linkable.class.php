@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 11/28/2017 Changed parent class to DublinAwareAsset.
   * 11/1/2016 Added exception in setMetadataSet for pages; turned setPageContentType to protected.
   * 9/13/2016 Fixed bugs in setExpirationFolder.
   * 9/16/2015 Fixed a bug in setMetadata.
@@ -34,7 +35,7 @@ use cascade_ws_property  as p;
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/linkable.php">linkable.php</a></li></ul></postscript>
 </documentation>
 */
-abstract class Linkable extends ContainedAsset
+abstract class Linkable extends DublinAwareAsset
 {
     const DEBUG = false;
 
@@ -218,6 +219,7 @@ href="http://www.upstate.edu/web-services/api/property-classes/metadata.php"><co
 <exception></exception>
 </documentation>
 */
+/*
     public function getMetadataSet() : Asset
     {
         $service = $this->getService();
@@ -227,7 +229,7 @@ href="http://www.upstate.edu/web-services/api/property-classes/metadata.php"><co
             $service->createId( MetadataSet::TYPE, 
                 $this->getMetadataSetId() ) );
     }
-    
+*/ 
 /**
 <documentation><description><p>Returns <code>metadataSetId</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $page->getMetadataSetId() ), BR;</example>
@@ -235,11 +237,12 @@ href="http://www.upstate.edu/web-services/api/property-classes/metadata.php"><co
 <exception></exception>
 </documentation>
 */
+/*
     public function getMetadataSetId() // null for pages
     {
         return $this->getProperty()->metadataSetId;
     }
-    
+*/ 
 /**
 <documentation><description><p>Returns <code>metadataSetPath</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $page->getMetadataSetPath() ), BR;</example>
@@ -247,11 +250,12 @@ href="http://www.upstate.edu/web-services/api/property-classes/metadata.php"><co
 <exception></exception>
 </documentation>
 */
+/*
     public function getMetadataSetPath() // null for pages
     {
         return $this->getProperty()->metadataSetPath;
     }
-    
+*/
 /**
 <documentation><description><p>Returns the metadata property (an <code>\stdClass</code> object).</p></description>
 <example>u\DebugUtility::dump( $page->getMetadataStdClass() );</example>

@@ -4,6 +4,7 @@
   Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   MIT Licensed
   Modification history:
+   11/28/2017 Bugs fixed in publish and unpublish related to destinations.
    10/12/2017 Updated documentation.
    7/3/2017 Removed example from search.
    6/19/2017 Added getXMLFragments.
@@ -135,8 +136,6 @@ $doc_string .= "</pre>";
 return $doc_string; ?></description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/tree/master/working-with-AssetOperationHandlerService">working-with-AssetOperationHandlerService</a></li></ul></postscript>
 <advanced>
-
-
 </advanced>
 </documentation>
 */
@@ -1395,11 +1394,20 @@ return $doc_string;
 ?>
 </description>
 <example>$folder_path = "projects/web-services/reports";
-$service->publish( $service->createId( a\Folder::TYPE, $folder_path, "cascade-admin" ) );</example>
+$service->publish( $service->createId( a\Folder::TYPE, $folder_path, "cascade-admin" ) );
+
+$p  = $cascade->getAsset( a\Page::TYPE, "9a1416488b7f08ee5d439b31921d08b6" );
+$dest_web =
+    $cascade->getAsset( a\Destination::TYPE, "03b2789b8b7f08ee357fca92fc1cfc40" );
+$dest_www =
+	$cascade->getAsset( a\Destination::TYPE, "c34d2a868b7f08ee4fe76bb87c352c01" );
+$service->publish( $p->getIdentifier(), 
+    array( $dest_web->getIdentifier(), $dest_www->getIdentifier() ) );
+</example>
 <return-type>void</return-type>
 </documentation>
 */
-    public function publish( \stdClass $identifier, a\Destination $destination=NULL ) 
+    public function publish( \stdClass $identifier, $destination=NULL ) 
     {
         $publish_param = new \stdClass();
         $publish_info  = new \stdClass();
@@ -1737,7 +1745,7 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
 <example>$service->unpublish( $service->createId( a\Page::TYPE, $page_path, "cascade-admin" ) );</example>
 <return-type>void</return-type></documentation>
 */
-    public function unpublish( \stdClass $identifier, a\Destination $destination=NULL ) 
+    public function unpublish( \stdClass $identifier, $destination=NULL ) 
     {
         $publish_param = new \stdClass();
         $publish_info  = new \stdClass();

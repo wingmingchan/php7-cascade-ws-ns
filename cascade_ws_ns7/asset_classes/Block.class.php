@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 11/28/2017 Changed parent class to DublinAwareAsset.
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/14/2017 Added WSDL.
   * 9/13/2016 Fixed bugs in setExpirationFolder.
@@ -46,7 +47,7 @@ return $doc_string;
 </ul></postscript>
 </documentation>
 */
-abstract class Block extends ContainedAsset
+abstract class Block extends DublinAwareAsset
 {
     const DEBUG = false;
 

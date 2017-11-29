@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 11/28/2017 Added getSiteId and getSiteName.
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/12/2017 Added WSDL.
   * 9/24/2016 Changed isInContainer to isChildOf.
@@ -127,6 +128,38 @@ abstract class ContainedAsset extends Asset
             return $this->getProperty()->parentContainerPath;
         else
             return NULL;
+    }
+    
+/**
+<documentation><description><p>Returns <code>siteId</code>.</p></description>
+<example>echo $page->getSiteId(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getSiteId() : string
+    {
+    	if( $this->getType() == c\T::SITE )
+        {
+            return $this->getId();
+        }
+        return $this->getProperty()->siteId;
+    }
+  
+/**
+<documentation><description><p>Returns <code>siteName</code>.</p></description>
+<example>echo $page->getSiteName(), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getSiteName()
+    {
+    	if( $this->getType() == c\T::SITE )
+        {
+            return $this->getName();
+        }
+        return $this->getProperty()->siteName;
     }
     
 /**

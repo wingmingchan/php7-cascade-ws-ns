@@ -4,6 +4,8 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 11/28/2017 Removed getSiteId, getSiteName, getReviewOnSchedule, and getReviewEvery.
+    Fixed a bug in getPath.
   * 7/31/2017 Added getReviewOnSchedule and getReviewEvery for 8.5.
   * 6/19/2017 Replaced WSDL code with call to getXMLFragments.
   * 6/16/2017 Added code to generate WSDL XML dynamically.
@@ -139,11 +141,19 @@ abstract class Asset
         {
             $this->path          = $property->path;
             
-            if( !isset( $this->identifier->path ) )
-            {
-                $this->identifier->path = new \stdClass();
-                $this->identifier->path->path = $this->path;
-            }
+        }
+        elseif( isset( $property->parentContainerPath ) )
+        {
+        	if( $property->parentContainerPath == "/" )
+        		$this->path	= $this->getName();
+        	else
+        		$this->path	= $property->parentContainerPath . '/' . $this->getName();
+        }
+        
+        if( !isset( $this->identifier->path ) )
+        {
+            $this->identifier->path = new \stdClass();
+            $this->identifier->path->path = $this->path;
         }
         
         if( isset( $property->siteId ) )
@@ -489,30 +499,6 @@ abstract class Asset
     }
     
 /**
-<documentation><description><p>Returns <code>reviewOnSchedule</code>.</p></description>
-<example>echo u\StringUtility::boolToString( $page->getReviewOnSchedule() ), BR;</example>
-<return-type>bool</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getReviewOnSchedule() : bool
-    {
-        return $this->review_on_schedule;
-    }
-    
-/**
-<documentation><description><p>Returns <code>reviewEvery</code>.</p></description>
-<example>echo $page->getReviewEvery(), BR;</example>
-<return-type>int</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getReviewEvery() : int
-    {
-        return $this->review_every;
-    }
-    
-/**
 <documentation><description><p>Returns the <code>$service</code> object passed into the constructor.</p></description>
 <example>u\DebugUtility::dump( $page->getService() );</example>
 <return-type>AssetOperationHandlerService</return-type>
@@ -522,30 +508,6 @@ abstract class Asset
     public function getService() : aohs\AssetOperationHandlerService
     {
         return $this->service;
-    }
-    
-/**
-<documentation><description><p>Returns <code>siteId</code>.</p></description>
-<example>echo $page->getSiteId(), BR;</example>
-<return-type>string</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getSiteId() : string
-    {
-        return $this->site_id;
-    }
-  
-/**
-<documentation><description><p>Returns <code>siteName</code>.</p></description>
-<example>echo $page->getSiteName(), BR;</example>
-<return-type>mixed</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getSiteName()
-    {
-        return $this->site_name;
     }
     
 /**
@@ -628,7 +590,8 @@ echo "There are " . count( $subscribers ) . " subscribers.", BR;</example>
                 if( self::DEBUG ) { u\DebugUtility::out( "Publishing " . $subscriber_id->getId() ); }
                 
                 if( isset( $destination_std ) )
-                    $this->getService()->publish( $subscriber_id->toStdClass(), $destination_std );
+                    $this->getService()->publish(
+                       $subscriber_id->toStdClass(), $destination_std );
                 else
                     $this->getService()->publish( $subscriber_id->toStdClass() );
             }
@@ -708,9 +671,5 @@ echo "There are " . count( $subscribers ) . " subscribers.", BR;</example>
     private $site_id;
     /** @var string The site name */
     private $site_name;
-    /** @var bool reviewOnSchedule */
-    private $review_on_schedule;
-    /** @var int reviewEvery */
-    private $review_every;
 }
 ?>

@@ -77,7 +77,7 @@ enough to deal with these sub-types.</p>
 and <code>configurationSetPath</code>. They all store <code>NULL</code>. To retrieve the metadata set and configuration set associated with a page, we must go through the content
 type. To make methods, like <code>Page::getMetadataSetId</code>, <code>Page::getMetadataSetPath</code>, <code>Page::getConfigurationSetId</code>, and <code>Page::getConfigurationSetPath</code>, useful, instead of returning the <code>NULL</code> value, I go through the content type and retrieve the configuration set and metadata set. Therefore, the <code>Page::getMetadataSetId</code>, <code>Page::getMetadataSetPath</code>, <code>Page::getConfigurationSetId</code>, and <code>Page::getConfigurationSetPath</code> methods do return useful information.</p>
 <h2>Structure of <code>page</code></h2>
-<pre>SOAP:
+<pre>
 page
   id
   name
@@ -169,88 +169,6 @@ page
       includeXMLDeclaration
       publishable
   maintainAbsoluteLinks
-  
-JSON:
-page
-  contentTypeId
-  contentTypePath
-  structuredData
-    structuredDataNodes (array)
-      stdClass
-        type
-        identifier
-        structuredDataNodes (array)
-        text
-        assetType
-        blockId
-        blockPath
-        fileId
-        filePath
-        pageId
-        pagePath
-        symlinkId
-        symlinkPath
-        recycled
-  pageConfigurations (array)
-    stdClass
-      name
-      defaultConfiguration
-      templateId
-      templatePath
-      formatId
-      formatPath
-      formatRecycled
-      pageRegions (array)
-        stdClass
-          name
-          blockId
-          blockPath
-          blockRecycled
-          noBlock
-          formatId
-          formatPath
-          formatRecycled
-          noFormat
-          id
-      includeXMLDeclaration
-      publishable
-      id
-  maintainAbsoluteLinks
-  shouldBePublished
-  shouldBeIndexed
-  lastPublishedDate
-  lastPublishedBy
-  expirationFolderId
-  expirationFolderPath
-  expirationFolderRecycled
-  metadata
-    author
-    displayName
-    endDate
-    keywords
-    metaDescription
-    reviewDate
-    startDate
-    summary
-    teaser
-    title
-    dynamicFields (array)
-      stdClass
-        name
-        fieldValues (array)
-          stdClass
-            value
-  parentFolderId
-  parentFolderPath
-  lastModifiedDate
-  lastModifiedBy
-  createdDate
-  createdBy
-  path
-  siteId
-  siteName
-  name
-  id   
 </pre>
 <h2>WSDL</h2>";
 $doc_string .=
@@ -353,8 +271,6 @@ page configurations and structured data.</p></description>
                 ContentType::TYPE, 
                 $this->getProperty()->contentTypeId ) );
         $this->page_configuration_set = $this->content_type->getPageConfigurationSet();
-        $this->metadata_set = $this->content_type->getMetadataSet();
-            
         parent::setPageContentType( $this->content_type );
             
         if( isset( $this->getProperty()->structuredData ) )
@@ -377,7 +293,8 @@ page configurations and structured data.</p></description>
             $this->xhtml = $this->getProperty()->xhtml;
         }
         
-        $this->processPageConfigurations( $this->getProperty()->pageConfigurations->pageConfiguration );
+        $this->processPageConfigurations(
+            $this->getProperty()->pageConfigurations->pageConfiguration );
     }
 
 /**
@@ -1012,6 +929,18 @@ a symlink; therefore, the path can be the <code>filePath</code>, <code>pagePath<
     }
     
 /**
+<documentation><description><p>Returns the associated <code>MetadataSet</code> object.</p></description>
+<example>$page->getMetadataSet()->dump();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getMetadataSet() : Asset
+    {
+        return $this->content_type->getMetadataSet();
+    }
+
+/**
 <documentation><description><p>Returns <code>maintainAbsoluteLinks</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $p->getMaintainAbsoluteLinks() ), BR;</example>
 <return-type>bool</return-type>
@@ -1021,49 +950,6 @@ a symlink; therefore, the path can be the <code>filePath</code>, <code>pagePath<
     public function getMaintainAbsoluteLinks() : bool
     {
         return $this->getProperty()->maintainAbsoluteLinks;
-    }
-    
-/**
-<documentation><description><p>Returns the <code>MetadataSet</code> object.</p></description>
-<example>$p->getMetadataSet()->display();</example>
-<return-type></return-type>
-<exception></exception>
-</documentation>
-*/
-
-    public function getMetadataSet() : Asset
-    {
-        return $this->metadata_set;
-    }
-  
-/**
-<documentation><description><p>Returns the ID of the metadata set. This method overrides
-the parent method because a page does not store the ID of the metadata set. The
-information must be retrieved through the associated content type object.</p></description>
-<example>echo $p->getMetadataSetId(), BR;</example>
-<return-type>string</return-type>
-<exception></exception>
-</documentation>
-*/
-
-    public function getMetadataSetId() : string
-    {
-        return $this->metadata_set->getId();
-    }
-   
-/**
-<documentation><description><p>Returns the path of the metadata set. This method overrides
-the parent method because a page does not store the path of the metadata set. The
-information must be retrieved through the associated content type object.</p></description>
-<example>echo $p->getMetadataSetPath(), BR;</example>
-<return-type>string</return-type>
-<exception></exception>
-</documentation>
-*/
-
-    public function getMetadataSetPath() : string
-    {
-        return $this->metadata_set->getPath();
     }
 
 /**
@@ -2809,6 +2695,6 @@ object.</p></description>
     private $data_definition_id;
     private $content_type;
     private $page_configuration_set;
-    private $metadata_set;
+    //private $metadata_set;
     private $data_definition;
 }

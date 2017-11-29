@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 11/28/2017 Changed parent class to FolderContainedAsset.
   * 6/30/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/12/2017 Added WSDL.
   * 1/24/2017 Updated documentation.
@@ -134,7 +135,7 @@ return $doc_string;
 </postscript>
 </documentation>
 */
-class Template extends ContainedAsset
+class Template extends FolderContainedAsset
 {
     const DEBUG = false;
     const TYPE  = c\T::TEMPLATE;
