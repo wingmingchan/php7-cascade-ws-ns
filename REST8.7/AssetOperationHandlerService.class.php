@@ -99,6 +99,14 @@ class AssetOperationHandlerService
         return $this->reply;
     }
     
+    public function listSites() : \stdClass
+    {
+        $command = $this->url . __function__ . $this->auth;
+        $this->reply = $this->apiOperation( $command );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
     public function move( \stdClass $identifier, \stdClass $newIdentifier=NULL,
         string $newName="", bool $doWorkflow=false ) : \stdClass
     {
