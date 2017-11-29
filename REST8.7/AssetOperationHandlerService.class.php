@@ -120,10 +120,35 @@ class AssetOperationHandlerService
         return $this->reply;
     }
     
+    public function publish(
+        \stdClass $identifier, $destination=NULL, $unpublish=false ) : \stdClass
+    {
+        $id_string = $this->createIdString( $identifier );
+        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        
+        if( isset( $destination ) )
+        {
+        	if( !is_array( $destination ) )
+        	{
+        		$destination = array( $destination );
+        	}
+        	
+        	$params = new \stdClass();
+        	$params->publishInformation = new \stdClass();
+        	$params->publishInformation->destinations = $destination;
+        	$params->publishInformation->unpublish    = $unpublish;
+        	$this->reply = $this->apiOperation( $command, $params );
+        }
+        else
+        {
+        	$this->reply = json_decode( file_get_contents( $command ) );
+        }
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
     public function read( \stdClass $identifier ) : \stdClass
     {
-        if( self::DEBUG ) { u\DebugUtility::dump( $identifier ); }
-        
         $id_string = $this->createIdString( $identifier );
         $command = $this->url . __function__ . '/' . $id_string . $this->auth;
         $this->reply = json_decode( file_get_contents( $command ) );
@@ -133,6 +158,11 @@ class AssetOperationHandlerService
             return $this->reply->asset;
         else
             return NULL;
+    }
+    
+    public function unpublish( \stdClass $identifier, $destination=NULL ) : \stdClass
+    {
+        return $this->publish( $identifier, $destination, true );
     }
     
     public function createIdString( \stdClass $id )
