@@ -12,7 +12,7 @@ $auth->p = "password";
 
 try
 {
-	$service = new aohs\AssetOperationHandlerService( $url, $auth );
+    $service = new aohs\AssetOperationHandlerService( $url, $auth );
 }
 catch( \Exception $e ) 
 {
@@ -20,6 +20,6 @@ catch( \Exception $e )
 }
 catch( \Error $er )
 {
-	echo S_PRE . $er . E_PRE; 
+    echo S_PRE . $er . E_PRE; 
 }
 ?>
