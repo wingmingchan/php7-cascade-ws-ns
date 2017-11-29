@@ -72,6 +72,25 @@ class AssetOperationHandlerService
         return $this->reply;
     }
     
+    public function copy( \stdClass $identifier, \stdClass $newIdentifier, 
+    	string $newName="", bool $doWorkflow=false ) : \stdClass
+    {
+    	$id_string = $this->createIdString( $identifier );
+        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $params  = new \stdClass();
+		$params->destinationContainerIdentifier = $newIdentifier;
+		
+		if( $newName != "" )
+			$params->newName = $newName;
+		if( !is_null( $doWorkflow ) )
+            $params->doWorkflow = $doWorkflow;	
+        
+        $params = array( 'copyParameters' => $params );
+        $this->reply = $this->apiOperation( $command, $params );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
     public function create( \stdClass $asset ) : \stdClass
     {
         $command = $this->url . __function__ . $this->auth;
