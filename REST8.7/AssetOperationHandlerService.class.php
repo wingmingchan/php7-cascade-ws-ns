@@ -1,6 +1,8 @@
 <?php
 namespace cascade_ws_AOHS;
 
+use cascade_ws_utility as u;
+
 class AssetOperationHandlerService
 {
     const DEBUG = false;
@@ -28,18 +30,38 @@ class AssetOperationHandlerService
             throw new e\ServerException( S_SPAN . $e->getMessage() . E_SPAN );
         }
     }
+    
+    function apiOperation( $command, $params=NULL )
+    {
+        $input_params = array(
+            'http' => array(
+                'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST'
+            ) );
+            
+        if( !is_null( $params ) )
+        {
+            $input_params[ 'http' ][ 'content' ] = json_encode( $params );
+        }
+            
+        return json_decode(
+            file_get_contents(
+                $command, 
+                false, 
+                stream_context_create( $input_params ) ) );
+    }
 
     public function createId( string $type, string $id_path, string $site_name = NULL )
     {
         $id = new \stdClass();
         
         if( $this->isHexString( $id_path ) )
-        	$id->id = $id_path;
+            $id->id = $id_path;
         else
         {
-        	$id->path = new \stdClass();
-        	$id->path->path     = $id_path;
-        	$id->path->siteName = $site_name;
+            $id->path = new \stdClass();
+            $id->path->path     = $id_path;
+            $id->path->siteName = $site_name;
         }
         $id->type = $type;
         return $id;
@@ -53,47 +75,47 @@ class AssetOperationHandlerService
     public function create( \stdClass $asset ) : \stdClass
     {
         $command = $this->url . __function__ . $this->auth;
-        
-        $this->reply = json_decode(
-            file_get_contents(
-                $command , 
-                false,
-                stream_context_create( 
-                    array( 'http' => array(
-                        'header'  => 'Content-Type: ' .
-                            "application/x-www-form-urlencoded\r\n",
-                        'method'  => 'POST',
-                        'content' => json_encode( array ( 'asset' => $asset ) ) ) 
-                ) ) ) );
-    	
-    	$this->success = $this->reply->success;
+        $asset = array( 'asset' => $asset );
+        $this->reply = $this->apiOperation( $command, $asset );
+        $this->success = $this->reply->success;
         return $this->reply;
     }
     
     public function delete( \stdClass $identifier ) : \stdClass
     {
-    	$id_string = $this->createIdString( $identifier );
+        $id_string = $this->createIdString( $identifier );
         $command = $this->url . __function__ . '/' . $id_string . $this->auth;
-        $this->reply = json_decode( file_get_contents(  $command ) );
+        $this->reply = json_decode( file_get_contents( $command ) );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+        
+    public function edit( \stdClass $asset ) : \stdClass
+    {
+        $command = $this->url . __function__ . $this->auth;
+        $asset = array( 'asset' => $asset );
+        $this->reply = $this->apiOperation( $command, $asset );
         $this->success = $this->reply->success;
         return $this->reply;
     }
     
-    public function edit( \stdClass $asset ) : \stdClass
+    public function move( \stdClass $identifier, \stdClass $newIdentifier=NULL,
+        string $newName="", bool $doWorkflow=false ) : \stdClass
     {
-        $command = $this->url . __function__ . $this->auth;
+        $id_string = $this->createIdString( $identifier );
+        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $params = new \stdClass();
         
-        $this->reply = json_decode(
-            file_get_contents(
-                $command , 
-                false,
-                stream_context_create( 
-                    array( 'http' => array(
-                        'header'  => 'Content-Type: ' .
-                            "application/x-www-form-urlencoded\r\n",
-                        'method'  => 'POST',
-                        'content' => json_encode( array ( 'asset' => $asset ) ) ) 
-                ) ) ) );
+        if( !is_null( $newIdentifier ) )
+            $params->destinationContainerIdentifier = $newIdentifier;
+        if( !is_null( $newName ) && $newName != "" )
+            $params->newName = $newName;
+        if( !is_null( $doWorkflow ) )
+            $params->doWorkflow = $doWorkflow;
+            
+        $params = array( 'moveParameters' => $params );
+        
+        $this->reply = $this->apiOperation( $command, $params );
         $this->success = $this->reply->success;
         return $this->reply;
     }
@@ -104,7 +126,7 @@ class AssetOperationHandlerService
         
         $id_string = $this->createIdString( $identifier );
         $command = $this->url . __function__ . '/' . $id_string . $this->auth;
-        $this->reply = json_decode( file_get_contents(  $command ) );
+        $this->reply = json_decode( file_get_contents( $command ) );
         $this->success = $this->reply->success;
         
         if( $this->success )
@@ -118,9 +140,9 @@ class AssetOperationHandlerService
         $id_string = $id->type . '/';
         
         if( isset( $id->id ) )
-        	$id_string = $id_string . $id->id;
+            $id_string = $id_string . $id->id;
         else
-        	$id_string = $id->type . '/' . $id->path->siteName . '/' . $id->path->path;
+            $id_string = $id->type . '/' . $id->path->siteName . '/' . $id->path->path;
         return $id_string;
     }
     
@@ -138,7 +160,7 @@ class AssetOperationHandlerService
 
     public function isSuccessful() : bool
     {
-    	return $this->success;
+        return $this->success;
     }
 
     // from the constructor
