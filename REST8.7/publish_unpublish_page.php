@@ -13,19 +13,19 @@ try
     //u\DebugUtility::dump( $reply );
     
     $reply = $service->publish(
-    	$service->createId( $type, $id ), // page
-    	array(
-    		$service->createId( "destination", "c34b58ca8b7f08ee4fe76bb83ba1613b" ),
-    		$service->createId( "destination", "c34d2a868b7f08ee4fe76bb87c352c01" )
-    	)
+        $service->createId( $type, $id ), // page
+        array(
+            $service->createId( "destination", "c34b58ca8b7f08ee4fe76bb83ba1613b" ),
+            $service->createId( "destination", "c34d2a868b7f08ee4fe76bb87c352c01" )
+        )
     );
     /*
     $reply = $service->unpublish(
-    	$service->createId( $type, $id ), // page
-    	array(
-    		$service->createId( "destination", "c34b58ca8b7f08ee4fe76bb83ba1613b" ),
-    		$service->createId( "destination", "c34d2a868b7f08ee4fe76bb87c352c01" )
-    	)
+        $service->createId( $type, $id ), // page
+        array(
+            $service->createId( "destination", "c34b58ca8b7f08ee4fe76bb83ba1613b" ),
+            $service->createId( "destination", "c34d2a868b7f08ee4fe76bb87c352c01" )
+        )
     );
     */
     u\DebugUtility::dump( $reply );
