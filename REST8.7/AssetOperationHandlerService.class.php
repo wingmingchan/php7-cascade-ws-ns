@@ -31,27 +31,8 @@ class AssetOperationHandlerService
         }
     }
     
-    function apiOperation( $command, $params=NULL )
-    {
-        $input_params = array(
-            'http' => array(
-                'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
-                'method'  => 'POST'
-            ) );
-            
-        if( !is_null( $params ) )
-        {
-            $input_params[ 'http' ][ 'content' ] = json_encode( $params );
-        }
-            
-        return json_decode(
-            file_get_contents(
-                $command, 
-                false, 
-                stream_context_create( $input_params ) ) );
-    }
-
-    public function createId( string $type, string $id_path, string $site_name = NULL )
+    public function createId(
+        string $type, string $id_path, string $site_name = NULL ) : \stdClass
     {
         $id = new \stdClass();
         
@@ -73,17 +54,17 @@ class AssetOperationHandlerService
     }
     
     public function copy( \stdClass $identifier, \stdClass $newIdentifier, 
-    	string $newName="", bool $doWorkflow=false ) : \stdClass
+        string $newName="", bool $doWorkflow=false ) : \stdClass
     {
-    	$id_string = $this->createIdString( $identifier );
+        $id_string = $this->createIdString( $identifier );
         $command = $this->url . __function__ . '/' . $id_string . $this->auth;
         $params  = new \stdClass();
-		$params->destinationContainerIdentifier = $newIdentifier;
-		
-		if( $newName != "" )
-			$params->newName = $newName;
-		if( !is_null( $doWorkflow ) )
-            $params->doWorkflow = $doWorkflow;	
+        $params->destinationContainerIdentifier = $newIdentifier;
+        
+        if( $newName != "" )
+            $params->newName = $newName;
+        if( !is_null( $doWorkflow ) )
+            $params->doWorkflow = $doWorkflow;    
         
         $params = array( 'copyParameters' => $params );
         $this->reply = $this->apiOperation( $command, $params );
@@ -118,9 +99,32 @@ class AssetOperationHandlerService
         return $this->reply;
     }
     
+    public function editAccessRights(
+        \stdClass $identifier, \stdClass $afInfo, 
+        bool $applyToChildren=false ) : \stdClass
+    {
+        $id_string = $this->createIdString( $identifier );
+        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $params  = array( 
+        	'accessRightsInformation' => $afInfo, 
+        	'applyToChildren'         => $applyToChildren );
+        $this->reply = $this->apiOperation( $command, $params );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
     public function listSites() : \stdClass
     {
         $command = $this->url . __function__ . $this->auth;
+        $this->reply = $this->apiOperation( $command );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
+    public function listSubscribers( \stdClass $identifier ) : \stdClass
+    {
+        $id_string = $this->createIdString( $identifier );
+        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
         $this->reply = $this->apiOperation( $command );
         $this->success = $this->reply->success;
         return $this->reply;
@@ -141,7 +145,6 @@ class AssetOperationHandlerService
             $params->doWorkflow = $doWorkflow;
             
         $params = array( 'moveParameters' => $params );
-        
         $this->reply = $this->apiOperation( $command, $params );
         $this->success = $this->reply->success;
         return $this->reply;
@@ -155,20 +158,20 @@ class AssetOperationHandlerService
         
         if( isset( $destination ) )
         {
-        	if( !is_array( $destination ) )
-        	{
-        		$destination = array( $destination );
-        	}
-        	
-        	$params = new \stdClass();
-        	$params->publishInformation = new \stdClass();
-        	$params->publishInformation->destinations = $destination;
-        	$params->publishInformation->unpublish    = $unpublish;
-        	$this->reply = $this->apiOperation( $command, $params );
+            if( !is_array( $destination ) )
+            {
+                $destination = array( $destination );
+            }
+            
+            $params = new \stdClass();
+            $params->publishInformation = new \stdClass();
+            $params->publishInformation->destinations = $destination;
+            $params->publishInformation->unpublish    = $unpublish;
+            $this->reply = $this->apiOperation( $command, $params );
         }
         else
         {
-        	$this->reply = json_decode( file_get_contents( $command ) );
+            $this->reply = json_decode( file_get_contents( $command ) );
         }
         $this->success = $this->reply->success;
         return $this->reply;
@@ -178,13 +181,62 @@ class AssetOperationHandlerService
     {
         $id_string = $this->createIdString( $identifier );
         $command = $this->url . __function__ . '/' . $id_string . $this->auth;
-        $this->reply = json_decode( file_get_contents( $command ) );
+        $this->reply = $this->apiOperation( $command );
         $this->success = $this->reply->success;
         
         if( $this->success )
             return $this->reply->asset;
         else
             return NULL;
+    }
+    
+    public function readAccessRights( \stdClass $identifier ) : \stdClass
+    {
+        $id_string = $this->createIdString( $identifier );
+        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $this->reply = $this->apiOperation( $command );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
+    public function readAudits(
+        \stdClass $identifier, \stdClass $auditParams=NULL ) : \stdClass
+    {
+        $id_string = $this->createIdString( $identifier );
+        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        
+        if( !is_null( $auditParams ) )
+        {
+        	$params = array( 'auditParameters' => $auditParams );
+        	$this->reply = $this->apiOperation( $command, $params );
+        }
+        else
+        	$this->reply = $this->apiOperation( $command );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
+    public function search( \stdClass $searchInfo ) : \stdClass
+    {
+        $command = $this->url . __function__ . $this->auth;
+        $params  = array( 'searchInformation' => $searchInfo );
+        $this->reply   = $this->apiOperation( $command, $params );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
+    public function siteCopy(
+    	string $originalSiteId, string $originalSiteName, string $newSiteName ) :
+    	\stdClass
+    {
+        $command = $this->url . __function__ . $this->auth;
+        $params  = new \stdClass();
+        $params->originalSiteId   = $originalSiteId;
+        $params->originalSiteName = $originalSiteName;
+        $params->newSiteName      = $newSiteName;
+        $this->reply   = $this->apiOperation( $command, $params );
+        $this->success = $this->reply->success;
+        return $this->reply;
     }
     
     public function unpublish( \stdClass $identifier, $destination=NULL ) : \stdClass
@@ -220,6 +272,26 @@ class AssetOperationHandlerService
         return $this->success;
     }
 
+    private function apiOperation( $command, $params=NULL )
+    {
+        $input_params = array(
+            'http' => array(
+                'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST'
+            ) );
+            
+        if( !is_null( $params ) )
+        {
+            $input_params[ 'http' ][ 'content' ] = json_encode( $params );
+        }
+            
+        return json_decode(
+            file_get_contents(
+                $command, 
+                false, 
+                stream_context_create( $input_params ) ) );
+    }
+
     // from the constructor
     /*@var string The url */
     private $url;
@@ -231,12 +303,6 @@ class AssetOperationHandlerService
     private $message;
     /*@var string The string 'true' or 'false' */
     private $success;
-    /*@var string The id string of a created asset */
-    private $createdAssetId;
-    /*@var string The XML of the last request */
-    private $lastRequest;
-    /*@var string The XML of the last response */
-    private $lastResponse;
     /*@var stdClass The object returned from an operation */
     private $reply;
     /*@var stdClass The audits object */
