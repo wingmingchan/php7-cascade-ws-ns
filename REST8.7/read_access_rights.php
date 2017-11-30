@@ -7,7 +7,7 @@ use cascade_ws_utility   as u;
 
 try
 {
-	$type  = "folder";
+    $type  = "folder";
     $id    = "c12d8d0d8b7ffe83129ed6d86dd9f853";
     $reply = $service->readAccessRights( $service->createId( $type, $id ) );
     u\DebugUtility::dump( $reply );
