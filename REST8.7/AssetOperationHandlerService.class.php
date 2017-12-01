@@ -281,7 +281,7 @@ class AssetOperationHandlerService
         }
         else
         {
-            $this->reply = json_decode( file_get_contents( $command ) );
+            $this->reply = $this->apiOperation( $command );
         }
         $this->success = $this->reply->success;
         return $this->reply;
@@ -309,7 +309,7 @@ class AssetOperationHandlerService
         \stdClass $identifier, \stdClass $auditParams=NULL ) : \stdClass
     {
         $id_string = $this->createIdString( $identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $command = $this->url . __function__ . '/' . $id_string  . $this->auth;
         
         if( !is_null( $auditParams ) )
         {
@@ -393,11 +393,12 @@ class AssetOperationHandlerService
         return $this->success;
     }
 
-    private function apiOperation( $command, $params=NULL )
+    private function apiOperation( $command, $params=NULL ) : \stdClass
     {
         $input_params = array(
             'http' => array(
-                'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
+                'header'  => "Authorization: Basic " . $this->getAuthString() . "\r\n" .
+                	"Content-Type: application/x-www-form-urlencoded\r\n",
                 'method'  => 'POST'
             ) );
             
@@ -429,6 +430,16 @@ class AssetOperationHandlerService
         $this->reply = $this->apiOperation( $command );
         $this->success = $this->reply->success;
         return $this->reply;
+    }
+    
+    private function getAuthString()
+    {
+    	$authString = str_replace( "u=", "", trim( $this->auth, '?' ) );
+    	$authString = str_replace( "p=", "", $authString );
+    	$authString = str_replace( "&", ":", $authString );
+    	$authString = base64_encode( $authString );
+    	echo $authString;
+    	return $authString;
     }
 
     // from the constructor
