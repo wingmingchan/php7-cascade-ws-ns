@@ -53,6 +53,32 @@ class AssetOperationHandlerService
         return $this->reply;
     }
     
+    public function checkIn( \stdClass $identifier, string $comments="" ) : \stdClass
+    {
+        $id_string = $this->createIdString( $identifier );
+        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        
+        if( $comments != "" )
+        {
+            $params = new \stdClass();
+            $params->comments = $comments;
+            $this->reply = $this->apiOperation( $command, $params );
+        }
+        else
+            $this->reply = $this->apiOperation( $command );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
+    public function checkOut( \stdClass $identifier ) : \stdClass
+    {
+        $id_string = $this->createIdString( $identifier );
+        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $this->reply = $this->apiOperation( $command );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
     public function copy( \stdClass $identifier, \stdClass $newIdentifier, 
         string $newName="", bool $doWorkflow=false ) : \stdClass
     {
@@ -90,6 +116,15 @@ class AssetOperationHandlerService
         return $this->reply;
     }
         
+    public function deleteMessage( \stdClass $identifier ) : \stdClass
+    {
+        $id_string = $this->createIdString( $identifier );
+        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $this->reply = $this->apiOperation( $command );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
     public function edit( \stdClass $asset ) : \stdClass
     {
         $command = $this->url . __function__ . $this->auth;
@@ -106,9 +141,83 @@ class AssetOperationHandlerService
         $id_string = $this->createIdString( $identifier );
         $command = $this->url . __function__ . '/' . $id_string . $this->auth;
         $params  = array( 
-        	'accessRightsInformation' => $afInfo, 
-        	'applyToChildren'         => $applyToChildren );
+            'accessRightsInformation' => $afInfo, 
+            'applyToChildren'         => $applyToChildren );
         $this->reply = $this->apiOperation( $command, $params );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
+    public function editPreference( string $name, string $value ) : \stdClass
+    {
+        $command = $this->url . __function__ . $this->auth;
+        $params = new \stdClass();
+        $params->name = $name;
+        $params->value = $value;
+        $params = array( 'preference' => $params );
+        $this->reply = $this->apiOperation( $command, $params );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
+    public function editWorkflowSettings(
+        \stdClass $identifier,
+        $workflowDefinitions=NULL,
+        $inheritedWorkflowDefinitions=NULL,
+        bool $inheritWorkflows=false,
+        bool $requireWorkflow=false,
+        bool $applyInheritWorkflowsToChildren=false,
+        bool $applyRequireWorkflowToChildren=false
+    ) : \stdClass
+    {
+        $id_string = $this->createIdString( $identifier );
+        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $params = new \stdClass();
+        
+        if( !is_null( $workflowDefinitions ) )
+        {
+            if( !is_array( $workflowDefinitions ) )
+            {
+                $workflowDefinitions = array( $workflowDefinitions );
+            }
+            $params->workflowDefinitions = $workflowDefinitions;
+        }
+        
+        if( !is_null( $inheritedWorkflowDefinitions ) )
+        {
+            if( !is_array( $inheritedWorkflowDefinitions ) )
+            {
+                $inheritedWorkflowDefinitions = array( $inheritedWorkflowDefinitions );
+            }
+            $params->inheritedWorkflowDefinitions = $inheritedWorkflowDefinitions;
+        }
+        
+        $params->inheritWorkflows = $inheritWorkflows;
+        $params->requireWorkflow  = $requireWorkflow;
+        $params = array(
+            'workflowSettings' => $params,
+            'applyInheritWorkflowsToChildren' => $applyInheritWorkflowsToChildren,
+            'applyRequireWorkflowToChildren'  => $applyRequireWorkflowToChildren
+        );
+        
+        $this->reply = $this->apiOperation( $command, $params );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
+	public function listEditorConfigurations( \stdClass $identifier ) : \stdClass
+	{
+		$id_string = $this->createIdString( $identifier );
+        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+		$this->reply = $this->apiOperation( $command );
+        $this->success = $this->reply->success;
+        return $this->reply;
+	}
+
+    public function listMessages() : \stdClass
+    {
+        $command = $this->url . __function__ . $this->auth;
+        $this->reply = $this->apiOperation( $command );
         $this->success = $this->reply->success;
         return $this->reply;
     }
@@ -126,6 +235,33 @@ class AssetOperationHandlerService
         $id_string = $this->createIdString( $identifier );
         $command = $this->url . __function__ . '/' . $id_string . $this->auth;
         $this->reply = $this->apiOperation( $command );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
+    public function markMessage( \stdClass $identifier, string $markType="read" ) :
+        \stdClass
+    {
+        $id_string = $this->createIdString( $identifier );
+        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $params = new \stdClass();
+        $params->markType = $markType;
+        $this->reply = $this->apiOperation( $command, $params );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
+    public function performWorkflowTransition(
+    	string $workflowId, string $actionIdentifier, string $transitionComment=''
+    ) : \stdClass
+    {
+        $command = $this->url . __function__ . $this->auth;
+        $params = new \stdClass();
+        $params->workflowId        = $workflowId;
+        $params->actionIdentifier  = $actionIdentifier;
+        $params->transitionComment = $transitionComment;
+        $params = array( 'workflowTransitionInformation' => $params );
+        $this->reply = $this->apiOperation( $command, $params );
         $this->success = $this->reply->success;
         return $this->reply;
     }
@@ -207,11 +343,37 @@ class AssetOperationHandlerService
         
         if( !is_null( $auditParams ) )
         {
-        	$params = array( 'auditParameters' => $auditParams );
-        	$this->reply = $this->apiOperation( $command, $params );
+            $params = array( 'auditParameters' => $auditParams );
+            $this->reply = $this->apiOperation( $command, $params );
         }
         else
-        	$this->reply = $this->apiOperation( $command );
+            $this->reply = $this->apiOperation( $command );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
+    public function readPreferences() : \stdClass
+    {
+        $command = $this->url . __function__ . $this->auth;
+        $this->reply = $this->apiOperation( $command );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
+    public function readWorkflowInformation( \stdClass $identifier ) : \stdClass
+    {
+        $id_string = $this->createIdString( $identifier );
+        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $this->reply = $this->apiOperation( $command );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
+    public function readWorkflowSettings( \stdClass $identifier ) : \stdClass
+    {
+        $id_string = $this->createIdString( $identifier );
+        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $this->reply = $this->apiOperation( $command );
         $this->success = $this->reply->success;
         return $this->reply;
     }
@@ -226,8 +388,8 @@ class AssetOperationHandlerService
     }
     
     public function siteCopy(
-    	string $originalSiteId, string $originalSiteName, string $newSiteName ) :
-    	\stdClass
+        string $originalSiteId, string $originalSiteName, string $newSiteName ) :
+        \stdClass
     {
         $command = $this->url . __function__ . $this->auth;
         $params  = new \stdClass();
