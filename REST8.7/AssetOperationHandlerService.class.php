@@ -205,14 +205,14 @@ class AssetOperationHandlerService
         return $this->reply;
     }
     
-	public function listEditorConfigurations( \stdClass $identifier ) : \stdClass
-	{
-		$id_string = $this->createIdString( $identifier );
+    public function listEditorConfigurations( \stdClass $identifier ) : \stdClass
+    {
+        $id_string = $this->createIdString( $identifier );
         $command = $this->url . __function__ . '/' . $id_string . $this->auth;
-		$this->reply = $this->apiOperation( $command );
+        $this->reply = $this->apiOperation( $command );
         $this->success = $this->reply->success;
         return $this->reply;
-	}
+    }
 
     public function listMessages() : \stdClass
     {
@@ -252,7 +252,7 @@ class AssetOperationHandlerService
     }
     
     public function performWorkflowTransition(
-    	string $workflowId, string $actionIdentifier, string $transitionComment=''
+        string $workflowId, string $actionIdentifier, string $transitionComment=''
     ) : \stdClass
     {
         $command = $this->url . __function__ . $this->auth;
