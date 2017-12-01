@@ -72,11 +72,7 @@ class AssetOperationHandlerService
     
     public function checkOut( \stdClass $identifier ) : \stdClass
     {
-        $id_string = $this->createIdString( $identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
-        $this->reply = $this->apiOperation( $command );
-        $this->success = $this->reply->success;
-        return $this->reply;
+        return $this->performOperationWithIdentifier( __function__, $identifier );
     }
     
     public function copy( \stdClass $identifier, \stdClass $newIdentifier, 
@@ -109,20 +105,12 @@ class AssetOperationHandlerService
     
     public function delete( \stdClass $identifier ) : \stdClass
     {
-        $id_string = $this->createIdString( $identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
-        $this->reply = json_decode( file_get_contents( $command ) );
-        $this->success = $this->reply->success;
-        return $this->reply;
+        return $this->performOperationWithIdentifier( __function__, $identifier );
     }
         
     public function deleteMessage( \stdClass $identifier ) : \stdClass
     {
-        $id_string = $this->createIdString( $identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
-        $this->reply = $this->apiOperation( $command );
-        $this->success = $this->reply->success;
-        return $this->reply;
+        return $this->performOperationWithIdentifier( __function__, $identifier );
     }
     
     public function edit( \stdClass $asset ) : \stdClass
@@ -207,36 +195,22 @@ class AssetOperationHandlerService
     
     public function listEditorConfigurations( \stdClass $identifier ) : \stdClass
     {
-        $id_string = $this->createIdString( $identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
-        $this->reply = $this->apiOperation( $command );
-        $this->success = $this->reply->success;
-        return $this->reply;
+        return $this->performOperationWithIdentifier( __function__, $identifier );
     }
 
     public function listMessages() : \stdClass
     {
-        $command = $this->url . __function__ . $this->auth;
-        $this->reply = $this->apiOperation( $command );
-        $this->success = $this->reply->success;
-        return $this->reply;
+        return $this->performOperation( __function__ );
     }
     
     public function listSites() : \stdClass
     {
-        $command = $this->url . __function__ . $this->auth;
-        $this->reply = $this->apiOperation( $command );
-        $this->success = $this->reply->success;
-        return $this->reply;
+        return $this->performOperation( __function__ );
     }
     
     public function listSubscribers( \stdClass $identifier ) : \stdClass
     {
-        $id_string = $this->createIdString( $identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
-        $this->reply = $this->apiOperation( $command );
-        $this->success = $this->reply->success;
-        return $this->reply;
+        return $this->performOperationWithIdentifier( __function__, $identifier );
     }
     
     public function markMessage( \stdClass $identifier, string $markType="read" ) :
@@ -328,11 +302,7 @@ class AssetOperationHandlerService
     
     public function readAccessRights( \stdClass $identifier ) : \stdClass
     {
-        $id_string = $this->createIdString( $identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
-        $this->reply = $this->apiOperation( $command );
-        $this->success = $this->reply->success;
-        return $this->reply;
+        return $this->performOperationWithIdentifier( __function__, $identifier );
     }
     
     public function readAudits(
@@ -354,28 +324,17 @@ class AssetOperationHandlerService
     
     public function readPreferences() : \stdClass
     {
-        $command = $this->url . __function__ . $this->auth;
-        $this->reply = $this->apiOperation( $command );
-        $this->success = $this->reply->success;
-        return $this->reply;
+        return $this->performOperation( __function__ );
     }
     
     public function readWorkflowInformation( \stdClass $identifier ) : \stdClass
     {
-        $id_string = $this->createIdString( $identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
-        $this->reply = $this->apiOperation( $command );
-        $this->success = $this->reply->success;
-        return $this->reply;
+        return $this->performOperationWithIdentifier( __function__, $identifier );
     }
     
     public function readWorkflowSettings( \stdClass $identifier ) : \stdClass
     {
-        $id_string = $this->createIdString( $identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
-        $this->reply = $this->apiOperation( $command );
-        $this->success = $this->reply->success;
-        return $this->reply;
+        return $this->performOperationWithIdentifier( __function__, $identifier );
     }
     
     public function search( \stdClass $searchInfo ) : \stdClass
@@ -453,6 +412,24 @@ class AssetOperationHandlerService
                 false, 
                 stream_context_create( $input_params ) ) );
     }
+    
+    private function performOperation( string $opName ) : \stdClass
+    {
+        $command = $this->url . $opName . $this->auth;
+        $this->reply = $this->apiOperation( $command );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
+    
+    private function performOperationWithIdentifier(
+        string $opName, \stdClass $identifier ) : \stdClass
+    {
+        $id_string = $this->createIdString( $identifier );
+        $command = $this->url . $opName . '/' . $id_string . $this->auth;
+        $this->reply = $this->apiOperation( $command );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }
 
     // from the constructor
     /*@var string The url */
@@ -460,20 +437,8 @@ class AssetOperationHandlerService
     /*@var stdClass The authentication */
     private $auth;
     
-    // from the response
-    /*@var string The message of the response */
-    private $message;
-    /*@var string The string 'true' or 'false' */
     private $success;
     /*@var stdClass The object returned from an operation */
     private $reply;
-    /*@var stdClass The audits object */
-    private $audits;
-    /*@var stdClass The searchMatches object */
-    private $searchMatches;
-    /*@var stdClass The listed messages */
-    private $listed_messages;
-    
-    private $preferences;
 }
 ?>
