@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/15/2017 Updated documentation.
   * 11/28/2017 Class created.
  */
 namespace cascade_ws_asset;
@@ -17,15 +18,7 @@ use cascade_ws_exception as e;
 <documentation><description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>The <code>ContainedAsset</code> class is an abstract sub-class of <code>Asset</code> and the superclass of all asset classes except the following three classes:</p>
-<ul>
-<li><code>Group</code></li>
-<li><code>Role</code></li>
-<li><code>User</code></li>
-</ul>
-<p>These three classes do not have parent containers. Note that although <code>Site</code> is a sub-class of <code>ScheduledPublishing</code>,
-which is a sub-class of <code>ContainedAsset</code>, and hence inherits all methods defined in <code>ContainedAsset</code>, a site does not have a parent container.
-Calling any method defined in <code>ContainedAsset</code> on a <code>Site</code> object will cause an exception to be thrown from <code>ContainedAsset</code>.</p>
+<p>The <code>FolderContainedAsset</code> class is an abstract sub-class of <code>ContainedAsset</code> and the superclass of all asset classes representing assets that can be found in folders.</p>
 <h2>WSDL</h2>";
 $doc_string .=
     $service->getXMLFragments( array(
@@ -35,7 +28,6 @@ $doc_string .=
 return $doc_string;
 ?>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/contained_asset.php">contained_asset.php</a></li></ul></postscript>
 </documentation>
 */
 abstract class FolderContainedAsset extends ContainedAsset
@@ -53,8 +45,8 @@ abstract class FolderContainedAsset extends ContainedAsset
     }
 
 /**
-<documentation><description><p>Returns the parent container or <code>NULL</code>.</p></description>
-<example>u\DebugUtility::dump( $bf->getParentContainer() );</example>
+<documentation><description><p>Returns the parent folder or <code>NULL</code>.</p></description>
+<example>u\DebugUtility::dump( $bf->getParentFolder() );</example>
 <return-type>mixed</return-type>
 <exception></exception>
 </documentation>
@@ -72,9 +64,9 @@ abstract class FolderContainedAsset extends ContainedAsset
     }
     
 /**
-<documentation><description><p>Returns <code>parentContainerId</code> or <code>parentFolderId</code>.</p></description>
-<example>echo $dd->getParentContainerId(), BR,
-     $dd->getParentContainerPath(), BR;</example>
+<documentation><description><p>Returns <code>getParentFolderId</code> or NULL.</p></description>
+<example>echo $dd->getParentFolderId(), BR,
+     $dd->getParentFolderPath(), BR;</example>
 <return-type>mixed</return-type>
 <exception>WrongAssetTypeException</exception>
 </documentation>
@@ -88,9 +80,9 @@ abstract class FolderContainedAsset extends ContainedAsset
     }
     
 /**
-<documentation><description><p>Returns <code>parentContainerPath</code> or <code>parentFolderPath</code>.</p></description>
-<example>echo $dd->getParentContainerId(), BR,
-     $dd->getParentContainerPath(), BR;</example>
+<documentation><description><p>Returns <code>parentFolderPath</code> or NULL.</p></description>
+<example>echo $dd->getParentFolderId(), BR,
+     $dd->getParentFoldPath(), BR;</example>
 <return-type>mixed</return-type>
 <exception>WrongAssetTypeException</exception>
 </documentation>
