@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/15/2017 Updated documentation.
   * 11/28/2017 Class created.
  */
 namespace cascade_ws_asset;
@@ -17,25 +18,19 @@ use cascade_ws_exception as e;
 <documentation><description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>The <code>ContainedAsset</code> class is an abstract sub-class of <code>Asset</code> and the superclass of all asset classes except the following three classes:</p>
-<ul>
-<li><code>Group</code></li>
-<li><code>Role</code></li>
-<li><code>User</code></li>
-</ul>
-<p>These three classes do not have parent containers. Note that although <code>Site</code> is a sub-class of <code>ScheduledPublishing</code>,
-which is a sub-class of <code>ContainedAsset</code>, and hence inherits all methods defined in <code>ContainedAsset</code>, a site does not have a parent container.
-Calling any method defined in <code>ContainedAsset</code> on a <code>Site</code> object will cause an exception to be thrown from <code>ContainedAsset</code>.</p>
+<p>The <code>DublinAwareAsset</code> class is an abstract sub-class of
+<code>FolderContainedAsset</code> and the superclass of all asset classes
+representing assets that can be associated with a metadata set.</p>
 <h2>WSDL</h2>";
 $doc_string .=
     $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "dublin-aware-asset" ),
         array( "getComplexTypeXMLByName" => "folder-contained-asset" ),
         array( "getComplexTypeXMLByName" => "containered-asset" ),
     ) );
 return $doc_string;
 ?>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/contained_asset.php">contained_asset.php</a></li></ul></postscript>
 </documentation>
 */
 abstract class DublinAwareAsset extends FolderContainedAsset
@@ -146,11 +141,10 @@ information must be retrieved through the associated content type object.</p></d
 */
     public function setReviewEvery( int $days=30 ) : Asset
     {
-    /*
     	if( $days != 0 && $days != 30 && $days != 90 && $days != 180 && $days != 365 )
     		throw new e\UnacceptableValueException( 
                 S_SPAN . "The value $days must be 0, 30, 90, 180, or 365." . E_SPAN );
-    */
+
     	if( $days != 0 )
         	$this->getProperty()->reviewOnSchedule = true;
         $this->getProperty()->reviewEvery = $days;
