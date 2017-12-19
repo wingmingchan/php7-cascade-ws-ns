@@ -427,7 +427,6 @@ and returns the calling object.</p></description>
             $id = $service->createId( $types[ $i ], $id_string );
             $operation = new \stdClass();
             $read_op   = new \stdClass();
-    
             $read_op->identifier = $id;
             $operation->read     = $read_op;
             $operations[]        = $operation;

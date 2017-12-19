@@ -144,10 +144,10 @@ abstract class Asset
         }
         elseif( isset( $property->parentContainerPath ) )
         {
-        	if( $property->parentContainerPath == "/" )
-        		$this->path	= $this->getName();
-        	else
-        		$this->path	= $property->parentContainerPath . '/' . $this->getName();
+            if( $property->parentContainerPath == "/" )
+                $this->path    = $this->getName();
+            else
+                $this->path    = $property->parentContainerPath . '/' . $this->getName();
         }
         
         if( !isset( $this->identifier->path ) )

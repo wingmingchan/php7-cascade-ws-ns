@@ -79,7 +79,7 @@ $doc_string = "
 <li>readWorkflowInformation</li>
 <li>readWorkflowSettings</li>
 <li>search</li>
-<li>sendMessage</li>
+<li>sendMessage (deprecated)</li>
 <li>siteCopy</li>
 </ul><p>All 28 operations have been encapsulated in this class. The general format of a method encapsulating an operation is the following:</p>
 <ol>
@@ -1135,6 +1135,17 @@ return $doc_string;
     }
 
 /**
+<documentation><description><p>Returns <code>true</code>.</p></description>
+<example>if( $service->isHexString( $id ) )
+    echo $service->getType( $id ), BR;</example>
+<return-type>bool</return-type></documentation>
+*/
+    public function isSoap() : bool
+    {
+        return true;
+    }
+
+/**
 <documentation><description><p>Returns true if an operation is successful.</p></description>
 <example>$service->readPreferences();
 if( $service->isSuccessful() )
@@ -1677,7 +1688,7 @@ return $doc_string;
 /**
 <documentation><description>
 <?php global $eval, $service;
-$doc_string = "<p>Sends a message.</p><p>sendMessage:</p><pre>";
+$doc_string = "<p>Sends a message. Note that this operation is deprecated.</p><p>sendMessage:</p><pre>";
 $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("sendMessage"));
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("sendMessageResponse"));

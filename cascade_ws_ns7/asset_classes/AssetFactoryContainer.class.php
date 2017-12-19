@@ -80,7 +80,7 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/asset_factory_container.php">asset_factory_container.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
+<pre>{
   "assetFactoryContainer":{
     "applicableGroups":"22q",
     "children":[
@@ -103,8 +103,7 @@ return $doc_string;
     "siteId":"1f2172088b7ffe834c5fe91e9596d028",
     "siteName":"cascade-admin-webapp",
     "name":"Upload",
-    "id":"1f217d838b7ffe834c5fe91e9832f910"}},
-  "success":true
+    "id":"1f217d838b7ffe834c5fe91e9832f910"}
 }
 </pre>
 </postscript>

@@ -4,6 +4,8 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/19/2017 Added throwException with asset id and path information in messages,
+  and added calls to throwException in setX methods.
   * 8/1/2017 Added getBlock.
   * 7/18/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -1720,7 +1722,7 @@ qualified identifiers of nodes where the pattern is found. Inside the method <co
         a\DataBlock::TYPE, "1f21e3268b7ffe834c5fe91e2e0a7b2d" ) )->
     getHostAsset()->edit();</example>
 <return-type>Property</return-type>
-<exception></exception>
+<exception>NodeException, EmptyValueException</exception>
 </documentation>
 */
     public function setBlock( string $node_name, a\Block $block=NULL ) : Property
@@ -1728,9 +1730,16 @@ qualified identifiers of nodes where the pattern is found. Inside the method <co
         if( self::DEBUG ) { u\DebugUtility::dump( $block ); }
         if( self::DEBUG ) { u\DebugUtility::out( $node_name ); }
         
-        if( isset( $this->node_map[ $node_name ] ) )
-            $this->node_map[ $node_name ]->setBlock( $block );
-        return $this;
+        try
+        {
+            if( isset( $this->node_map[ $node_name ] ) )
+                $this->node_map[ $node_name ]->setBlock( $block );
+            return $this;
+        }
+        catch( \Exception $e )
+        {
+            $this->throwException( $e );
+        }
     }
     
 /**
@@ -1763,14 +1772,21 @@ qualified identifiers of nodes where the pattern is found. Inside the method <co
     getHostAsset()->edit();
 </example>
 <return-type>Property</return-type>
-<exception></exception>
+<exception>NodeException, EmptyValueException</exception>
 </documentation>
 */
     public function setFile( string $node_name, a\File $file=NULL ) : Property
     {
-        if( isset( $this->node_map[ $node_name ] ) )
-            $this->node_map[ $node_name ]->setFile( $file );
-        return $this;
+        try
+        {
+            if( isset( $this->node_map[ $node_name ] ) )
+                $this->node_map[ $node_name ]->setFile( $file );
+            return $this;
+        }
+        catch( \Exception $e )
+        {
+            $this->throwException( $e );
+        }
     }
     
 /**
@@ -1787,14 +1803,21 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
     getHostAsset()->edit();
 </example>
 <return-type>Property</return-type>
-<exception></exception>
+<exception>NodeException, EmptyValueException</exception>
 </documentation>
 */
     public function setLinkable( string $node_name, a\Linkable $linkable=NULL ) : Property
     {
-        if( isset( $this->node_map[ $node_name ] ) )
-            $this->node_map[ $node_name ]->setLinkable( $linkable );
-        return $this;
+        try
+        {
+            if( isset( $this->node_map[ $node_name ] ) )
+                $this->node_map[ $node_name ]->setLinkable( $linkable );
+            return $this;
+        }
+        catch( \Exception $e )
+        {
+            $this->throwException( $e );
+        }
     }
     
 /**
@@ -1810,14 +1833,21 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
     getHostAsset()->edit();
 </example>
 <return-type>Property</return-type>
-<exception></exception>
+<exception>NodeException, EmptyValueException</exception>
 </documentation>
 */
     public function setPage( string $node_name, a\Page $page=NULL ) : Property
     {
-        if( isset( $this->node_map[ $node_name ] ) )
-            $this->node_map[ $node_name ]->setPage( $page );
-        return $this;
+        try
+        {
+            if( isset( $this->node_map[ $node_name ] ) )
+                $this->node_map[ $node_name ]->setPage( $page );
+            return $this;
+        }
+        catch( \Exception $e )
+        {
+            $this->throwException( $e );
+        }
     }
     
 /**
@@ -1833,14 +1863,21 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
     getHostAsset()->edit();
 </example>
 <return-type>Property</return-type>
-<exception></exception>
+<exception>NodeException, EmptyValueException</exception>
 </documentation>
 */
     public function setSymlink( string $node_name, a\Symlink $symlink=NULL ) : Property
     {
-        if( isset( $this->node_map[ $node_name ] ) )
-            $this->node_map[ $node_name ]->setSymlink( $symlink );
-        return $this;
+        try
+        {
+            if( isset( $this->node_map[ $node_name ] ) )
+                $this->node_map[ $node_name ]->setSymlink( $symlink );
+            return $this;
+        }
+        catch( \Exception $e )
+        {
+            $this->throwException( $e );
+        }
     }
     
 /**
@@ -1848,14 +1885,21 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
 <example>$sd->setText( "group;text-box", "Some new text" )->
     getHostAsset()->edit();</example>
 <return-type>Property</return-type>
-<exception></exception>
+<exception>NodeException, EmptyValueException, NoSuchValueException, UnacceptableValueException</exception>
 </documentation>
 */
     public function setText( string $node_name, string $text=NULL ) : Property
     {
-        if( isset( $this->node_map[ $node_name ] ) )
-            $this->node_map[ $node_name ]->setText( $text );
-        return $this;
+        try
+        {
+            if( isset( $this->node_map[ $node_name ] ) )
+                $this->node_map[ $node_name ]->setText( $text );
+            return $this;
+        }
+        catch( \Exception $e )
+        {
+            $this->throwException( $e );
+        }
     }
     
 /**
@@ -2184,6 +2228,11 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
                 // do nothing to skip deleted blocks
             }
         }
+    }
+    
+    private function throwException( $e )
+    {
+    	u\DebugUtility::throwException( $this->getHostAsset(), $e );
     }
 
     private $definition_id;

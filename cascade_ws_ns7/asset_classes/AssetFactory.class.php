@@ -22,15 +22,15 @@
 /**
  * An AssetFactory object represents an asset factory asset
  *
- * @link http://www.upstate.edu/web-services/api/asset-classes/  asset-factory.php
+ * @link http://www.upstate.edu/web-services/api/asset-classes/asset-factory.php
  */
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation><description>
@@ -111,7 +111,7 @@ return $doc_string;
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/asset_factory.php">asset_factory.php</a></li></ul>
 <h2>JSON Dump</h2>
 <pre>
-{ "asset":{
+{ 
   "assetFactory":{
     "applicableGroups":"SUNY Upstate-testers",
     "assetType":"page",
@@ -133,8 +133,7 @@ return $doc_string;
     "siteId":"9c8883d07f00000140b4daea7170b336",
     "siteName":"POPs",
     "name":"New Page",
-    "id":"c45e55597f0000014d70316542bae384" } },
-  "success":true
+    "id":"c45e55597f0000014d70316542bae384" }
 }
 </pre>
 </postscript>

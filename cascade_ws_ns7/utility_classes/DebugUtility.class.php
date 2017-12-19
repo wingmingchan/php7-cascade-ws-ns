@@ -13,6 +13,9 @@
  */
 namespace cascade_ws_utility; 
 
+use cascade_ws_asset     as a;
+use cascade_ws_exception as e;
+
 /**
 <documentation><description><h2>Introduction</h2>
 <p>This class can be used to output a string or any object, with additional information on the source of the method call.</p>
@@ -112,6 +115,33 @@ u\DebugUtility::outputDuration( $start_time );</example>
         set_time_limit ( 10000 );
         // to prevent using up memory when traversing a large site
         ini_set( 'memory_limit', $space_limit );
+    }
+    
+/**
+<documentation><description><p>Creates a new message from an exception and rethrows it. 
+The new message includes asset information.</p></description>
+<example>u\DebugUtility::throwException( $page, $e );</example>
+<return-type>void</return-type>
+<exception>Exceptions of all kinds</exception>
+</documentation>
+*/
+    public static function throwException( a\Asset $a, $e )
+    {
+        $msg = "Asset ID: " .   $a->getId() . "; " .
+               "site name: " .  $a->getSiteName() . "; " .
+               "asset path: " . $a->getPath() . BR .
+            $e->getMessage();
+        
+        if( $e instanceof e\EmptyValueException )
+            throw new e\EmptyValueException( $msg );
+        elseif( $e instanceof e\NoSuchValueException )
+            throw new e\NoSuchValueException( $msg );
+        elseif( $e instanceof e\UnacceptableValueException )
+            throw new e\UnacceptableValueException( $msg );
+        elseif( $e instanceof e\NodeException )
+            throw new e\NodeException( $msg );
+        else
+            throw $e;
     }
 
     private static function getCallingInfo( &$class, &$line ) 

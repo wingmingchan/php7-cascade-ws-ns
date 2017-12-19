@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/5/2017 Added more tests to constructor.
   * 9/8/2017 Fixed a bug in the initialization.
   * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -111,22 +112,33 @@ class Metadata extends Property
     {
         if( isset( $obj ) )
         {
-            $this->author                 = $obj->author;
-            $this->display_name           = $obj->displayName;
-            $this->end_date               = $obj->endDate;
-            $this->keywords               = $obj->keywords;
-            $this->meta_description       = $obj->metaDescription;
-            $this->review_date            = $obj->reviewDate;
-            $this->start_date             = $obj->startDate;
-            $this->summary                = $obj->summary;
-            $this->teaser                 = $obj->teaser;
-            $this->title                  = $obj->title;
+        	if( isset( $obj->author ) )
+            	$this->author                 = $obj->author;
+        	if( isset( $obj->displayName ) )
+				$this->display_name           = $obj->displayName;
+        	if( isset( $obj->endDate ) )
+				$this->end_date               = $obj->endDate;
+        	if( isset( $obj->keywords ) )
+				$this->keywords               = $obj->keywords;
+        	if( isset( $obj->metaDescription ) )
+				$this->meta_description       = $obj->metaDescription;
+        	if( isset( $obj->reviewDate ) )
+				$this->review_date            = $obj->reviewDate;
+        	if( isset( $obj->startDate ) )
+				$this->start_date             = $obj->startDate;
+        	if( isset( $obj->summary ) )
+				$this->summary                = $obj->summary;
+        	if( isset( $obj->teaser ) )
+				$this->teaser                 = $obj->teaser;
+        	if( isset( $obj->title ) )
+				$this->title                  = $obj->title;
             $this->service                = $service;
             $this->metadata_set           = NULL;
             $this->metadata_set_id        = $metadata_set_id;
         	$this->dynamic_field_names    = array();
         	
-            if( isset( $obj->dynamicFields ) ) // could be NULL
+            if( isset( $obj->dynamicFields ) &&
+            	isset( $obj->dynamicFields->dynamicField ) ) // could be NULL
             {
                 $this->processDynamicFields( $obj->dynamicFields->dynamicField );
             }
@@ -999,7 +1011,10 @@ The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</
         $obj->teaser               = $this->teaser;
         $obj->title                = $this->title;
 
-        $count = count( $this->dynamic_fields );
+        $count = 0;
+        
+        if( isset( $this->dynamic_fields ) )
+            $count = count( $this->dynamic_fields );
         
         if( $count == 0 )
         {
