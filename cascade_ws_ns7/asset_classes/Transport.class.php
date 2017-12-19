@@ -19,7 +19,7 @@ use cascade_ws_property  as p;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>The <code>Transport</code> class is the superclass of <a href=\"/web-services/api/asset-classes/database-transport.php\"><code>DatabaseTransport</code></a>, <a href=\"/web-services/api/asset-classes/file-system-transport.php\"><code>FileSystemTransport</code></a>, and <a href=\"/web-services/api/asset-classes/ftp-transport.php\"><code>FtpTransport</code></a>. It is an abstract class and defines all shared methods of its sub-classes.</p><h2>WSDL</h2>";
+<p>The <code>Transport</code> class is the superclass of <a href=\"http://www.upstate.edu/web-services/api/asset-classes/database-transport.php\"><code>DatabaseTransport</code></a>, <a href=\"http://www.upstate.edu/web-services/api/asset-classes/file-system-transport.php\"><code>FileSystemTransport</code></a>, and <a href=\"http://www.upstate.edu/web-services/api/asset-classes/ftp-transport.php\"><code>FtpTransport</code></a>. It is an abstract class and defines all shared methods of its sub-classes.</p><h2>WSDL</h2>";
 $doc_string .=
     $service->getXMLFragments( array(
         array( "getSimpleTypeXMLByName"  => "authMode" ),

@@ -20,7 +20,7 @@ use cascade_ws_asset     as a;
 <documentation><description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>Path</code> object represents a <code>path</code> (the parent) property found in a <a href=\"/web-services/api/property-classes/child.php\"><code>Child</code></a> object inside a <a href=\"/web-services/api/asset-classes/folder.php\"><code>a\Folder</code></a> object.</p>
+<p>A <code>Path</code> object represents a <code>path</code> (the parent) property found in a <a href=\"http://www.upstate.edu/web-services/api/property-classes/child.php\"><code>Child</code></a> object inside a <a href=\"http://www.upstate.edu/web-services/api/asset-classes/folder.php\"><code>a\Folder</code></a> object.</p>
 <h2>Structure of <code>path</code></h2>
 <pre>path
   path

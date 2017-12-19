@@ -19,7 +19,7 @@ use cascade_ws_asset     as a;
 <documentation><description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>PublishableAssetIdentifier</code> object represents a <code>publishableAssetIdentifier</code> property found in a <a href=\"/web-services/api/asset-classes/publish-set.php\"><code>a\PublishSet</code></a> object. It is used to identify publishable assets of type page, file, and folder.</p>
+<p>A <code>PublishableAssetIdentifier</code> object represents a <code>publishableAssetIdentifier</code> property found in a <a href=\"http://www.upstate.edu/web-services/api/asset-classes/publish-set.php\"><code>a\PublishSet</code></a> object. It is used to identify publishable assets of type page, file, and folder.</p>
 <h2>Structure of <code>publishableAssetIdentifier</code></h2>
 <pre>publishableAssetIdentifier (NULL, object or array)
   id

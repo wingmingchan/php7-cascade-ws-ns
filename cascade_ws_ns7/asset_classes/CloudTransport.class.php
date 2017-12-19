@@ -19,7 +19,7 @@ use cascade_ws_property  as p;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>CloudTransport</code> object represents a cloud transport asset. This class is a sub-class of <a href=\"/web-services/api/asset-classes/transport.php\"><code>Transport</code></a>.</p>
+<p>A <code>CloudTransport</code> object represents a cloud transport asset. This class is a sub-class of <a href=\"http://www.upstate.edu/web-services/api/asset-classes/transport.php\"><code>Transport</code></a>.</p>
 <h2>Structure of <code>cloudTransport</code></h2>
 <pre>cloudTransport
   id

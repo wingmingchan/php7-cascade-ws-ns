@@ -19,7 +19,7 @@ use cascade_ws_exception as e;
 <documentation><description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p><code>ConnectorContentTypeLinkParameter</code> is an empty sub-class of <a href=\"/web-services/api/property-classes/parameter.php\"><code>Parameter</code></a> used by <a href=\"/web-services/api/asset-classes/wordpress-connector.php\"><code>WordPressConnector</code></a>.</p>
+<p><code>ConnectorContentTypeLinkParameter</code> is an empty sub-class of <a href=\"http://www.upstate.edu/web-services/api/property-classes/parameter.php\"><code>Parameter</code></a> used by <a href=\"http://www.upstate.edu/web-services/api/asset-classes/wordpress-connector.php\"><code>WordPressConnector</code></a>.</p>
 <h2>WSDL</h2>";
 $doc_string .=
     $service->getXMLFragments( array(

@@ -21,7 +21,7 @@ use cascade_ws_asset     as a;
 <documentation><description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>Plugin</code> object represents a <code>plugin</code> property found in an <a href=\"/web-services/api/asset-classes/asset-factory.php\"><code>a\AssetFactory</code></a> object.</p>
+<p>A <code>Plugin</code> object represents a <code>plugin</code> property found in an <a href=\"http://www.upstate.edu/web-services/api/asset-classes/asset-factory.php\"><code>a\AssetFactory</code></a> object.</p>
 <h2>Structure of <code>plugin</code></h2>
 <pre>plugin
   name

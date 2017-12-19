@@ -24,7 +24,7 @@ use cascade_ws_exception as e;
 <documentation><description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>DynamicMetadataFieldDefinition</code> object represents a <code>dynamicMetadataFieldDefinition</code> property found in a <a href=\"/web-services/api/asset-classes/metadata-set.php\"><code>a\MetadataSet</code></a> object. It can contain <a href=\"/web-services/api/property-classes/possible-value.php\"><code>PossibleValue</code></a> objects.</p>
+<p>A <code>DynamicMetadataFieldDefinition</code> object represents a <code>dynamicMetadataFieldDefinition</code> property found in a <a href=\"http://www.upstate.edu/web-services/api/asset-classes/metadata-set.php\"><code>a\MetadataSet</code></a> object. It can contain <a href=\"http://www.upstate.edu/web-services/api/property-classes/possible-value.php\"><code>PossibleValue</code></a> objects.</p>
 <h2>Structure of <code>dynamicMetadataFieldDefinition</code></h2>
 <pre>dynamicMetadataFieldDefinition (stdClass or array of stdClass)
   name

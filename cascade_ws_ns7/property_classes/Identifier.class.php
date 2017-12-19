@@ -18,7 +18,7 @@ use cascade_ws_exception as e;
 <documentation><description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>The <code>Identifier</code> class is an empty sub-class of <a href=\"/web-services/api/property-classes/child.php\"><code>Child</code></a>.</p>";
+<p>The <code>Identifier</code> class is an empty sub-class of <a href=\"http://www.upstate.edu/web-services/api/property-classes/child.php\"><code>Child</code></a>.</p>";
 $doc_string .=
     $service->getXMLFragments( array(
         array( "getComplexTypeXMLByName" => "container-children" ),

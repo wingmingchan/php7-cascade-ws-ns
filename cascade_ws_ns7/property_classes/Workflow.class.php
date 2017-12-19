@@ -23,7 +23,7 @@ use cascade_ws_asset     as a;
 <documentation><description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>Workflow</code> object represents a workflow instance. It contains <a href=\"/web-services/api/property-classes/step.php\"><code>Step</code></a> objects, which in turn contain <a href=\"/web-services/api/property-classes/action.php\"><code>Action</code></a> objects. All properties in this class are read-only. There are no <code>set</code> methods implemented.</p>
+<p>A <code>Workflow</code> object represents a workflow instance. It contains <a href=\"http://www.upstate.edu/web-services/api/property-classes/step.php\"><code>Step</code></a> objects, which in turn contain <a href=\"http://www.upstate.edu/web-services/api/property-classes/action.php\"><code>Action</code></a> objects. All properties in this class are read-only. There are no <code>set</code> methods implemented.</p>
 <p>A <code>workflow</code> object can be obtained by calling the <code>getWorkflow</code> method through an <code>Asset</code> object (e.g., a <code>Page</code> object).</p>
 <h2>Structure of <code>workflow</code></h2>
 <pre>workflow

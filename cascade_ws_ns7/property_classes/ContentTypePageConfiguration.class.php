@@ -20,7 +20,7 @@ use cascade_ws_asset     as a;
 <documentation><description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>ContentTypePageConfiguration</code> object represents a <code>contentTypePageConfiguration</code> property found in a <a href=\"/web-services/api/asset-classes/content-type.php\"><code>ContentType</code></a> object.</p>
+<p>A <code>ContentTypePageConfiguration</code> object represents a <code>contentTypePageConfiguration</code> property found in a <a href=\"http://www.upstate.edu/web-services/api/asset-classes/content-type.php\"><code>ContentType</code></a> object.</p>
 <h2>Structure of <code>ContentTypePageConfiguration</code></h2>
 <pre>ContentTypePageConfiguration
   pageConfigurationId

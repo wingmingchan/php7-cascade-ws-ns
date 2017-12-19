@@ -20,7 +20,7 @@ use cascade_ws_asset     as a;
 <documentation><description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>An <code>InlineEditableField</code> object represents an <code>inlineEditableField</code> property that can be found in a <a href=\"/web-services/api/asset-classes/content-type.php\"><code>a\ContentType</code></a> object.</p>
+<p>An <code>InlineEditableField</code> object represents an <code>inlineEditableField</code> property that can be found in a <a href=\"http://www.upstate.edu/web-services/api/asset-classes/content-type.php\"><code>a\ContentType</code></a> object.</p>
 <h2>Structure of <code>inlineEditableField</code></h2>
 <pre>inlineEditableField
   pageConfigurationName

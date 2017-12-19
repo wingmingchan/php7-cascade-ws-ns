@@ -24,7 +24,7 @@ use cascade_ws_property  as p;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>An <code>XmlBlock</code> object represents an an xml block asset. This class is a sub-class of <a href=\"/web-services/api/asset-classes/block.php\"><code>Block</code></a>.</p>
+<p>An <code>XmlBlock</code> object represents an an xml block asset. This class is a sub-class of <a href=\"http://www.upstate.edu/web-services/api/asset-classes/block.php\"><code>Block</code></a>.</p>
 <h2>Structure of <code>xmlBlock</code></h2>
 <pre>SOAP:
 xmlBlock

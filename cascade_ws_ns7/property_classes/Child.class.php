@@ -26,7 +26,7 @@ use cascade_ws_exception as e;
 <documentation><description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>Child</code> object represents a <code>child</code> property found in a <a href=\"/web-services/api/asset-classes/container.php\"><code>Container</code></a> object. <a href=\"/web-services/api/property-classes/identifier.php\"><code>Identifier</code></a> is an empty sub-class (i.e., class alias) of <code>Child</code>.</p>
+<p>A <code>Child</code> object represents a <code>child</code> property found in a <a href=\"http://www.upstate.edu/web-services/api/asset-classes/container.php\"><code>Container</code></a> object. <a href=\"http://www.upstate.edu/web-services/api/property-classes/identifier.php\"><code>Identifier</code></a> is an empty sub-class (i.e., class alias) of <code>Child</code>.</p>
 <h2>Structure of <code>child</code></h2>
 <pre>child
   id
