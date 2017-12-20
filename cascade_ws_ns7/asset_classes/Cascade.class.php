@@ -426,13 +426,14 @@ an empty string must be passed in as the third argument if there is a fourth arg
     
 /**
 <documentation><description><p>Copies the site, create a new site,
-and returns <code>$cascade</code>. By default this function will wait up 1 hour (3600 seconds) for Cascade's copy process to finish creating the site before throwing an exception. If it finishes early then it will return <code>$cascade</code>. It is not You can set <code>$max_wait_seconds</code> to a different number if you would like; too low and you will always get an exception but in theory you cannot set it too high.</p></description>
+and returns the newly created site object. By default this function will wait up 1 hour (3600 seconds) for Cascade's copy process to finish creating the site before throwing an exception. If it finishes early then it will return <code>$cascade</code>. It is not You can set <code>$max_wait_seconds</code> to a different number if you would like; too low and you will always get an exception but in theory you cannot set it too high.</p></description>
 <example>$cascade->copySite( $seed, 'test', 1 ); // This will likely throw an exception because Cascade's copy process almost never finishes this quickly</example>
-<return-type>Cascade</return-type>
+<return-type>Asset</return-type>
 <exception>UnacceptableValueException, SiteCreationFailureException</exception>
 </documentation>
 */
-    public function copySite( Site $s, string $new_name, int $max_wait_seconds=3600 ) : Cascade
+    public function copySite(
+        Site $s, string $new_name, int $max_wait_seconds=3600 ) : Asset
     {
         if( !is_numeric( $max_wait_seconds ) || !$max_wait_seconds > 0 )
             throw new e\UnacceptableValueException( 
@@ -458,11 +459,10 @@ and returns <code>$cascade</code>. By default this function will wait up 1 hour 
                     $this->getSites( true );
                     
                     // Try to get the new site
-                    $this->getSite( $new_name );
+                    $site = $this->getSite( $new_name );
                     
                     // This will only execute if $this->getSite( $new_name ) does not throw an exception 
-                    return $this;
-                    
+                    return $site;
                 }
                 catch( e\NoSuchSiteException $nsse )
                 {
