@@ -16,7 +16,7 @@ use cascade_ws_asset     as a;
 
 /**
 <documentation><description><h2>Introduction</h2>
-<p>A <code>TriggerDefinition</code> object represents a trigger definition, an XML element in a <a href="/web-services/api/asset-classes/workflow-definition.php"><code>a\WorkflowDefinition</code></a> object. This class is not a sub-class of <code>Property</code> and does not implement the <code>toStdClass</code> method. Instead, it provides a <code>toXml</code> method, which converts the data of the object back to an XML string.</p>
+<p>A <code>TriggerDefinition</code> object represents a trigger definition, an XML element in a <a href="http://www.upstate.edu/web-services/api/asset-classes/workflow-definition.php"><code>a\WorkflowDefinition</code></a> object. This class is not a sub-class of <code>Property</code> and does not implement the <code>toStdClass</code> method. Instead, it provides a <code>toXml</code> method, which converts the data of the object back to an XML string.</p>
 <p>A trigger element can be a child of the triggers element, or it can be a child of an action element. This class can represent both. When a trigger element appears in the triggers element, it will have a class attribute. If it is a child of an action element, then it has no class attribute. But it can have parameter children.</p>
 </description>
 <postscript></postscript>

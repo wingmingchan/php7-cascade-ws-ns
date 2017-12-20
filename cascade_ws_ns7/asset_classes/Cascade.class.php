@@ -1,9 +1,11 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>, German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/20/2017 Added $force_list_refresh to getSites() so that copySite() can properly function
+  * 12/20/2017 Updated copySite() to continuously scan for the creation of a site
   * 10/20/2017 Fixed a bug in deleteAsset.
   * 9/28/2017 Added createCloudTransport.
   * 9/8/2017 Fixed a bug in createFile.
@@ -424,25 +426,51 @@ an empty string must be passed in as the third argument if there is a fourth arg
     
 /**
 <documentation><description><p>Copies the site, create a new site,
-and returns <code>$cascade</code>. Set <code>$seconds</code> to a large enough positive integer so that the copying process can finish.</p></description>
-<example>$cascade->copySite( $seed, 'test', 50 );</example>
+and returns <code>$cascade</code>. By default this function will wait up 1 hour (3600 seconds) for Cascade's copy process to finish creating the site before throwing an exception. If it finishes early then it will return <code>$cascade</code>. It is not You can set <code>$max_wait_seconds</code> to a different number if you would like; too low and you will always get an exception but in theory you cannot set it too high.</p></description>
+<example>$cascade->copySite( $seed, 'test', 1 ); // This will likely throw an exception because Cascade's copy process almost never finishes this quickly</example>
 <return-type>Cascade</return-type>
 <exception>UnacceptableValueException, SiteCreationFailureException</exception>
 </documentation>
 */
-    public function copySite( Site $s, string $new_name, int $seconds=10 ) : Cascade
+    public function copySite( Site $s, string $new_name, int $max_wait_seconds=3600 ) : Cascade
     {
-        if( !is_numeric( $seconds ) || !$seconds > 0 )
+        if( !is_numeric( $max_wait_seconds ) || !$max_wait_seconds > 0 )
             throw new e\UnacceptableValueException( 
                 S_SPAN . c\M::UNACCEPTABLE_SECONDS. E_SPAN );
             
+        // Send a site copy request to Cascade
         $this->service->siteCopy( $s->getId(), $s->getName(), $new_name );
-        // wait until it is done
-        sleep( $seconds );
         
+        // If a queue entry was created for this site
+        // then try and wait until the site has been created
         if( $this->service->isSuccessful() )
         {
-            return $this;
+            // Start up a timer
+            $start = microtime( true );
+            
+            // Keep looping until we have exceeded $max_wait_seconds
+            while( ( microtime( true ) - $start ) < $max_wait_seconds )
+            {
+                try
+                {
+                    // *** IMPORTANT ***
+                    // Force the refresh of the cached sites list
+                    $this->getSites( true );
+                    
+                    // Try to get the new site
+                    $this->getSite( $new_name );
+                    
+                    // This will only execute if $this->getSite( $new_name ) does not throw an exception 
+                    return $this;
+                    
+                }
+                catch( e\NoSuchSiteException $nsse )
+                {
+                    // The new site is not ready yet
+                    // Wait one second before trying getSite() again
+                    sleep( 1 );
+                }
+            }
         }
         
         throw new e\SiteCreationFailureException( 
@@ -2904,9 +2932,9 @@ foreach( $sites as $site )
 <exception>Exception</exception>
 </documentation>
 */
-    public function getSites() : array
+    public function getSites( bool $force_list_refresh=false ) : array
     {
-        if( $this->sites == NULL )
+        if( $this->sites == NULL || $force_list_refresh === true )
         {
             $this->service->listSites();
             $this->name_site_map = array();
