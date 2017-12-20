@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>, German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/20/2017 Changed the return type of copySite.
   * 12/20/2017 Added $force_list_refresh to getSites() so that copySite() can properly function
   * 12/20/2017 Updated copySite() to continuously scan for the creation of a site
   * 10/20/2017 Fixed a bug in deleteAsset.
