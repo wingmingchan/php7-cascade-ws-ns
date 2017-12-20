@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>, German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/20/2017 Added call to getSites in createSite.
   * 12/20/2017 Changed the return type of copySite.
   * 12/20/2017 Added $force_list_refresh to getSites() so that copySite() can properly function
   * 12/20/2017 Updated copySite() to continuously scan for the creation of a site
@@ -1715,7 +1716,8 @@ either an existing index block of type "folder", or an index block newly created
         
         $site = $this->createAsset( $asset, Site::TYPE, $name );
         $site->setUrl( $url )->setRecycleBinExpiration( $recycle_bin_expiration )->edit();
-        
+        $this->getSites( true );
+
         return $site;
     }
     
