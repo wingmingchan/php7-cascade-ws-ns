@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/21/2017 Added getRoleAssignments.
   * 11/27/2017 Removed CSS properties and methods, added naming properties and methods.
   * 9/14/2017 Added getExtensionsToStrip and setExtensionsToStrip.
   * 6/29/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -586,6 +587,18 @@ class Site extends ScheduledPublishing
         return $this->getProperty()->recycleBinExpiration;
     }
     
+/**
+<documentation><description><p>Returns <code>roleAssignments</code>.</p></description>
+<example></example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getRoleAssignments()
+    {
+        return $this->role_assignments;
+    }
+
 /**
 <documentation><description><p>Returns an <code>AssetFactoryContainer</code> object
 representing the root asset factory container.</p></description>
