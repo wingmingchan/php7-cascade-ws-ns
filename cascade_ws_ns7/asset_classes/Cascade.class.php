@@ -4,6 +4,8 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>, German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/22/2017 Updated getAccessRights for REST.
+  * 12/21/2017 Added $service to constructor of AccessRightsInformation.
   * 12/20/2017 Added call to getSites in createSite.
   * 12/20/2017 Changed the return type of copySite.
   * 12/20/2017 Added $force_list_refresh to getSites() so that copySite() can properly function
@@ -2452,13 +2454,23 @@ u\DebugUtility::dump( $ari->toStdClass() );
         // to make sure the asset exists
         $this->getAsset( $type, $id_path, $site_name );
         
-        $this->service->readAccessRights(
-            $this->service->createId( $type, $id_path, $site_name ) );
+        if( $this->service->isSoap() )
+        	$this->service->readAccessRights(
+            	$this->service->createId( $type, $id_path, $site_name ) );
+        elseif( $this->service->isRest() )
+        	$ar = $this->service->readAccessRights(
+            	$this->service->createId( $type, $id_path, $site_name ) );
             
         if( $this->service->isSuccessful() )
         {
-            return new p\AccessRightsInformation(
-                $this->service->getReadAccessRightInformation() );
+        	if( $this->service->isSoap() )
+            	return new p\AccessRightsInformation(
+                	$this->service->getReadAccessRightInformation(), $this->service );
+            elseif( $this->service->isRest() )
+            {
+            	return new p\AccessRightsInformation(
+            		$ar->accessRightsInformation, $this->service );
+            }
         }
         else
         {
