@@ -4,6 +4,7 @@
   Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   MIT Licensed
   Modification history:
+   12/21/2017 Added isSoap and isRest.
    11/28/2017 Bugs fixed in publish and unpublish related to destinations.
    10/12/2017 Updated documentation.
    7/3/2017 Removed example from search.
@@ -1135,9 +1136,18 @@ return $doc_string;
     }
 
 /**
+<documentation><description><p>Returns <code>false</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $service->isRest() );</example>
+<return-type>bool</return-type></documentation>
+*/
+    public function isRest() : bool
+    {
+        return false;
+    }
+
+/**
 <documentation><description><p>Returns <code>true</code>.</p></description>
-<example>if( $service->isHexString( $id ) )
-    echo $service->getType( $id ), BR;</example>
+<example>echo u\StringUtility::boolToString( $service->isSoap() );</example>
 <return-type>bool</return-type></documentation>
 */
     public function isSoap() : bool
