@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/22/2017 Updated for REST.
   * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/28/2016 Added setAccessRights, denyAccessToAllGroups, denyAccessToAllUsers.
@@ -135,17 +136,26 @@ $ari = $cascade->getAccessRights(
         $data2=NULL, 
         $data3=NULL )
     {
-        if( isset( $ari ) )
-        {
-            $this->identifier  = new Identifier( $ari->identifier );
-            
-            if( isset( $ari->aclEntries ) && isset( $ari->aclEntries->aclEntry ) )
-            {
-                $this->processAclEntries( $ari->aclEntries->aclEntry );
-            }
-            
-            $this->all_level  = $ari->allLevel;
-        }
+    	if( is_null( $service ) )
+    		throw new e\NullServiceException( c\M::NULL_SERVICE );
+    		
+    	$this->service = $service;
+    	
+		if( isset( $ari ) )
+		{
+			$this->identifier  = new Identifier( $ari->identifier );
+		
+		
+			if( isset( $ari->aclEntries ) )
+			{
+				if( $this->service->isSoap() && isset( $ari->aclEntries->aclEntry ) )
+					$this->processAclEntries( $ari->aclEntries->aclEntry );
+				elseif( $this->service->isRest() )
+					$this->processAclEntries( $ari->aclEntries );
+			}
+		
+			$this->all_level  = $ari->allLevel;
+		}
     }
     
 /**
@@ -571,8 +581,13 @@ $cascade->setAccessRights( $ari, true );</example>
         }
         
         $obj->aclEntries           = new \stdClass();
-        $obj->aclEntries->aclEntry = $entry_array;
-        $obj->allLevel             = $this->all_level;
+        
+        if( $this->service->isSoap() )
+        	$obj->aclEntries->aclEntry = $entry_array;
+        else
+        	$obj->aclEntries = $entry_array;
+        	
+        $obj->allLevel = $this->all_level;
         
         return $obj;
     }
@@ -662,5 +677,6 @@ $cascade->setAccessRights( $ari, true );</example>
     private $identifier;
     private $acl_entries;
     private $all_level;
+    private $service;
 }
 ?>
