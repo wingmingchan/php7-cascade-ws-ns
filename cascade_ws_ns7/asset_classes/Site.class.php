@@ -588,13 +588,13 @@ class Site extends ScheduledPublishing
     }
     
 /**
-<documentation><description><p>Returns <code>roleAssignments</code>.</p></description>
+<documentation><description><p>Returns an array of <code>roleAssignment</code> objects or an empty array.</p></description>
 <example></example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getRoleAssignments()
+    public function getRoleAssignments() : array
     {
         return $this->role_assignments;
     }

@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/21/2017 Added the $service object to constructor and processStructuredDataNodes so that isSoap and isRest can be called. Changed toStdClass so that it works with REST.
   * 9/19/2017 Fixed a bug in processStructuredDataNodes.
   * 8/1/2017 Added getBlock.
   * 7/18/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -110,6 +111,9 @@ class StructuredDataNode extends Property
             $this->data_definition = $dd;
             $this->node_map        = array();
             
+            if( !isset( $this->service ) && !is_null( $service ) )
+                $this->service     = $service;
+            
             // attach parent identifier to current node identifier
             // note that parent_id ends with a semi-colon
             $this->identifier = $parent_id . $node->identifier;
@@ -181,16 +185,37 @@ class StructuredDataNode extends Property
             if( $this->type != c\T::GROUP ) // text or asset
             {
                 $this->structured_data_nodes = NULL;
-                $this->text         = $node->text;
-                $this->asset_type   = $node->assetType;
-                $this->block_id     = $node->blockId;
-                $this->block_path   = $node->blockPath;
-                $this->file_id      = $node->fileId;
-                $this->file_path    = $node->filePath;
-                $this->page_id      = $node->pageId;
-                $this->page_path    = $node->pagePath;
-                $this->symlink_id   = $node->symlinkId;
-                $this->symlink_path = $node->symlinkPath;
+                $this->text         = NULL;
+                $this->asset_type   = NULL;
+                $this->block_id     = NULL;
+                $this->block_path   = NULL;
+                $this->file_id      = NULL;
+                $this->file_path    = NULL;
+                $this->page_id      = NULL;
+                $this->page_path    = NULL;
+                $this->symlink_id   = NULL;
+                $this->symlink_path = NULL;
+                
+                if( isset( $node->text ) )
+                    $this->text         = $node->text;
+                if( isset( $node->assetType ) )
+                    $this->asset_type   = $node->assetType;
+                if( isset( $node->blockId ) )
+                    $this->block_id     = $node->blockId;
+                if( isset( $node->blockPath ) )
+                    $this->block_path   = $node->blockPath;
+                if( isset( $node->fileId ) )
+                    $this->file_id      = $node->fileId;
+                if( isset( $node->filePath ) )
+                    $this->file_path    = $node->filePath;
+                if( isset( $node->pageId ) )
+                    $this->page_id      = $node->pageId;
+                if( isset( $node->pagePath ) )
+                    $this->page_path    = $node->pagePath;
+                if( isset( $node->symlinkId ) )
+                    $this->symlink_id   = $node->symlinkId;
+                if( isset( $node->symlinkPath ) )
+                    $this->symlink_path = $node->symlinkPath;
                 $this->node_map     = array( $this->identifier => $this );
             }
             else // group
@@ -213,12 +238,22 @@ class StructuredDataNode extends Property
                 $cur_identifier .= self::DELIMITER;
                 
                 // recursively process the data
-                self::processStructuredDataNodes( 
-                    $cur_identifier, // the parent id
-                    $this->structured_data_nodes, // array to store children
-                    $node->structuredDataNodes->structuredDataNode, // stdClass
-                    $this->data_definition
-                );
+                if( $service->isSoap() )
+                    self::processStructuredDataNodes( 
+                        $cur_identifier, // the parent id
+                        $this->structured_data_nodes, // array to store children
+                        $node->structuredDataNodes->structuredDataNode, // stdClass
+                        $this->data_definition,
+                        $this->service
+                    );
+                elseif( $service->isRest() )
+                    self::processStructuredDataNodes( 
+                        $cur_identifier, // the parent id
+                        $this->structured_data_nodes, // array to store children
+                        $node->structuredDataNodes, // stdClass
+                        $this->data_definition,
+                        $this->service
+                    );
                 
                 // for easy look-up
                 $this->node_map[ $this->identifier ] = $this;
@@ -288,7 +323,8 @@ class StructuredDataNode extends Property
         if( self::DEBUG ) { u\DebugUtility::out( "Parent ID: " . $this->parent_id ); }
         
         $clone_obj = new StructuredDataNode( 
-            $this->toStdClass(), NULL, $this->data_definition, 0, $this->parent_id );
+            $this->toStdClass(), $this->service, $this->data_definition, 0, 
+            $this->parent_id );
             
         if( self::DEBUG ) { u\DebugUtility::dump( $clone_obj->toStdClass() ); }
         
@@ -1718,18 +1754,31 @@ class StructuredDataNode extends Property
             if( $node_count == 1 )
             {
                 $obj->structuredDataNodes = new \stdClass();
-                $obj->structuredDataNodes->structuredDataNode =
-                    $this->structured_data_nodes[0]->toStdClass();
+                
+                if( $this->service->isSoap() )
+                    $obj->structuredDataNodes->structuredDataNode =
+                        $this->structured_data_nodes[0]->toStdClass();
+                elseif( $this->service->isRest() )
+                    $obj->structuredDataNodes =
+                        array( $this->structured_data_nodes[0]->toStdClass() );
             }
             else
             {
                 $obj->structuredDataNodes = new \stdClass();
-                $obj->structuredDataNodes->structuredDataNode = array();
+                
+                if( $this->service->isSoap() )
+                    $obj->structuredDataNodes->structuredDataNode = array();
+                elseif( $this->service->isRest() )
+                    $obj->structuredDataNodes = array();
         
                 for( $i = 0; $i < $node_count; $i++ )
                 {
-                    $obj->structuredDataNodes->structuredDataNode[] = 
-                        $this->structured_data_nodes[$i]->toStdClass();
+                    if( $this->service->isSoap() )
+                        $obj->structuredDataNodes->structuredDataNode[] = 
+                            $this->structured_data_nodes[$i]->toStdClass();
+                    elseif( $this->service->isRest() )
+                        $obj->structuredDataNodes[] = 
+                            $this->structured_data_nodes[$i]->toStdClass();
                 }
             }
         }
@@ -1844,8 +1893,11 @@ class StructuredDataNode extends Property
 </documentation>
 */
     public static function processStructuredDataNodes( 
-        string $parent_id, array &$node_array,
-        $node_std, a\DataDefinition $data_definition=NULL )
+        string $parent_id, 
+        array &$node_array,
+        $node_std, 
+        a\DataDefinition $data_definition=NULL,
+        aohs\AssetOperationHandlerService $service=NULL )
     {
         if( self::DEBUG ) { u\DebugUtility::out( "Parent ID: " . $parent_id ); }
         
@@ -1915,14 +1967,13 @@ class StructuredDataNode extends Property
             if( $parent_id != '' )
             {
                 $n = new StructuredDataNode(
-                    $node_std[$i], NULL, $data_definition, $cur_index, $parent_id );
+                    $node_std[ $i ], $service, $data_definition, $cur_index, $parent_id );
             }
             else
             {
                 $n = new StructuredDataNode(
-                    $node_std[$i], NULL, $data_definition, $cur_index );
+                    $node_std[ $i ], $service, $data_definition, $cur_index );
             }
-            
             
             $n->parent_id = $parent_id;
             $node_array[ $i ] = $n;
@@ -1965,5 +2016,6 @@ class StructuredDataNode extends Property
     private $wysiwyg;   // whether this is a wysiwyg
     private $data_definition;
     private $node_map;
+    private $service;
 }
 ?>

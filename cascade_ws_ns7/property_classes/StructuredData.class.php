@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/21/2017 Added the $service object to constructor and pass it into processStructuredDataNodes so that isSoap and isRest can be called. Changed toStdClass so that it works with REST.
   * 12/19/2017 Added throwException with asset id and path information in messages,
   and added calls to throwException in setX methods.
   * 8/1/2017 Added getBlock.
@@ -112,20 +113,36 @@ class StructuredData extends Property
                 $service, $service->createId(
                     a\DataDefinition::TYPE, $this->definition_id ) );
             // turn structuredDataNode into an array
-            if( isset( $sd->structuredDataNodes->structuredDataNode ) && 
-                !is_array( $sd->structuredDataNodes->structuredDataNode ) )
+            if( $service->isSoap() )
             {
-                $child_nodes = array( $sd->structuredDataNodes->structuredDataNode );
+                if( isset( $sd->structuredDataNodes->structuredDataNode ) && 
+                    !is_array( $sd->structuredDataNodes->structuredDataNode ) )
+                {
+                    $child_nodes = array( $sd->structuredDataNodes->structuredDataNode );
+                }
+                elseif( isset( $sd->structuredDataNodes->structuredDataNode ) )
+                {
+                    $child_nodes = $sd->structuredDataNodes->structuredDataNode;
+                
+                    if( self::DEBUG ) { u\DebugUtility::out(
+                        "Number of nodes in std: " . count( $child_nodes ) ); }
+                }
             }
-            elseif( isset( $sd->structuredDataNodes->structuredDataNode ) )
+            elseif( $service->isRest() )
             {
-                $child_nodes = $sd->structuredDataNodes->structuredDataNode;
-                if( self::DEBUG ) { u\DebugUtility::out(
-                    "Number of nodes in std: " . count( $child_nodes ) ); }
+                if( isset( $sd->structuredDataNodes ) && 
+                    !is_array( $sd->structuredDataNodes ) )
+                {
+                    $child_nodes = array( $sd->structuredDataNodes );
+                }
+                elseif( isset( $sd->structuredDataNodes ) )
+                {
+                    $child_nodes = $sd->structuredDataNodes;
+                }
             }
             // convert stdClass to objects
             StructuredDataNode::processStructuredDataNodes( 
-                '', $this->children, $child_nodes, $this->data_definition );
+                '', $this->children, $child_nodes, $this->data_definition, $service );
         }
         
         $this->node_map    = $this->getIdentifierNodeMap();
@@ -240,10 +257,17 @@ same data.</p></description>
         }
         
         // update map and identifiers
-        StructuredDataNode::processStructuredDataNodes( 
-            '', $this->children, 
-            $this->toStdClass()->structuredDataNodes->structuredDataNode, 
-            $this->data_definition );
+        if( $this->service->isSoap() )
+            StructuredDataNode::processStructuredDataNodes( 
+                '', $this->children, 
+                $this->toStdClass()->structuredDataNodes->structuredDataNode, 
+                $this->data_definition, $this->service );
+        elseif( $this->service->isRest() )
+            StructuredDataNode::processStructuredDataNodes( 
+                '', $this->children, 
+                $this->toStdClass()->structuredDataNodes, 
+                $this->data_definition, $this->service );
+            
         $this->node_map    = $this->getIdentifierNodeMap();
         $this->identifiers = array_keys( $this->node_map );
         return $this;
@@ -1967,11 +1991,11 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
         
         // create new nodes
         $new_node1 = new StructuredDataNode( 
-            $node2_data, NULL, $this->data_definition, $node_pos1, $par_id .
-            structuredDataNode::DELIMITER );
+            $node2_data, $this->service, $this->data_definition, $node_pos1, 
+            $par_id . structuredDataNode::DELIMITER );
         $new_node2 = new StructuredDataNode( 
-            $node1_data, NULL, $this->data_definition, $node_pos2, $par_id .
-            structuredDataNode::DELIMITER );
+            $node1_data, $this->service, $this->data_definition, $node_pos2, 
+            $par_id . structuredDataNode::DELIMITER );
         
         // insert new nodes
         // must assign new nodes to the original arrays, not $siblings
@@ -2015,19 +2039,32 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
         
         if( $child_count == 1 )
         {
-            $obj->structuredDataNodes                     = new \stdClass();
-            $obj->structuredDataNodes->structuredDataNode =
-                $this->children[0]->toStdClass();
+            $obj->structuredDataNodes = new \stdClass();
+            
+            if( $this->service->isSoap() )
+                $obj->structuredDataNodes->structuredDataNode =
+                    $this->children[0]->toStdClass();
+            elseif( $this->service->isRest() )
+                $obj->structuredDataNodes =
+                    array( $this->children[0]->toStdClass() );
         }
         else
         {
-            $obj->structuredDataNodes                     = new \stdClass();
-            $obj->structuredDataNodes->structuredDataNode = array();
+            $obj->structuredDataNodes = new \stdClass();
+            
+            if( $this->service->isSoap() )
+                $obj->structuredDataNodes->structuredDataNode = array();
+            elseif( $this->service->isRest() )
+                $obj->structuredDataNodes = array();
             
             for( $i = 0; $i < $child_count; $i++ )
             {
-                $obj->structuredDataNodes->structuredDataNode[] =
-                    $this->children[$i]->toStdClass();
+                if( $this->service->isSoap() )
+                    $obj->structuredDataNodes->structuredDataNode[] =
+                        $this->children[$i]->toStdClass();
+                elseif( $this->service->isRest() )
+                    $obj->structuredDataNodes[] =
+                        $this->children[$i]->toStdClass();
             }
         }
         return $obj;
@@ -2232,7 +2269,7 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
     
     private function throwException( $e )
     {
-    	u\DebugUtility::throwException( $this->getHostAsset(), $e );
+        u\DebugUtility::throwException( $this->getHostAsset(), $e );
     }
 
     private $definition_id;

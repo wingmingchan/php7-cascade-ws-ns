@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/21/2017 Changed toStdClass so that it works with REST.
   * 12/5/2017 Added more tests to constructor.
   * 9/8/2017 Fixed a bug in the initialization.
   * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -106,7 +107,7 @@ class Metadata extends Property
     public function __construct( 
         \stdClass $obj=NULL, 
         aohs\AssetOperationHandlerService $service=NULL, 
-        $metadata_set_id=NULL, 
+        $metadata_set_id=NULL,
         $data2=NULL, 
         $data3=NULL )
     {
@@ -132,10 +133,10 @@ class Metadata extends Property
 				$this->teaser                 = $obj->teaser;
         	if( isset( $obj->title ) )
 				$this->title                  = $obj->title;
-            $this->service                = $service;
-            $this->metadata_set           = NULL;
-            $this->metadata_set_id        = $metadata_set_id;
-        	$this->dynamic_field_names    = array();
+            $this->service             = $service;
+            $this->metadata_set        = NULL;
+            $this->metadata_set_id     = $metadata_set_id;
+        	$this->dynamic_field_names = array();
         	
             if( isset( $obj->dynamicFields ) &&
             	isset( $obj->dynamicFields->dynamicField ) ) // could be NULL
@@ -1115,7 +1116,7 @@ string "NULL" will be used as the value.</p></description>
     
     private function processDynamicFields( $fields )
     {
-        $this->dynamic_fields      = array();
+        $this->dynamic_fields = array();
 
         if( !is_array( $fields ) )
         {
@@ -1124,7 +1125,7 @@ string "NULL" will be used as the value.</p></description>
         
         foreach( $fields as $field )
         {
-            $df = new DynamicField( $field );
+            $df = new DynamicField( $field, $this->service );
             $this->dynamic_fields[] = $df;
             $this->dynamic_field_names[] = $field->name;
         }

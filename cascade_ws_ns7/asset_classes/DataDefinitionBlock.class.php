@@ -377,6 +377,9 @@ method to edit the <code>structuredData</code> property.</p></description>
         if( isset( $this->structured_data ) )
         {
             $block->structuredData = $this->structured_data->toStdClass();
+            
+            u\DebugUtility::dump( $this->structured_data->toStdClass() );
+            
             $block->xhtml          = NULL;
         }
         else
