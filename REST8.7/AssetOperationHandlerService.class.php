@@ -1,7 +1,11 @@
 <?php
 namespace cascade_ws_AOHS;
 
-use cascade_ws_utility as u;
+use cascade_ws_constants as c;
+use cascade_ws_utility   as u;
+use cascade_ws_asset     as a;
+use cascade_ws_property  as p;
+use cascade_ws_exception as e;
 
 class AssetOperationHandlerService
 {
@@ -13,6 +17,11 @@ class AssetOperationHandlerService
     {
         $this->url    = $url;
         $this->auth   = $auth;
+        $this->message        = '';
+        $this->success        = '';
+        $this->createdAssetId = '';
+        $this->lastRequest    = '';
+        $this->lastResponse   = '';
         $this->reply = new \stdClass();
 
         try
@@ -30,29 +39,17 @@ class AssetOperationHandlerService
             throw new e\ServerException( S_SPAN . $e->getMessage() . E_SPAN );
         }
     }
-    
-    public function createId(
-        string $type, string $id_path, string $site_name = NULL ) : \stdClass
+/*    
+    function batch( array $operations ) : \stdClass
     {
-        $id = new \stdClass();
-        
-        if( $this->isHexString( $id_path ) )
-            $id->id = $id_path;
-        else
-        {
-            $id->path = new \stdClass();
-            $id->path->path     = $id_path;
-            $id->path->siteName = $site_name;
-        }
-        $id->type = $type;
-        return $id;
-    }
-    
-    public function getReply()
-    {
+        $command = $this->url . __function__ . $this->auth;
+        $params            = new \stdClass();
+        $params = array( 'operation' => $operations );
+        $this->reply = $this->apiOperation( $command, $params );
+        $this->success = $this->reply->success;
         return $this->reply;
     }
-    
+*/
     public function checkIn( \stdClass $identifier, string $comments="" ) : \stdClass
     {
         $id_string = $this->createIdString( $identifier );
@@ -103,6 +100,27 @@ class AssetOperationHandlerService
         return $this->reply;
     }
     
+    public function createId(
+        string $type, string $id_path, string $site_name = NULL ) : \stdClass
+    {
+        $id = new \stdClass();
+        
+        if( $this->isHexString( $id_path ) )
+            $id->id = $id_path;
+        else
+        {
+            $id->path = new \stdClass();
+            $id->path->path     = $id_path;
+            
+            if( $id_path == "/" )
+            	$id->path->path = "%252F"; // the root folder
+            	
+            $id->path->siteName = $site_name;
+        }
+        $id->type = $type;
+        return $id;
+    }
+    
     public function delete( \stdClass $identifier ) : \stdClass
     {
         return $this->performOperationWithIdentifier( __function__, $identifier );
@@ -123,10 +141,10 @@ class AssetOperationHandlerService
     }
     
     public function editAccessRights(
-        \stdClass $identifier, \stdClass $afInfo, 
+        \stdClass $afInfo, 
         bool $applyToChildren=false ) : \stdClass
     {
-        $id_string = $this->createIdString( $identifier );
+        $id_string = $this->createIdString( $afInfo->identifier );
         $command = $this->url . __function__ . '/' . $id_string . $this->auth;
         $params  = array( 
             'accessRightsInformation' => $afInfo, 
@@ -193,6 +211,48 @@ class AssetOperationHandlerService
         return $this->reply;
     }
     
+    public function getAsset( string $type, string $id_path, string $site_name=NULL ) : a\Asset
+    {
+        if( !in_array( $type, c\T::getTypeArray() ) )
+            throw new e\NoSuchTypeException( 
+                S_SPAN . "The type $type does not exist." . E_SPAN );
+            
+        $class_name = c\T::$type_class_name_map[ $type ]; // get class name
+        $class_name = a\Asset::NAME_SPACE . "\\" . $class_name;
+        
+        try
+        {
+            return new $class_name( // call constructor
+                $this, 
+                $this->createId( $type, $id_path, $site_name ) );
+        }
+        catch( \Exception $e )
+        {
+            if( self::DEBUG && self::DUMP ) { u\DebugUtility::out( $e->getMessage() ); }
+            throw $e;
+        }        
+    }
+
+    public function getAudits() : \stdClass
+    {
+        return $this->audits;
+    }
+
+    public function getReply() : \stdClass
+    {
+        return $this->reply;
+    }
+    
+    public function isRest() : bool
+    {
+        return true;
+    }
+
+    public function isSoap() : bool
+    {
+        return false;
+    }
+
     public function listEditorConfigurations( \stdClass $identifier ) : \stdClass
     {
         return $this->performOperationWithIdentifier( __function__, $identifier );
@@ -304,7 +364,7 @@ class AssetOperationHandlerService
     {
         return $this->performOperationWithIdentifier( __function__, $identifier );
     }
-    
+
     public function readAudits(
         \stdClass $identifier, \stdClass $auditParams=NULL ) : \stdClass
     {
@@ -318,6 +378,7 @@ class AssetOperationHandlerService
         }
         else
             $this->reply = $this->apiOperation( $command );
+        $this->audits  = $this->reply->audits;
         $this->success = $this->reply->success;
         return $this->reply;
     }
@@ -345,6 +406,16 @@ class AssetOperationHandlerService
         $this->success = $this->reply->success;
         return $this->reply;
     }
+    
+    public function sendMessage( \stdClass $message ) 
+    {
+        $command = $this->url . __function__ . $this->auth;
+        $params  = new \stdClass();
+        $params  = array( 'message' => $params );
+        $this->reply   = $this->apiOperation( $command, $params );
+        $this->success = $this->reply->success;
+        return $this->reply;
+    }    
     
     public function siteCopy(
         string $originalSiteId, string $originalSiteName, string $newSiteName ) :
@@ -392,6 +463,25 @@ class AssetOperationHandlerService
     {
         return $this->success;
     }
+    
+    public function retrieve( \stdClass $id )
+    {
+        $property = c\T::$type_property_name_map[ $id->type ];
+        $asset    = $this->read( $id );
+
+        if( isset( $this->reply->asset ) )
+            return $this->reply->asset->$property;
+        return NULL;
+    }
+    
+    public function getMessage()
+    {
+    	if( isset( $this->reply->message ) )
+    	{
+    		$this->message = $this->reply->message;
+    	}
+    	return $this->message;
+    }
 
     private function apiOperation( $command, $params=NULL ) : \stdClass
     {
@@ -438,7 +528,6 @@ class AssetOperationHandlerService
     	$authString = str_replace( "p=", "", $authString );
     	$authString = str_replace( "&", ":", $authString );
     	$authString = base64_encode( $authString );
-    	echo $authString;
     	return $authString;
     }
 
@@ -448,8 +537,123 @@ class AssetOperationHandlerService
     /*@var stdClass The authentication */
     private $auth;
     
+    // from the response
+    /*@var string The message of the response */
+    private $message;
+    /*@var string The string 'true' or 'false' */
     private $success;
+    /*@var string The id string of a created asset */
+    private $createdAssetId;
     /*@var stdClass The object returned from an operation */
     private $reply;
+    /*@var stdClass The audits object */
+    private $audits;
+    /*@var stdClass The searchMatches object */
+    private $searchMatches;
+    /*@var stdClass The listed editor configurations */
+    private $listed_editor_configurations;
+    /*@var stdClass The listed messages */
+    private $listed_messages;
+    
+    private $preferences;
+    
+    // 42 properties
+    // property array to generate methods
+    /*@var array The array of property names */
+    private $properties = array(
+        c\P::ASSETFACTORY,
+        c\P::ASSETFACTORYCONTAINER,
+        c\P::CONNECTORCONTAINER,
+        c\P::CONTENTTYPE,
+        c\P::CONTENTTYPECONTAINER,
+        c\P::DATADEFINITION,
+        c\P::DATADEFINITIONCONTAINER,
+        c\P::DATABASETRANSPORT,
+        c\P::DESTINATION,
+        c\P::FACEBOOKCONNECTOR,
+        c\P::FEEDBLOCK,
+        c\P::FILE,
+        c\P::FILESYSTEMTRANSPORT,
+        c\P::FOLDER,
+        c\P::FTPTRANSPORT,
+        c\P::GOOGLEANALYTICSCONNECTOR,
+        c\P::GROUP,
+        c\P::INDEXBLOCK,
+        c\P::METADATASET,
+        c\P::METADATASETCONTAINER,
+        c\P::PAGE,
+        c\P::PAGECONFIGURATIONSET,
+        c\P::PAGECONFIGURATIONSETCONTAINER,
+        c\P::PUBLISHSET,
+        c\P::PUBLISHSETCONTAINER,
+        c\P::REFERENCE,
+        c\P::ROLE,
+        c\P::SCRIPTFORMAT,
+        c\P::SITE,
+        c\P::SITEDESTINATIONCONTAINER,
+        c\P::SYMLINK,
+        c\P::TARGET,
+        c\P::TEMPLATE,
+        c\P::TEXTBLOCK,
+        c\P::TRANSPORTCONTAINER,
+        c\P::USER,
+        c\P::WORDPRESSCONNECTOR,
+        c\P::WORKFLOWDEFINITION,
+        c\P::WORKFLOWDEFINITIONCONTAINER,
+        c\P::XHTMLDATADEFINITIONBLOCK,
+        c\P::XMLBLOCK,
+        c\P::XSLTFORMAT
+    );
+    
+    // 46 types
+    /*@var array The array of types of assets */
+    private $types = array(
+        c\T::ASSETFACTORY,
+        c\T::ASSETFACTORYCONTAINER,
+        c\T::CONNECTORCONTAINER,
+        c\T::CONTENTTYPE,
+        c\T::CONTENTTYPECONTAINER,
+        c\T::DATADEFINITION,
+        c\T::DATADEFINITIONCONTAINER,
+        c\T::DESTINATION,
+        c\T::FACEBOOKCONNECTOR,
+        c\T::FEEDBLOCK,
+        c\T::FILE,
+        c\T::FOLDER,
+        c\T::GOOGLEANALYTICSCONNECTOR,
+        c\T::GROUP,
+        c\T::INDEXBLOCK,
+        c\T::MESSAGE,
+        c\T::METADATASET,
+        c\T::METADATASETCONTAINER,
+        c\T::PAGE,
+        c\T::PAGECONFIGURATION,
+        c\T::PAGECONFIGURATIONSET,
+        c\T::PAGECONFIGURATIONSETCONTAINER,
+        c\T::PAGEREGION,
+        c\T::PUBLISHSET,
+        c\T::PUBLISHSETCONTAINER,
+        c\T::REFERENCE,
+        c\T::ROLE,
+        c\T::SCRIPTFORMAT,
+        c\T::SITE,
+        c\T::SITEDESTINATIONCONTAINER,
+        c\T::SYMLINK,
+        c\T::TARGET,
+        c\T::TEMPLATE,
+        c\T::TEXTBLOCK,
+        c\T::TRANSPORTDB,
+        c\T::TRANSPORTFS,
+        c\T::TRANSPORTFTP,
+        c\T::TRANSPORTCONTAINER,
+        c\T::USER,
+        c\T::WORDPRESSCONNECTOR,
+        c\T::WORKFLOW,
+        c\T::WORKFLOWDEFINITION,
+        c\T::WORKFLOWDEFINITIONCONTAINER,
+        c\T::XHTMLDATADEFINITIONBLOCK,
+        c\T::XMLBLOCK,
+        c\T::XSLTFORMAT
+    );
 }
 ?>
