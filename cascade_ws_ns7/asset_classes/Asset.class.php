@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/21/2017 Added dumpJSON.
   * 11/28/2017 Removed getSiteId, getSiteName, getReviewOnSchedule, and getReviewEvery.
     Fixed a bug in getPath.
   * 7/31/2017 Added getReviewOnSchedule and getReviewEvery for 8.5.
@@ -286,6 +287,22 @@ abstract class Asset
         if( $formatted ) echo E_PRE . HR;
         
         return $this;
+    }
+    
+/**
+<documentation><description><p>Dumps the property of the calling object in JSON format and returns the object.</p></description>
+<example>$page->dumpJSON();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function dumpJSON() : Asset
+    {
+    	echo S_PRE;
+    	var_dump( json_encode( $this->property ) );
+    	echo E_PRE;
+    	
+    	return $this;
     }
     
 /**
