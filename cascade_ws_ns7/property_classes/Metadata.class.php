@@ -42,7 +42,8 @@ and the id of its corresponding metadata set. When a <code>setX</code> method is
 and look at the definition. For example, if a value is added to a <code>dynamicField</code>, this value must be defined
 in the corresponding <code>DynamicMetadataFieldDefinition</code> object.</p>
 <h2>Structure of <code>metadata</code></h2>
-<pre>metadata
+<pre>SOAP:
+metadata
   author
   displayName
   endDate
@@ -59,6 +60,23 @@ in the corresponding <code>DynamicMetadataFieldDefinition</code> object.</p>
       fieldValues
         fieldValue
           value
+
+REST:
+metadata
+  author
+  displayName
+  endDate
+  keywords
+  metaDescription
+  reviewDate
+  startDate
+  summary
+  teaser
+  title
+  dynamicFields (array of stClass)
+    name
+    fieldValues (array of stClass)
+      value
 </pre>
 <p>Note that although the properties <code>expirationFolderFieldRequired</code> and <code>expirationFolderFieldVisibility</code>
 are defined in a metadata set, the metadata <code>stdClass</code> object does not include information about expiration folder. Instead,
@@ -102,6 +120,7 @@ class Metadata extends Property
 <documentation><description><p>The constructor.</p></description>
 <example></example>
 <return-type></return-type>
+<exception>NullServiceException</exception>
 </documentation>
 */
     public function __construct( 
@@ -111,37 +130,47 @@ class Metadata extends Property
         $data2=NULL, 
         $data3=NULL )
     {
+        if( is_null( $service ) )
+            throw new e\NullServiceException( c\M::NULL_SERVICE );
+            
+        $this->service = $service;
+
         if( isset( $obj ) )
         {
-        	if( isset( $obj->author ) )
-            	$this->author                 = $obj->author;
-        	if( isset( $obj->displayName ) )
-				$this->display_name           = $obj->displayName;
-        	if( isset( $obj->endDate ) )
-				$this->end_date               = $obj->endDate;
-        	if( isset( $obj->keywords ) )
-				$this->keywords               = $obj->keywords;
-        	if( isset( $obj->metaDescription ) )
-				$this->meta_description       = $obj->metaDescription;
-        	if( isset( $obj->reviewDate ) )
-				$this->review_date            = $obj->reviewDate;
-        	if( isset( $obj->startDate ) )
-				$this->start_date             = $obj->startDate;
-        	if( isset( $obj->summary ) )
-				$this->summary                = $obj->summary;
-        	if( isset( $obj->teaser ) )
-				$this->teaser                 = $obj->teaser;
-        	if( isset( $obj->title ) )
-				$this->title                  = $obj->title;
-            $this->service             = $service;
+            if( isset( $obj->author ) )
+                $this->author                 = $obj->author;
+            if( isset( $obj->displayName ) )
+                $this->display_name           = $obj->displayName;
+            if( isset( $obj->endDate ) )
+                $this->end_date               = $obj->endDate;
+            if( isset( $obj->keywords ) )
+                $this->keywords               = $obj->keywords;
+            if( isset( $obj->metaDescription ) )
+                $this->meta_description       = $obj->metaDescription;
+            if( isset( $obj->reviewDate ) )
+                $this->review_date            = $obj->reviewDate;
+            if( isset( $obj->startDate ) )
+                $this->start_date             = $obj->startDate;
+            if( isset( $obj->summary ) )
+                $this->summary                = $obj->summary;
+            if( isset( $obj->teaser ) )
+                $this->teaser                 = $obj->teaser;
+            if( isset( $obj->title ) )
+                $this->title                  = $obj->title;
             $this->metadata_set        = NULL;
-            $this->metadata_set_id     = $metadata_set_id;
-        	$this->dynamic_field_names = array();
-        	
-            if( isset( $obj->dynamicFields ) &&
-            	isset( $obj->dynamicFields->dynamicField ) ) // could be NULL
+            
+            if( isset( $metadata_set_id ) )
+                $this->metadata_set_id = $metadata_set_id;
+            $this->dynamic_field_names = array();
+            
+            if( isset( $obj->dynamicFields ) )
             {
-                $this->processDynamicFields( $obj->dynamicFields->dynamicField );
+                if( $this->service->isSoap() &&
+                    isset( $obj->dynamicFields->dynamicField ) ) // could be NULL
+                    $this->processDynamicFields( 
+                        $obj->dynamicFields->dynamicField, $this->service );
+                elseif( $this->service->isRest() )
+                    $this->processDynamicFields( $obj->dynamicFields, $this->service );
             }
             
             $this->host_asset = $data2; // could be null
@@ -679,9 +708,9 @@ $m->setDynamicFieldValue( $checkbox_name, $values );</example>
 */
     public function setDynamicFieldValue( string $field, $values=NULL ) : Property
     {
-    	if( $values == "" )
-    		$values = NULL;
-    		
+        if( $values == "" )
+            $values = NULL;
+            
         if( !is_array( $values ) )
         {
             $values = array( $values );
@@ -1023,18 +1052,34 @@ The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</
         }
         else if( $count == 1 )
         {
-            $obj->dynamicFields = new \stdClass();
-            $obj->dynamicFields->dynamicField = $this->dynamic_fields[0]->toStdClass();
+        	if( $this->service->isSoap() )
+        	{
+            	$obj->dynamicFields = new \stdClass();
+            	$obj->dynamicFields->dynamicField =
+            		$this->dynamic_fields[0]->toStdClass();
+            }
+            elseif( $this->service->isRest() )
+            {
+            	$obj->dynamicFields = array( $this->dynamic_fields[0]->toStdClass() );
+            }
         }
         else
         {
-            $obj->dynamicFields = new \stdClass();
-            $obj->dynamicFields->dynamicField = array();
+        	if( $this->service->isSoap() )
+        	{
+            	$obj->dynamicFields = new \stdClass();
+            	$obj->dynamicFields->dynamicField = array();
+            }
+            elseif( $this->service->isRest() )
+            	$obj->dynamicFields = array();
             
             for( $i = 0; $i < $count; $i++ )
             {
-                $obj->dynamicFields->dynamicField[] = 
-                    $this->dynamic_fields[$i]->toStdClass();
+            	if( $this->service->isSoap() )
+                	$obj->dynamicFields->dynamicField[] = 
+                    	$this->dynamic_fields[ $i ]->toStdClass();
+                elseif( $this->service->isRest() )
+                	$obj->dynamicFields[] = $this->dynamic_fields[ $i ]->toStdClass();
             }
         }
         
@@ -1054,20 +1099,20 @@ string "NULL" will be used as the value.</p></description>
     {
         foreach( self::$wired_fields as $field )
         {
-        	$get_method_name = u\StringUtility::getMethodName( $field );
-        	$set_method_name = u\StringUtility::getMethodName( $field, "set" );
-        	$is_method_name  = u\StringUtility::getMethodName( $field, "is" ) .
-        	    "FieldRequired";
-        	
-        	$field_value    = $old_m->$get_method_name();
-        	$field_required = $new_m->$is_method_name();
-        	
-        	if( $field_required && ( is_null( $field_value ) || $field_value == "" ) )
-        	{
-        	    $field_value = u\StringUtility::getCoalescedString( NULL );
-        	}
-        	    
-        	$new_m->$set_method_name( $field_value );
+            $get_method_name = u\StringUtility::getMethodName( $field );
+            $set_method_name = u\StringUtility::getMethodName( $field, "set" );
+            $is_method_name  = u\StringUtility::getMethodName( $field, "is" ) .
+                "FieldRequired";
+            
+            $field_value    = $old_m->$get_method_name();
+            $field_required = $new_m->$is_method_name();
+            
+            if( $field_required && ( is_null( $field_value ) || $field_value == "" ) )
+            {
+                $field_value = u\StringUtility::getCoalescedString( NULL );
+            }
+                
+            $new_m->$set_method_name( $field_value );
         }
     }
 
@@ -1094,13 +1139,13 @@ string "NULL" will be used as the value.</p></description>
 */
     public static function isWiredField( string $field_name ) : bool
     {
-    	// check the array in MetadataSet
-    	$result = in_array( $field_name, a\MetadataSet::$wired_fields );
-    	
-    	// check the array in this class
-    	if( !$result )
-    		$result = in_array( $field_name, self::$wired_fields );
-    		
+        // check the array in MetadataSet
+        $result = in_array( $field_name, a\MetadataSet::$wired_fields );
+        
+        // check the array in this class
+        if( !$result )
+            $result = in_array( $field_name, self::$wired_fields );
+            
         return $result;
     }
     
