@@ -20,8 +20,6 @@ class AssetOperationHandlerService
         $this->message        = '';
         $this->success        = '';
         $this->createdAssetId = '';
-        $this->lastRequest    = '';
-        $this->lastResponse   = '';
         $this->reply = new \stdClass();
 
         try
