@@ -41,10 +41,10 @@ if( is_dir( $folderPath ) && $handle = opendir( $folderPath ) )
 
 if( $soap && $webapp )
     require_once( "auth_tutorial7.php" );
-elseif( $soap )
+elseif( $soap && !$webapp )
     require_once( "auth_chanw.php" );
-elseif( !$soap )
+elseif( !$soap && $webapp )
     require_once( "auth_rest_webapp.php" );
-else
+elseif( !$soap && !$webapp )
     require_once( "auth_rest_web.php" );
 ?>
