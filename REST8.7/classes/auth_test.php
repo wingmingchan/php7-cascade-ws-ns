@@ -32,7 +32,7 @@ if( is_dir( $folderPath ) && $handle = opendir( $folderPath ) )
                     $folderPath . "AssetOperationHandlerServiceRest.class.php" );
                 
                 rename( $folderPath . "AssetOperationHandlerServiceSoap.class.php",
-                $folderPath . $fileName );
+                    $folderPath . $fileName );
             }
         }
         else
@@ -45,13 +45,12 @@ if( is_dir( $folderPath ) && $handle = opendir( $folderPath ) )
                     $folderPath . "AssetOperationHandlerServiceSoap.class.php" );
 
                 rename( $folderPath . "AssetOperationHandlerServiceRest.class.php",
-                $folderPath . $fileName );
+                    $folderPath . $fileName );
             }
         }
     }
 }
-/*//*/
-
+// pick the correct authentication file pointing to correct server.
 if( $soap && $webapp )
     require_once( "auth_tutorial7.php" );
 elseif( $soap && !$webapp )
