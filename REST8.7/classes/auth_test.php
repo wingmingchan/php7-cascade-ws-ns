@@ -1,4 +1,17 @@
 <?php
+/*
+This authentication file is used to switch between SOAP and REST on the one hand,
+and between the two servers on the other. Since the class name
+AssetOperationHandlerService has been embedded in the library,
+both SOAP and REST use the same class name. Therefore, the library files of
+the two classes must be renamed accordingly. When SOAP is used, the file
+containing SOAP code must be renamed to AssetOperationHandlerService.class.php,
+and the other file containing REST code should be renamed to
+AssetOperationHandlerServiceRest.class.php. When REST is used, the file
+containing SOAP code must be renamed to AssetOperationHandlerServiceSoap.class.php,
+and the other file containing REST code should be renamed to
+AssetOperationHandlerService.class.php.
+*/
 $soap   = false;
 $webapp = true;
 
