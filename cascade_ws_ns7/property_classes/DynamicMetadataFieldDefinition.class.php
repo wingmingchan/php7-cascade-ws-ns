@@ -73,6 +73,7 @@ object of type <code>text</code>.</p>
 <documentation><description><p>The constructor.</p></description>
 <example></example>
 <return-type></return-type>
+<exception>NullServiceException</exception>
 </documentation>
 */
     public function __construct( 
@@ -82,18 +83,35 @@ object of type <code>text</code>.</p>
         $data2=NULL, 
         $data3=NULL )
     {
+        if( is_null( $service ) )
+            throw new e\NullServiceException( c\M::NULL_SERVICE );
+            
+        $this->service = $service;
+
         if( isset( $obj ) )
         {
-            $this->name            = $obj->name;
-            $this->label           = $obj->label;
-            $this->field_type      = $obj->fieldType;
-            $this->required        = $obj->required;
-            $this->visibility      = $obj->visibility;
-            $this->help_text       = $obj->helpText;
+            if( isset( $obj->name ) )
+                $this->name            = $obj->name;
+            if( isset( $obj->label ) )
+                $this->label           = $obj->label;
+            if( isset( $obj->fieldType ) )
+                $this->field_type      = $obj->fieldType;
+            if( isset( $obj->required ) )
+                $this->required        = $obj->required;
+            if( isset( $obj->visibility ) )
+                $this->visibility      = $obj->visibility;
+            if( isset( $obj->helpText ) )
+                $this->help_text       = $obj->helpText;
         
             // $obj->possibleValues->possibleValue can be NULL
-            if( isset( $obj->possibleValues ) && isset( $obj->possibleValues->possibleValue ) )
-                $this->processPossibleValues( $obj->possibleValues->possibleValue );
+            if( isset( $obj->possibleValues ) )
+            {
+                 if( $this->service->isSoap() &&
+                     isset( $obj->possibleValues->possibleValue ) )
+                    $this->processPossibleValues( $obj->possibleValues->possibleValue );
+                elseif( $this->service->isRest() )
+                    $this->processPossibleValues( $obj->possibleValues );
+            }
         }
     }
     
@@ -633,17 +651,26 @@ $ms->edit();</example>
         $obj->required                      = $this->required;
         $obj->visibility                    = $this->visibility;
         $obj->helpText                      = $this->help_text;
-        $obj->possibleValues                = new \stdClass();
-        $obj->possibleValues->possibleValue = array();
         
+        if( $this->service->isSoap() )
+        {
+            $obj->possibleValues                = new \stdClass();
+            $obj->possibleValues->possibleValue = array();
+        }
+        if( $this->service->isRest() )
+            $obj->possibleValues = array();
+            
         if( isset( $this->possible_values ) )
         {
             $count = count( $this->possible_values );
             
             if( $count == 1 )
             {
-                $obj->possibleValues->possibleValue = 
-                    $this->possible_values[0]->toStdClass();
+                if( $this->service->isSoap() )
+                    $obj->possibleValues->possibleValue = 
+                        $this->possible_values[0]->toStdClass();
+                elseif( $this->service->isRest() )
+                    $obj->possibleValues[] = $this->possible_values[0]->toStdClass();
             }
             else
             {
@@ -677,8 +704,12 @@ $ms->edit();</example>
                         $v_array[] = $cur_value;
                     }
                 
-                    $obj->possibleValues->possibleValue[] = 
-                        $this->possible_values[ $i ]->toStdClass();
+                    if( $this->service->isSoap() )
+                        $obj->possibleValues->possibleValue[] = 
+                            $this->possible_values[ $i ]->toStdClass();
+                    elseif( $this->service->isRest() )
+                        $obj->possibleValues[] =
+                            $this->possible_values[ $i ]->toStdClass();
                 }
             }
         }
@@ -747,5 +778,6 @@ $ms->edit();</example>
     private $possible_values; // PossibleValue objects
     private $values;          // array of strings
     private $help_text;
+    private $service;
 }
 ?>
