@@ -12,8 +12,8 @@
 namespace cascade_ws_property;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
  
 /**
@@ -64,6 +64,7 @@ class DynamicField extends Property
 <documentation><description><p>The constructor.</p></description>
 <example></example>
 <return-type></return-type>
+<exception>NullServiceException</exception>
 </documentation>
 */
     public function __construct( 
@@ -73,16 +74,24 @@ class DynamicField extends Property
         $data2=NULL, 
         $data3=NULL )
     {
+        if( is_null( $service ) )
+            throw new e\NullServiceException( c\M::NULL_SERVICE );
+            
+        $this->service = $service;
+
         if( isset( $f ) )
         {
-            $this->name    = $f->name;
-            $this->service = $service;
+            if( isset( $f->name ) )
+                $this->name = $f->name;
             
-            if( isset( $f->fieldValues ) && isset( $f->fieldValues->fieldValue ) )
+            if( isset( $f->fieldValues ) )
             {
                 // can be an object, one value or NULL
                 // can be an array
-                $this->processFieldValues( $f->fieldValues->fieldValue );
+                if( $this->service->isSoap() && isset( $f->fieldValues->fieldValue ) )
+                    $this->processFieldValues( $f->fieldValues->fieldValue );
+                elseif( $this->service->isRest() )
+                    $this->processFieldValues( $f->fieldValues );
             }
             else
             {
@@ -148,17 +157,14 @@ or <code>NULL</code> to set <code>fieldValues</code> and return the object. The 
         
         if( isset( $this->field_values ) )
         {
-        	if( $this->service->isSoap() )
-            	$field_values = $this->field_values->toStdClass();
-            elseif( $this->service->isRest() )
-            	$field_values = $this->field_values->toStdClass()->fieldValue;
+            $field_values = $this->field_values->toStdClass();
         }
         else
         {
-        	if( $this->service->isSoap() )
-            	$field_values = new \stdClass();
+            if( $this->service->isSoap() )
+                $field_values = new \stdClass();
             elseif( $this->service->isRest() )
-            	$field_values = array();
+                $field_values = array();
         }
         
         $obj->fieldValues = $field_values;
