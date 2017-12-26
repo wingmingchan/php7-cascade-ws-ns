@@ -79,6 +79,7 @@ class FieldValue extends Property
 <documentation><description><p>The constructor.</p></description>
 <example></example>
 <return-type></return-type>
+<exception>NullServiceException</exception>
 </documentation>
 */
     public function __construct( 
@@ -88,12 +89,15 @@ class FieldValue extends Property
         $data2=NULL, 
         $data3=NULL )
     {
-        $this->values  = array();
+        if( is_null( $service ) )
+            throw new e\NullServiceException( c\M::NULL_SERVICE );
+            
         $this->service = $service;
+        $this->values  = array();
         
         if( isset( $fv ) )
         {
-            if( isset( $fv->array ) )
+            if( isset( $fv->array ) && count( $fv->array ) > 0 )
             {
                 $this->processValues( $fv );
             }
@@ -179,23 +183,38 @@ to set the values and returns the calling object. The method must guarantee that
             
             if( $this->values[0] != '' )
             {
-                $value->value = $this->values[0];
-                
                 if( $this->service->isSoap() )
+                {
+                	$value->value = $this->values[ 0 ];
                 	$obj->fieldValue = $value;
+                }
                 elseif( $this->service->isRest() )
-                	$obj->fieldValue = array( $value );
+                {
+                	$value->value = $this->values[ 0 ];
+                	$obj = array( $value );
+                }
             }
         }
         else // one or more
         {
-            $obj->fieldValue = array();
+        	if( $this->service->isSoap() )
+            	$obj->fieldValue = array();
+            elseif( $this->service->isRest() )
+            	$obj = array();
 
             for( $i = 0; $i < $count; $i++ )
             {
-                $value             = new \stdClass();
-                $value->value      = $this->values[$i];
-                $obj->fieldValue[] = $value;
+                $value        = new \stdClass();
+                $value->value = $this->values[ $i ];
+
+            	if( $this->service->isSoap() )
+            	{
+                	$obj->fieldValue[] = $value;
+                }
+                elseif( $this->service->isRest() )
+                {
+                	$obj[] = $value;
+                }
             }
         }
 
@@ -209,7 +228,8 @@ to set the values and returns the calling object. The method must guarantee that
         
         foreach( $values as $value )
         {
-            $this->values[] = $value->value;
+        	if( isset( $value->value ) )
+            	$this->values[] = $value->value;
         }
     }
 
