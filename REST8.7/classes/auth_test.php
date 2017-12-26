@@ -12,8 +12,8 @@ containing SOAP code must be renamed to AssetOperationHandlerServiceSoap.class.p
 and the other file containing REST code should be renamed to
 AssetOperationHandlerService.class.php.
 */
-$soap   = false;
-$webapp = true;
+$soap   = false; // SOAP or REST
+$webapp = true;  // sandbox or production
 
 $folderPath = "/Applications/MAMP/bin/php/php_include/cascade_ws_ns7/";
 $fileName   = "AssetOperationHandlerService.class.php";
