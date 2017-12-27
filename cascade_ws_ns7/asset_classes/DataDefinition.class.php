@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/27/2017 Added REST code.
   * 6/20/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/10/2017 Added JSON dump.
@@ -563,14 +564,19 @@ $dd->setXML( $xml )->edit();</example>
         {
             $obj->type       = $type;
             $obj->identifier = $identifier;
-            $obj->structuredDataNodes = new \stdClass();
             
+            if( $this->getService()->isSoap() )
+            	$obj->structuredDataNodes = new \stdClass();
+            elseif( $this->getService()->isRest() )
+            	$obj->structuredDataNodes = array();
+            	
             $child_count = count( $xml_element->children() );
             $more_than_one = ( $child_count > 1 ? true : false );
             
             if( $more_than_one )
             {
-                $obj->structuredDataNodes->structuredDataNode = array();
+            	if( $this->getService()->isSoap() )
+                	$obj->structuredDataNodes->structuredDataNode = array();
                 
                 foreach( $xml_element->children() as $child )
                 {
@@ -585,16 +591,16 @@ $dd->setXML( $xml )->edit();</example>
                         $child_std = $this->createChildStd(
                             $child, $child_type, $child_identifier );
                     
-                        $obj->structuredDataNodes->structuredDataNode[] = $child_std;
+                    	if( $this->getService()->isSoap() )
+                        	$obj->structuredDataNodes->structuredDataNode[] = $child_std;
+                        elseif( $this->getService()->isRest() )
+                        	$obj->structuredDataNodes[] = $child_std;
                     }
                 }
             }
             else
             {
                 $xml_array  = $xml_element->children();
-                
-                //var_dump( $xml_array );
-                
                 $child      = $xml_array[ 0 ];
                 $child_type = $child->getName();
                 
@@ -604,12 +610,10 @@ $dd->setXML( $xml )->edit();</example>
                 $child_std = $this->createChildStd(
                     $child, $child_type, $child_identifier );
                 
-                //if( isset( $this->attributes[ $child_identifier ][ 'default' ] ) )
-                    //echo "Default is set", BR;
-                
-                $obj->structuredDataNodes->structuredDataNode = $child_std;
-                
-                
+                if( $this->getService()->isSoap() )
+                	$obj->structuredDataNodes->structuredDataNode = $child_std;
+                elseif( $this->getService()->isRest() )
+                	$obj->structuredDataNodes = array( $child_std );
             }
         }
         else
@@ -630,8 +634,13 @@ $dd->setXML( $xml )->edit();</example>
         
         if( $count > 1 )
         {
-            $this->structured_data->structuredDataNodes = new \stdClass();
-            $this->structured_data->structuredDataNodes->structuredDataNode = array();
+            if( $this->getService()->isSoap() )
+            {
+                $this->structured_data->structuredDataNodes = new \stdClass();
+                $this->structured_data->structuredDataNodes->structuredDataNode = array();
+            }
+            elseif( $this->getService()->isRest() )
+                $this->structured_data->structuredDataNodes = array();
             
             foreach( $xml_element->children() as $child )
             {
@@ -642,8 +651,11 @@ $dd->setXML( $xml )->edit();</example>
                     $child_identifier = $child[ c\T::IDENTIFIER ]->__toString();
                     $child_std = $this->createChildStd(
                         $child, $child_type, $child_identifier );
-                    $this->structured_data->structuredDataNodes->structuredDataNode[] =
-                        $child_std;
+                    if( $this->getService()->isSoap() )
+                        $this->structured_data->structuredDataNodes->
+                            structuredDataNode[] = $child_std;
+                    elseif( $this->getService()->isRest() )
+                        $this->structured_data->structuredDataNodes[] = $child_std;
                 }
             }
         }
@@ -656,12 +668,22 @@ $dd->setXML( $xml )->edit();</example>
             if( isset( $attributes[ c\T::IDENTIFIER ] ) )
             {
                 $child_identifier = $attributes[ c\T::IDENTIFIER ]->__toString();
-                $this->structured_data->structuredDataNodes                     =
-                    new \stdClass();
-                $this->structured_data->structuredDataNodes->structuredDataNode =
-                    new \stdClass();
-                $this->structured_data->structuredDataNodes->structuredDataNode = 
-                    $this->createChildStd( $child, $child_type, $child_identifier );
+                
+                if( $this->getService()->isSoap() )
+                {
+                    $this->structured_data->structuredDataNodes                     =
+                        new \stdClass();
+                    $this->structured_data->structuredDataNodes->structuredDataNode =
+                        new \stdClass();
+                    $this->structured_data->structuredDataNodes->structuredDataNode = 
+                        $this->createChildStd( $child, $child_type, $child_identifier );
+                }
+                elseif( $this->getService()->isRest() )
+                {
+                    $this->structured_data->structuredDataNodes = array(
+                        $this->createChildStd( $child, $child_type, $child_identifier )
+                    );
+                }
             }
         }
     }
