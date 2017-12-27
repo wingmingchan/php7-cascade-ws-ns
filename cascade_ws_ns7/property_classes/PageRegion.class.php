@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/27/2017 Added REST code.
   * 7/14/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
@@ -60,6 +61,7 @@ class PageRegion extends Property
 <example></example>
 <return-type></return-type>
 <exception></exception>
+<exception>NullServiceException</exception>
 </documentation>
 */
     public function __construct( 
@@ -69,6 +71,11 @@ class PageRegion extends Property
         $data2=NULL, 
         $data3=NULL )
     {
+        if( is_null( $service ) )
+            throw new e\NullServiceException( c\M::NULL_SERVICE );
+            
+        $this->service = $service;
+        
         if( isset( $region ) )
         {
             if( isset( $region->id ) )
@@ -91,7 +98,6 @@ class PageRegion extends Property
                 $this->format_recycled = $region->formatRecycled;
             if( isset( $region->noFormat ) )
                 $this->no_format       = $region->noFormat;
-            $this->service             = $service;
         
             if( self::DEBUG ) { u\DebugUtility::out( "Block ID: " . $this->block_id ); }
         }
@@ -442,7 +448,8 @@ object.</p></description>
     {
         if( self::DEBUG) { u\DebugUtility::out( "string: " . $id_string ); }
 
-        if( isset( $this->service ) )
+        // Cascade 8.7.1 only with SOAP
+        if( $this->service->isSoap() )
         {
             $types = array( 'block', 'format' );
             $type_count = count( $types );
@@ -470,7 +477,6 @@ object.</p></description>
                 {
                     foreach( c\T::$type_property_name_map as $type => $property )
                     {
-                        //echo "$type => $property" . BR;
                         if( isset( $reply_array[ $j ]->readResult->asset->$property ) )
                         {
                             return $type;
