@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/27/2017 Added REST code and updated documentation.
   * 11/28/2017 Changed parent class to FolderContainedAsset.
   * 6/30/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/12/2017 Added WSDL.
@@ -92,7 +93,7 @@ template
 </pre>
 <h2>Design Issues</h2>
 <ul>
-<li>There is no <code>set</code> method to work with targets.</li>
+<li>Since targets are going away, there is no <code>set</code> method to work with them.</li>
 </ul>
 <h2>WSDL</h2>";
 $doc_string .=
@@ -155,10 +156,16 @@ class Template extends FolderContainedAsset
         $this->page_regions     = array();
         $this->page_region_map  = array();
         
-        if( !is_null( $this->getProperty()->pageRegions ) && 
-            !is_null( $this->getProperty()->pageRegions->pageRegion ) )
-            self::processPageRegions( $this->getProperty()->pageRegions->pageRegion, 
-                $this->page_regions, $this->page_region_map, $this->getService() );
+        if( !is_null( $this->getProperty()->pageRegions ) )
+        {
+            if( $this->getService()->isSoap() && 
+                isset( $this->getProperty()->pageRegions->pageRegion ) )
+                self::processPageRegions( $this->getProperty()->pageRegions->pageRegion, 
+                    $this->page_regions, $this->page_region_map, $this->getService() );
+            elseif( $this->getService()->isRest() )
+                self::processPageRegions( $this->getProperty()->pageRegions, 
+                    $this->page_regions, $this->page_region_map, $this->getService() );
+        }
             
         $this->xml = $this->getProperty()->xml;
     }
@@ -206,7 +213,11 @@ object.</p></description>
             $region_array[ $i ] = $this->page_regions[ $i ]->toStdClass();
         }
 
-        $this->getProperty()->pageRegions->pageRegion = $region_array;
+        if( $this->getService()->isSoap() )
+            $this->getProperty()->pageRegions->pageRegion = $region_array;
+        elseif( $this->getService()->isRest() )
+            $this->getProperty()->pageRegions = $region_array;
+            
         $asset->{ $p = $this->getPropertyName() }     = $this->getProperty();
 
         // edit asset
@@ -273,7 +284,9 @@ object.</p></description>
 */
     public function getFormatId()
     {
-        return $this->getProperty()->formatId;
+        if( isset( $this->getProperty()->formatId ) )
+            return $this->getProperty()->formatId;
+        return NULL;
     }
     
 /**
@@ -285,7 +298,9 @@ object.</p></description>
 */
     public function getFormatPath()
     {
-        return $this->getProperty()->formatPath;
+        if( isset( $this->getProperty()->formatPath ) )
+            return $this->getProperty()->formatPath;
+        return NULL;
     }
     
 /**
@@ -420,17 +435,30 @@ object.</p></description>
         }
         else if( $region_count == 1 )
         {
-            $std->pageRegions = new \stdClass();
-            $std->pageRegions->pageRegion = $temp[ 0 ]->toStdClass();
+            if( $this->getService()->isSoap() )
+            {
+                $std->pageRegions = new \stdClass();
+                $std->pageRegions->pageRegion = $temp[ 0 ]->toStdClass();
+            }
+            elseif( $this->getService()->isRest() )
+                $std->pageRegions = array( $temp[ 0 ]->toStdClass() );
         }
         else
         {
-            $std->pageRegions = new \stdClass();
-            $std->pageRegions->pageRegion = array();
+            if( $this->getService()->isSoap() )
+            {
+                $std->pageRegions = new \stdClass();
+                $std->pageRegions->pageRegion = array();
+            }
+            elseif( $this->getService()->isRest() )
+                $std->pageRegions = array();
             
             for( $i = 0; $i < $region_count; $i++ )
             {
-                $std->pageRegions->pageRegion[] = $temp[ $i ]->toStdClass();
+                if( $this->getService()->isSoap() )
+                    $std->pageRegions->pageRegion[] = $temp[ $i ]->toStdClass();
+                elseif( $this->getService()->isRest() )
+                    $std->pageRegions[] = $temp[ $i ]->toStdClass();
             }
         }
         
@@ -458,7 +486,9 @@ object.</p></description>
 */
     public function getTargetId()
     {
-        return $this->getProperty()->targetId;
+        if( isset( $this->getProperty()->targetId ) )
+            return $this->getProperty()->targetId;
+        return NULL;
     }
     
 /**
@@ -470,7 +500,9 @@ object.</p></description>
 */
     public function getTargetPath()
     {
-        return $this->getProperty()->targetPath;
+        if( isset( $this->getProperty()->targetPath ) )
+            return $this->getProperty()->targetPath;
+        return NULL;
     }
     
 /**
