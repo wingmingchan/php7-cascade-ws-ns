@@ -24,7 +24,7 @@ use cascade_ws_property  as p;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>FeedBlock</code> object represents a feed block asset. This class is a sub-class of <a href=\"http://www.upstate.edu/web-services/api/asset-classes/block.php\"><code>Block</code></a>. Note that only the feed URL of a feed block is retrievable. The feed XML is not. In order to retrieve the feed XML, a feed block must be attached to a page and published. Once the page is published, the XML can be read directly from the page.</p>
+<p>A <code>FeedBlock</code> object represents a feed block asset. This class is a sub-class of <a href=\"http://www.upstate.edu/web-services/api/asset-classes/block.php\"><code>Block</code></a>. Note that only the feed URL of a feed block is retrievable. The feed XML is not. In order to retrieve the feed XML, a feed block must be attached to a page and the page published. Once the page is published, the XML can be read directly from the page.</p>
 <h2>Structure of <code>feedBlock</code></h2>
 <pre>SOAP:
 feedBlock
