@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/27/2017 Updated documentation.
   * 12/26/2017 Added REST code to edit.
   * 7/31/2017 Added help text related fields, get and set methods.
   * 6/26/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -86,6 +87,7 @@ metadataSet
         possibleValue (NULL, stdClass or array of stdClass)
           value
           selectedByDefault
+      helpText
 
 JSON:
 metadataSet
@@ -111,16 +113,15 @@ metadataSet
   teaserFieldVisibility
   titleFieldRequired
   titleFieldVisibility
-  dynamicMetadataFieldDefinitions (array)
-    stdClass
-      name
-      label
-      fieldType
-      required
-      visibility
-      possibleValues (array)
-        value
-        selectedByDefault
+  dynamicMetadataFieldDefinitions (array of stdClass)
+    name
+    label
+    fieldType
+    required
+    visibility
+    possibleValues (array of stdClass)
+      value
+      selectedByDefault
   parentContainerId
   parentContainerPath
   path
