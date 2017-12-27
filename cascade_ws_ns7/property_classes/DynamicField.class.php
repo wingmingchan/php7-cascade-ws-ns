@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/27/2017 Fixed a bug in toStdClass.
   * 12/21/2017 Changed toStdClass so that it works with REST.
   * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -155,7 +156,8 @@ or <code>NULL</code> to set <code>fieldValues</code> and return the object. The 
         $obj = new \stdClass();
         $obj->name = $this->name;
         
-        if( isset( $this->field_values ) )
+        // for REST, could be an empty array
+        if( isset( $this->field_values ) && !is_array( $this->field_values ) )
         {
             $field_values = $this->field_values->toStdClass();
         }
