@@ -4,6 +4,9 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/27/2017 Added REST code and updated documentation.
+    Changed signatures of setConfigurationPageRegionBlock and setConfigurationPageRegionFormat
+    to allow NULL values.
   * 6/26/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
@@ -211,9 +214,14 @@ the page configurations.</p></description>
         $p = new p\PageConfiguration( $config, $this->getService(), NULL );
         $this->page_configurations[] = $p;
         $this->edit();
-            
-        $this->processPageConfigurations( 
-            $this->getProperty()->pageConfigurations->pageConfiguration );
+        
+        if( $this->getService()->isSoap() )
+            $this->processPageConfigurations( 
+                $this->getProperty()->pageConfigurations->pageConfiguration );
+        elseif( $this->getService()->isRest() )
+            $this->processPageConfigurations( 
+                $this->getProperty()->pageConfigurations );
+
         return $this;
     }
     
@@ -253,9 +261,13 @@ the page configurations.</p></description>
         $service->delete( $service->createId( c\T::CONFIGURATION, $id ) );
         
         $this->reloadProperty();
-            
-        $this->processPageConfigurations( 
-            $this->getProperty()->pageConfigurations->pageConfiguration );
+        
+        if( $this->getService()->isSoap() )
+            $this->processPageConfigurations(
+                $this->getProperty()->pageConfigurations->pageConfiguration );
+        elseif( $this->getService()->isRest() )
+            $this->processPageConfigurations(
+                $this->getProperty()->pageConfigurations );
 
         return $this;        
     }
@@ -285,7 +297,11 @@ the page configurations.</p></description>
             $config_array[ $i ] = $this->page_configurations[ $i ]->toStdClass();
         }
         
-        $this->getProperty()->pageConfigurations->pageConfiguration = $config_array;
+        if( $this->getService()->isSoap() )
+            $this->getProperty()->pageConfigurations->pageConfiguration = $config_array;
+        elseif( $this->getService()->isRest() )
+            $this->getProperty()->pageConfigurations = $config_array;
+        
         $asset->{ $p = $this->getPropertyName() } = $this->getProperty();
         // edit asset
         $service = $this->getService();
@@ -544,7 +560,7 @@ configuration, and returns the calling object. Note that when a region is not at
 </documentation>
 */
     public function setConfigurationPageRegionBlock(
-        string $name, string $region_name, Block $block ) : Asset
+        string $name, string $region_name, Block $block=NULL ) : Asset
     {
         $this->checkPageConfiguration( $name );
         $config = $this->page_configuration_map[ $name ];
@@ -565,7 +581,7 @@ configuration, and returns the calling object.</p></description>
 </documentation>
 */
     public function setConfigurationPageRegionFormat(
-        string $name, string $region_name, Format $format ) : Asset
+        string $name, string $region_name, Format $format=NULL ) : Asset
     {
         $this->checkPageConfiguration( $name );
         $config = $this->page_configuration_map[ $name ];
@@ -703,7 +719,10 @@ configuration, and returns the calling object.</p></description>
         $this->page_configuration_names = array();
         $this->page_configuration_map   = array();
 
-        $array = $this->getProperty()->pageConfigurations->pageConfiguration;
+        if( $this->getService()->isSoap() )
+            $array = $this->getProperty()->pageConfigurations->pageConfiguration;
+        elseif( $this->getService()->isRest() )
+            $array = $this->getProperty()->pageConfigurations;
         
         if( isset( $array ) )
         {
