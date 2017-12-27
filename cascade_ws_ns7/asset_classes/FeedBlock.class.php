@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/27/2017 Updated documentation.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/12/2017 Added JSON structure and JSON dump.
@@ -23,9 +24,9 @@ use cascade_ws_property  as p;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>FeedBlock</code> object represents a feed block asset. This class is a sub-class of <a href=\"http://www.upstate.edu/web-services/api/asset-classes/block.php\"><code>Block</code></a>.</p>
+<p>A <code>FeedBlock</code> object represents a feed block asset. This class is a sub-class of <a href=\"http://www.upstate.edu/web-services/api/asset-classes/block.php\"><code>Block</code></a>. Note that only the feed URL of a feed block is retrievable. The feed XML is not. In order to retrieve the feed XML, a feed block must be attached to a page and published. Once the page is published, the XML can be read directly from the page.</p>
 <h2>Structure of <code>feedBlock</code></h2>
-<pre>SOAP structure:
+<pre>SOAP:
 feedBlock
   id
   name
@@ -57,12 +58,14 @@ feedBlock
             value
   metadataSetId
   metadataSetPath
+  reviewOnSchedule
+  reviewEvery
   expirationFolderId
   expirationFolderPath
   expirationFolderRecycled
   feedURL
   
-JSON structure:
+JSON:
 feedBlock
   feedURL
   expirationFolderId
@@ -81,12 +84,12 @@ feedBlock
     summary
     teaser
     title
-    dynamicFields (array)
-      stdClass
-        name
-        fieldValues (array)
-          stdClass
-            value
+    dynamicFields (array of stdClass)
+      name
+      fieldValues (array of stdClass)
+        value
+  reviewOnSchedule
+  reviewEvery
   parentFolderId
   parentFolderPath
   lastModifiedDate
