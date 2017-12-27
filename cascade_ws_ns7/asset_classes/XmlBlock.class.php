@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/27/2017 Updated documentation.
   * 6/30/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
@@ -58,6 +59,8 @@ xmlBlock
             value
   metadataSetId
   metadataSetPath
+  reviewOnSchedule
+  reviewEvery
   expirationFolderId
   expirationFolderPath
   expirationFolderRecycled
@@ -82,12 +85,12 @@ xmlBlock
     summary
     teaser
     title
-    dynamicFields (array)
-      stdClass
-        name
-        fieldValues (array)
-          stdClass
-            value
+    dynamicFields (array of stdClass)
+      name
+      fieldValues (array of stdClass)
+        value
+  reviewOnSchedule
+  reviewEvery
   parentFolderId
   parentFolderPath
   lastModifiedDate
