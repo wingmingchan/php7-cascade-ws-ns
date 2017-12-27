@@ -690,9 +690,12 @@ object.</p></description>
         
         foreach( $regions as $region )
         {
-            $pr             = new p\PageRegion( $region, $service );
-            $page_regions[] = $pr;
-            $page_region_map[ $region->name ] = $pr;
+        	if( isset( $region->name ) )
+        	{
+            	$pr             = new p\PageRegion( $region, $service );
+            	$page_regions[] = $pr;
+            	$page_region_map[ $region->name ] = $pr;
+            }
         }
     }
 
