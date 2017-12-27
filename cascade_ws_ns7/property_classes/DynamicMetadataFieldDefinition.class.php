@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/26/2017 Added REST code to toStdClass.
   * 7/31/2017 Added getHelpText and setHelpText.
   * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -715,7 +716,10 @@ $ms->edit();</example>
         }
         else
         {
-            $obj->possibleValues = new \stdClass();
+            if( $this->service->isSoap() )
+                $obj->possibleValues = new \stdClass();
+            elseif( $this->service->isRest() )
+                $obj->possibleValues = array();
         }
         return $obj;
     }
