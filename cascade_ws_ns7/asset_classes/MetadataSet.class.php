@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/26/2017 Added REST code to edit.
   * 7/31/2017 Added help text related fields, get and set methods.
   * 6/26/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -284,11 +285,14 @@ class MetadataSet extends ContainedAsset
     {
         parent::__construct( $service, $identifier );
         
-        if( 
-            isset( $this->getProperty()->dynamicMetadataFieldDefinitions ) &&
-            isset( $this->getProperty()->dynamicMetadataFieldDefinitions->dynamicMetadataFieldDefinition ) )
+        if( isset( $this->getProperty()->dynamicMetadataFieldDefinitions ) )
         {
-            $this->processDynamicMetadataFieldDefinition();
+            if( $this->getService()->isSoap() &&
+                isset( $this->getProperty()->dynamicMetadataFieldDefinitions->
+                    dynamicMetadataFieldDefinition ) )
+                $this->processDynamicMetadataFieldDefinition();
+            elseif( $this->getService()->isRest() )
+                $this->processDynamicMetadataFieldDefinition();
         }
     }
     
@@ -333,7 +337,11 @@ The <code>$possible_values</code> should be a string containing values, with sem
         
         if( $type != c\T::TEXT )
         {
-            $dmfd->dynamicMetadataFieldDefinition->possibleValues = new \stdClass();
+            if( $this->getService()->isSoap() )
+                $dmfd->dynamicMetadataFieldDefinition->possibleValues = new \stdClass();
+            elseif( $this->getService()->isRest() )
+                $dmfd->dynamicMetadataFieldDefinition->possibleValues = array();
+            
             $values      = u\StringUtility::getExplodedStringArray( ";", $possible_values );
             $value_count = count( $values );
             
@@ -343,11 +351,20 @@ The <code>$possible_values</code> should be a string containing values, with sem
                 $pv->value             = $values[ 0 ];
                 $pv->selectedByDefault = false;
                 
-                $dmfd->dynamicMetadataFieldDefinition->possibleValues->possibleValue = $pv;
+                if( $this->getService()->isSoap() )
+                    $dmfd->dynamicMetadataFieldDefinition->possibleValues->
+                        possibleValue = $pv;
+                elseif( $this->getService()->isRest() )
+                {
+                    $dmfd->dynamicMetadataFieldDefinition->possibleValues[] = $pv;
+                }
+                    
             }
             else
             {
-                $dmfd->dynamicMetadataFieldDefinition->possibleValues->possibleValue = array();
+                if( $this->getService()->isSoap() )
+                    $dmfd->dynamicMetadataFieldDefinition->possibleValues->
+                        possibleValue = array();
                 
                 foreach( $values as $value )
                 {
@@ -357,7 +374,11 @@ The <code>$possible_values</code> should be a string containing values, with sem
                     $pv->value             = $value;
                     $pv->selectedByDefault = false;
                     
-                    $dmfd->dynamicMetadataFieldDefinition->possibleValues->possibleValue[] = $pv;
+                    if( $this->getService()->isSoap() )
+                        $dmfd->dynamicMetadataFieldDefinition->possibleValues->
+                            possibleValue[] = $pv;
+                    elseif( $this->getService()->isRest() )
+                        $dmfd->dynamicMetadataFieldDefinition->possibleValues[] = $pv;
                 }
             }
         }
@@ -431,20 +452,29 @@ and returns the calling object.</p></description>
     ) : Asset
     {
         $asset = new \stdClass();
-        
         $metadata_set = $this->getProperty();
-        $metadata_set->dynamicMetadataFieldDefinitions->
-            dynamicMetadataFieldDefinition = array();
+        
+        if( $this->getService()->isSoap() )
+            $metadata_set->dynamicMetadataFieldDefinitions->
+                dynamicMetadataFieldDefinition = array();
+        elseif( $this->getService()->isRest() )
+            $metadata_set->dynamicMetadataFieldDefinitions = array();
             
         $count = $this->dynamic_metadata_field_definitions;
         
         if( $count > 0 )
             foreach( $this->dynamic_metadata_field_definitions as $definition )
             {
-                $metadata_set->dynamicMetadataFieldDefinitions->
-                    dynamicMetadataFieldDefinition[] = $definition->toStdClass();
+                if( $this->getService()->isSoap() )
+                    $metadata_set->dynamicMetadataFieldDefinitions->
+                        dynamicMetadataFieldDefinition[] = $definition->toStdClass();
+                elseif( $this->getService()->isRest() )
+                    $metadata_set->dynamicMetadataFieldDefinitions[] =
+                        $definition->toStdClass();
             }
         
+        u\DebugUtility::dump( $metadata_set );
+/*//*/    
         $asset->{ $p = $this->getPropertyName() } = $metadata_set;
         // edit asset
         $service = $this->getService();
@@ -455,6 +485,7 @@ and returns the calling object.</p></description>
             throw new e\EditingFailureException( 
                 S_SPAN . c\M::EDIT_ASSET_FAILURE . E_SPAN . $service->getMessage() );
         }
+
         return $this->reloadProperty();
     }
     
@@ -1928,9 +1959,13 @@ calls <code>edit</code>, and returns the calling object.</p></description>
         $this->dynamic_metadata_field_definitions = array();
         $this->field_names                        = array();
 
-        $definitions = 
-            $this->getProperty()->dynamicMetadataFieldDefinitions->
-            dynamicMetadataFieldDefinition;
+        if( $this->getService()->isSoap() )
+            $definitions = 
+                $this->getProperty()->dynamicMetadataFieldDefinitions->
+                dynamicMetadataFieldDefinition;
+        elseif( $this->getService()->isRest() )
+            $definitions = 
+                $this->getProperty()->dynamicMetadataFieldDefinitions;
             
         if( !is_array( $definitions ) )
         {
@@ -1942,7 +1977,8 @@ calls <code>edit</code>, and returns the calling object.</p></description>
         for( $i = 0; $i < $count; $i++ )
         {
             $this->dynamic_metadata_field_definitions[] = 
-                new p\DynamicMetadataFieldDefinition( $definitions[ $i ] );
+                new p\DynamicMetadataFieldDefinition(
+                    $definitions[ $i ], $this->getService() );
             $this->field_names[] = $definitions[ $i ]->name;
         }
     }
