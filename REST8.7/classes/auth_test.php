@@ -12,45 +12,45 @@ containing SOAP code must be renamed to AssetOperationHandlerServiceSoap.class.p
 and the other file containing REST code should be renamed to
 AssetOperationHandlerService.class.php.
 */
-$soap   = false; // SOAP or REST
-$webapp = true;  // sandbox or production
+$soap   = true;  // SOAP
+$soap   = false; // REST
+$webapp = false; // production
+$webapp = true;  // sandbox
 
 $folderPath = "/Applications/MAMP/bin/php/php_include/cascade_ws_ns7/";
 $fileName   = "AssetOperationHandlerService.class.php";
 
-if( is_dir( $folderPath ) && $handle = opendir( $folderPath ) )
+// step 1: rename the class files so that the correct class is loaded
+if( file_exists( $folderPath . $fileName ) && is_file( $folderPath . $fileName ) )
 {
-    if( file_exists( $folderPath . $fileName ) && is_file( $folderPath . $fileName ) )
+    if( $soap )
     {
-        if( $soap )
+        if( file_exists( $folderPath .
+            "AssetOperationHandlerServiceSoap.class.php" ) && 
+            is_file( $folderPath . "AssetOperationHandlerServiceSoap.class.php" ) )
         {
-            if( file_exists( $folderPath .
-                "AssetOperationHandlerServiceSoap.class.php" ) && 
-                is_file( $folderPath . "AssetOperationHandlerServiceSoap.class.php" ) )
-            {
-                rename( $folderPath . $fileName,
-                    $folderPath . "AssetOperationHandlerServiceRest.class.php" );
-                
-                rename( $folderPath . "AssetOperationHandlerServiceSoap.class.php",
-                    $folderPath . $fileName );
-            }
+            rename( $folderPath . $fileName,
+                $folderPath . "AssetOperationHandlerServiceRest.class.php" );
+            
+            rename( $folderPath . "AssetOperationHandlerServiceSoap.class.php",
+                $folderPath . $fileName );
         }
-        else
+    }
+    else
+    {
+        if( file_exists( $folderPath .
+            "AssetOperationHandlerServiceRest.class.php" ) && 
+            is_file( $folderPath . "AssetOperationHandlerServiceRest.class.php" ) )
         {
-            if( file_exists( $folderPath .
-                "AssetOperationHandlerServiceRest.class.php" ) && 
-                is_file( $folderPath . "AssetOperationHandlerServiceRest.class.php" ) )
-            {
-                rename( $folderPath . $fileName,
-                    $folderPath . "AssetOperationHandlerServiceSoap.class.php" );
+            rename( $folderPath . $fileName,
+                $folderPath . "AssetOperationHandlerServiceSoap.class.php" );
 
-                rename( $folderPath . "AssetOperationHandlerServiceRest.class.php",
-                    $folderPath . $fileName );
-            }
+            rename( $folderPath . "AssetOperationHandlerServiceRest.class.php",
+                $folderPath . $fileName );
         }
     }
 }
-// pick the correct authentication file pointing to correct server.
+// step 2: pick the correct authentication file pointing to the correct server
 if( $soap && $webapp )
     require_once( "auth_tutorial7.php" );
 elseif( $soap && !$webapp )
