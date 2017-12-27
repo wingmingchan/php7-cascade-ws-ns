@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/26/2017 Added REST code to edit.
   * 12/21/2017 Added dumpJSON.
   * 11/28/2017 Removed getSiteId, getSiteName, getReviewOnSchedule, and getReviewEvery.
     Fixed a bug in getPath.
@@ -216,10 +217,15 @@ abstract class Asset
         {
             $parent->reloadProperty(); // get info of new child
             $parent      = $parent->getProperty();
-            $children    = $parent->children->child;
+            
+            if( $this->getService()->isSoap() )
+            	$children = $parent->children->child;
+            elseif( $this->getService()->isRest() )
+            	$children = $parent->children;
+            
             $child_count = count( $children );
             
-            if( $child_count == 1 )
+            if( $child_count == 1 && !is_array( $children ) )
             {
                 $children = array( $children );
             }
