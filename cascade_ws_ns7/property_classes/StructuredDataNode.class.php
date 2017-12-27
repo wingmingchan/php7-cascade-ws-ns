@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/27/2017 Added more REST code.
   * 12/21/2017 Added the $service object to constructor and processStructuredDataNodes so that isSoap and isRest can be called. Changed toStdClass so that it works with REST.
   * 9/19/2017 Fixed a bug in processStructuredDataNodes.
   * 8/1/2017 Added getBlock.
@@ -94,7 +95,7 @@ class StructuredDataNode extends Property
 <documentation><description><p>The constructor.</p></description>
 <example></example>
 <return-type></return-type>
-<exception></exception>
+<exception>NullServiceException</exception>
 </documentation>
 */
     public function __construct( 
@@ -104,15 +105,20 @@ class StructuredDataNode extends Property
         $index=NULL, 
         $parent_id=NULL ) 
     {
+        if( is_null( $service ) )
+            throw new e\NullServiceException( c\M::NULL_SERVICE );
+            
+        $this->service = $service;
+    
         if( isset( $node ) ) // $node always a single non-NULL object
         {
             $this->parent_id       = $parent_id;
-            $this->type            = $node->type;
+            
+            if( isset( $node->type ) )
+                $this->type        = $node->type;
+                
             $this->data_definition = $dd;
             $this->node_map        = array();
-            
-            if( !isset( $this->service ) && !is_null( $service ) )
-                $this->service     = $service;
             
             // attach parent identifier to current node identifier
             // note that parent_id ends with a semi-colon
@@ -1920,7 +1926,10 @@ class StructuredDataNode extends Property
         // no digits in the fully qualified identifiers
         for( $i = 0; $i < $node_count; $i++ )
         {
-            $fq_identifier = $node_std[ $i ]->identifier;
+        	if( isset( $node_std[ $i ]->identifier ) )
+        	{
+            	$fq_identifier = $node_std[ $i ]->identifier;
+            }
             
             if( $parent_id != '' )
             {
@@ -1940,7 +1949,7 @@ class StructuredDataNode extends Property
                     $temp . self::DELIMITER . $node_std[$i]->identifier;
             }
         
-            $is_multiple       = $data_definition->isMultiple( $fq_identifier );
+            $is_multiple = $data_definition->isMultiple( $fq_identifier );
             
             if( $is_multiple )
             {
