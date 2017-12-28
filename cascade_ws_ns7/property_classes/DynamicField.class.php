@@ -156,9 +156,11 @@ or <code>NULL</code> to set <code>fieldValues</code> and return the object. The 
         $obj = new \stdClass();
         $obj->name = $this->name;
         
-        // for REST, could be an empty array
-        if( isset( $this->field_values ) && !is_array( $this->field_values ) )
+        if( isset( $this->field_values ) )
         {
+        	//echo "============", BR;
+        	//u\DebugUtility::dump( $this->field_values );
+        	//echo "============", BR;
             $field_values = $this->field_values->toStdClass();
         }
         else
@@ -169,6 +171,7 @@ or <code>NULL</code> to set <code>fieldValues</code> and return the object. The 
                 $field_values = array();
         }
         
+        //if( isset( $field_values ) )
         $obj->fieldValues = $field_values;
         return $obj;
     }
