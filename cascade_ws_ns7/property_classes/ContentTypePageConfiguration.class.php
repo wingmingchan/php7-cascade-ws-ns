@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/28/2017 Updated documentation.
   * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
@@ -27,9 +28,11 @@ $doc_string = "<h2>Introduction</h2>
   pageConfigurationName
   publishMode
   destinations
+    destination
+      stdClass
 </pre>
 <h2>Design Issues</h2>
-<p>Currently this class cannot be used to modify the destinations.</p>
+<p>At Upstate, we set up destinations for each site. But content types are only defined in unpublishable sites. Therefore, this class cannot be used to modify the destinations.</p>
 <h2>WSDL</h2>";
 $doc_string .=
     $service->getXMLFragments( array(
@@ -63,10 +66,14 @@ class ContentTypePageConfiguration extends Property
     {
         if( isset( $ctpc ) )
         {
-            $this->page_configuration_id   = $ctpc->pageConfigurationId;
-            $this->page_configuration_name = $ctpc->pageConfigurationName;
-            $this->publish_mode            = $ctpc->publishMode;
-            $this->destinations            = $ctpc->destinations;
+            if( isset( $ctpc->pageConfigurationId ) )
+                $this->page_configuration_id   = $ctpc->pageConfigurationId;
+            if( isset( $ctpc->pageConfigurationName ) )
+                $this->page_configuration_name = $ctpc->pageConfigurationName;
+            if( isset( $ctpc->publishMode ) )
+                $this->publish_mode            = $ctpc->publishMode;
+            if( isset( $ctpc->destinations ) )
+                $this->destinations            = $ctpc->destinations;
         }
     }
     
