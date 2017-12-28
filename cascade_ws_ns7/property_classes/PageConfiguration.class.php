@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/26/2017 Changed toStdClass so that it works with REST.
   * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/25/2017 Fixed in bug.
@@ -75,6 +76,7 @@ class PageConfiguration extends Property
 <example></example>
 <return-type></return-type>
 <exception></exception>
+<exception>NullServiceException</exception>
 </documentation>
 */
     public function __construct( 
@@ -84,33 +86,57 @@ class PageConfiguration extends Property
         $data2=NULL, 
         $data3=NULL )
     {
+        if( is_null( $service ) )
+            throw new e\NullServiceException( c\M::NULL_SERVICE );
+            
+        $this->service = $service;
+
         if( isset( $configuration ) )
         {
-            $this->id                      = $configuration->id;
-            $this->name                    = $configuration->name;
-            $this->default_configuration   = $configuration->defaultConfiguration;
-            $this->template_id             = $configuration->templateId;
-            $this->template_path           = $configuration->templatePath;
-            $this->format_id               = $configuration->formatId;
-            $this->format_path             = $configuration->formatPath;
-            $this->format_recycled         = $configuration->formatRecycled;
-            $this->output_extension        = $configuration->outputExtension;
-            $this->serialization_type      = $configuration->serializationType;
-            $this->include_xml_declaration = $configuration->includeXMLDeclaration;
-            $this->publishable             = $configuration->publishable;
-            $this->service                 = $service;
+            if( isset( $configuration->id ) )
+                $this->id                      = $configuration->id;
+            if( isset( $configuration->name ) )
+                $this->name                    = $configuration->name;
+            if( isset( $configuration->defaultConfiguration ) )
+                $this->default_configuration   = $configuration->defaultConfiguration;
+            if( isset( $configuration->templateId ) )
+                $this->template_id             = $configuration->templateId;
+            if( isset( $configuration->templatePath ) )
+                $this->template_path           = $configuration->templatePath;
+            if( isset( $configuration->formatId ) )
+                $this->format_id               = $configuration->formatId;
+            if( isset( $configuration->formatPath ) )
+                $this->format_path             = $configuration->formatPath;
+            if( isset( $configuration->formatRecycled ) )
+                $this->format_recycled         = $configuration->formatRecycled;
+            if( isset( $configuration->outputExtension ) )
+                $this->output_extension        = $configuration->outputExtension;
+            if( isset( $configuration->serializationType ) )
+                $this->serialization_type      = $configuration->serializationType;
+            if( isset( $configuration->includeXMLDeclaration ) )
+                $this->include_xml_declaration = $configuration->includeXMLDeclaration;
+            if( isset( $configuration->publishable ) )
+                $this->publishable             = $configuration->publishable;
         
             $this->page_regions            = array(); // order page regions
             $this->page_region_map         = array(); // name->page region map
 
-            // test added 8/16/2014
-            if( isset( $configuration->pageRegions ) && isset(
-                $configuration->pageRegions->pageRegion ) )
-                a\Template::processPageRegions( 
-                    $configuration->pageRegions->pageRegion, 
-                    $this->page_regions, 
-                    $this->page_region_map,
-                    $service );
+            if( isset( $configuration->pageRegions ) )
+            {
+                if( $this->service->isSoap() && isset(
+                    $configuration->pageRegions->pageRegion ) )
+                    a\Template::processPageRegions( 
+                        $configuration->pageRegions->pageRegion, 
+                        $this->page_regions, 
+                        $this->page_region_map,
+                        $this->service );
+                elseif( $this->service->isRest() )
+                    a\Template::processPageRegions( 
+                        $configuration->pageRegions, 
+                        $this->page_regions, 
+                        $this->page_region_map,
+                        $this->service );
+            }
             
             if( isset( $type ) && $type == c\T::PAGE )
             {
@@ -686,23 +712,43 @@ calling object.</p></description>
         {
             if( $region_count == 1 )
             {
-                $obj->pageRegions = new \stdClass();
-                $obj->pageRegions->pageRegion = $this->page_regions[0]->toStdClass();
+                if( $this->service->isSoap() )
+                {
+                    $obj->pageRegions = new \stdClass();
+                    $obj->pageRegions->pageRegion = $this->page_regions[0]->toStdClass();
+                }
+                elseif( $this->service->isRest() )
+                {
+                    $obj->pageRegions = array( $this->page_regions[0]->toStdClass() );
+                }
             }
             else
             {
-                $obj->pageRegions = new \stdClass();
-                $obj->pageRegions->pageRegion = array();
+                if( $this->service->isSoap() )
+                {
+                    $obj->pageRegions = new \stdClass();
+                    $obj->pageRegions->pageRegion = array();
+                }
+                elseif( $this->service->isRest() )
+                {
+                    $obj->pageRegions = array();
+                }
         
                 foreach( $this->page_regions as $region )
                 {
-                    $obj->pageRegions->pageRegion[] = $region->toStdClass();
+                    if( $this->service->isSoap() )
+                        $obj->pageRegions->pageRegion[] = $region->toStdClass();
+                    elseif( $this->service->isRest() )
+                        $obj->pageRegions[] = $region->toStdClass();
                 }
             }
         }
         else
         {
-            $obj->pageRegions = new \stdClass();
+            if( $this->service->isSoap() )
+                $obj->pageRegions = new \stdClass();
+            elseif( $this->service->isRest() )
+                $obj->pageRegions = array();
         }
         
         $obj->outputExtension       = $this->output_extension;
