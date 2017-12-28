@@ -377,9 +377,6 @@ method to edit the <code>structuredData</code> property.</p></description>
         if( isset( $this->structured_data ) )
         {
             $block->structuredData = $this->structured_data->toStdClass();
-            
-            u\DebugUtility::dump( $this->structured_data->toStdClass() );
-            
             $block->xhtml          = NULL;
         }
         else
@@ -1305,7 +1302,7 @@ chooser node, allowing users to choose a page.</p></description>
     }
     
 /**
-<documentation><description><p>Removes all phantom nodes of type B, and returns the calling object.</p></description>
+<documentation><description><p>Removes all phantom nodes of type B, and returns the calling object. Because this method relies on the <code>batch</code> operation, which is not defined for REST (Cascade 8.7.1), it only works for SOAP.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception>WrongBlockTypeException</exception>
@@ -1313,9 +1310,13 @@ chooser node, allowing users to choose a page.</p></description>
 */
     public function mapData() : Asset
     {
-        $this->checkStructuredData();
-        $new_sd = $this->structured_data->mapData();
-        return $this->setStructuredData( $new_sd );
+    	if( $this->getService()->isSoap() )
+    	{
+        	$this->checkStructuredData();
+        	$new_sd = $this->structured_data->mapData();
+        	return $this->setStructuredData( $new_sd );
+        }
+        return $this;
     }
 
 /**
