@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/28/2017 Added code to unset properties when NULL.
   * 12/27/2017 Added more REST code.
   * 12/21/2017 Added the $service object to constructor and processStructuredDataNodes so that isSoap and isRest can be called. Changed toStdClass so that it works with REST.
   * 9/19/2017 Fixed a bug in processStructuredDataNodes.
@@ -256,7 +257,7 @@ class StructuredDataNode extends Property
                     self::processStructuredDataNodes( 
                         $cur_identifier, // the parent id
                         $this->structured_data_nodes, // array to store children
-                        $node->structuredDataNodes, // stdClass
+                        $node->structuredDataNodes,   // array
                         $this->data_definition,
                         $this->service
                     );
@@ -1790,19 +1791,60 @@ class StructuredDataNode extends Property
         }
         else
         {
-            $obj->structuredDataNodes = NULL;
+            //$obj->structuredDataNodes = NULL;
+            unset( $obj->structuredDataNodes );
         }
     
-        $obj->text        = $this->text;
-        $obj->assetType   = $this->asset_type;
-        $obj->blockId     = $this->block_id;
-        $obj->blockPath   = $this->block_path;
-        $obj->fileId      = $this->file_id;
-        $obj->filePath    = $this->file_path;
-        $obj->pageId      = $this->page_id;
-        $obj->pagePath    = $this->page_path;
-        $obj->symlinkId   = $this->symlink_id;
-        $obj->symlinkPath = $this->symlink_path;
+        if( isset( $this->text ) )
+            $obj->text        = $this->text;
+        else
+            unset( $obj->text );
+            
+        if( isset( $this->asset_type ) )
+            $obj->assetType   = $this->asset_type;
+        else
+            unset( $obj->assetType );
+            
+        if( isset( $this->block_id ) )
+            $obj->blockId   = $this->block_id;
+        else
+            unset( $obj->blockId );
+            
+        if( isset( $this->block_path ) )
+            $obj->blockPath   = $this->block_path;
+        else
+            unset( $obj->blockPath );
+            
+        if( isset( $this->file_id ) )
+            $obj->fileId   = $this->file_id;
+        else
+            unset( $obj->fileId );
+            
+        if( isset( $this->file_path ) )
+            $obj->filePath   = $this->file_path;
+        else
+            unset( $obj->filePath );
+            
+        if( isset( $this->page_id ) )
+            $obj->pageId   = $this->page_id;
+        else
+            unset( $obj->pageId );
+            
+        if( isset( $this->page_path ) )
+            $obj->pagePath   = $this->page_path;
+        else
+            unset( $obj->pagePath );
+            
+        if( isset( $this->symlink_id ) )
+            $obj->symlinkId   = $this->symlink_id;
+        else
+            unset( $obj->symlinkId );
+            
+        if( isset( $this->symlink_path ) )
+            $obj->symlinkPath   = $this->symlink_path;
+        else
+            unset( $obj->symlinkPath );
+            
         $obj->recycled    = $this->recycled;
         
         return $obj;
@@ -1926,9 +1968,9 @@ class StructuredDataNode extends Property
         // no digits in the fully qualified identifiers
         for( $i = 0; $i < $node_count; $i++ )
         {
-        	if( isset( $node_std[ $i ]->identifier ) )
-        	{
-            	$fq_identifier = $node_std[ $i ]->identifier;
+            if( isset( $node_std[ $i ]->identifier ) )
+            {
+                $fq_identifier = $node_std[ $i ]->identifier;
             }
             
             if( $parent_id != '' )
