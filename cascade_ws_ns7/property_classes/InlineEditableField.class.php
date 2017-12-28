@@ -65,11 +65,16 @@ class InlineEditableField extends Property
     {
         if( isset( $ief ) )
         {
-            $this->page_configuration_name    = $ief->pageConfigurationName;
-            $this->page_region_name           = $ief->pageRegionName;
-            $this->data_definition_group_path = $ief->dataDefinitionGroupPath;
-            $this->type                       = $ief->type;
-            $this->name                       = $ief->name;
+            if( isset( $ief->pageConfigurationName ) )
+                $this->page_configuration_name    = $ief->pageConfigurationName;
+            if( isset( $ief->pageRegionName ) )
+                $this->page_region_name           = $ief->pageRegionName;
+            if( isset( $ief->dataDefinitionGroupPath ) )
+                $this->data_definition_group_path = $ief->dataDefinitionGroupPath;
+            if( isset( $ief->type ) )
+                $this->type                       = $ief->type;
+            if( isset( $ief->name ) )
+                $this->name                       = $ief->name;
         }
     }
     
