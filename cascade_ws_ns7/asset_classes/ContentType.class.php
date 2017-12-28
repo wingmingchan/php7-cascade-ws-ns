@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/27/2017 Added REST code and updated documentation.
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
     Added getEditorConfigurationId and getEditorConfigurationPath.
@@ -67,12 +68,16 @@ contentType
   dataDefinitionPath
   metadataSetId
   metadataSetPath
-  contentTypePageConfigurations (array)
-    stdClass
-      pageConfigurationId
-      pageConfigurationName
-      publishMode
-  inlineEditableFields (array)
+  contentTypePageConfigurations (array of stdClass)
+    pageConfigurationId
+    pageConfigurationName
+    publishMode
+  inlineEditableFields (array of stdClass)
+    pageConfigurationName
+    pageRegionName
+    dataDefinitionGroupPath
+    type
+    name
   parentContainerId
   parentContainerPath
   path
@@ -83,7 +88,7 @@ contentType
 </pre>
 <h2>Design Issues</h2>
 <ul>
-<li>As of December, 2016, there is a <a href=\"https://hannonhill.jira.com/browse/CSI-626\">bug</a> related to adding/removing a data definition field to the set of inline editable fields. Although the <code>addInlineEditableField</code> and <code>removeInlineEditableField</code> methods are implemented and work for metadata set, do not use them for data definition fields.</li>
+<li>As of December, 2017, there is a <a href=\"https://hannonhill.jira.com/browse/CSI-626\">bug</a> related to adding/removing a data definition field to the set of inline editable fields. Although the <code>addInlineEditableField</code> and <code>removeInlineEditableField</code> methods are implemented and work for metadata set, do not use them for data definition fields.</li>
 <li>Here again I need to work with fully qualified identifiers for inline editable fields. Cascade uses the slashes in the path. This is actually good for me because I use semi-colons. Since different delimiters are used, the group path information from Cascade will be kept intact. Whenever needed, a translation between slashes and semi-colons can be performed.</li>
 <li>When dealing with data definitions, the result of concatenating group path and the name of the field, with all the slashes turned into semi-colons, is equivalent to my fully qualified identifier of the field in the data definition.</li>
 </ul>
@@ -165,15 +170,27 @@ metadata set, configuration set, and so on.</p></description>
         
         if( isset( $this->getProperty()->contentTypePageConfigurations ) )
         {
-            $this->processContentTypePageConfigurations(
-                $this->getProperty()->contentTypePageConfigurations->
-                contentTypePageConfiguration );
+            if( $this->getService()->isSoap() && 
+                isset( $this->getProperty()->contentTypePageConfigurations->
+                    contentTypePageConfiguration ) )
+                $this->processContentTypePageConfigurations(
+                    $this->getProperty()->contentTypePageConfigurations->
+                    contentTypePageConfiguration );
+            elseif( $this->getService()->isRest() )
+                $this->processContentTypePageConfigurations(
+                    $this->getProperty()->contentTypePageConfigurations );
         }
         
-        if( isset( $this->getProperty()->inlineEditableFields ) &&
-            isset( $this->getProperty()->inlineEditableFields->inlineEditableField ))
-            $this->processInlineEditableFields(
-                $this->getProperty()->inlineEditableFields->inlineEditableField );
+        if( isset( $this->getProperty()->inlineEditableFields ) )
+        {
+            if( $this->getService()->isSoap() && 
+                isset( $this->getProperty()->inlineEditableFields->inlineEditableField ) )
+                $this->processInlineEditableFields(
+                    $this->getProperty()->inlineEditableFields->inlineEditableField );
+            elseif( $this->getService()->isRest() )
+                $this->processInlineEditableFields(
+                    $this->getProperty()->inlineEditableFields );
+        }
         
         if( isset( $this->getProperty()->dataDefinitionId ) )
         {
@@ -432,11 +449,11 @@ overriding the parent method to display the configuration set as well.</p></desc
 <exception></exception>
 </documentation>
 */
-	public function getEditorConfigurationId()
-	{
-		return $this->getProperty()->editorConfigurationId;
-	}
-	
+    public function getEditorConfigurationId()
+    {
+        return $this->getProperty()->editorConfigurationId;
+    }
+    
 /**
 <documentation><description><p>Returns <code>editorConfigurationPath</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $ct->getEditorConfigurationPath() ), BR;</example>
@@ -444,10 +461,10 @@ overriding the parent method to display the configuration set as well.</p></desc
 <exception></exception>
 </documentation>
 */
-	public function getEditorConfigurationPath()
-	{
-		return $this->getProperty()->editorConfigurationPath;
-	}
+    public function getEditorConfigurationPath()
+    {
+        return $this->getProperty()->editorConfigurationPath;
+    }
 /**
 <documentation><description><p>Returns an array of inline editable field names. An inline editable field name consists of five parts: <code>pageConfigurationName;pageRegionName;dataDefinitionGroupPath;type;name</code>. For example, <code>RWD;DEFAULT;NULL;data-definition;post-title-chooser</code>.</p></description>
 <example>u\DebugUtility::dump( $ct->getInlineEditableFieldNames() );</example>
@@ -577,10 +594,10 @@ overriding the parent method to display the configuration set as well.</p></desc
 */
     public function hasDataDefinitionGroupPath( string $name ) : bool
     {
-    	if( !isset( $this->data_definition ) )
-    		throw new \Exception( 
-    			"The content type is not associated with a data definition" );
-    			
+        if( !isset( $this->data_definition ) )
+            throw new \Exception( 
+                "The content type is not associated with a data definition" );
+                
         $name = str_replace( '/', DataDefinition::DELIMITER, $name );
         return in_array( $name, $this->data_definition->getIdentifiers() );
     }
@@ -774,7 +791,7 @@ data definition fields.</p></description>
         foreach( $configs as $config )
         {
             $this->content_type_page_configurations[] = 
-                new p\ContentTypePageConfiguration( $config );
+                new p\ContentTypePageConfiguration( $config, $this->getService() );
                 
             $this->content_type_page_configuration_names[] = 
                 $config->pageConfigurationName;    
@@ -796,7 +813,7 @@ data definition fields.</p></description>
             
             foreach( $fields as $field )
             {
-                $ief = new p\InlineEditableField( $field );
+                $ief = new p\InlineEditableField( $field, $this->getService() );
                 $this->inline_editable_fields[] = $ief;
                 //echo $ief->getIdentifier() . BR;
                 $this->inline_editable_field_map[ $ief->getIdentifier() ] = $ief;
