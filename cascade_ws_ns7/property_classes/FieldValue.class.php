@@ -177,11 +177,15 @@ to set the values and returns the calling object. The method must guarantee that
         $obj   = new \stdClass();
         $count = count( $this->values );
         
-        if( $count == 1 ) // NULL or 1 value
+        if( $count == 0 ) ## REST
+        {
+        	$obj = array();
+        }
+        elseif( $count == 1 ) // NULL or 1 value, possibly empty string
         {
             $value = new \stdClass();
             
-            if( $this->values[0] != '' )
+            if( $this->values[ 0 ] != '' )
             {
                 if( $this->service->isSoap() )
                 {
@@ -193,6 +197,10 @@ to set the values and returns the calling object. The method must guarantee that
                 	$value->value = $this->values[ 0 ];
                 	$obj = array( $value );
                 }
+            }
+            elseif( $this->values[ 0 ] == '' || is_null( $this->values[ 0 ] ) )
+            {
+            	$obj = array();
             }
         }
         else // one or more
