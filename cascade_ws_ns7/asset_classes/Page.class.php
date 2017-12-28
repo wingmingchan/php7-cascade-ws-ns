@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/28/2017 Added REST code and updated documentation.
   * 8/1/2017 Added getBlock.
   * 6/26/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -279,13 +280,18 @@ page configurations and structured data.</p></description>
             $this->data_definition    = $this->content_type->getDataDefinition();
 
             // structuredDataNode could be empty for xml pages
-            if( isset( $this->getProperty()->structuredData ) &&
-                isset( $this->getProperty()->structuredData->structuredDataNodes ) &&
-                isset( $this->getProperty()->
-                    structuredData->structuredDataNodes->structuredDataNode )
-            )
+            if( isset( $this->getProperty()->structuredData ) )
             {
-                $this->processStructuredData( $this->data_definition_id );
+            	if( $this->getService()->isSoap() &&
+                	isset( $this->getProperty()->
+                    structuredData->structuredDataNodes->structuredDataNode ) )
+            	{
+                	$this->processStructuredData( $this->data_definition_id );
+                }
+                elseif( $this->getService()->isRest() )
+                {
+                	$this->processStructuredData( $this->data_definition_id );
+                }
             }
         }
         elseif( isset( $this->getProperty()->xhtml ) )
@@ -293,8 +299,12 @@ page configurations and structured data.</p></description>
             $this->xhtml = $this->getProperty()->xhtml;
         }
         
-        $this->processPageConfigurations(
-            $this->getProperty()->pageConfigurations->pageConfiguration );
+        if( $this->getService()->isSoap() )
+            $this->processPageConfigurations(
+                $this->getProperty()->pageConfigurations->pageConfiguration );
+        elseif( $this->getService()->isRest() )
+            $this->processPageConfigurations(
+                $this->getProperty()->pageConfigurations );
     }
 
 /**
@@ -451,11 +461,17 @@ successfully, it no longer exists and there will be no structured data to proces
                 $page->xhtml = $this->xhtml;
         }
         
-        $page->pageConfigurations->pageConfiguration = array();
+        if( $this->getService()->isSoap() )
+        	$page->pageConfigurations->pageConfiguration = array();
+        elseif( $this->getService()->isRest() )
+        	$page->pageConfigurations = array();
         
         foreach( $this->page_configurations as $config )
         {
-            $page->pageConfigurations->pageConfiguration[] = $config->toStdClass();
+        	if( $this->getService()->isSoap() )
+        		$page->pageConfigurations->pageConfiguration[] = $config->toStdClass();
+        	elseif( $this->getService()->isRest() )
+        		$page->pageConfigurations[] = $config->toStdClass();
         }
         
         if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $page->pageConfigurations ); }
@@ -480,6 +496,8 @@ successfully, it no longer exists and there will be no structured data to proces
             
             $asset->workflowConfiguration    = $wf_config;
         }
+        
+        //u\DebugUtility::dump( $page );
         
         $asset->{ $p = $this->getPropertyName() } = $page;
         
@@ -2695,6 +2713,5 @@ object.</p></description>
     private $data_definition_id;
     private $content_type;
     private $page_configuration_set;
-    //private $metadata_set;
     private $data_definition;
 }
