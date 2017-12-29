@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/29/2017 Added REST code and updated documentation.
   * 12/21/2017 Added getRoleAssignments.
   * 11/27/2017 Removed CSS properties and methods, added naming properties and methods.
   * 9/14/2017 Added getExtensionsToStrip and setExtensionsToStrip.
@@ -101,60 +102,138 @@ return $doc_string;
 ?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/site.php">site.php</a></li></ul>
-<h2>JSON Dump</h2>
+<h2>REST Dump</h2>
 <pre>
-{ "asset":{
-  "site":{
-    "defaultMetadataSetId":"1f22ac858b7ffe834c5fe91e67ea0fcf",
-    "defaultMetadataSetPath":"Default",
-    "siteAssetFactoryContainerId":"1f217d838b7ffe834c5fe91e9832f910",
-    "siteAssetFactoryContainerPath":"Upload",
-    "siteStartingPageId":"1f2376798b7ffe834c5fe91ead588ce1",
-    "siteStartingPagePath":"index",
-    "siteStartingPageRecycled":false,
-    "url":"http://www.upstate.edu/tuw-test",
-    "recycleBinExpiration":"30",
-    "cssFileId":"081d805b8b7ffe8339ce5d1303b53a50",
-    "cssFilePath":"_extra/test.css",
-    "cssFileRecycled":false,
-    "roleAssignments":[ { 
-      "roleId":"50",
-      "roleName":"Site-Publisher",
-      "users":"chanw,tuw",
-      "groups":"cru" } ],
-    "usesScheduledPublishing":true,
-    "scheduledPublishDestinationMode":"all-destinations",
-    "timeToPublish":"00:00:00.000-05:00",
-    "publishDaysOfWeek":[
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday" ],
-    "sendReportToUsers":"wing",
-    "sendReportToGroups":"Administrators",
-    "sendReportOnErrorOnly":true,
-    "rootFolderId":"1f21734f8b7ffe834c5fe91e89f3d6c2",
-    "rootAssetFactoryContainerId":"1f2174298b7ffe834c5fe91e544ee758",
-    "rootPageConfigurationSetContainerId":"1f2175268b7ffe834c5fe91ea94519a0",
-    "rootContentTypeContainerId":"1f2175d28b7ffe834c5fe91e3eb6485d",
-    "rootDataDefinitionContainerId":"1f2176588b7ffe834c5fe91eab1be7e7",
-    "rootMetadataSetContainerId":"1f2176d58b7ffe834c5fe91ee998459c",
-    "rootPublishSetContainerId":"1f21774c8b7ffe834c5fe91e130d561a",
-    "rootSiteDestinationContainerId":"1f2178198b7ffe834c5fe91eafd5fd78",
-    "rootTransportContainerId":"1f2178878b7ffe834c5fe91e726ec502",
-    "rootWorkflowDefinitionContainerId":"1f2172958b7ffe834c5fe91edc1f2412",
-    "rootConnectorContainerId":"1f2177b48b7ffe834c5fe91e1a7d31f4",
-    "unpublishOnExpiration":true,
-    "linkCheckerEnabled":false,
-    "externalLinkCheckOnPublish":true,
-    "name":"cascade-admin-webapp",
-    "id":"1f2172088b7ffe834c5fe91e9596d028" } },
-  "success":true
+object(stdClass)#10 (34) {
+  ["defaultMetadataSetId"]=>
+  string(32) "c12dd0738b7ffe83129ed6d86580d804"
+  ["defaultMetadataSetPath"]=>
+  string(7) "Default"
+  ["siteAssetFactoryContainerId"]=>
+  string(32) "c12d932d8b7ffe83129ed6d8112a2203"
+  ["siteAssetFactoryContainerPath"]=>
+  string(7) "Default"
+  ["siteStartingPageRecycled"]=>
+  bool(false)
+  ["url"]=>
+  string(30) "http://www.upstate.edu/formats"
+  ["recycleBinExpiration"]=>
+  string(2) "15"
+  ["roleAssignments"]=>
+  array(1) {
+    [0]=>
+    object(stdClass)#11 (2) {
+      ["roleId"]=>
+      string(1) "8"
+      ["roleName"]=>
+      string(18) "Site-Administrator"
+    }
+  }
+  ["usesScheduledPublishing"]=>
+  bool(false)
+  ["sendReportOnErrorOnly"]=>
+  bool(false)
+  ["rootFolderId"]=>
+  string(32) "c12d8d0d8b7ffe83129ed6d86dd9f853"
+  ["rootAssetFactoryContainerId"]=>
+  string(32) "c12d8dbe8b7ffe83129ed6d84cc7c0c7"
+  ["rootPageConfigurationSetContainerId"]=>
+  string(32) "c12d8e0c8b7ffe83129ed6d885ebd843"
+  ["rootContentTypeContainerId"]=>
+  string(32) "c12d90058b7ffe83129ed6d81395b93a"
+  ["rootDataDefinitionContainerId"]=>
+  string(32) "c12d90528b7ffe83129ed6d87f0a0643"
+  ["rootMetadataSetContainerId"]=>
+  string(32) "c12d909e8b7ffe83129ed6d849f35757"
+  ["rootPublishSetContainerId"]=>
+  string(32) "c12d90e58b7ffe83129ed6d884612ddf"
+  ["rootSiteDestinationContainerId"]=>
+  string(32) "c12d918b8b7ffe83129ed6d80a701fef"
+  ["rootTransportContainerId"]=>
+  string(32) "c12d91d58b7ffe83129ed6d8c3e45888"
+  ["rootWorkflowDefinitionContainerId"]=>
+  string(32) "c12d8cc78b7ffe83129ed6d8693cf2f7"
+  ["rootConnectorContainerId"]=>
+  string(32) "c12d913d8b7ffe83129ed6d8e9bb4cbf"
+  ["unpublishOnExpiration"]=>
+  bool(false)
+  ["linkCheckerEnabled"]=>
+  bool(false)
+  ["externalLinkCheckOnPublish"]=>
+  bool(false)
+  ["inheritDataChecksEnabled"]=>
+  bool(true)
+  ["spellCheckEnabled"]=>
+  bool(true)
+  ["linkCheckEnabled"]=>
+  bool(true)
+  ["accessibilityCheckEnabled"]=>
+  bool(true)
+  ["inheritNamingRules"]=>
+  bool(false)
+  ["namingRuleCase"]=>
+  string(5) "LOWER"
+  ["namingRuleSpacing"]=>
+  string(6) "HYPHEN"
+  ["namingRuleAssets"]=>
+  array(2) {
+    [0]=>
+    string(8) "template"
+    [1]=>
+    string(4) "file"
+  }
+  ["name"]=>
+  string(7) "formats"
+  ["id"]=>
+  string(32) "c12d8c498b7ffe83129ed6d81ea4076a"
 }
 </pre>
+<h2>JSON Dump</h2>
+<pre>
+{
+  "asset":{
+    "site":{
+      "defaultMetadataSetId":"c12dd0738b7ffe83129ed6d86580d804",
+      "defaultMetadataSetPath":"Default",
+      "siteAssetFactoryContainerId":"c12d932d8b7ffe83129ed6d8112a2203",
+      "siteAssetFactoryContainerPath":"Default",
+      "siteStartingPageRecycled":false,
+      "url":"http://www.upstate.edu/formats",
+      "recycleBinExpiration":"15",
+      "roleAssignments":[ {
+        "roleId":"8",
+        "roleName":"Site-Administrator"
+      } ],
+      "usesScheduledPublishing":false,
+      "sendReportOnErrorOnly":false,
+      "rootFolderId":"c12d8d0d8b7ffe83129ed6d86dd9f853",
+      "rootAssetFactoryContainerId":"c12d8dbe8b7ffe83129ed6d84cc7c0c7",
+      "rootPageConfigurationSetContainerId":"c12d8e0c8b7ffe83129ed6d885ebd843",
+      "rootContentTypeContainerId":"c12d90058b7ffe83129ed6d81395b93a",
+      "rootDataDefinitionContainerId":"c12d90528b7ffe83129ed6d87f0a0643",
+      "rootMetadataSetContainerId":"c12d909e8b7ffe83129ed6d849f35757",
+      "rootPublishSetContainerId":"c12d90e58b7ffe83129ed6d884612ddf",
+      "rootSiteDestinationContainerId":"c12d918b8b7ffe83129ed6d80a701fef",
+      "rootTransportContainerId":"c12d91d58b7ffe83129ed6d8c3e45888",
+      "rootWorkflowDefinitionContainerId":"c12d8cc78b7ffe83129ed6d8693cf2f7",
+      "rootConnectorContainerId":"c12d913d8b7ffe83129ed6d8e9bb4cbf",
+      "unpublishOnExpiration":false,
+      "linkCheckerEnabled":false,
+      "externalLinkCheckOnPublish":false,
+      "inheritDataChecksEnabled":true,
+      "spellCheckEnabled":true,
+      "linkCheckEnabled":true,
+      "accessibilityCheckEnabled":true,
+      "inheritNamingRules":false,
+      "namingRuleCase":"LOWER",
+      "namingRuleSpacing":"HYPHEN",
+      "namingRuleAssets":["template", "file"],
+      "name":"formats",
+      "id":"c12d8c498b7ffe83129ed6d81ea4076a"
+    }
+  },
+  "success":true
+}</pre>
 </postscript>
 </documentation>
 */
@@ -332,20 +411,32 @@ class Site extends ScheduledPublishing
         }
 
         $assignment_count      = count( $this->role_assignments );
-        $site->roleAssignments = new \stdClass();
+        
+        if( $this->getService()->isSoap() )
+        	$site->roleAssignments = new \stdClass();
+        elseif( $this->getService()->isRest() )
+        	$site->roleAssignments = array();
         
         if( $assignment_count == 1 )
         {
-            $site->roleAssignments->roleAssignment = 
-                $this->role_assignments[ 0 ]->toStdClass();
+        	if( $this->getService()->isSoap() )
+            	$site->roleAssignments->roleAssignment = 
+                	$this->role_assignments[ 0 ]->toStdClass();
+            elseif( $this->getService()->isRest() )
+            	$site->roleAssignments = 
+                	array( $this->role_assignments[ 0 ]->toStdClass() );
         }
         else if( $assignment_count > 1 )
         {
-            $site->roleAssignments->roleAssignment = array();
+        	if( $this->getService()->isSoap() )
+            	$site->roleAssignments->roleAssignment = array();
             
             foreach( $this->role_assignments as $assignment )
             {
-                $site->roleAssignments->roleAssignment[] = $assignment->toStdClass();
+            	if( $this->getService()->isSoap() )
+                	$site->roleAssignments->roleAssignment[] = $assignment->toStdClass();
+                elseif( $this->getService()->isRest() )
+                	$site->roleAssignments[] = $assignment->toStdClass();
             }
         }
         
@@ -452,7 +543,9 @@ class Site extends ScheduledPublishing
 */
     public function getDefaultEditorConfigurationPath()
     {
-        return $this->getProperty()->defaultEditorConfigurationPath;
+        if( isset( $this->getProperty()->defaultEditorConfigurationPath ) )
+            return $this->getProperty()->defaultEditorConfigurationPath;
+        return NULL;
     }
 
 /**
@@ -488,7 +581,9 @@ class Site extends ScheduledPublishing
 */
     public function getExtensionsToStrip()
     {
-        return $this->getProperty()->extensionsToStrip;
+        if( isset( $this->getProperty()->extensionsToStrip ) )
+            return $this->getProperty()->extensionsToStrip;
+        return NULL;
     }
     
 /**
@@ -548,7 +643,9 @@ class Site extends ScheduledPublishing
 */
     public function getNamingRuleAssets()
     {
-        return $this->getProperty()->namingRuleAssets;
+        if( isset( $this->getProperty()->namingRuleAssets ) )
+            return $this->getProperty()->namingRuleAssets;
+        return NULL;
     }
 
 /**
@@ -560,7 +657,9 @@ class Site extends ScheduledPublishing
 */
     public function getNamingRuleCase()
     {
-        return $this->getProperty()->namingRuleCase;
+        if( isset( $this->getProperty()->namingRuleCase ) )
+            return $this->getProperty()->namingRuleCase;
+        return NULL;
     }
     
 /**
@@ -572,7 +671,9 @@ class Site extends ScheduledPublishing
 */
     public function getNamingRuleSpacing()
     {
-        return $this->getProperty()->namingRuleSpacing;
+        if( isset( $this->getProperty()->namingRuleSpacing ) )
+            return $this->getProperty()->namingRuleSpacing;
+        return NULL;
     }
 
 /**
@@ -1119,7 +1220,9 @@ representing the root asset factory container.</p></description>
     public function getScheduledPublishDestinationMode()
     {
         // all-destinations or selected-destinations
-        return $this->getProperty()->scheduledPublishDestinationMode;
+        if( isset( $this->getProperty()->scheduledPublishDestinationMode ) )
+            return $this->getProperty()->scheduledPublishDestinationMode;
+        return NULL;
     }
     
 /**
@@ -1132,7 +1235,9 @@ representing the root asset factory container.</p></description>
 */
     public function getScheduledPublishDestinations()
     {
-        return $this->getProperty()->scheduledPublishDestinations;
+        if( isset( $this->getProperty()->scheduledPublishDestinations ) )
+            return $this->getProperty()->scheduledPublishDestinations;
+        return NULL;
     }
     
 /**
@@ -1196,13 +1301,15 @@ representing the root asset factory container.</p></description>
 /**
 <documentation><description><p>Returns <code>siteStartingPageId</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $s->getSiteStartingPageId() ), BR;</example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
     public function getSiteStartingPageId()
     {
-        return $this->getProperty()->siteStartingPageId;
+        if( isset( $this->getProperty()->siteStartingPageId ) )
+            return $this->getProperty()->siteStartingPageId;
+        return NULL;
     }
     
 /**
@@ -1214,7 +1321,9 @@ representing the root asset factory container.</p></description>
 */
     public function getSiteStartingPagePath()
     {
-        return $this->getProperty()->siteStartingPagePath;
+        if( isset( $this->getProperty()->siteStartingPagePath ) )
+            return $this->getProperty()->siteStartingPagePath;
+        return NULL;
     }
     
 /**
