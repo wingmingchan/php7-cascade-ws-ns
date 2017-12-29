@@ -386,7 +386,7 @@ class AssetOperationHandlerService
 /*
 https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1bfb?u=wing&p=password
 */
-    public function read( \stdClass $identifier ) : \stdClass
+    public function read( \stdClass $identifier )
     {
         $id_string = $this->createIdString( $identifier );
         $command = $this->url . __function__ . '/' . $id_string . $this->auth;
