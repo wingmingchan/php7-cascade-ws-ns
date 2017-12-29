@@ -394,7 +394,7 @@ abstract class Asset
             $service->readAudits( $a_std );
         elseif( $service->isRest() )
         {
-        	u\DebugUtility::dump( $a_std );
+            u\DebugUtility::dump( $a_std );
         
             if( isset( $a_std->auditType ) )
             {
@@ -566,11 +566,11 @@ echo "There are " . count( $subscribers ) . " subscribers.", BR;</example>
         $results = array();
         
         if( $this->getService()->isSoap() )
-        	$this->service->listSubscribers( $this->identifier );
+            $this->service->listSubscribers( $this->identifier );
         elseif( $this->getService()->isRest() )
         {
-        	$subscribers = $this->service->
-        		listSubscribers( $this->identifier )->subscribers;
+            $subscribers = $this->service->
+                listSubscribers( $this->identifier )->subscribers;
         }
             
         if( $this->service->isSuccessful() )
@@ -579,20 +579,20 @@ echo "There are " . count( $subscribers ) . " subscribers.", BR;</example>
             
             // there are subscribers
             if( $this->getService()->isSoap() &&
-				isset( $this->service->getReply()->
-					listSubscribersReturn->subscribers->assetIdentifier ) )
-				$subscribers = 
-					$this->service->getReply()->listSubscribersReturn->
-						subscribers->assetIdentifier;
-			
-			if( !is_array( $subscribers ) )
-				$subscribers = array( $subscribers );
-			
-			foreach( $subscribers as $subscriber )
-			{
-				$identifier = new p\Identifier( $subscriber );
-				$results[] = $identifier;
-			}
+                isset( $this->service->getReply()->
+                    listSubscribersReturn->subscribers->assetIdentifier ) )
+                $subscribers = 
+                    $this->service->getReply()->listSubscribersReturn->
+                        subscribers->assetIdentifier;
+            
+            if( !is_array( $subscribers ) )
+                $subscribers = array( $subscribers );
+            
+            foreach( $subscribers as $subscriber )
+            {
+                $identifier = new p\Identifier( $subscriber );
+                $results[] = $identifier;
+            }
         }
         else
         {
@@ -680,7 +680,8 @@ echo "There are " . count( $subscribers ) . " subscribers.", BR;</example>
 </documentation>
 */
     public static function getAsset( 
-        aohs\AssetOperationHandlerService $service, string $type, string $id_path, string $site_name=NULL ) : Asset
+        aohs\AssetOperationHandlerService $service, string $type, 
+        string $id_path, string $site_name=NULL ) : Asset
     {
         if( !in_array( $type, c\T::getTypeArray() ) )
             throw new e\NoSuchTypeException( S_SPAN . "The type $type does not exist." . E_SPAN );   
