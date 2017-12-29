@@ -112,8 +112,8 @@ try
                 break;
                 
         case 'publishSubscribers':
-        	$block = $cascade->getAsset(
-        		a\XmlBlock::TYPE, "9e3b67348b7f08ee30f79ea3434996e4" );
+            $block = $cascade->getAsset(
+                a\XmlBlock::TYPE, "9e3b67348b7f08ee30f79ea3434996e4" );
             $block->publishSubscribers( 
                 $cascade->getAsset(
                     a\Destination::TYPE, "c34b58ca8b7f08ee4fe76bb83ba1613b" ) 
