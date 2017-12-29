@@ -21,7 +21,7 @@ use cascade_ws_asset     as a;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>SiteAbilities</code> object represents the <code>siteAbilities</code> property found in a role asset.</p>
+<p>A <code>SiteAbilities</code> object represents the <code>siteAbilities</code> property found in a role asset. As of Cascade 8.7.1, there are 49 of them.</p>
 <h2>Properties of <code>siteAbilities</code></h2>
 <pre>accessAssetFactories
 accessConfigurationSets
@@ -43,6 +43,7 @@ breakLocks
 brokenLinkReportAccess
 brokenLinkReportMarkFixed
 bulkChange
+bypassAllPermissionsChecks
 bypassAssetFactoryGroupsNewMenu
 bypassDestinationGroupsWhenPublishing
 bypassWorkflow
@@ -80,7 +81,7 @@ $doc_string .=
 return $doc_string;
 ?>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
+<postscript></postscript>
 </documentation>
 */
 class SiteAbilities
@@ -99,74 +100,113 @@ class SiteAbilities
         $data2=NULL, 
         $data3=NULL )
     {
-        $this->access_asset_factories                       = $a->accessAssetFactories;
-        $this->access_configuration_sets                    = $a->accessConfigurationSets;
-        $this->access_connectors                            = $a->accessConnectors;
-        $this->access_content_types                         = $a->accessContentTypes;
-        $this->access_data_definitions                      = $a->accessDataDefinitions;
-        $this->access_destinations                          = $a->accessDestinations;
-        $this->access_editor_configurations                 =
-            $a->accessEditorConfigurations;
-        $this->access_manage_site_area                      = $a->accessManageSiteArea;
-        $this->access_metadata_sets                         = $a->accessMetadataSets;
-        $this->access_publish_sets                          = $a->accessPublishSets;
-        $this->access_transports                            = $a->accessTransports;
-        $this->access_workflow_definitions                  =
-            $a->accessWorkflowDefinitions;
-        $this->activate_delete_versions                     = $a->activateDeleteVersions;
-        $this->always_allowed_to_toggle_data_checks         =
-            $a->alwaysAllowedToToggleDataChecks;
-        $this->assign_approve_workflow_steps                =
-            $a->assignApproveWorkflowSteps;
-        $this->assign_workflows_to_folders                  =
-            $a->assignWorkflowsToFolders;
-        $this->break_locks                                  = $a->breakLocks;
-        $this->broken_link_report_access                    = $a->brokenLinkReportAccess;
-        $this->broken_link_report_mark_fixed                =
-            $a->brokenLinkReportMarkFixed;
-        $this->bulk_change                                  = $a->bulkChange;
-        $this->bypass_all_permissions_checks                =
-            $a->bypassAllPermissionsChecks;
-        $this->bypass_asset_factory_groups_new_menu         =
-            $a->bypassAssetFactoryGroupsNewMenu;
-        $this->bypass_destination_groups_when_publishing    =
-            $a->bypassDestinationGroupsWhenPublishing;
-        $this->bypass_workflow                              = $a->bypassWorkflow;
-        $this->bypass_workflow_defintion_groups_for_folders =
-            $a->bypassWorkflowDefintionGroupsForFolders;
-        $this->bypass_wysiwyg_editor_restrictions =
-            $a->bypassWysiwygEditorRestrictions;
-        $this->cancel_publish_jobs                          = $a->cancelPublishJobs;
-        $this->delete_workflows                             = $a->deleteWorkflows;
-        $this->edit_data_definition                         = $a->editDataDefinition;
-        $this->edit_page_content_type                       = $a->editPageContentType;
-        $this->edit_page_level_configurations               =
-            $a->editPageLevelConfigurations;
-        $this->import_zip_archive                           = $a->importZipArchive;
-        $this->move_rename_assets                           = $a->moveRenameAssets;
-        $this->multi_select_copy                            = $a->multiSelectCopy;
-        $this->multi_select_delete                          = $a->multiSelectDelete;
-        $this->multi_select_move                            = $a->multiSelectMove;
-        $this->multi_select_publish                         = $a->multiSelectPublish;
-        $this->publish_readable_admin_area_assets           =
-            $a->publishReadableAdminAreaAssets;
-        $this->publish_readable_home_assets                 =
-            $a->publishReadableHomeAssets;
-        $this->publish_writable_admin_area_assets           =
-            $a->publishWritableAdminAreaAssets;
-        $this->publish_writable_home_assets                 =
-            $a->publishWritableHomeAssets;
-        $this->recycle_bin_delete_assets                    = $a->recycleBinDeleteAssets;
-        $this->recycle_bin_view_restore_all_assets          =
-            $a->recycleBinViewRestoreAllAssets;
-        $this->recycle_bin_view_restore_user_assets         =
-            $a->recycleBinViewRestoreUserAssets;
-        $this->reorder_publish_queue                        = $a->reorderPublishQueue;
-        $this->send_stale_asset_notifications               =
-            $a->sendStaleAssetNotifications;
-        $this->upload_images_from_wysiwyg                   = $a->uploadImagesFromWysiwyg;
-        $this->view_publish_queue                           = $a->viewPublishQueue;
-        $this->view_versions                                = $a->viewVersions;        
+        if( isset( $a->accessAssetFactories ) )
+            $this->access_asset_factories    = $a->accessAssetFactories;
+        if( isset( $a->accessConfigurationSets ) )
+            $this->access_configuration_sets = $a->accessConfigurationSets;
+        if( isset( $a->accessConnectors ) )
+            $this->access_connectors         = $a->accessConnectors;
+        if( isset( $a->accessContentTypes ) )
+            $this->access_content_types      = $a->accessContentTypes;
+        if( isset( $a->accessDataDefinitions ) )
+            $this->access_data_definitions   = $a->accessDataDefinitions;
+        if( isset( $a->accessDestinations ) )
+            $this->access_destinations       = $a->accessDestinations;
+        if( isset( $a->accessEditorConfigurations ) )
+            $this->access_editor_configurations = $a->accessEditorConfigurations;
+        if( isset( $a->accessManageSiteArea ) )
+            $this->access_manage_site_area   = $a->accessManageSiteArea;
+        if( isset( $a->accessMetadataSets ) )
+            $this->access_metadata_sets      = $a->accessMetadataSets;
+        if( isset( $a->accessPublishSets ) )
+            $this->access_publish_sets       = $a->accessPublishSets;
+        if( isset( $a->accessTransports ) )
+            $this->access_transports         = $a->accessTransports;
+        if( isset( $a->accessWorkflowDefinitions ) )
+            $this->access_workflow_definitions = $a->accessWorkflowDefinitions;
+        if( isset( $a->activateDeleteVersions ) )
+            $this->activate_delete_versions  = $a->activateDeleteVersions;
+        if( isset( $a->alwaysAllowedToToggleDataChecks ) )
+            $this->always_allowed_to_toggle_data_checks =
+                $a->alwaysAllowedToToggleDataChecks;
+        if( isset( $a->assignApproveWorkflowSteps ) )
+            $this->assign_approve_workflow_steps = $a->assignApproveWorkflowSteps;
+        if( isset( $a->assignWorkflowsToFolders ) )
+            $this->assign_workflows_to_folders   = $a->assignWorkflowsToFolders;
+        if( isset( $a->breakLocks ) )
+            $this->break_locks                   = $a->breakLocks;
+        if( isset( $a->brokenLinkReportAccess ) )
+            $this->broken_link_report_access     = $a->brokenLinkReportAccess;
+        if( isset( $a->brokenLinkReportMarkFixed ) )
+            $this->broken_link_report_mark_fixed = $a->brokenLinkReportMarkFixed;
+        if( isset( $a->bulkChange ) )
+            $this->bulk_change                   = $a->bulkChange;
+        if( isset( $a->bypassAllPermissionsChecks ) )
+            $this->bypass_all_permissions_checks = $a->bypassAllPermissionsChecks;
+        if( isset( $a->bypassAssetFactoryGroupsNewMenu ) )
+            $this->bypass_asset_factory_groups_new_menu =
+                $a->bypassAssetFactoryGroupsNewMenu;
+        if( isset( $a->bypassDestinationGroupsWhenPublishing ) )
+            $this->bypass_destination_groups_when_publishing =
+                $a->bypassDestinationGroupsWhenPublishing;
+        if( isset( $a->bypassWorkflow ) )
+            $this->bypass_workflow               = $a->bypassWorkflow;
+        if( isset( $a->bypassWorkflowDefintionGroupsForFolders ) )
+            $this->bypass_workflow_defintion_groups_for_folders =
+                $a->bypassWorkflowDefintionGroupsForFolders;
+        if( isset( $a->bypassWysiwygEditorRestrictions ) )
+            $this->bypass_wysiwyg_editor_restrictions =
+                $a->bypassWysiwygEditorRestrictions;
+        if( isset( $a->cancelPublishJobs ) )
+            $this->cancel_publish_jobs            = $a->cancelPublishJobs;
+        if( isset( $a->deleteWorkflows ) )
+            $this->delete_workflows               = $a->deleteWorkflows;
+        if( isset( $a->editDataDefinition ) )
+            $this->edit_data_definition           = $a->editDataDefinition;
+        if( isset( $a->editPageContentType ) )
+            $this->edit_page_content_type         = $a->editPageContentType;
+        if( isset( $a->editPageLevelConfigurations ) )
+            $this->edit_page_level_configurations = $a->editPageLevelConfigurations;
+        if( isset( $a->importZipArchive ) )
+            $this->import_zip_archive             = $a->importZipArchive;
+        if( isset( $a->moveRenameAssets ) )
+            $this->move_rename_assets             = $a->moveRenameAssets;
+        if( isset( $a->multiSelectCopy ) )
+            $this->multi_select_copy              = $a->multiSelectCopy;
+        if( isset( $a->multiSelectDelete ) )
+            $this->multi_select_delete            = $a->multiSelectDelete;
+        if( isset( $a->multiSelectMove ) )
+            $this->multi_select_move              = $a->multiSelectMove;
+        if( isset( $a->multiSelectPublish ) )
+            $this->multi_select_publish           = $a->multiSelectPublish;
+        if( isset( $a->publishReadableAdminAreaAssets ) )
+            $this->publish_readable_admin_area_assets =
+                $a->publishReadableAdminAreaAssets;
+        if( isset( $a->publishReadableHomeAssets ) )
+            $this->publish_readable_home_assets   = $a->publishReadableHomeAssets;
+        if( isset( $a->publishWritableAdminAreaAssets ) )
+            $this->publish_writable_admin_area_assets =
+                $a->publishWritableAdminAreaAssets;
+        if( isset( $a->publishWritableHomeAssets ) )
+            $this->publish_writable_home_assets   = $a->publishWritableHomeAssets;
+        if( isset( $a->recycleBinDeleteAssets ) )
+            $this->recycle_bin_delete_assets      = $a->recycleBinDeleteAssets;
+        if( isset( $a->recycleBinViewRestoreAllAssets ) )
+            $this->recycle_bin_view_restore_all_assets =
+                $a->recycleBinViewRestoreAllAssets;
+        if( isset( $a->recycleBinViewRestoreUserAssets ) )
+            $this->recycle_bin_view_restore_user_assets =
+                $a->recycleBinViewRestoreUserAssets;
+        if( isset( $a->reorderPublishQueue ) )
+            $this->reorder_publish_queue          = $a->reorderPublishQueue;
+        if( isset( $a->sendStaleAssetNotifications ) )
+            $this->send_stale_asset_notifications = $a->sendStaleAssetNotifications;
+        if( isset( $a->uploadImagesFromWysiwyg ) )
+            $this->upload_images_from_wysiwyg     = $a->uploadImagesFromWysiwyg;
+        if( isset( $a->viewPublishQueue ) )
+            $this->view_publish_queue             = $a->viewPublishQueue;
+        if( isset( $a->viewVersions ) )
+            $this->view_versions                  = $a->viewVersions;        
     }
 
 /**
@@ -387,6 +427,17 @@ class SiteAbilities
     public function getBulkChange() : bool
     {
         return $this->bulk_change;
+    }
+    
+/**
+<documentation><description><p>Returns <code>bypassAllPermissionsChecks</code>.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getBypassAllPermissionsChecks() : bool
+    {
+        return $this->$bypass_all_permissions_checks;
     }
     
 /**
@@ -969,7 +1020,20 @@ class SiteAbilities
         $this->bulk_change = $bool;
         return $this;
     }
-    
+
+/**
+<documentation><description><p>Sets <code>bypassAllPermissionsChecks</code> and returns the calling object.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setBypassAllPermissionsChecks( bool $bool ) : Property
+    {
+        $this->checkBoolean( $bool );
+        $this->bypass_all_permissions_checks = $bool;
+        return $this;
+    }
+
 /**
 <documentation><description><p>Sets <code>bypassAssetFactoryGroupsNewMenu</code> and returns the calling object.</p></description>
 <example></example>
@@ -1434,6 +1498,7 @@ class SiteAbilities
     private $broken_link_report_access;
     private $broken_link_report_mark_fixed;
     private $bulk_change;
+    private $bypass_all_permissions_checks;
     private $bypass_asset_factory_groups_new_menu;
     private $bypass_destination_groups_when_publishing;
     private $bypass_workflow;
