@@ -4,6 +4,8 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/29/2017 Update REST code.
+  * 12/26/2017 Changed toStdClass so that it works with REST.
   * 7/14/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 2/11/2016 Throwing exception from getParameter. Added addParameter and removeParameter.
@@ -48,12 +50,13 @@ class Plugin extends Property
 <documentation><description><p>The constructor.</p></description>
 <example>// retrieve the asset factory
 $af = $cascade->getAsset(
-		a\AssetFactory::TYPE, "1f2179f08b7ffe834c5fe91e7eb59cc8" );
+        a\AssetFactory::TYPE, "1f2179f08b7ffe834c5fe91e7eb59cc8" );
 // get the plugin
 $plugin = $af->getPlugin( "com.cms.assetfactory.FileLimitPlugin" );
-	</example>
+    </example>
 <return-type></return-type>
 <exception></exception>
+<exception>NullServiceException</exception>
 </documentation>
 */
     public function __construct( 
@@ -63,14 +66,20 @@ $plugin = $af->getPlugin( "com.cms.assetfactory.FileLimitPlugin" );
         $data2=NULL, 
         $data3=NULL )
     {
+        if( is_null( $service ) )
+            throw new e\NullServiceException( c\M::NULL_SERVICE );
+            
+        $this->service = $service;
+        
         if( isset( $p ) )
         {
-            $this->name  = $p->name;
+            if( isset( $p->name ) )
+                $this->name  = $p->name;
             
-            if( isset( $p->parameters->parameter ) )
-            {
+            if( $this->service->isSoap() && isset( $p->parameters->parameter ) )
                 $this->processParameters( $p->parameters->parameter );
-            }
+            elseif( $this->service->isRest() )
+                $this->processParameters( $p->parameters );
         }
     }
     
@@ -133,9 +142,9 @@ $af->edit();</example>
     {
         if( !$this->hasParameter( $name ) )
         {
-        	throw new e\NoSuchPluginParameterException(
-            	S_SPAN . "The parameter $name does not exist." .
-            	E_SPAN );
+            throw new e\NoSuchPluginParameterException(
+                S_SPAN . "The parameter $name does not exist." .
+                E_SPAN );
         }
         return $this->parameter;
     }
@@ -167,12 +176,12 @@ $af->edit();</example>
             {
                 if( $parameter->getName() == $name )
                 {
-                	$this->parameter = $parameter;
+                    $this->parameter = $parameter;
                     return true;
                 }
                 else
                 {
-                	$this->parameter = NULL;
+                    $this->parameter = NULL;
                 }
             }
         }
@@ -240,7 +249,10 @@ $af->edit();</example>
         $obj->name = $this->name;
         $count     = count( $this->parameters );
         
-        $obj->parameters = new \stdClass();
+        if( $this->service->isSoap() )
+        	$obj->parameters = new \stdClass();
+        elseif( $this->service->isRest() )
+        	$obj->parameters = array();
         
         if( $count == 0 )
         {
@@ -248,15 +260,32 @@ $af->edit();</example>
         }
         else if( $count == 1 )
         {
-            $obj->parameters->parameter = $this->parameters[0];
+        	if( $this->service->isSoap() )
+            	$obj->parameters->parameter = $this->parameters[ 0 ];
+            elseif( $this->service->isRest() )
+            {
+            	$param_std = $this->parameters[ 0 ]->toStdClass();
+            	
+            	if( isset( $param_std->name ) && isset( $param_std->value ) )
+            		$obj->parameters = array( $param_std );
+            }
         }
         else
         {
-            $obj->parameters->parameter = array();
+        	if( $this->service->isSoap() )
+            	$obj->parameters->parameter = array();
             
             foreach( $this->parameters as $parameter )
             {
-                $obj->parameters->parameter[] = $parameter->toStdClass();
+            	if( $this->service->isSoap() )
+                	$obj->parameters->parameter[] = $parameter->toStdClass();
+                elseif( $this->service->isRest() )
+                {
+                	$param_std = $parameter->toStdClass();
+                	
+                	if( isset( $param_std->name ) && isset( $param_std->value ) )
+                		$obj->parameters[] = $param_std;
+                }
             }
         }
         
@@ -273,12 +302,17 @@ $af->edit();</example>
         }
         foreach( $parameters as $parameter )
         {
-            $this->parameters[] = new Parameter( $parameter );
+            if( $this->service->isSoap() )
+            	$this->parameters[] = new Parameter( $parameter );
+        	elseif( $this->service->isRest() &&
+        		isset( $parameter->name ) && isset( $parameter->value ) )
+            		$this->parameters[] = new Parameter( $parameter );
         }
     }
 
     private $name;
     private $parameters;
     private $parameter;
+    private $service;
 }
 ?>
