@@ -259,7 +259,7 @@ class AssetOperationHandlerService
         }        
     }
 
-    public function getAudits() : \stdClass
+    public function getAudits()
     {
         return $this->audits;
     }
@@ -407,8 +407,19 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
     public function readAudits(
         \stdClass $identifier, \stdClass $auditParams=NULL ) : \stdClass
     {
-        $id_string = $this->createIdString( $identifier );
+    	if( isset( $identifier->identifier ) )
+        	$id_string = $this->createIdString( $identifier->identifier );
+        // properties like username and roleid are created in Asset::getAudits
+        elseif( isset( $identifier->username ) )
+        	$id_string = "user" . "/" . $identifier->username;
+        elseif( isset( $identifier->groupname ) )
+        	$id_string = "group" . "/" . $identifier->groupname;
+        elseif( isset( $identifier->roleid ) )
+        	$id_string = "role" . "/" . $identifier->roleid;
+        	
         $command = $this->url . __function__ . '/' . $id_string  . $this->auth;
+        
+        echo $command, BR;
         
         if( !is_null( $auditParams ) )
         {
