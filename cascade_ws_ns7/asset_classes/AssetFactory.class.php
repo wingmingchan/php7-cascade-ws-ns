@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/29/2017 Added REST code.
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 2/22/2017 Added addGroupName.
@@ -80,13 +81,11 @@ assetFactory
   folderPlacementPosition (int)
   overwrite (bool)
   workflowMode
-  plugins (array)
-    stdClass
+  plugins (array of stdClass)
+    name
+    parameters (array of stdClass)
       name
-      parameters (array)
-        stdClass
-          name
-          value
+      value
   parentContainerId
   parentContainerPath
   path
@@ -206,7 +205,12 @@ class AssetFactory extends ContainedAsset
         }
     
         $group_name   = $g->getName();
-        $group_string = $this->getProperty()->applicableGroups;
+        
+        if( isset( $this->getProperty()->applicableGroups ) )
+            $group_string = $this->getProperty()->applicableGroups;
+        else
+            $group_string = "";
+            
         $group_array  = explode( ';', $group_string );
         
         if( !in_array( $group_name, $group_array ) )
@@ -262,7 +266,8 @@ class AssetFactory extends ContainedAsset
         $new_plugin_std             = new \stdClass();
         $new_plugin_std->name       = $name;
         $new_plugin_std->parameters = new \stdClass();
-        $this->plugins[]            = new p\Plugin( $new_plugin_std );
+        $this->plugins[]            = new p\Plugin(
+            $new_plugin_std, $this->getService() );
         
         return $this->edit();
     }
@@ -283,13 +288,20 @@ class AssetFactory extends ContainedAsset
     ) : Asset
     {
         $asset = new \stdClass();
-        $this->getProperty()->plugins->plugin = array();
+        
+        if( $this->getService()->isSoap() )
+            $this->getProperty()->plugins->plugin = array();
+        elseif( $this->getService()->isRest() )
+            $this->getProperty()->plugins = array();
         
         if( count( $this->plugins ) > 0 )
         {
             foreach( $this->plugins as $plugin )
             {
-                $this->getProperty()->plugins->plugin[] = $plugin->toStdClass();
+                if( $this->getService()->isSoap() )
+                    $this->getProperty()->plugins->plugin[] = $plugin->toStdClass();
+                elseif( $this->getService()->isRest() )
+                    $this->getProperty()->plugins[] = $plugin->toStdClass();
             }
         }
 
@@ -328,7 +340,9 @@ class AssetFactory extends ContainedAsset
 */
     public function getApplicableGroups()
     {
-        return $this->getProperty()->applicableGroups;
+        if( isset( $this->getProperty()->applicableGroups ) )
+            return $this->getProperty()->applicableGroups;
+        return NULL;
     }
     
 /**
@@ -388,7 +402,9 @@ class AssetFactory extends ContainedAsset
 */
     public function getDescription()
     {
-        return $this->getProperty()->description;
+        if( isset( $this->getProperty()->description ) )
+            return $this->getProperty()->description;
+        return NULL;
     }
     
 /**
@@ -400,7 +416,9 @@ class AssetFactory extends ContainedAsset
 */
     public function getFolderPlacementPosition() : int
     {
-        return $this->getProperty()->folderPlacementPosition;
+        if( isset( $this->getProperty()->folderPlacementPosition ) )
+            return $this->getProperty()->folderPlacementPosition;
+        return NULL;
     }
     
 /**
@@ -424,7 +442,9 @@ class AssetFactory extends ContainedAsset
 */
     public function getPlacementFolderId()
     {
-        return $this->getProperty()->placementFolderId;
+        if( isset( $this->getProperty()->placementFolderId ) )
+            return $this->getProperty()->placementFolderId;
+        return NULL;
     }
     
 /**
@@ -436,7 +456,9 @@ class AssetFactory extends ContainedAsset
 */
     public function getPlacementFolderPath()
     {
-        return $this->getProperty()->placementFolderPath;
+        if( isset( $this->getProperty()->placementFolderPath ) )
+            return $this->getProperty()->placementFolderPath;
+        return NULL;
     }
     
 /**
@@ -497,13 +519,43 @@ class AssetFactory extends ContainedAsset
     }
     
 /**
-<documentation><description><p>Returns the <code>plugins</code> property.</p></description>
+<documentation><description><p>Returns the <code>plugins</code> property as
+an <code>stdClass</code> object.</p></description>
 <example>u\DebugUtility::dump( $af->getPluginStd() );</example>
-<return-type>stdClass</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPluginStd() : \stdClass
+    public function getPluginStd()
+    {
+        if( $this->getService()->isSoap() )
+            return $this->getProperty()->plugins;
+        return NULL;
+    }
+    
+/**
+<documentation><description><p>Returns the <code>plugins</code> property as
+an array of <code>stdClass</code> object.</p></description>
+<example>u\DebugUtility::dump( $af->getPluginStd() );</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getPluginArray()
+    {
+        if( $this->getService()->isRest() )
+            return $this->getProperty()->plugins;
+        return NULL;
+    }
+    
+/**
+<documentation><description><p>Returns the <code>plugins</code>.</p></description>
+<example>u\DebugUtility::dump( $af->getPluginStd() );</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getPlugins()
     {
         return $this->getProperty()->plugins;
     }
@@ -517,7 +569,9 @@ class AssetFactory extends ContainedAsset
 */
     public function getWorkflowDefinitionId()
     {
-        return $this->getProperty()->workflowDefinitionId;
+        if( isset( $this->getProperty()->workflowDefinitionId ) )
+            return $this->getProperty()->workflowDefinitionId;
+        return NULL;
     }
     
 /**
@@ -529,7 +583,9 @@ class AssetFactory extends ContainedAsset
 */
     public function getWorkflowDefinitionPath()
     {
-        return $this->getProperty()->workflowDefinitionPath;
+        if( isset( $this->getProperty()->workflowDefinitionPath ) )
+            return $this->getProperty()->workflowDefinitionPath;
+        return NULL;
     }
     
 /**
@@ -541,7 +597,9 @@ class AssetFactory extends ContainedAsset
 */
     public function getWorkflowMode() : string
     {
-        return $this->getProperty()->workflowMode;
+        if( isset( $this->getProperty()->workflowMode ) )
+            return $this->getProperty()->workflowMode;
+        return NULL;
     }
     
 /**
@@ -584,7 +642,12 @@ class AssetFactory extends ContainedAsset
         }
 
         $group_name = $g->getName();
-        $group_string = $this->getProperty()->applicableGroups;
+        
+        if( isset( $this->getProperty()->applicableGroups ) )
+            $group_string = $this->getProperty()->applicableGroups;
+        else
+            $group_string = "";
+            
         $group_array  = explode( ';', $group_string );
         return in_array( $group_name, $group_array );
     }
@@ -604,7 +667,12 @@ class AssetFactory extends ContainedAsset
         }
         
         $group_name   = $g->getName();
-        $group_string = $this->getProperty()->applicableGroups;
+        
+        if( isset( $this->getProperty()->applicableGroups ) )
+            $group_string = $this->getProperty()->applicableGroups;
+        else
+            $group_string = "";
+            
         $group_array  = explode( ';', $group_string );
             
         if( in_array( $group_name, $group_array ) )
@@ -824,12 +892,16 @@ and returns the calling object.</p></description>
                 S_SPAN . "The parameter $param_name does not exist." . E_SPAN );
         
         
-        $plugin    = $this->getPlugin( $plugin_name );
+        $plugin = $this->getPlugin( $plugin_name );
         
         if( $plugin->hasParameter( $param_name ) )
+        {
             $plugin->setParameterValue( $param_name, $param_value );
+        }
         else
+        {
             $plugin->addParameter( $param_name, $param_value );
+        }
         
         return $this->edit();
     }
@@ -844,7 +916,7 @@ $af->setPlugins( $temp_plugins );
 <exception>EditingFailureException</exception>
 </documentation>
 */
-    public function setPlugins( \stdClass $plugins ) : Asset
+    public function setPlugins( $plugins ) : Asset
     {
         $property = $this->getProperty();
         $property->plugins = $plugins;
@@ -902,7 +974,10 @@ sets <code>workflowDefinitionId</code> and <code>workflowDefinitionPath</code>, 
     {
         $this->plugins = array();
 
-        $plugins = $this->getProperty()->plugins->plugin;
+		if( $this->getService()->isSoap() )
+        	$plugins = $this->getProperty()->plugins->plugin;
+        elseif( $this->getService()->isRest() )
+        	$plugins = $this->getProperty()->plugins;
             
         if( !is_array( $plugins ) )
         {
@@ -914,7 +989,7 @@ sets <code>workflowDefinitionId</code> and <code>workflowDefinitionPath</code>, 
         for( $i = 0; $i < $count; $i++ )
         {
             $this->plugins[] = 
-                new p\Plugin( $plugins[ $i ] );
+                new p\Plugin( $plugins[ $i ], $this->getService() );
         }
     }
     
