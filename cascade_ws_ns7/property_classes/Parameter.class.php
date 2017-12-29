@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/29/2017 Update REST code.
   * 7/14/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
@@ -56,8 +57,12 @@ class Parameter extends Property
     {
         if( isset( $p ) )
         {
-            $this->name  = $p->name;
-            $this->value = $p->value;
+        	u\DebugUtility::dump( $p );
+        
+            if( isset( $p->name ) )
+                $this->name  = $p->name;
+            if( isset( $p->value ) )
+                $this->value = $p->value;
         }
     }
     
@@ -104,8 +109,13 @@ class Parameter extends Property
     public function toStdClass() : \stdClass
     {
         $obj        = new \stdClass();
-        $obj->name  = $this->name;
-        $obj->value = $this->value;
+        
+        if( isset( $this->name ) && isset( $this->value ) )
+        {
+            $obj->name  = $this->name;
+            $obj->value = $this->value;
+        }
+        
         return $obj;
     }
 
