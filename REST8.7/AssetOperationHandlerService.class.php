@@ -115,12 +115,12 @@ class AssetOperationHandlerService
         // patch for Cascade 8.7.1
         elseif( $type == c\T::SITE )
         {
-        	// retrieve the site Default metadata set
-        	$ms_id   = $this->createId( c\T::METADATASET, "Default", $id_path );
-        	$ms      = $this->read( $ms_id );
-        	// retrieve site id from metadata set
-        	$site_id = $ms->metadataSet->siteId;
-        	$id->id  = $site_id;
+            // retrieve the site Default metadata set
+            $ms_id   = $this->createId( c\T::METADATASET, "Default", $id_path );
+            $ms      = $this->read( $ms_id );
+            // retrieve site id from metadata set
+            $site_id = $ms->metadataSet->siteId;
+            $id->id  = $site_id;
         }
         else
         {
@@ -128,8 +128,8 @@ class AssetOperationHandlerService
             $id->path->path     = $id_path;
             
             if( $id_path == "/" )
-            	$id->path->path = "%252F"; // the root folder
-            	
+                $id->path->path = "%252F"; // the root folder
+                
             $id->path->siteName = $site_name;
         }
         $id->type = $type;
@@ -265,13 +265,13 @@ class AssetOperationHandlerService
     }
     
     public function getReadURL(
-    	string $type, string $id_path, string $site_name=NULL ) : string
+        string $type, string $id_path, string $site_name=NULL ) : string
     {
-    	$url = "";
-    	$id  = $this->createId( $type, $id_path, $site_name );
-    	$url = $this->createIdString( $id );
-    	$url = $this->url . "read" . '/' . $url . $this->auth;
-    	return $url;
+        $url = "";
+        $id  = $this->createId( $type, $id_path, $site_name );
+        $url = $this->createIdString( $id );
+        $url = $this->url . "read" . '/' . $url . $this->auth;
+        return $url;
     }
 
     public function getReply() : \stdClass
@@ -407,16 +407,16 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
     public function readAudits(
         \stdClass $identifier, \stdClass $auditParams=NULL ) : \stdClass
     {
-    	if( isset( $identifier->identifier ) )
-        	$id_string = $this->createIdString( $identifier->identifier );
+        if( isset( $identifier->identifier ) )
+            $id_string = $this->createIdString( $identifier->identifier );
         // properties like username and roleid are created in Asset::getAudits
         elseif( isset( $identifier->username ) )
-        	$id_string = "user" . "/" . $identifier->username;
+            $id_string = "user" . "/" . $identifier->username;
         elseif( isset( $identifier->groupname ) )
-        	$id_string = "group" . "/" . $identifier->groupname;
+            $id_string = "group" . "/" . $identifier->groupname;
         elseif( isset( $identifier->roleid ) )
-        	$id_string = "role" . "/" . $identifier->roleid;
-        	
+            $id_string = "role" . "/" . $identifier->roleid;
+            
         $command = $this->url . __function__ . '/' . $id_string  . $this->auth;
         
         echo $command, BR;
@@ -515,11 +515,11 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
     
     public function getMessage()
     {
-    	if( isset( $this->reply->message ) )
-    	{
-    		$this->message = $this->reply->message;
-    	}
-    	return $this->message;
+        if( isset( $this->reply->message ) )
+        {
+            $this->message = $this->reply->message;
+        }
+        return $this->message;
     }
 
     private function apiOperation( $command, $params=NULL ) : \stdClass
@@ -527,7 +527,7 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
         $input_params = array(
             'http' => array(
                 'header'  => "Authorization: Basic " . $this->getAuthString() . "\r\n" .
-                	"Content-Type: application/x-www-form-urlencoded\r\n",
+                    "Content-Type: application/x-www-form-urlencoded\r\n",
                 'method'  => 'POST'
             ) );
             
@@ -563,11 +563,11 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
     
     private function getAuthString()
     {
-    	$authString = str_replace( "u=", "", trim( $this->auth, '?' ) );
-    	$authString = str_replace( "p=", "", $authString );
-    	$authString = str_replace( "&", ":", $authString );
-    	$authString = base64_encode( $authString );
-    	return $authString;
+        $authString = str_replace( "u=", "", trim( $this->auth, '?' ) );
+        $authString = str_replace( "p=", "", $authString );
+        $authString = str_replace( "&", ":", $authString );
+        $authString = base64_encode( $authString );
+        return $authString;
     }
 
     // from the constructor
