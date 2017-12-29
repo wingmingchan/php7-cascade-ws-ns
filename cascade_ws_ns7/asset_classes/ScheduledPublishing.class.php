@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/29/2017 Updated addGroupToSendReport and addUserToSendReport.
   * 6/29/2017 Replaced static WSDL code with call to getXMLFragments.
   * 12/16/2016 Changed return type of getSendReportToGroups and getSendReportToUsers
   * to mixed.
@@ -104,13 +105,19 @@ returns the calling object.</p></description>
                 S_SPAN . c\M::NULL_GROUP . E_SPAN );
         
         $g_name       = $g->getName();
-        $group_string = $this->getProperty()->sendReportToGroups;
+        
+        if( isset( $this->getProperty()->sendReportToGroups ) )
+        	$group_string = $this->getProperty()->sendReportToGroups;
+        else
+        	$group_string = "";
+        	
         $group_array  = explode( ';', $group_string );
         
         if( !in_array( $g_name, $group_array ) )
         {
             $group_array[] = $g_name;
         }
+        
         $group_string = implode( ';', $group_array );
         $this->getProperty()->sendReportToGroups = $group_string;
 
@@ -133,13 +140,19 @@ returns the calling object.</p></description>
                 S_SPAN . c\M::NULL_USER . E_SPAN );
         
         $u_name      = $u->getName();
-        $user_string = $this->getProperty()->sendReportToUsers;
+        
+        if( isset( $this->getProperty()->sendReportToUsers ) )
+        	$user_string = $this->getProperty()->sendReportToUsers;
+        else
+        	$user_string = "";
+        
         $user_array  = explode( ';', $user_string );
         
         if( !in_array( $u_name, $user_array ) )
         {
             $user_array[] = $u_name;
         }
+        
         $user_string = implode( ';', $user_array );
         $this->getProperty()->sendReportToUsers = $user_string;
 
