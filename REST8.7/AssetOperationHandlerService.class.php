@@ -1,4 +1,11 @@
 <?php
+/**
+  * Author: Wing Ming Chan
+  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * MIT Licensed
+  * Modification history:
+  * 12/29/2017 Added getReadURL.
+ */
 namespace cascade_ws_AOHS;
 
 use cascade_ws_constants as c;
@@ -105,6 +112,16 @@ class AssetOperationHandlerService
         
         if( $this->isHexString( $id_path ) )
             $id->id = $id_path;
+        // patch for Cascade 8.7.1
+        elseif( $type == c\T::SITE )
+        {
+        	// retrieve the site Default metadata set
+        	$ms_id   = $this->createId( c\T::METADATASET, "Default", $id_path );
+        	$ms      = $this->read( $ms_id );
+        	// retrieve site id from metadata set
+        	$site_id = $ms->metadataSet->siteId;
+        	$id->id  = $site_id;
+        }
         else
         {
             $id->path = new \stdClass();
@@ -117,6 +134,17 @@ class AssetOperationHandlerService
         }
         $id->type = $type;
         return $id;
+    }
+    
+    public function createIdString( \stdClass $id )
+    {
+        $id_string = $id->type . '/';
+        
+        if( isset( $id->id ) )
+            $id_string = $id_string . $id->id;
+        else
+            $id_string = $id->type . '/' . $id->path->siteName . '/' . $id->path->path;
+        return $id_string;
     }
     
     public function delete( \stdClass $identifier ) : \stdClass
@@ -235,6 +263,16 @@ class AssetOperationHandlerService
     {
         return $this->audits;
     }
+    
+    public function getReadURL(
+    	string $type, string $id_path, string $site_name=NULL ) : string
+    {
+    	$url = "";
+    	$id  = $this->createId( $type, $id_path, $site_name );
+    	$url = $this->createIdString( $id );
+    	$url = $this->url . "read" . '/' . $url . $this->auth;
+    	return $url;
+    }
 
     public function getReply() : \stdClass
     {
@@ -344,7 +382,10 @@ class AssetOperationHandlerService
         $this->success = $this->reply->success;
         return $this->reply;
     }
-    
+
+/*
+https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1bfb?u=wing&p=password
+*/
     public function read( \stdClass $identifier ) : \stdClass
     {
         $id_string = $this->createIdString( $identifier );
@@ -432,17 +473,6 @@ class AssetOperationHandlerService
     public function unpublish( \stdClass $identifier, $destination=NULL ) : \stdClass
     {
         return $this->publish( $identifier, $destination, true );
-    }
-    
-    public function createIdString( \stdClass $id )
-    {
-        $id_string = $id->type . '/';
-        
-        if( isset( $id->id ) )
-            $id_string = $id_string . $id->id;
-        else
-            $id_string = $id->type . '/' . $id->path->siteName . '/' . $id->path->path;
-        return $id_string;
     }
     
     public function isHexString( string $string ) : bool
