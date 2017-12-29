@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/29/2017 Updated getSubscribers.
   * 12/26/2017 Added REST code to edit.
   * 12/21/2017 Added dumpJSON.
   * 11/28/2017 Removed getSiteId, getSiteName, getReviewOnSchedule, and getReviewEvery.
@@ -219,9 +220,9 @@ abstract class Asset
             $parent      = $parent->getProperty();
             
             if( $this->getService()->isSoap() )
-            	$children = $parent->children->child;
+                $children = $parent->children->child;
             elseif( $this->getService()->isRest() )
-            	$children = $parent->children;
+                $children = $parent->children;
             
             $child_count = count( $children );
             
@@ -304,11 +305,11 @@ abstract class Asset
 */
     public function dumpJSON() : Asset
     {
-    	echo S_PRE;
-    	var_dump( json_encode( $this->property ) );
-    	echo E_PRE;
-    	
-    	return $this;
+        echo S_PRE;
+        var_dump( json_encode( $this->property ) );
+        echo E_PRE;
+        
+        return $this;
     }
     
 /**
@@ -375,7 +376,7 @@ abstract class Asset
         }
         else if( $this->getType() == Role::TYPE )
         {
-            $a_std->rolename = $this->getName();
+            $a_std->roleid = $this->getId();
         }
         else
         {
@@ -388,20 +389,39 @@ abstract class Asset
             $a_std->auditType  = $type;
             
         $service = $this->getService();
-        $service->readAudits( $a_std );
+        
+        if( $service->isSoap() )
+            $service->readAudits( $a_std );
+        elseif( $service->isRest() )
+        {
+        	u\DebugUtility::dump( $a_std );
+        
+            if( isset( $a_std->auditType ) )
+            {
+                $params = new \stdClass();
+                $params->auditType = $a_std->auditType;
+                $service->readAudits( $a_std, $params );
+            }
+        }
+            
         $audits  = array();
         
         if( $service->isSuccessful() )
         {
             if( self::DEBUG ) { u\DebugUtility::dump( $service->getAudits() ); }
         
-            if( isset( $service->getAudits()->audit ) )
-                $audit_stds = $service->getAudits()->audit;
-            
-            if( isset( $audit_stds ) && !is_array( $audit_stds ) )
+            if( $service->isSoap() )
             {
-                $audit_stds = array( $audit_stds );
+                if( isset( $service->getAudits()->audit ) )
+                    $audit_stds = $service->getAudits()->audit;
+            
+                if( isset( $audit_stds ) && !is_array( $audit_stds ) )
+                {
+                    $audit_stds = array( $audit_stds );
+                }
             }
+            elseif( $service->isRest() )
+                $audit_stds = $service->getAudits();
             
             if( isset( $audit_stds ) && is_array( $audit_stds ) )
                 $count = count( $audit_stds );
@@ -544,27 +564,35 @@ echo "There are " . count( $subscribers ) . " subscribers.", BR;</example>
     public function getSubscribers() : array
     {
         $results = array();
-        $this->service->listSubscribers( $this->identifier );
+        
+        if( $this->getService()->isSoap() )
+        	$this->service->listSubscribers( $this->identifier );
+        elseif( $this->getService()->isRest() )
+        {
+        	$subscribers = $this->service->
+        		listSubscribers( $this->identifier )->subscribers;
+        }
             
         if( $this->service->isSuccessful() )
         {
             if( self::DEBUG ) { u\DebugUtility::out( "Successfully listing subscribers" ); }
             
             // there are subscribers
-            if ( isset( $this->service->getReply()->listSubscribersReturn->subscribers->assetIdentifier ) )
-            {
-                $subscribers = 
-                    $this->service->getReply()->listSubscribersReturn->subscribers->assetIdentifier;
-                
-                if( !is_array( $subscribers ) )
-                    $subscribers = array( $subscribers );
-                    
-                foreach( $subscribers as $subscriber )
-                {
-                    $identifier = new p\Identifier( $subscriber );
-                    $results[] = $identifier;
-                }
-            }
+            if( $this->getService()->isSoap() &&
+				isset( $this->service->getReply()->
+					listSubscribersReturn->subscribers->assetIdentifier ) )
+				$subscribers = 
+					$this->service->getReply()->listSubscribersReturn->
+						subscribers->assetIdentifier;
+			
+			if( !is_array( $subscribers ) )
+				$subscribers = array( $subscribers );
+			
+			foreach( $subscribers as $subscriber )
+			{
+				$identifier = new p\Identifier( $subscriber );
+				$results[] = $identifier;
+			}
         }
         else
         {
