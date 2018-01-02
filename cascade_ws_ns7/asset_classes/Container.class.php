@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/2/2018 Added REST code.
   * 4/25/2016 Added isAncestorOf and contains.
   * 4/22/2016 Added isParentOf.
   * 5/28/2015 Added namespaces.
@@ -48,10 +49,14 @@ abstract class Container extends ContainedAsset
         $this->children               = array();
         $this->container_children_ids = array();
         
-        if( isset( $this->getProperty()->children ) && 
-            isset( $this->getProperty()->children->child ) )
+        
+        if( isset( $this->getProperty()->children ) )
         {
-            $this->processChildren();
+            if( ( $this->getService()->isSoap() && 
+                isset( $this->getProperty()->children->child ) ) ||
+                ( $this->getService()->isRest() && 
+                isset( $this->getProperty()->children ) ) )
+                $this->processChildren();
         }
     }
     
@@ -85,19 +90,32 @@ There is no need to call <code>Container::edit</code> because the container obje
         
         $service = $this->getService();
         
-        foreach( $this->children as $child )
+        if( $service->isSoap() )
         {
-            $child_id              = $child->getId();
-            $child_type            = $child->getType();
-            $identifier            = $service->createId( $child_type, $child_id );
-            $operation             = new \stdClass();
-            $delete_op             = new \stdClass();
-            $delete_op->identifier = $identifier;
-            $operation->delete     = $delete_op;
-            $operations[]          = $operation;
+            foreach( $this->children as $child )
+            {
+                $child_id              = $child->getId();
+                $child_type            = $child->getType();
+                $identifier            = $service->createId( $child_type, $child_id );
+                $operation             = new \stdClass();
+                $delete_op             = new \stdClass();
+                $delete_op->identifier = $identifier;
+                $operation->delete     = $delete_op;
+                $operations[]          = $operation;
+            }
+        
+            $service->batch( $operations );
+        }
+        // 8.7.1 no batch
+        elseif( $service->isRest() )
+        {
+            foreach( $this->children as $child )
+            {
+                $service->delete(
+                    $service->createId( $child->getType(), $child->getId() ) );
+            }
         }
         
-        $service->batch( $operations );
         $this->children               = array();
         $this->container_children_ids = array();
         
@@ -251,7 +269,10 @@ This method is used by the <a href="http://www.upstate.edu/web-services/api/asse
     
     private function processChildren()
     {
-        $children = $this->getProperty()->children->child;
+        if( $this->getService()->isSoap() )
+            $children = $this->getProperty()->children->child;
+        elseif( $this->getService()->isRest() )
+            $children = $this->getProperty()->children;
         
         if( !is_array( $children ) )
         {
