@@ -4,6 +4,8 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/2/2018 Added REST code to toStdClass.
+  * 12/26/2017 Added $service requirement in constructor.
   * 7/18/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 9/26/2016 Changed signatures of addWorkflowDefinition, added remove methods and aliases.
@@ -24,7 +26,8 @@ use cascade_ws_asset     as a;
 $doc_string = "<h2>Introduction</h2>
 <p>A <code>WorkflowSettings</code> object represents a <code>workflowSettings</code> property associated with an asset (e.g., a folder).</p>
 <h2>Structure of <code>workflowSettings</code></h2>
-<pre>workflowSettings
+<pre>SOAP:
+workflowSettings
   identifier (identifier of the associated asset; e.g., a folder)
     id
     path
@@ -53,6 +56,35 @@ $doc_string = "<h2>Introduction</h2>
         siteName
       type (workflowdefinition)
       recycled
+      
+REST:
+workflowSettings
+  identifier
+    id
+    path
+      path
+      siteId
+      siteName
+    type (e.g., folder)
+    recycled
+  workflowDefinitions (array of stdClass)
+    id
+    path
+      path
+      siteId
+      siteName
+    type (workflowdefinition)
+    recycled
+  inheritedWorkflowDefinitions (array of stdClass)
+    id
+    path
+      path
+      siteId
+      siteName
+    type (workflowdefinition)
+    recycled
+  inheritWorkflows
+  requireWorkflow
 </pre>
 <h2>WSDL</h2>";
 $doc_string .=
@@ -73,7 +105,7 @@ return $doc_string;
 <documentation><description><p>The constructor.</p></description>
 <example></example>
 <return-type></return-type>
-<exception>EmptyValueException</exception>
+<exception>NullServiceException</exception>
 </documentation>
 */    public function __construct( 
         \stdClass $wfs_std=NULL, 
@@ -82,60 +114,80 @@ return $doc_string;
         $data2=NULL, 
         $data3=NULL )
     {
+        if( is_null( $service ) )
+            throw new e\NullServiceException( c\M::NULL_SERVICE );
+            
+        $this->service = $service;
+        
         if( $wfs_std == NULL )
         {
             throw new e\EmptyValueException( 
                 S_SPAN . "The stdClass object cannot be NULL." . E_SPAN );
         }
         
-        if( $service == NULL )
-        {
-            throw new e\EmptyValueException( 
-                S_SPAN . "The service object cannot be NULL." . E_SPAN );
-        }
-        
         $this->identifier = new Identifier( $wfs_std->identifier );
         
         $this->workflow_definitions = array();
         
-        if( isset( $wfs_std->workflowDefinitions ) && 
-            isset( $wfs_std->workflowDefinitions->assetIdentifier ) )
+        if( isset( $wfs_std->workflowDefinitions ) )
         {
-            $asset_identifiers = $wfs_std->workflowDefinitions->assetIdentifier;
-            
-            if( !is_array( $asset_identifiers ) )
-            {
-                $asset_identifiers = array( $asset_identifiers );
-            }
-            
-            foreach( $asset_identifiers as $asset_identifier )
-            {
-                $this->workflow_definitions[] = new Identifier( $asset_identifier );
-            }
-        }
+        	if( $this->service->isSoap() &&
+				isset( $wfs_std->workflowDefinitions->assetIdentifier ) )
+			{
+				$asset_identifiers = $wfs_std->workflowDefinitions->assetIdentifier;
+			
+				if( !is_array( $asset_identifiers ) )
+				{
+					$asset_identifiers = array( $asset_identifiers );
+				}
+			
+				foreach( $asset_identifiers as $asset_identifier )
+				{
+					$this->workflow_definitions[] = new Identifier( $asset_identifier );
+				}
+			}
+			elseif( $this->service->isRest() )
+			{
+				foreach( $wfs_std->workflowDefinitions as $asset_identifier )
+				{
+					$this->workflow_definitions[] = new Identifier( $asset_identifier );
+				}
+			}
+		}	
         
         $this->inherit_workflows = $wfs_std->inheritWorkflows;
         $this->require_workflow  = $wfs_std->requireWorkflow;
         
         $this->inherited_workflow_definitions = array();
         
-        if( isset( $wfs_std->inheritedWorkflowDefinitions ) && 
-            isset( $wfs_std->inheritedWorkflowDefinitions->assetIdentifier ) )
-        {
-            $asset_identifiers = $wfs_std->inheritedWorkflowDefinitions->assetIdentifier;
-            
-            if( !is_array( $asset_identifiers ) )
-            {
-                $asset_identifiers = array( $asset_identifiers );
-            }
-            
-            foreach( $asset_identifiers as $asset_identifier )
-            {
-                $this->inherited_workflow_definitions[] = 
-                    new Identifier( $asset_identifier );
-            }
-        }
-        $this->service = $service;
+        if( isset( $wfs_std->inheritedWorkflowDefinitions ) )
+        { 
+            if( $this->service->isSoap() &&
+            	isset( $wfs_std->inheritedWorkflowDefinitions->assetIdentifier ) )
+			{
+				$asset_identifiers = $wfs_std->inheritedWorkflowDefinitions->
+					assetIdentifier;
+			
+				if( !is_array( $asset_identifiers ) )
+				{
+					$asset_identifiers = array( $asset_identifiers );
+				}
+			
+				foreach( $asset_identifiers as $asset_identifier )
+				{
+					$this->inherited_workflow_definitions[] = 
+						new Identifier( $asset_identifier );
+				}
+			}
+			elseif( $this->service->isRest() )
+			{
+				foreach( $wfs_std->inheritedWorkflowDefinitions as $asset_identifier )
+				{
+					$this->inherited_workflow_definitions[] =
+						new Identifier( $asset_identifier );
+				}
+			}
+		}
     }
     
 /**
@@ -155,7 +207,7 @@ and returns the calling object.</description>
         }
         
         $this->workflow_definitions[] = new Identifier(
-        	$wd->getIdentifier()
+            $wd->getIdentifier()
         );
         return $this;
     }
@@ -336,22 +388,34 @@ calling object.</description>
         $obj = new \stdClass();
         $obj->identifier = $this->identifier->toStdClass();
         
-        $obj->workflowDefinitions = new \stdClass();
+        if( $this->service->isSoap() )
+            $obj->workflowDefinitions = new \stdClass();
+        elseif( $this->service->isRest() )
+            $obj->workflowDefinitions = array();
+            
         
         if( count( $this->workflow_definitions ) > 0 )
         {
             if( count( $this->workflow_definitions ) == 1 )
             {
-                $obj->workflowDefinitions->assetIdentifier =
-                    $this->workflow_definitions[ 0 ]->toStdClass();
+                if( $this->service->isSoap() )
+                    $obj->workflowDefinitions->assetIdentifier =
+                        $this->workflow_definitions[ 0 ]->toStdClass();
+                elseif( $this->service->isRest() )
+                    $obj->workflowDefinitions[] =
+                        $this->workflow_definitions[ 0 ]->toStdClass();
             }
             else
             {
-                $obj->workflowDefinitions->assetIdentifier = array();
+                if( $this->service->isSoap() )
+                    $obj->workflowDefinitions->assetIdentifier = array();
                 
                 foreach( $this->workflow_definitions as $def )
                 {
-                    $obj->workflowDefinitions->assetIdentifier[] = $def->toStdClass();
+                    if( $this->service->isSoap() )
+                        $obj->workflowDefinitions->assetIdentifier[] = $def->toStdClass();
+                    elseif( $this->service->isRest() )
+                        $obj->workflowDefinitions[] = $def->toStdClass();
                 }
             }
         }
@@ -359,23 +423,35 @@ calling object.</description>
         $obj->inheritWorkflows = $this->inherit_workflows;
         $obj->requireWorkflow  = $this->require_workflow;
         
-        $obj->inheritedWorkflowDefinitions = new \stdClass();
+        if( $this->service->isSoap() )
+            $obj->inheritedWorkflowDefinitions = new \stdClass();
+        elseif( $this->service->isRest() )
+            $obj->inheritedWorkflowDefinitions = array();
         
         if( count( $this->inherited_workflow_definitions ) > 0 )
         {
             if( count( $this->inherited_workflow_definitions ) == 1 )
             {
-                $obj->inheritedWorkflowDefinitions->assetIdentifier =
-                    $this->inherited_workflow_definitions[ 0 ]->toStdClass();
+                if( $this->service->isSoap() )
+                    $obj->inheritedWorkflowDefinitions->assetIdentifier =
+                        $this->inherited_workflow_definitions[ 0 ]->toStdClass();
+                elseif( $this->service->isRest() )
+                    $obj->inheritedWorkflowDefinitions = array(
+                        $this->inherited_workflow_definitions[ 0 ]->toStdClass()
+                    );
             }
             else
             {
-                $obj->inheritedWorkflowDefinitions->assetIdentifier = array();
+                if( $this->service->isSoap() )
+                    $obj->inheritedWorkflowDefinitions->assetIdentifier = array();
                 
                 foreach( $this->inherited_workflow_definitions as $def )
                 {
-                    $obj->inheritedWorkflowDefinitions->assetIdentifier[] =
-                        $def->toStdClass();
+                    if( $this->service->isSoap() )
+                        $obj->inheritedWorkflowDefinitions->assetIdentifier[] =
+                            $def->toStdClass();
+                    elseif( $this->service->isRest() )
+                        $obj->inheritedWorkflowDefinitions[] = $def->toStdClass();
                 }
             }
         }
