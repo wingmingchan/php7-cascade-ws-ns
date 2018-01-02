@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/2/2018 Added REST code to editWorkflowSettings.
   * 7/31/2017 Added getIncludeInStaleContent and setIncludeInStaleContent. Still a bug in 8.5.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -225,9 +226,9 @@ class Folder extends Container
         
         // for 8.5, 8/4/2017
         if( isset( $this->getProperty()->includeInStaleContent ) )
-        	$this->include_in_stale_content = $this->getProperty()->includeInStaleContent;
+            $this->include_in_stale_content = $this->getProperty()->includeInStaleContent;
         else
-        	$this->include_in_stale_content = false;
+            $this->include_in_stale_content = false;
     }
     
 /**
@@ -277,7 +278,7 @@ and returns the calling object. Note that this method does not called <code>edit
         // for 8.5, 8/4/2017
         if( !isset( $folder->includeInStaleContent ) )
         {
-        	$folder->includeInStaleContent = $this->include_in_stale_content;
+            $folder->includeInStaleContent = $this->include_in_stale_content;
         }
         
         if( $folder->path == "/" )
@@ -325,14 +326,30 @@ of a folder is a separate object.</p></description>
                 "The value $apply_require_workflow_to_children must be a boolean." );
     
         $service = $this->getService();
-        $service->editWorkflowSettings( $this->workflow_settings->toStdClass(),
-            $apply_inherit_workflows_to_children, $apply_require_workflow_to_children );
+        
+        u\DebugUtility::dump( $this->workflow_settings->toStdClass() );
+
+		if( $service->isSoap() )
+        	$service->editWorkflowSettings( $this->workflow_settings->toStdClass(),
+            	$apply_inherit_workflows_to_children,
+            	$apply_require_workflow_to_children );
+        elseif( $service->isRest() )
+        {
+        	$settings_std = $this->workflow_settings->toStdClass();
+        	$service->editWorkflowSettings(
+        		$settings_std->identifier,
+        		$settings_std->workflowDefinitions,
+        		$settings_std->inheritedWorkflowDefinitions,
+            	$apply_inherit_workflows_to_children,
+            	$apply_require_workflow_to_children );
+        }
             
         if( !$service->isSuccessful() )
         {
             throw new e\EditingFailureException( 
                 c\M::EDIT_WORKFLOW_SETTINGS_FAILURE . $service->getMessage() );
         }
+
         return $this;
     }
     
@@ -400,7 +417,9 @@ echo E_PRE . HR;</example>
 */
     public function getExpirationFolderId()
     {
-        return $this->getProperty()->expirationFolderId;
+        if( isset( $this->getProperty()->expirationFolderId ) )
+            return $this->getProperty()->expirationFolderId;
+        return NULL;
     }
     
 /**
@@ -412,7 +431,9 @@ echo E_PRE . HR;</example>
 */
     public function getExpirationFolderPath()
     {
-        return $this->getProperty()->expirationFolderPath;
+        if( isset( $this->getProperty()->expirationFolderPath ) )
+            return $this->getProperty()->expirationFolderPath;
+        return NULL;
     }
     
 /**
@@ -454,25 +475,29 @@ echo E_PRE . HR;</example>
 /**
 <documentation><description><p>Returns <code>lastModifiedBy</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $f->getLastModifiedBy() ) .   BR;</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getLastModifiedBy() : string
+    public function getLastModifiedBy()
     {
-        return $this->getProperty()->lastModifiedBy;
+        if( isset( $this->getProperty()->lastModifiedBy ) )
+            return $this->getProperty()->lastModifiedBy;
+        return "";
     }
     
 /**
 <documentation><description><p>Returns <code>lastModifiedDate</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $f->getLastModifiedDate() ) .   BR;</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getLastModifiedDate() : string
+    public function getLastModifiedDate()
     {
-        return $this->getProperty()->lastModifiedDate;
+        if( isset( $this->getProperty()->lastModifiedDate ) )
+            return $this->getProperty()->lastModifiedDate;
+        return NULL;
     }
     
 /**
@@ -484,7 +509,9 @@ echo E_PRE . HR;</example>
 */
     public function getLastPublishedBy()
     {
-        return $this->getProperty()->lastPublishedBy;
+        if( isset( $this->getProperty()->lastPublishedBy ) )
+            return $this->getProperty()->lastPublishedBy;
+        return NULL;
     }
     
 /**
@@ -496,7 +523,9 @@ echo E_PRE . HR;</example>
 */
     public function getLastPublishedDate()
     {
-        return $this->getProperty()->lastPublishedDate;
+        if( isset( $this->getProperty()->lastPublishedDate ) )
+            return $this->getProperty()->lastPublishedDate;
+        return NULL;
     }
     
 /**
@@ -630,14 +659,27 @@ href="http://www.upstate.edu/web-services/api/property-classes/workflow-settings
         {
             $service = $this->getService();
         
-            $service->readWorkflowSettings( 
-                $service->createId( self::TYPE, $this->getProperty()->id ) );
+            if( $service->isSoap() )
+                $service->readWorkflowSettings( 
+                    $service->createId( self::TYPE, $this->getProperty()->id ) );
+            elseif( $service->isRest() )
+                $settings = $service->readWorkflowSettings( 
+                    $service->createId( self::TYPE, $this->getProperty()->id ) );
     
             if( $service->isSuccessful() )
             {
-                $this->workflow_settings = new p\WorkflowSettings( 
-                    $service->getReply()->readWorkflowSettingsReturn->workflowSettings,
-                    $service );
+                if( $service->isSoap() )
+                    $this->workflow_settings =
+                        new p\WorkflowSettings( 
+                            $service->getReply()->readWorkflowSettingsReturn->
+                            workflowSettings,
+                            $service );
+                elseif( $service->isRest() )
+                {
+                    $this->workflow_settings = 
+                        new p\WorkflowSettings(
+                            $settings->workflowSettings, $service );
+                }
             }
             else
             {
