@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/27/2017 Updated documentation.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
@@ -62,6 +63,8 @@ indexBlock
             value
   metadataSetId
   metadataSetPath
+  reviewOnSchedule
+  reviewEvery
   expirationFolderId
   expirationFolderPath
   expirationFolderRecycled
@@ -89,7 +92,7 @@ indexBlock
   sortOrder
   pageXML
   
-JSON:
+REST:
 indexBlock
   indexedFolderId
   indexedFolderPath
@@ -130,12 +133,12 @@ indexBlock
     summary
     teaser
     title
-    dynamicFields (array)
-      stdClass
-        name
-        fieldValues (array)
-          stdClass
-            value
+    dynamicFields (array of stdClass)
+      name
+      fieldValues (array of stdClass)
+        value
+  reviewOnSchedule
+  reviewEvery
   parentFolderId
   parentFolderPath
   lastModifiedDate
@@ -349,7 +352,9 @@ the block, or <code>NULL</code> if the block is not of type folder.</p></descrip
 */
     public function getIndexedContentTypeId()
     {
-        return $this->getProperty()->indexedContentTypeId;
+        if( isset( $this->getProperty()->indexedContentTypeId ) )
+            return $this->getProperty()->indexedContentTypeId;
+        return NULL;
     }
     
 /**
@@ -363,7 +368,9 @@ the block, or <code>NULL</code> if the block is not of type folder.</p></descrip
 */
     public function getIndexedContentTypePath()
     {
-        return $this->getProperty()->indexedContentTypePath;
+        if( isset( $this->getProperty()->indexedContentTypePath ) )
+            return $this->getProperty()->indexedContentTypePath;
+        return NULL;
     }
     
 /**
@@ -376,7 +383,9 @@ the block, or <code>NULL</code> if the block is not of type folder.</p></descrip
 */
     public function getIndexedFolderId()
     {
-        return $this->getProperty()->indexedFolderId;
+        if( isset( $this->getProperty()->indexedFolderId ) )
+            return $this->getProperty()->indexedFolderId;
+        return NULL;
     }
     
 /**
@@ -389,7 +398,9 @@ the block, or <code>NULL</code> if the block is not of type folder.</p></descrip
 */
     public function getIndexedFolderPath()
     {
-        return $this->getProperty()->indexedFolderPath;
+        if( isset( $this->getProperty()->indexedFolderPath ) )
+            return $this->getProperty()->indexedFolderPath;
+        return NULL;
     }
     
 /**
