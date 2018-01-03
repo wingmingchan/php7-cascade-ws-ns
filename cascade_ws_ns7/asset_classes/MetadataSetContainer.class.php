@@ -42,16 +42,15 @@ metadataSetContainer
       type
       recycled
 
-JSON:
+REST:
 metadataSetContainer
-  children (array)
-    stdClass
-      id
+  children (array of stdClass)
+    id
+    path
       path
-        path
-        siteId
-      type
-      recycled
+      siteId
+    type
+    recycled
   parentContainerId
   parentContainerPath
   path
