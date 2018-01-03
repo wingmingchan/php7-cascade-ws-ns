@@ -65,7 +65,7 @@ feedBlock
   expirationFolderRecycled
   feedURL
   
-JSON:
+REST:
 feedBlock
   feedURL
   expirationFolderId
