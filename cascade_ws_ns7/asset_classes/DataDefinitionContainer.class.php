@@ -43,7 +43,7 @@ dataDefinitionContainer
       type
       recycled
 
-JSON:
+REST:
 dataDefinitionContainer
   children (array)
     stdClass
