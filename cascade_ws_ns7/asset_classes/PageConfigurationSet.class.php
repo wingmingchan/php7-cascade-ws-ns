@@ -67,7 +67,7 @@ pageConfigurationSet
       includeXMLDeclaration
       publishable
 
-JSON:
+REST:
 pageConfigurationSet
   pageConfigurations (array)
     stdClass
