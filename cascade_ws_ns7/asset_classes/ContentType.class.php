@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/3/2018 Added code to test for NULL.
   * 12/27/2017 Added REST code and updated documentation.
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -60,7 +61,7 @@ contentType
       type
       name
       
-JSON:
+REST:
 contentType
   pageConfigurationSetId
   pageConfigurationSetPath
@@ -415,7 +416,9 @@ overriding the parent method to display the configuration set as well.</p></desc
 */
     public function getDataDefinition()
     {
-        return $this->data_definition;
+        if( isset( $this->data_definition ) )
+            return $this->data_definition;
+        return NULL;
     }
     
 /**
@@ -427,7 +430,9 @@ overriding the parent method to display the configuration set as well.</p></desc
 */
     public function getDataDefinitionId()
     {
-        return $this->getProperty()->dataDefinitionId;
+        if( isset( $this->getProperty()->dataDefinitionId ) )
+            return $this->getProperty()->dataDefinitionId;
+        return NULL;
     }
     
 /**
@@ -439,7 +444,9 @@ overriding the parent method to display the configuration set as well.</p></desc
 */
     public function getDataDefinitionPath()
     {
-        return $this->getProperty()->dataDefinitionPath;
+        if( isset( $this->getProperty()->dataDefinitionPath ) )
+            return $this->getProperty()->dataDefinitionPath;
+        return NULL;
     }
 
 /**
@@ -451,7 +458,9 @@ overriding the parent method to display the configuration set as well.</p></desc
 */
     public function getEditorConfigurationId()
     {
-        return $this->getProperty()->editorConfigurationId;
+        if( isset( $this->getProperty()->editorConfigurationId ) )
+            return $this->getProperty()->editorConfigurationId;
+        return NULL;
     }
     
 /**
@@ -463,7 +472,9 @@ overriding the parent method to display the configuration set as well.</p></desc
 */
     public function getEditorConfigurationPath()
     {
-        return $this->getProperty()->editorConfigurationPath;
+        if( isset( $this->getProperty()->editorConfigurationPath ) )
+            return $this->getProperty()->editorConfigurationPath;
+        return NULL;
     }
 /**
 <documentation><description><p>Returns an array of inline editable field names. An inline editable field name consists of five parts: <code>pageConfigurationName;pageRegionName;dataDefinitionGroupPath;type;name</code>. For example, <code>RWD;DEFAULT;NULL;data-definition;post-title-chooser</code>.</p></description>
