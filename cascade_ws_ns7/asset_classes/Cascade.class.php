@@ -559,7 +559,7 @@ representing either an existing cloud transport, or a cloud transport newly crea
         string $secret, 
         string $bucketName, 
         string $basePath=NULL
-	) : Asset
+    ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException( 
@@ -953,7 +953,7 @@ representing either an existing destination, or a destination newly created by t
         if( $transport_site == NULL )
             $transport_path = "Global:" . $transport_path;
         else
-        	$transport_path = "$transport_site:" . $transport_path;
+            $transport_path = "$transport_site:" . $transport_path;
         
         $asset->destination->transportPath       = $transport_path;
         $asset->destination->siteName            = $parent->getSiteName();
@@ -1093,7 +1093,7 @@ information. If both do, <code>$text</code> takes precedence.</p></description>
             throw new e\CreationErrorException(
                 S_SPAN . c\M::EMPTY_TEXT_DATA . E_SPAN );
             
-		//echo ini_get( "error_reporting" );
+        //echo ini_get( "error_reporting" );
         $asset                            = AssetTemplate::getFile();
         $asset->file->name                = $name;
         $asset->file->parentFolderPath    = $parent->getPath();
@@ -2455,21 +2455,21 @@ u\DebugUtility::dump( $ari->toStdClass() );
         $this->getAsset( $type, $id_path, $site_name );
         
         if( $this->service->isSoap() )
-        	$this->service->readAccessRights(
-            	$this->service->createId( $type, $id_path, $site_name ) );
+            $this->service->readAccessRights(
+                $this->service->createId( $type, $id_path, $site_name ) );
         elseif( $this->service->isRest() )
-        	$ar = $this->service->readAccessRights(
-            	$this->service->createId( $type, $id_path, $site_name ) );
+            $ar = $this->service->readAccessRights(
+                $this->service->createId( $type, $id_path, $site_name ) );
             
         if( $this->service->isSuccessful() )
         {
-        	if( $this->service->isSoap() )
-            	return new p\AccessRightsInformation(
-                	$this->service->getReadAccessRightInformation(), $this->service );
+            if( $this->service->isSoap() )
+                return new p\AccessRightsInformation(
+                    $this->service->getReadAccessRightInformation(), $this->service );
             elseif( $this->service->isRest() )
             {
-            	return new p\AccessRightsInformation(
-            		$ar->accessRightsInformation, $this->service );
+                return new p\AccessRightsInformation(
+                    $ar->accessRightsInformation, $this->service );
             }
         }
         else
@@ -2615,17 +2615,17 @@ for example, if the value is "CWT", then groups like "CWT-Designers", "Site-CWT-
             return $this->getGroups();
             
         $group_ids               = array();
-		$search_for = AssetTemplate::getSearchInformation();
-		$search_for->searchTerms = $name;
-		$search_for->searchTypes->searchType   = Group::TYPE;
-		$search_for->searchFields->searchField = "name";
+        $search_for = AssetTemplate::getSearchInformation();
+        $search_for->searchTerms = $name;
+        $search_for->searchTypes->searchType   = Group::TYPE;
+        $search_for->searchFields->searchField = "name";
 
         $this->service->search( $search_for );
         
         if ( $this->service->isSuccessful() )
         {
             if( $this->service->getSearchMatches() &&
-            	isset( $this->service->getSearchMatches()->match ) )
+                isset( $this->service->getSearchMatches()->match ) )
             {
                 $groups = $this->service->getSearchMatches()->match;
         
@@ -2874,18 +2874,18 @@ if( count( $messages ) > 0 )
             return $this->getRoles();
             
         $role_ids = array();
-		
-		$search_for = AssetTemplate::getSearchInformation();
-		$search_for->searchTerms = $name;
-		$search_for->searchTypes->searchType   = Role::TYPE;
-		$search_for->searchFields->searchField = "name";
-			
+        
+        $search_for = AssetTemplate::getSearchInformation();
+        $search_for->searchTerms = $name;
+        $search_for->searchTypes->searchType   = Role::TYPE;
+        $search_for->searchFields->searchField = "name";
+            
         $this->service->search( $search_for );
         
         if ( $this->service->isSuccessful() )
         {
             if( $this->service->getSearchMatches() &&
-            	isset( $this->service->getSearchMatches()->match ) )
+                isset( $this->service->getSearchMatches()->match ) )
             {
                 $roles = $this->service->getSearchMatches()->match;
         
@@ -3138,19 +3138,19 @@ foreach( $sites as $site )
     {
         if( $name == "" )
             return $this->getUsers();
-		
-		$user_ids   = array();
-		$search_for = AssetTemplate::getSearchInformation();
-		$search_for->searchTerms = $name;
-		$search_for->searchTypes->searchType   = User::TYPE;
-		$search_for->searchFields->searchField = "name";
-			
+        
+        $user_ids   = array();
+        $search_for = AssetTemplate::getSearchInformation();
+        $search_for->searchTerms = $name;
+        $search_for->searchTypes->searchType   = User::TYPE;
+        $search_for->searchFields->searchField = "name";
+            
         $this->service->search( $search_for );
         
         if ( $this->service->isSuccessful() )
         {
             if( $this->service->getSearchMatches() &&
-            	isset( $this->service->getSearchMatches()->match ) )
+                isset( $this->service->getSearchMatches()->match ) )
             {
                 $users = $this->service->getSearchMatches()->match;
         
@@ -3449,21 +3449,21 @@ u\DebugUtility::dump( $assets );</example>
 </documentation>
 */
     public function search(
-    	string $search_terms="",
-    	string $site_id="",
-    	string $site_name="",
-    	string $search_fields="",
-    	string $search_types=""
+        string $search_terms="",
+        string $site_id="",
+        string $site_name="",
+        string $search_fields="",
+        string $search_types=""
     ) : array
     {
-    	$asset_ids               = array();
-    	
-		$search_for = AssetTemplate::getSearchInformation();
-		$search_for->searchTerms = $search_terms;
-		$search_for->siteId      = $site_id;
-    	$search_for->siteName    = $site_name;
-		$search_for->searchFields->searchField = $search_fields;
-		$search_for->searchTypes->searchType   = $search_types;
+        $asset_ids               = array();
+        
+        $search_for = AssetTemplate::getSearchInformation();
+        $search_for->searchTerms = $search_terms;
+        $search_for->siteId      = $site_id;
+        $search_for->siteName    = $site_name;
+        $search_for->searchFields->searchField = $search_fields;
+        $search_for->searchTypes->searchType   = $search_types;
 
         $this->service->search( $search_for );
         
