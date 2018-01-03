@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/3/2018 Added code to test for NULL.
   * 12/29/2017 Added REST code.
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -366,7 +367,9 @@ class AssetFactory extends ContainedAsset
 */
     public function getBaseAssetId()
     {
-        return $this->getProperty()->baseAssetId;
+        if( isset( $this->getProperty()->baseAssetId ) )
+            return $this->getProperty()->baseAssetId;
+        return NULL;
     }
     
 /**
@@ -378,7 +381,9 @@ class AssetFactory extends ContainedAsset
 */
     public function getBaseAssetPath()
     {
-        return $this->getProperty()->baseAssetPath;
+        if( isset( $this->getProperty()->baseAssetPath ) )
+            return $this->getProperty()->baseAssetPath;
+        return NULL;
     }
     
 /**
@@ -520,7 +525,7 @@ class AssetFactory extends ContainedAsset
     
 /**
 <documentation><description><p>Returns the <code>plugins</code> property as
-an <code>stdClass</code> object.</p></description>
+an <code>stdClass</code> object. This method works for SOAP only.</p></description>
 <example>u\DebugUtility::dump( $af->getPluginStd() );</example>
 <return-type>mixed</return-type>
 <exception></exception>
@@ -535,7 +540,7 @@ an <code>stdClass</code> object.</p></description>
     
 /**
 <documentation><description><p>Returns the <code>plugins</code> property as
-an array of <code>stdClass</code> object.</p></description>
+an array of <code>stdClass</code> object. This method works for REST only.</p></description>
 <example>u\DebugUtility::dump( $af->getPluginStd() );</example>
 <return-type>mixed</return-type>
 <exception></exception>
@@ -974,10 +979,10 @@ sets <code>workflowDefinitionId</code> and <code>workflowDefinitionPath</code>, 
     {
         $this->plugins = array();
 
-		if( $this->getService()->isSoap() )
-        	$plugins = $this->getProperty()->plugins->plugin;
+        if( $this->getService()->isSoap() )
+            $plugins = $this->getProperty()->plugins->plugin;
         elseif( $this->getService()->isRest() )
-        	$plugins = $this->getProperty()->plugins;
+            $plugins = $this->getProperty()->plugins;
             
         if( !is_array( $plugins ) )
         {
