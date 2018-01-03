@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/3/2018 Added code to test for NULL.
   * 11/27/2017 Added move-related methods.
   * 6/30/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -134,7 +135,12 @@ class WorkflowDefinition extends ContainedAsset
         }
     
         $group_name   = $g->getName();
-        $group_string = $this->getProperty()->applicableGroups;
+        
+        if( isset( $this->getProperty()->applicableGroups ) )
+            $group_string = $this->getProperty()->applicableGroups;
+        else
+            $group_string = "";
+        
         $group_array  = explode( ';', $group_string );
         
         if( !in_array( $group_name, $group_array ) )
@@ -219,7 +225,9 @@ displays the XML definition, and returns the calling object.</p></description>
 */
     public function getApplicableGroups() 
     {
-        return $this->getProperty()->applicableGroups;
+        if( isset( $this->getProperty()->applicableGroups ) )
+            return $this->getProperty()->applicableGroups;
+        return NULL;
     }
     
 /**
