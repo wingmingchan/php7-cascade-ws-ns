@@ -52,7 +52,7 @@ twitterConnector
   destinationId
   destinationPath
 
-JSON:
+REST:
 twitterConnector
   destinationId
   destinationPath
@@ -151,11 +151,11 @@ class TwitterConnector extends Connector
 /**
 <documentation><description><p>Returns <code>destinationPath</code>.</p></description>
 <example>echo $tc->getDestinationPath(), BR;</example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getDestinationPath()
+    public function getDestinationPath() : string
     {
         return $this->getProperty()->destinationPath;
     }
