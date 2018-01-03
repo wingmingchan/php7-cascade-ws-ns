@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/3/2018 Added code to test for NULL.
   * 9/8/2017 Fixed a bug in setText.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -19,10 +20,10 @@
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
-use cascade_ws_AOHS as aohs;
-use cascade_ws_utility as u;
+use cascade_ws_AOHS      as aohs;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
-use cascade_ws_property as p;
+use cascade_ws_property  as p;
 
 /**
 <documentation>
@@ -31,7 +32,7 @@ use cascade_ws_property as p;
 $doc_string = "<h2>Introduction</h2>
 <p>A <code>File</code> object represents a file asset. The <code>File</code> class is a sub-class of <a href=\"http://www.upstate.edu/web-services/api/asset-classes/linkable.php\"><code>Linkable</code></a>.</p>
 <h2>Structure of <code>file</code></h2>
-<pre>SOAP structure:
+<pre>SOAP:
 file
   id
   name
@@ -75,7 +76,7 @@ file
   rewriteLinks (bool)
   maintainAbsoluteLinks (bool)
   
-JSON structure:
+REST:
 file
   text (NULL)
   data
@@ -101,12 +102,10 @@ file
     summary
     teaser
     title
-    dynamicFields (array)
-      stdClass
-        name
-        fieldValues (array)
-          stdClass
-            value
+    dynamicFields (array of stdClass)
+      name
+      fieldValues (array of stdClass)
+        value
   parentFolderId
   parentFolderPath
   lastModifiedDate
@@ -246,31 +245,37 @@ object will be created inside <code>edit</code>. If the <code>p\Workflow</code> 
 */
     public function getData()
     {
-        return $this->getProperty()->data;
+        if( isset( $this->getProperty()->data ) )
+            return $this->getProperty()->data;
+        return NULL;
     }
     
 /**
 <documentation><description><p>Returns <code>lastPublishedBy</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
     public function getLastPublishedBy()
     {
-        return $this->getProperty()->lastPublishedBy;
+        if( isset( $this->getProperty()->lastPublishedBy ) )
+            return $this->getProperty()->lastPublishedBy;
+        return NULL;
     }
     
 /**
 <documentation><description><p>Returns <code>lastPublishedDate</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
     public function getLastPublishedDate()
     {
-        return $this->getProperty()->lastPublishedDate;
+        if( isset( $this->getProperty()->lastPublishedDate ) )
+            return $this->getProperty()->lastPublishedDate;
+        return NULL;
     }
     
 /**
@@ -330,7 +335,9 @@ object will be created inside <code>edit</code>. If the <code>p\Workflow</code> 
 */
     public function getText()
     {
-        return $this->getProperty()->text;
+        if( isset( $this->getProperty()->text ) )
+            return $this->getProperty()->text;
+        return NULL;
     }
     
 /**
@@ -504,8 +511,8 @@ object.</p></description>
 */
     public function setText( $text ) : Asset
     {
-    	if( !is_null( $text ) )
-        	$this->getProperty()->text = $text;
+        if( !is_null( $text ) )
+            $this->getProperty()->text = $text;
         
         return $this;
     }
