@@ -62,7 +62,7 @@ template
       formatRecycled
       noFormat
 
-JSON:
+REST:
 template
   formatId
   formatPath
@@ -360,7 +360,7 @@ object.</p></description>
 /**
 <documentation><description><p>Returns the <code>Block</code> object of the region, or <code>NULL</code>.</p></description>
 <example>$block = $t->getPageRegionBlock( 'STORAGE' );</example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -372,7 +372,7 @@ object.</p></description>
 /**
 <documentation><description><p>Returns the <code>Format</code> object of the region, or <code>NULL</code>.</p></description>
 <example>$format = $t->getPageRegionFormat( 'STORAGE' );</example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
@@ -690,11 +690,11 @@ object.</p></description>
         
         foreach( $regions as $region )
         {
-        	if( isset( $region->name ) )
-        	{
-            	$pr             = new p\PageRegion( $region, $service );
-            	$page_regions[] = $pr;
-            	$page_region_map[ $region->name ] = $pr;
+            if( isset( $region->name ) )
+            {
+                $pr             = new p\PageRegion( $region, $service );
+                $page_regions[] = $pr;
+                $page_region_map[ $region->name ] = $pr;
             }
         }
     }
