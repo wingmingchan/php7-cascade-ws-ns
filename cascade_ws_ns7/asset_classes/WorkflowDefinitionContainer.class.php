@@ -43,7 +43,7 @@ workflowDefinitionContainer
       type
       recycled
 
-JSON:
+REST:
 workflowDefinitionContainer
   children (array)
     stdClass
