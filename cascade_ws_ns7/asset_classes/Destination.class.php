@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/3/2018 Added code to test for NULL.
   * 9/14/2017 Added getExtensionsToStrip and setExtensionsToStrip.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -124,6 +125,11 @@ returns the calling object.</p></description>
             
         $group_name = $g->getName();
         
+        if( isset( $this->getProperty()->applicableGroups ) )
+            $group_string = $this->getProperty()->applicableGroups;
+        else
+            $group_string = "";
+        
         $group_array = explode( self::DELIMITER, $this->getProperty()->applicableGroups );
         
         if( !in_array( $group_name, $group_array ) )
@@ -182,15 +188,15 @@ object.</p></description>
             }
       
             if( !isset( $destination->publishIntervalHours ) ||
-            	is_null( $destination->publishIntervalHours ) )
+                is_null( $destination->publishIntervalHours ) )
                 unset( $destination->publishIntervalHours );
                 
             if( !isset( $destination->publishDaysOfWeek ) ||
-            	is_null( $destination->publishDaysOfWeek ) )
+                is_null( $destination->publishDaysOfWeek ) )
                 unset( $destination->publishDaysOfWeek );
                 
             if( !isset( $destination->cronExpression ) ||
-            	is_null( $destination->cronExpression ) )
+                is_null( $destination->cronExpression ) )
                 unset( $destination->cronExpression );
         }
         
@@ -227,12 +233,14 @@ object.</p></description>
 <documentation><description><p>Returns <code>applicableGroups</code>.</p></description>
 <example>echo $d->getApplicableGroups(), BR;</example>
 <return-type></return-type>
-<exception></exception>
+<exception>mixed</exception>
 </documentation>
 */
     public function getApplicableGroups()
     {
-        return $this->getProperty()->applicableGroups;
+        if( isset( $this->getProperty()->applicableGroups ) )
+            return $this->getProperty()->applicableGroups;
+        return NULL;
     }
     
 /**
@@ -242,7 +250,7 @@ object.</p></description>
 <exception></exception>
 </documentation>
 */
-    public function getCheckedByDefault()
+    public function getCheckedByDefault() : bool
     {
         return $this->getProperty()->checkedByDefault;
     }
@@ -250,13 +258,15 @@ object.</p></description>
 /**
 <documentation><description><p>Returns <code>directory</code>.</p></description>
 <example>echo $d->getDirectory(), BR;</example>
-<return-type></return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
     public function getDirectory()
     {
-        return $this->getProperty()->directory;
+        if( isset( $this->getProperty()->directory ) )
+            return $this->getProperty()->directory;
+        return NULL;
     }
     
 /**
@@ -280,7 +290,9 @@ object.</p></description>
 */
     public function getExtensionsToStrip()
     {
-        return $this->getProperty()->extensionsToStrip;
+        if( isset( $this->getProperty()->extensionsToStrip ) )
+            return $this->getProperty()->extensionsToStrip;
+        return NULL;
     }
     
 /**
