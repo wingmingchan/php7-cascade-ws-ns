@@ -43,7 +43,7 @@ contentTypeContainer
       type
       recycled
 
-JSON:
+REST:
 contentTypeContainer
   children (array)
     stdClass
