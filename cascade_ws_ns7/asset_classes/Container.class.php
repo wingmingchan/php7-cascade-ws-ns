@@ -281,6 +281,7 @@ This method is used by the <a href="http://www.upstate.edu/web-services/api/asse
         
         foreach( $children as $child )
         {
+        
             $this->children[] = new p\Child( $child );
             
             if( $child->type == $this->getType() )
