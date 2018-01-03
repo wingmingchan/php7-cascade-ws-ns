@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/3/2018 Added REST code and code to test for NULL.
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
@@ -142,7 +143,8 @@ calling object.</p></description>
         $obj->pageConfigurationName          = $config->getName();
         $obj->connectorContentTypeLinkParams = new \stdClass();
         
-        $this->connector_content_type_links[] = new p\ConnectorContentTypeLink( $obj );
+        $this->connector_content_type_links[] =
+            new p\ConnectorContentTypeLink( $obj, $this->service );
         return $this;
     }
         
@@ -170,17 +172,32 @@ calling object.</p></description>
         {
             if( $count == 1 )
             {
-                $this->getProperty()->connectorContentTypeLinks->connectorContentTypeLink =
-                    $this->connector_content_type_links[ 0 ]->toStdClass();
+                if( $this->service->isSoap() )
+                    $this->getProperty()->
+                        connectorContentTypeLinks->connectorContentTypeLink =
+                            $this->connector_content_type_links[ 0 ]->toStdClass();
+                elseif( $this->service->isRest() )
+                    $this->getProperty()->
+                        connectorContentTypeLinks =
+                            array( $this->connector_content_type_links[ 0 ]->toStdClass() );
             }
             else
             {
-                $this->getProperty()->connectorContentTypeLinks->connectorContentTypeLink = array();
-                
+                if( $this->service->isSoap() )
+                    $this->getProperty()->connectorContentTypeLinks->
+                        connectorContentTypeLink = array();
+                elseif( $this->service->isRest() )
+                    $this->getProperty()->connectorContentTypeLinks = array();
+                    
                 foreach( $this->connector_content_type_links as $link )
                 {
-                    $this->getProperty()->connectorContentTypeLinks->connectorContentTypeLink[] =
-                        $link->toStdClass();
+                    if( $this->service->isSoap() )
+                        $this->getProperty()->connectorContentTypeLinks->
+                            connectorContentTypeLink[] =
+                                $link->toStdClass();
+                    elseif( $this->service->isRest() )
+                        $this->getProperty()->connectorContentTypeLinks[] =
+                            $link->toStdClass();
                 }
             }
         }
@@ -191,17 +208,30 @@ calling object.</p></description>
         {
             if( $count == 1 )
             {
-                $this->getProperty()->connectorParameters->connectorParameter =
-                    $this->connector_parameters[ 0 ]->toStdClass();
+                if( $this->service->isSoap() )
+                    $this->getProperty()->connectorParameters->connectorParameter =
+                        $this->connector_parameters[ 0 ]->toStdClass();
+                elseif( $this->service->isRest() )
+                    $this->getProperty()->connectorParameters =
+                        array( $this->connector_parameters[ 0 ]->toStdClass() );
             }
             else
             {
-                $this->getProperty()->connectorParameters->connectorParameter = array();
+                if( $this->service->isSoap() )
+                    $this->getProperty()->connectorParameters->
+                        connectorParameter = array();
+                elseif( $this->service->isRest() )
+                    $this->getProperty()->connectorParameters = array();
                 
                 foreach( $this->connector_parameters as $param )
                 {
-                    $this->getProperty()->connectorParameters->connectorParameter[] =
-                        $param->toStdClass();
+                    if( $this->service->isSoap() )
+                        $this->getProperty()->connectorParameters->
+                            connectorParameter[] =
+                                $param->toStdClass();
+                    elseif( $this->service->isRest() )
+                        $this->getProperty()->connectorParameters[] =
+                            $param->toStdClass();
                 }
             }
         }
@@ -229,7 +259,9 @@ calling object.</p></description>
 */
     public function getAuth1()
     {
-        return $this->getProperty()->auth1;
+        if( isset( $this->getProperty()->auth1 ) )
+            return $this->getProperty()->auth1;
+        return NULL;
     }
     
 /**
@@ -241,7 +273,9 @@ calling object.</p></description>
 */
     public function getAuth2()
     {
-        return $this->getProperty()->auth2;
+        if( isset( $this->getProperty()->auth2 ) )
+            return $this->getProperty()->auth2;
+        return NULL;
     }
     
 /**
@@ -277,7 +311,9 @@ calling object.</p></description>
 */
     public function getUrl()
     {
-        return $this->getProperty()->url;
+        if( isset( $this->getProperty()->url ) )
+            return $this->getProperty()->url;
+        return NULL;
     }
     
 /**
@@ -301,7 +337,9 @@ calling object.</p></description>
 */
     public function getVerifiedDate()
     {
-        return $this->getProperty()->verifiedDate;
+        if( isset( $this->getProperty()->verifiedDate ) )
+            return $this->getProperty()->verifiedDate;
+        return NULL;
     }
     
 /**
@@ -383,10 +421,13 @@ the calling object.</p></description>
     
     private function processParameters()
     {
-        if( isset( $this->getProperty()->connectorParameters ) &&
-            isset( $this->getProperty()->connectorParameters->connectorParameter ) )
+        if( isset( $this->getProperty()->connectorParameters ) )
         {
-            $params = $this->getProperty()->connectorParameters->connectorParameter;
+            if( $this->getService()->isSoap() &&
+                isset( $this->getProperty()->connectorParameters->connectorParameter ) )
+                $params = $this->getProperty()->connectorParameters->connectorParameter;
+            elseif( $this->getService()->isRest() )
+                $params = $this->getProperty()->connectorParameters;
             
             if( !is_array( $params ) )
             {
@@ -398,10 +439,15 @@ the calling object.</p></description>
             }
         }
         
-        if( isset( $this->getProperty()->connectorContentTypeLinks ) &&
-            isset( $this->getProperty()->connectorContentTypeLinks->connectorContentTypeLink ) )
+        if( isset( $this->getProperty()->connectorContentTypeLinks ) )
         {
-            $links = $this->getProperty()->connectorContentTypeLinks->connectorContentTypeLink;
+            if( $this->getService()->isSoap() &&
+                isset( $this->getProperty()->connectorContentTypeLinks->
+                    connectorContentTypeLink ) )
+                $links = $this->getProperty()->connectorContentTypeLinks->
+                    connectorContentTypeLink;
+            elseif( $this->getService()->isRest() )
+                $links = $this->getProperty()->connectorContentTypeLinks;
             
             if( !is_array( $links ) )
             {
@@ -417,7 +463,8 @@ the calling object.</p></description>
                 }
                 else
                 {
-                    $this->connector_content_type_links[] = new p\ConnectorContentTypeLink( $link );
+                    $this->connector_content_type_links[] = 
+                        new p\ConnectorContentTypeLink( $link );
                 }
             }
         }
