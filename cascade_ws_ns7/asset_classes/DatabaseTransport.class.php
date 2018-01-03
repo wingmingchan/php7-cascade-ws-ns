@@ -111,7 +111,7 @@ class DatabaseTransport extends Transport
 /**
 <documentation><description><p>Returns <code>serverName</code>.</p></description>
 <example></example>
-<return-type></return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
