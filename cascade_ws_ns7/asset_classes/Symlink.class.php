@@ -63,7 +63,7 @@ symlink
   expirationFolderRecycled
   linkURL
 
-JSON:
+REST:
 symlink
   linkURL
   expirationFolderId
