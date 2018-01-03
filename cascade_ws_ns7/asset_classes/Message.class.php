@@ -365,11 +365,11 @@ class Message
 /**
 <documentation><description><p>Returns a bool, indicating whether the job is complete. This value is only relevant to workflow messages.</p></description>
 <example>echo u\StringUtility::boolToString( $message->getIsComplete() ), BR;</example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getIsComplete()
+    public function getIsComplete() : bool
     {
         return $this->is_complete;
     }
@@ -530,8 +530,7 @@ this method.</p></description>
 <exception></exception>
 </documentation>
 */
-    public function republishFailedJobs(
-        Cascade $cascade ) : Message
+    public function republishFailedJobs( Cascade $cascade ) : Message
     {
         echo $this->type . BR;
         echo $this->num_jobs_with_errors . BR;
