@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/3/2018 Added code to test for NULL.
   * 12/15/2017 Updated documentation.
   * 11/28/2017 Class created.
  */
@@ -75,8 +76,7 @@ abstract class FolderContainedAsset extends ContainedAsset
     {
         if( isset( $this->getProperty()->parentFolderId ) )
             return $this->getProperty()->parentFolderId;
-        else
-            return NULL;
+        return NULL;
     }
     
 /**
@@ -91,8 +91,7 @@ abstract class FolderContainedAsset extends ContainedAsset
     {
         if( isset( $this->getProperty()->parentFolderPath ) )
             return $this->getProperty()->parentFolderPath;
-        else
-            return NULL;
+        return NULL;
     }
     
 /**
