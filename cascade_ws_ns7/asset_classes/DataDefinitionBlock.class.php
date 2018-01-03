@@ -96,7 +96,7 @@ xhtmlDataDefinitionBlock
         recycled
   xhtml
   
-JSON:
+REST:
 xhtmlDataDefinitionBlock
   structuredData
   structuredData
