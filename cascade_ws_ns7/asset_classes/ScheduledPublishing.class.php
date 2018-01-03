@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/3/2018 Added code to test for NULL.
   * 12/29/2017 Updated addGroupToSendReport and addUserToSendReport.
   * 6/29/2017 Replaced static WSDL code with call to getXMLFragments.
   * 12/16/2016 Changed return type of getSendReportToGroups and getSendReportToUsers
@@ -168,7 +169,9 @@ returns the calling object.</p></description>
 */
     public function getCronExpression()
     {
-        return $this->getProperty()->cronExpression;
+        if( isset( $this->getProperty()->cronExpression ) )
+        	return $this->getProperty()->cronExpression;
+        return NULL;
     }
     
 /**
@@ -192,7 +195,9 @@ returns the calling object.</p></description>
 */
     public function getPublishDaysOfWeek()
     {
-        return $this->getProperty()->publishDaysOfWeek;
+        if( isset( $this->getProperty()->publishDaysOfWeek ) )
+        	return $this->getProperty()->publishDaysOfWeek;
+        return NULL;
     }
     
 /**
@@ -204,19 +209,23 @@ returns the calling object.</p></description>
 */
     public function getPublishIntervalHours()
     {
-        return $this->getProperty()->publishIntervalHours;
+        if( isset( $this->getProperty()->publishIntervalHours ) )
+        	return $this->getProperty()->publishIntervalHours;
+        return NULL;
     }
     
 /**
 <documentation><description><p>Returns <code>scheduledPublishDestinationMode</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $d->getScheduledDestinationMode() ), BR;</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getScheduledDestinationMode() : string
+    public function getScheduledDestinationMode()
     {
-        return $this->getProperty()->scheduledPublishDestinationMode;
+        if( isset( $this->getProperty()->scheduledPublishDestinationMode ) )
+        	return $this->getProperty()->scheduledPublishDestinationMode;
+        return NULL;
     }
   
 /**
@@ -240,7 +249,9 @@ returns the calling object.</p></description>
 */
     public function getSendReportToGroups()
     {
-        return $this->getProperty()->sendReportToGroups;
+        if( isset( $this->getProperty()->sendReportToGroups ) )
+        	return $this->getProperty()->sendReportToGroups;
+        return NULL;
     }
     
 /**
@@ -252,7 +263,9 @@ returns the calling object.</p></description>
 */
     public function getSendReportToUsers()
     {
-        return $this->getProperty()->sendReportToUsers;
+        if( isset( $this->getProperty()->sendReportToUsers ) )
+        	return $this->getProperty()->sendReportToUsers;
+        return NULL;
     }
 
 /**
@@ -264,17 +277,19 @@ returns the calling object.</p></description>
 */
     public function getTimeToPublish()
     {
-        return $this->getProperty()->timeToPublish;
+        if( isset( $this->getProperty()->timeToPublish ) )
+        	return $this->getProperty()->timeToPublish;
+        return NULL;
     }
     
 /**
 <documentation><description><p>Returns <code>usesScheduledPublishing</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $d->getUsesScheduledPublishing() ), BR;</example>
-<return-type></return-type>
+<return-type>bool</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getUsesScheduledPublishing()
+    public function getUsesScheduledPublishing() : bool
     {
         return $this->getProperty()->usesScheduledPublishing;
     }
