@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/3/2018 Updated with tests for NULL.
   * 11/28/2017 Changed parent class to DublinAwareAsset.
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/14/2017 Added WSDL.
@@ -173,7 +174,9 @@ else
 */
     public function getExpirationFolderId()
     {
-        return $this->getProperty()->expirationFolderId;
+        if( isset( $this->getProperty()->expirationFolderId ) )
+            return $this->getProperty()->expirationFolderId;
+        return NULL;
     }
     
 /**
@@ -186,7 +189,9 @@ else
 */
     public function getExpirationFolderPath()
     {
-        return $this->getProperty()->expirationFolderPath;
+        if( isset( $this->getProperty()->expirationFolderPath ) )
+            return $this->getProperty()->expirationFolderPath;
+        return NULL;
     }
     
 /**
