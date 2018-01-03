@@ -43,16 +43,15 @@ pageConfigurationSetContainer
       type
       recycled
       
-JSON:
+REST:
 pageConfigurationSetContainer
-  children (array)
-    stdClass
-      id
+  children (array of stdClass)
+    id
+    path
       path
-        path
-        siteId
-      type
-      recycled
+      siteId
+    type
+    recycled
   parentContainerId
   parentContainerPath
   path
