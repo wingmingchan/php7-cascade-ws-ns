@@ -148,7 +148,9 @@ href="http://www.upstate.edu/web-services/api/property-classes/dynamic-field.php
 */
     public function getExpirationFolderId()
     {
-        return $this->getProperty()->expirationFolderId;
+        if( isset( $this->getProperty()->expirationFolderId ) )
+            return $this->getProperty()->expirationFolderId;
+        return NULL;
     }
     
 /**
@@ -160,7 +162,9 @@ href="http://www.upstate.edu/web-services/api/property-classes/dynamic-field.php
 */
     public function getExpirationFolderPath()
     {
-        return $this->getProperty()->expirationFolderPath;
+        if( isset( $this->getProperty()->expirationFolderPath ) )
+            return $this->getProperty()->expirationFolderPath;
+        return NULL;
     }
     
 /**
@@ -212,50 +216,6 @@ href="http://www.upstate.edu/web-services/api/property-classes/metadata.php"><co
         return $this->metadata;
     }
     
-/**
-<documentation><description><p>Returns the associated <code>MetadataSet</code> object.</p></description>
-<example>$page->getMetadataSet()->dump();</example>
-<return-type>Asset</return-type>
-<exception></exception>
-</documentation>
-*/
-/*
-    public function getMetadataSet() : Asset
-    {
-        $service = $this->getService();
-        
-        return new MetadataSet(
-            $service, 
-            $service->createId( MetadataSet::TYPE, 
-                $this->getMetadataSetId() ) );
-    }
-*/ 
-/**
-<documentation><description><p>Returns <code>metadataSetId</code>.</p></description>
-<example>echo u\StringUtility::getCoalescedString( $page->getMetadataSetId() ), BR;</example>
-<return-type>mixed</return-type>
-<exception></exception>
-</documentation>
-*/
-/*
-    public function getMetadataSetId() // null for pages
-    {
-        return $this->getProperty()->metadataSetId;
-    }
-*/ 
-/**
-<documentation><description><p>Returns <code>metadataSetPath</code>.</p></description>
-<example>echo u\StringUtility::getCoalescedString( $page->getMetadataSetPath() ), BR;</example>
-<return-type>string</return-type>
-<exception></exception>
-</documentation>
-*/
-/*
-    public function getMetadataSetPath() // null for pages
-    {
-        return $this->getProperty()->metadataSetPath;
-    }
-*/
 /**
 <documentation><description><p>Returns the metadata property (an <code>\stdClass</code> object).</p></description>
 <example>u\DebugUtility::dump( $page->getMetadataStdClass() );</example>
