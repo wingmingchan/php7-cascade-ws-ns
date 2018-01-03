@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/3/2018 Added code to test for NULL.
   * 9/14/2017 Added getLdapDN.
   * 6/30/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/12/2017 Added WSDL.
@@ -161,7 +162,9 @@ class User extends Asset
 */
     public function getDefaultGroup()
     {
-        return $this->getProperty()->defaultGroup;
+        if( isset( $this->getProperty()->defaultGroup ) )
+            return $this->getProperty()->defaultGroup;
+        return NULL;
     }
     
 /**
@@ -173,7 +176,9 @@ class User extends Asset
 */
     public function getDefaultSiteId()
     {
-        return $this->getProperty()->defaultSiteId;
+        if( isset( $this->getProperty()->defaultSiteId ) )
+            return $this->getProperty()->defaultSiteId;
+        return NULL;
     }
     
 /**
@@ -185,7 +190,9 @@ class User extends Asset
 */
     public function getDefaultSiteName()
     {
-        return $this->getProperty()->defaultSiteName;
+        if( isset( $this->getProperty()->defaultSiteName ) )
+            return $this->getProperty()->defaultSiteName;
+        return NULL;
     }
     
 /**
@@ -221,7 +228,9 @@ class User extends Asset
 */
     public function getFullName()
     {
-        return $this->getProperty()->fullName;
+        if( isset( $this->getProperty()->fullName ) )
+            return $this->getProperty()->fullName;
+        return NULL;
     }
     
 /**
@@ -293,7 +302,9 @@ class User extends Asset
 */
     public function getPassword() : string
     {
-        return $this->getProperty()->password;
+        if( isset( $this->getProperty()->password ) )
+            return $this->getProperty()->password;
+        return NULL;
     }
     
 /**
