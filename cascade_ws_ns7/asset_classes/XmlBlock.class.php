@@ -66,7 +66,7 @@ xmlBlock
   expirationFolderRecycled
   xml
   
-JSON:
+REST:
 xmlBlock
   xml
   expirationFolderId
