@@ -116,22 +116,24 @@ abstract class Format extends FolderContainedAsset
     }
     
 /**
-<documentation><description><p>Returns a <code>Format</code> object bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a format.</p></description>
+<documentation><description><p>Returns a <code>Format</code> object bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a format. This methods only works for SOAP.</p></description>
 <example>$f = a\Format::getFormat( $service, "9fea0fa68b7ffe83164c9314f20b318a" );</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
     public static function getFormat(
         aohs\AssetOperationHandlerService $service,
-        string $id_string ) : Asset
+        string $id_string )
     {
-        return self::getAsset( $service, 
-            self::getFormatType( $service, $id_string ), $id_string );
+        if( $this->getService()->isSoap() )
+            return self::getAsset( $service, 
+                self::getFormatType( $service, $id_string ), $id_string );
+        return NULL;
     }
 
 /**
-<documentation><description><p>Returns the type of the format bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a format.</p></description>
+<documentation><description><p>Returns the type of the format bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a format. This methods only works for SOAP.</p></description>
 <example>echo a\Format::getFormatType( $service, "9fea17498b7ffe83164c931447df1bfb" );</example>
 <return-type>string</return-type>
 <exception></exception>
@@ -141,38 +143,40 @@ abstract class Format extends FolderContainedAsset
         aohs\AssetOperationHandlerService $service,
         string $id_string ) : string
     {
-        $types      
-            = array( ScriptFormat::TYPE, XsltFormat::TYPE );
-        $type_count = count( $types );
-        
-        for( $i = 0; $i < $type_count; $i++ )
+        if( $this->getService()->isSoap() )
         {
-            $id = $service->createId( $types[ $i ], $id_string );
-            $operation = new \stdClass();
-            $read_op   = new \stdClass();
-    
-            $read_op->identifier = $id;
-            $operation->read     = $read_op;
-            $operations[]        = $operation;
-        }
+            $types      
+                = array( ScriptFormat::TYPE, XsltFormat::TYPE );
+            $type_count = count( $types );
         
-        $service->batch( $operations );
-        
-        $reply_array = $service->getReply()->batchReturn;
-        
-        for( $j = 0; $j < $type_count; $j++ )
-        {
-            if( $reply_array[ $j ]->readResult->success == 'true' )
+            for( $i = 0; $i < $type_count; $i++ )
             {
-                foreach( c\T::$type_property_name_map as $type => $property )
+                $id = $service->createId( $types[ $i ], $id_string );
+                $operation = new \stdClass();
+                $read_op   = new \stdClass();
+    
+                $read_op->identifier = $id;
+                $operation->read     = $read_op;
+                $operations[]        = $operation;
+            }
+        
+            $service->batch( $operations );
+        
+            $reply_array = $service->getReply()->batchReturn;
+        
+            for( $j = 0; $j < $type_count; $j++ )
+            {
+                if( $reply_array[ $j ]->readResult->success == 'true' )
                 {
-                    if( isset( $reply_array[ $j ]->readResult->asset->$property ) )
-                        return $type;
+                    foreach( c\T::$type_property_name_map as $type => $property )
+                    {
+                        if( isset( $reply_array[ $j ]->readResult->asset->$property ) )
+                            return $type;
+                    }
                 }
             }
         }
-        
-        return "The id does not match any asset type.";
+        return NULL;
     }
 }
 ?>
