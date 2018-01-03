@@ -43,7 +43,7 @@ publishSetContainer
       type
       recycled
 
-JSON:
+REST:
 publishSetContainer
   children (array)
     stdClass
