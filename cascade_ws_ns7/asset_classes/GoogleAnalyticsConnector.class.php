@@ -44,7 +44,7 @@ googleAnalyticsConnector
       value
   connectorContentTypeLinks (empty)
   
-JSON:
+REST:
 googleAnalyticsConnector
   auth1
   auth2
