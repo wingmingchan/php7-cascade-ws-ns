@@ -74,7 +74,7 @@ publishSet
   sendReportToGroups
   sendReportOnErrorOnly
 
-JSON:
+REST:
 publishSet
   files (array)
     stdClass
