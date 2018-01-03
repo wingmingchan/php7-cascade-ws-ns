@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/2/2018 Added code to test for NULL.
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 2/22/2017 Added addGroupName.
@@ -47,17 +48,16 @@ assetFactoryContainer
       type
       recycled
       
-JSON:
+REST:
 assetFactoryContainer
   applicableGroups
-  children (array)
-    stdClass
-      id
-      path (stdClass)
-        path
-        siteId
-      type
-      recycled
+  children (array of stdClass)
+    id
+    path (stdClass)
+      path
+      siteId
+    type
+    recycled
   description
   parentContainerId
   parentContainerPath
@@ -140,7 +140,12 @@ class AssetFactoryContainer extends Container
         }
         
         $group_name   = $g->getName();
-        $group_string = $this->getProperty()->applicableGroups;
+        
+        if( isset( $this->getProperty()->applicableGroups ) )
+            $group_string = $this->getProperty()->applicableGroups;
+        else
+            $group_string = "";
+        
         $group_array  = explode( ';', $group_string );
         
         if( !in_array( $group_name, $group_array ) )
@@ -162,10 +167,14 @@ class AssetFactoryContainer extends Container
 */
     public function addGroupName( string $group_name ) : Asset
     {
-    	// check the existence of the group
+        // check the existence of the group
         $group = Asset::getAsset( $this->getService(), Group::TYPE, $group_name );
         
-        $group_string = $this->getProperty()->applicableGroups;
+        if( isset( $this->getProperty()->applicableGroups ) )
+            $group_string = $this->getProperty()->applicableGroups;
+        else
+            $group_string = "";
+
         $group_array  = explode( ';', $group_string );
         
         if( !in_array( $group_name, $group_array ) )
@@ -187,7 +196,9 @@ class AssetFactoryContainer extends Container
 */
     public function getApplicableGroups()
     {
-        return $this->getProperty()->applicableGroups;
+        if( isset( $this->getProperty()->applicableGroups ) )
+            return $this->getProperty()->applicableGroups;
+        return NULL;
     }
 
 /**
@@ -199,7 +210,9 @@ class AssetFactoryContainer extends Container
 */
     public function getDescription()
     {
-        return $this->getProperty()->description;
+        if( isset( $this->getProperty()->description ) )
+            return $this->getProperty()->description;
+        return NULL;
     }
     
 /**
@@ -219,7 +232,12 @@ class AssetFactoryContainer extends Container
         }
 
         $group_name = $g->getName();
+        
+        if( isset( $this->getProperty()->applicableGroups ) )
             $group_string = $this->getProperty()->applicableGroups;
+        else
+            $group_string = "";
+            
         $group_array  = explode( ';', $group_string );
         return in_array( $group_name, $group_array );
     }
@@ -240,7 +258,12 @@ class AssetFactoryContainer extends Container
         }
         
         $group_name   = $g->getName();
-        $group_string = $this->getProperty()->applicableGroups;
+        
+        if( isset( $this->getProperty()->applicableGroups ) )
+            $group_string = $this->getProperty()->applicableGroups;
+        else
+            $group_string = "";
+            
         $group_array  = explode( ';', $group_string );
             
         if( in_array( $group_name, $group_array ) )
