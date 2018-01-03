@@ -43,7 +43,7 @@ connectorContainer
       type
       recycled
 
-JSON:
+REST:
 connectorContainer
   children (array)
     stdClass
