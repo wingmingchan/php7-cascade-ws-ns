@@ -78,7 +78,7 @@ enough to deal with these sub-types.</p>
 and <code>configurationSetPath</code>. They all store <code>NULL</code>. To retrieve the metadata set and configuration set associated with a page, we must go through the content
 type. To make methods, like <code>Page::getMetadataSetId</code>, <code>Page::getMetadataSetPath</code>, <code>Page::getConfigurationSetId</code>, and <code>Page::getConfigurationSetPath</code>, useful, instead of returning the <code>NULL</code> value, I go through the content type and retrieve the configuration set and metadata set. Therefore, the <code>Page::getMetadataSetId</code>, <code>Page::getMetadataSetPath</code>, <code>Page::getConfigurationSetId</code>, and <code>Page::getConfigurationSetPath</code> methods do return useful information.</p>
 <h2>Structure of <code>page</code></h2>
-<pre>
+<pre>SOAP:
 page
   id
   name
@@ -170,6 +170,88 @@ page
       includeXMLDeclaration
       publishable
   maintainAbsoluteLinks
+  
+REST:
+page
+  contentTypeId
+  contentTypePath
+  structuredData
+    definitionId
+    definitionPath
+    structuredDataNodes (stdClass or array of stdClass)
+      type
+      identifier
+      structuredDataNodes (stdClass or array of stdClass)
+        text
+        assetType
+        blockId
+        blockPath
+        fileId
+        filePath
+        pageId
+        pagePath
+        symlinkId
+        symlinkPath
+        recycled
+  pageConfigurations (array of stdClass)
+      name
+      defaultConfiguration
+      templateId
+      templatePath
+      formatId
+      formatPath
+      formatRecycled
+      pageRegions (array of stdClass)
+        name
+        blockId
+        blockPath
+        blockRecycled
+        noBlock
+        formatId
+        formatPath
+        formatRecycled
+        noFormat
+        id
+      outputExtension
+      serializationType
+      includeXMLDeclaration
+      publishable
+      id
+  maintainAbsoluteLinks
+  shouldBePublished
+  shouldBeIndexed
+  expirationFolderId
+  expirationFolderPath
+  expirationFolderRecycled
+  metadata
+    author
+    displayName
+    endDate
+    keywords
+    metaDescription
+    reviewDate
+    startDate
+    summary
+    teaser
+    title
+    dynamicFields (array of stdClass)
+      name
+      fieldValues (array of stdClass)
+        value
+  reviewOnSchedule (8.5)
+  reviewEvery (8.5)
+  parentFolderId
+  parentFolderPath
+  lastModifiedDate
+  lastModifiedBy
+  createdDate
+  createdBy
+  path
+  siteId
+  siteName
+  name
+  id
+  xhtml
 </pre>
 <h2>WSDL</h2>";
 $doc_string .=
