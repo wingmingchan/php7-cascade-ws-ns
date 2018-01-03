@@ -142,7 +142,9 @@ class Role extends Asset
 */
     public function getRoleType()
     {
-        return $this->getProperty()->roleType;
+        if( isset( $this->getProperty()->roleType ) )
+            return $this->getProperty()->roleType;
+        return NULL;
     }
     
 /**
