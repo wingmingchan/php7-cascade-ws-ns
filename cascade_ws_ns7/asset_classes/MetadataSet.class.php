@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/3/2018 Added code to test for NULL.
   * 12/27/2017 Updated documentation.
   * 12/26/2017 Added REST code to edit.
   * 7/31/2017 Added help text related fields, get and set methods.
@@ -89,7 +90,7 @@ metadataSet
           selectedByDefault
       helpText
 
-JSON:
+REST:
 metadataSet
   authorFieldRequired
   authorFieldVisibility
@@ -385,7 +386,8 @@ The <code>$possible_values</code> should be a string containing values, with sem
         }
         if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $dmfd ); }
         
-        $dmfd_obj = new p\DynamicMetadataFieldDefinition( $dmfd->dynamicMetadataFieldDefinition );
+        $dmfd_obj = new p\DynamicMetadataFieldDefinition(
+            $dmfd->dynamicMetadataFieldDefinition );
         
         $this->dynamic_metadata_field_definitions[] = $dmfd_obj;
         
@@ -407,7 +409,8 @@ The <code>$possible_values</code> should be a string containing values, with sem
     public function addField( string $field_name, string $type, string $label, 
         bool $required=false, string $visibility=c\T::VISIBLE, string $possible_values="" ) : Asset
     {
-        return $this->addDynamicFieldDefinition( $field_name, $type, $label, $required, $visibility, $possible_values );
+        return $this->addDynamicFieldDefinition(
+            $field_name, $type, $label, $required, $visibility, $possible_values );
     }
     
     /**
@@ -474,8 +477,7 @@ and returns the calling object.</p></description>
                         $definition->toStdClass();
             }
         
-        u\DebugUtility::dump( $metadata_set );
-/*//*/    
+        //u\DebugUtility::dump( $metadata_set );
         $asset->{ $p = $this->getPropertyName() } = $metadata_set;
         // edit asset
         $service = $this->getService();
@@ -499,7 +501,9 @@ and returns the calling object.</p></description>
 */
     public function getAuthorFieldHelpText()
     {
-        return $this->getProperty()->authorFieldHelpText;
+        if( isset( $this->getProperty()->authorFieldHelpText ) )
+            return $this->getProperty()->authorFieldHelpText;
+        return NULL;
     }
     
 /**
@@ -535,7 +539,9 @@ and returns the calling object.</p></description>
 */
     public function getDescriptionFieldHelpText()
     {
-        return $this->getProperty()->descriptionFieldHelpText;
+        if( isset( $this->getProperty()->descriptionFieldHelpText ) )
+            return $this->getProperty()->descriptionFieldHelpText;
+        return NULL;
     }
     
 /**
@@ -571,7 +577,9 @@ and returns the calling object.</p></description>
 */
     public function getDisplayNameFieldHelpText()
     {
-        return $this->getProperty()->displayNameFieldHelpText;
+        if( isset( $this->getProperty()->displayNameFieldHelpText ) )
+            return $this->getProperty()->displayNameFieldHelpText;
+        return NULL;
     }
     
 /**
@@ -672,7 +680,9 @@ If the field is a text field, this method returns an empty string.</p></descript
 */
     public function getEndDateFieldHelpText()
     {
-        return $this->getProperty()->endDateFieldHelpText;
+        if( isset( $this->getProperty()->endDateFieldHelpText ) )
+            return $this->getProperty()->endDateFieldHelpText;
+        return NULL;
     }
     
 /**
@@ -708,7 +718,9 @@ If the field is a text field, this method returns an empty string.</p></descript
 */
     public function getExpirationFolderFieldHelpText()
     {
-        return $this->getProperty()->expirationFolderFieldHelpText;
+        if( isset( $this->getProperty()->expirationFolderFieldHelpText ) )
+            return $this->getProperty()->expirationFolderFieldHelpText;
+        return NULL;
     }
     
 /**
@@ -744,7 +756,9 @@ If the field is a text field, this method returns an empty string.</p></descript
 */
     public function getKeywordsFieldHelpText()
     {
-        return $this->getProperty()->keywordsFieldHelpText;
+        if( isset( $this->getProperty()->keywordsFieldHelpText ) )
+            return $this->getProperty()->keywordsFieldHelpText;
+        return NULL;
     }
     
 /**
@@ -861,7 +875,9 @@ Note that the object is populated with default values in dynamic fields.</p></de
 */
     public function getReviewDateFieldHelpText()
     {
-        return $this->getProperty()->reviewDateFieldHelpText;
+        if( isset( $this->getProperty()->reviewDateFieldHelpText ) )
+            return $this->getProperty()->reviewDateFieldHelpText;
+        return NULL;
     }
     
 /**
@@ -897,7 +913,9 @@ Note that the object is populated with default values in dynamic fields.</p></de
 */
     public function getStartDateFieldHelpText()
     {
-        return $this->getProperty()->startDateFieldHelpText;
+        if( isset( $this->getProperty()->startDateFieldHelpText ) )
+            return $this->getProperty()->startDateFieldHelpText;
+        return NULL;
     }
     
 /**
@@ -933,7 +951,9 @@ Note that the object is populated with default values in dynamic fields.</p></de
 */
     public function getSummaryFieldHelpText()
     {
-        return $this->getProperty()->summaryFieldHelpText;
+        if( isset( $this->getProperty()->summaryFieldHelpText ) )
+            return $this->getProperty()->summaryFieldHelpText;
+        return NULL;
     }
     
 /**
@@ -969,7 +989,9 @@ Note that the object is populated with default values in dynamic fields.</p></de
 */
     public function getTeaserFieldHelpText()
     {
-        return $this->getProperty()->teaserFieldHelpText;
+        if( isset( $this->getProperty()->teaserFieldHelpText ) )
+            return $this->getProperty()->teaserFieldHelpText;
+        return NULL;
     }
     
 /**
@@ -1005,7 +1027,9 @@ Note that the object is populated with default values in dynamic fields.</p></de
 */
     public function getTitleFieldHelpText()
     {
-        return $this->getProperty()->titleFieldHelpText;
+        if( isset( $this->getProperty()->titleFieldHelpText ) )
+            return $this->getProperty()->titleFieldHelpText;
+        return NULL;
     }
     
 /**
