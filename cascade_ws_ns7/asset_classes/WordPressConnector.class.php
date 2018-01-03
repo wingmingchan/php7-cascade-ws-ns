@@ -49,7 +49,7 @@ wordPressConnector
         name
         value
 
-JSON:
+REST:
 wordPressConnector
   auth1
   auth2
