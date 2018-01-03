@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/3/2018 Added code to test for NULL.
   * 9/27/2017 Class created.
  */
 namespace cascade_ws_asset;
@@ -70,7 +71,9 @@ class CloudTransport extends Transport
 */
     public function getBasePath()
     {
-        return $this->getProperty()->basePath;
+        if( isset( $this->getProperty()->basePath ) )
+            return $this->getProperty()->basePath;
+        return NULL;
     }
     
 /**
