@@ -64,7 +64,7 @@ textBlock
   expirationFolderRecycled
   text
   
-JSON:
+REST:
 textBlock
   text
   expirationFolderId
