@@ -413,30 +413,30 @@ class Site extends ScheduledPublishing
         $assignment_count      = count( $this->role_assignments );
         
         if( $this->getService()->isSoap() )
-        	$site->roleAssignments = new \stdClass();
+            $site->roleAssignments = new \stdClass();
         elseif( $this->getService()->isRest() )
-        	$site->roleAssignments = array();
+            $site->roleAssignments = array();
         
         if( $assignment_count == 1 )
         {
-        	if( $this->getService()->isSoap() )
-            	$site->roleAssignments->roleAssignment = 
-                	$this->role_assignments[ 0 ]->toStdClass();
+            if( $this->getService()->isSoap() )
+                $site->roleAssignments->roleAssignment = 
+                    $this->role_assignments[ 0 ]->toStdClass();
             elseif( $this->getService()->isRest() )
-            	$site->roleAssignments = 
-                	array( $this->role_assignments[ 0 ]->toStdClass() );
+                $site->roleAssignments = 
+                    array( $this->role_assignments[ 0 ]->toStdClass() );
         }
         else if( $assignment_count > 1 )
         {
-        	if( $this->getService()->isSoap() )
-            	$site->roleAssignments->roleAssignment = array();
+            if( $this->getService()->isSoap() )
+                $site->roleAssignments->roleAssignment = array();
             
             foreach( $this->role_assignments as $assignment )
             {
-            	if( $this->getService()->isSoap() )
-                	$site->roleAssignments->roleAssignment[] = $assignment->toStdClass();
+                if( $this->getService()->isSoap() )
+                    $site->roleAssignments->roleAssignment[] = $assignment->toStdClass();
                 elseif( $this->getService()->isRest() )
-                	$site->roleAssignments[] = $assignment->toStdClass();
+                    $site->roleAssignments[] = $assignment->toStdClass();
             }
         }
         
@@ -531,7 +531,9 @@ class Site extends ScheduledPublishing
 */
     public function getDefaultEditorConfigurationId()
     {
-        return $this->getProperty()->defaultEditorConfigurationId;
+        if( isset( $this->getProperty()->defaultEditorConfigurationId ) )
+            return $this->getProperty()->defaultEditorConfigurationId;
+        return NULL;
     }
 
 /**
