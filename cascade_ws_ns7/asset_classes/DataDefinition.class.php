@@ -566,17 +566,17 @@ $dd->setXML( $xml )->edit();</example>
             $obj->identifier = $identifier;
             
             if( $this->getService()->isSoap() )
-            	$obj->structuredDataNodes = new \stdClass();
+                $obj->structuredDataNodes = new \stdClass();
             elseif( $this->getService()->isRest() )
-            	$obj->structuredDataNodes = array();
-            	
+                $obj->structuredDataNodes = array();
+                
             $child_count = count( $xml_element->children() );
             $more_than_one = ( $child_count > 1 ? true : false );
             
             if( $more_than_one )
             {
-            	if( $this->getService()->isSoap() )
-                	$obj->structuredDataNodes->structuredDataNode = array();
+                if( $this->getService()->isSoap() )
+                    $obj->structuredDataNodes->structuredDataNode = array();
                 
                 foreach( $xml_element->children() as $child )
                 {
@@ -591,10 +591,10 @@ $dd->setXML( $xml )->edit();</example>
                         $child_std = $this->createChildStd(
                             $child, $child_type, $child_identifier );
                     
-                    	if( $this->getService()->isSoap() )
-                        	$obj->structuredDataNodes->structuredDataNode[] = $child_std;
+                        if( $this->getService()->isSoap() )
+                            $obj->structuredDataNodes->structuredDataNode[] = $child_std;
                         elseif( $this->getService()->isRest() )
-                        	$obj->structuredDataNodes[] = $child_std;
+                            $obj->structuredDataNodes[] = $child_std;
                     }
                 }
             }
@@ -611,9 +611,9 @@ $dd->setXML( $xml )->edit();</example>
                     $child, $child_type, $child_identifier );
                 
                 if( $this->getService()->isSoap() )
-                	$obj->structuredDataNodes->structuredDataNode = $child_std;
+                    $obj->structuredDataNodes->structuredDataNode = $child_std;
                 elseif( $this->getService()->isRest() )
-                	$obj->structuredDataNodes = array( $child_std );
+                    $obj->structuredDataNodes = array( $child_std );
             }
         }
         else
