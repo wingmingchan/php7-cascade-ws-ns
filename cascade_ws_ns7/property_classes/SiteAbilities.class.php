@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/4/2018 Added missing properties and methods for 8.7.1.
   * 6/29/2017 Rewrote code for 8.4.1.
   * 6/12/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
@@ -21,9 +22,10 @@ use cascade_ws_asset     as a;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>SiteAbilities</code> object represents the <code>siteAbilities</code> property found in a role asset. As of Cascade 8.7.1, there are 49 of them.</p>
+<p>A <code>SiteAbilities</code> object represents the <code>siteAbilities</code> property found in a role asset. As of Cascade 8.7.1, there are 52 of them.</p>
 <h2>Properties of <code>siteAbilities</code></h2>
 <pre>accessAssetFactories
+accessAudits
 accessConfigurationSets
 accessConnectors
 accessContentTypes
@@ -51,6 +53,8 @@ bypassWorkflowDefintionGroupsForFolders
 bypassWysiwygEditorRestrictions
 cancelPublishJobs
 deleteWorkflows
+diagnosticTests
+editAccessRights
 editDataDefinition
 editPageContentType
 editPageLevelConfigurations
@@ -84,7 +88,7 @@ return $doc_string;
 <postscript></postscript>
 </documentation>
 */
-class SiteAbilities
+class SiteAbilities extends Property
 {
 /**
 <documentation><description><p>The constructor.</p></description>
@@ -102,6 +106,8 @@ class SiteAbilities
     {
         if( isset( $a->accessAssetFactories ) )
             $this->access_asset_factories    = $a->accessAssetFactories;
+        if( isset( $a->accessAudits ) )
+            $this->access_audits             = $a->accessAudits;
         if( isset( $a->accessConfigurationSets ) )
             $this->access_configuration_sets = $a->accessConfigurationSets;
         if( isset( $a->accessConnectors ) )
@@ -161,6 +167,10 @@ class SiteAbilities
             $this->cancel_publish_jobs            = $a->cancelPublishJobs;
         if( isset( $a->deleteWorkflows ) )
             $this->delete_workflows               = $a->deleteWorkflows;
+        if( isset( $a->diagnosticTests ) )
+            $this->diagnostic_tests               = $a->diagnosticTests;
+        if( isset( $a->editAccessRights ) )
+            $this->edit_access_rights             = $a->editAccessRights;
         if( isset( $a->editDataDefinition ) )
             $this->edit_data_definition           = $a->editDataDefinition;
         if( isset( $a->editPageContentType ) )
@@ -220,6 +230,17 @@ class SiteAbilities
         return $this->access_asset_factories;
     }
 
+/**
+<documentation><description><p>Returns <code>accessConfigurationSets</code>.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getAccessAudits() : bool
+    {
+        return $this->access_audits;
+    }
+    
 /**
 <documentation><description><p>Returns <code>accessConfigurationSets</code>.</p></description>
 <example></example>
@@ -518,6 +539,28 @@ class SiteAbilities
     }
     
 /**
+<documentation><description><p>Returns <code>diagnosticTests</code>.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getDisgnosticTests() : bool
+    {
+        return $this->diagnostic_tests;
+    }
+    
+/**
+<documentation><description><p>Returns <code>editAccessRights</code>.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function getEditAccessRights() : bool
+    {
+        return $this->edit_access_rights;
+    }
+    
+/**
 <documentation><description><p>Returns <code>editDataDefinition</code>.</p></description>
 <example></example>
 <return-type></return-type>
@@ -758,6 +801,19 @@ class SiteAbilities
     {
         $this->checkBoolean( $bool );
         $this->access_asset_factories = $bool;
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Sets <code>accessAudits</code> and returns the calling object.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setAccessAudits( bool $bool ) : Property
+    {
+        $this->checkBoolean( $bool );
+        $this->access_audits = $bool;
         return $this;
     }
     
@@ -1126,6 +1182,32 @@ class SiteAbilities
     }
     
 /**
+<documentation><description><p>Sets <code>deleteWorkflows</code> and returns the calling object.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setDiagnosticTests( bool $bool ) : Property
+    {
+        $this->checkBoolean( $bool );
+        $this->diagnostic_tests = $bool;
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Sets <code>editDataDefinition</code> and returns the calling object.</p></description>
+<example></example>
+<return-type></return-type>
+</documentation>
+*/
+    public function setEditAccessRights( bool $bool ) : Property
+    {
+        $this->checkBoolean( $bool );
+        $this->edit_access_rights = $bool;
+        return $this;
+    }
+    
+/**
 <documentation><description><p>Sets <code>editDataDefinition</code> and returns the calling object.</p></description>
 <example></example>
 <return-type></return-type>
@@ -1445,6 +1527,7 @@ class SiteAbilities
             $this->bypass_wysiwyg_editor_restrictions;
         $obj->cancelPublishJobs                       = $this->cancel_publish_jobs;
         $obj->deleteWorkflows                         = $this->delete_workflows;
+        $obj->diagnosticTests                         = $this->diagnostic_tests;
         $obj->editDataDefinition                      = $this->edit_data_definition;
         $obj->editPageContentType                     = $this->edit_page_content_type;
         $obj->editPageLevelConfigurations             =
@@ -1478,7 +1561,15 @@ class SiteAbilities
         return $obj;
     }
     
+    private function checkBoolean( bool $bool )
+    {
+        if( !c\BooleanValues::isBoolean( $bool ) )
+            throw new e\UnacceptableValueException( 
+                S_SPAN . "The value $bool must be a boolean." . E_SPAN );
+    }
+
     private $access_asset_factories;
+    private $access_audits;
     private $access_configuration_sets;
     private $access_connectors;
     private $access_content_types;
@@ -1506,6 +1597,8 @@ class SiteAbilities
     private $bypass_wysiwyg_editor_restrictions;
     private $cancel_publish_jobs;
     private $delete_workflows;
+    private $diagnostic_tests;
+    private $edit_access_rights;
     private $edit_data_definition;
     private $edit_page_content_type;
     private $edit_page_level_configurations;
