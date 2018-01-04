@@ -24,7 +24,7 @@ use cascade_ws_asset     as a;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>GlobalAbilities</code> object represents the <code>globalAbilities</code> property found in a role asset.</p>
+<p>A <code>GlobalAbilities</code> object represents the <code>globalAbilities</code> property found in a role asset. As of Cascade 8.7.1, there are 36 of them.</p>
 <h2>Properties of <code>globalAbilities</code> (Sorted)</h2>
 <pre>accessAllSites
 accessAudits
@@ -74,7 +74,7 @@ return $doc_string;
 <postscript><h2>Test Code</h2><ul><li><a href=""></a></li></ul></postscript>
 </documentation>
 */
-class GlobalAbilities
+class GlobalAbilities extends Property
 {
 /**
 <documentation><description><p>The constructor.</p></description>
@@ -92,43 +92,79 @@ class GlobalAbilities
     {
         if( isset( $a ) )
         {
-            $this->access_all_sites              = $a->accessAllSites;
-            $this->access_audits                 = $a->accessAudits;
-            $this->access_configuration          = $a->accessConfiguration;
-            $this->access_default_editor_configuration =
-                $a->accessDefaultEditorConfiguration;
-            $this->access_roles                  = $a->accessRoles;
-            $this->access_security_area          = $a->accessSecurityArea;
-            $this->access_site_management        = $a->accessSiteManagement;
-            $this->broadcast_messages            = $a->broadcastMessages;
-            $this->bypass_all_permissions_checks = $a->bypassAllPermissionsChecks;
-            $this->change_identity               = $a->changeIdentity;
-            $this->configure_logging             = $a->configureLogging;
-            $this->create_groups                 = $a->createGroups;
-            $this->create_roles                  = $a->createRoles;
-            $this->create_sites                  = $a->createSites;
-            $this->create_users                  = $a->createUsers;
-            $this->database_export_tool          = $a->databaseExportTool;
-            $this->delete_all_users              = $a->deleteAllUsers;
-            $this->delete_any_group              = $a->deleteAnyGroup;
-            $this->delete_member_groups          = $a->deleteMemberGroups;
-            $this->delete_users_in_member_groups = $a->deleteUsersInMemberGroups;
-            $this->diagnostic_tests              = $a->diagnosticTests;
-            $this->edit_access_rights            = $a->editAccessRights;
-            $this->edit_any_group                = $a->editAnyGroup;
-            $this->edit_any_user                 = $a->editAnyUser;
-            $this->edit_member_groups            = $a->editMemberGroups;
-            $this->edit_system_preferences       = $a->editSystemPreferences;
-            $this->edit_users_in_member_groups   = $a->editUsersInMemberGroups;
-            $this->force_logout                  = $a->forceLogout;
-            $this->optimize_database             = $a->optimizeDatabase;
-            $this->searching_indexing            = $a->searchingIndexing;
-            $this->sync_ldap                     = $a->syncLdap;
-            $this->view_all_groups               = $a->viewAllGroups;
-            $this->view_all_users                = $a->viewAllUsers;
-            $this->view_member_groups            = $a->viewMemberGroups;
-            $this->view_system_info_and_logs     = $a->viewSystemInfoAndLogs;
-            $this->view_users_in_member_groups   = $a->viewUsersInMemberGroups;
+            if( isset( $a->accessAllSites ) )
+                $this->access_all_sites              = $a->accessAllSites;
+            if( isset( $a->accessAudits ) )
+                $this->access_audits                 = $a->accessAudits;
+            if( isset( $a->accessConfiguration ) )
+                $this->access_configuration          = $a->accessConfiguration;
+            if( isset( $a->accessDefaultEditorConfiguration ) )
+                $this->access_default_editor_configuration =
+                    $a->accessDefaultEditorConfiguration;
+            if( isset( $a->accessRoles ) )
+                $this->access_roles                  = $a->accessRoles;
+            if( isset( $a->accessSecurityArea ) )
+                $this->access_security_area          = $a->accessSecurityArea;
+            if( isset( $a->accessSiteManagement ) )
+                $this->access_site_management        = $a->accessSiteManagement;
+            if( isset( $a->broadcastMessages ) )
+                $this->broadcast_messages            = $a->broadcastMessages;
+            if( isset( $a->bypassAllPermissionsChecks ) )
+                $this->bypass_all_permissions_checks = $a->bypassAllPermissionsChecks;
+            if( isset( $a->changeIdentity ) )
+                $this->change_identity               = $a->changeIdentity;
+            if( isset( $a->configureLogging ) )
+                $this->configure_logging             = $a->configureLogging;
+            if( isset( $a->createGroups ) )
+                $this->create_groups                 = $a->createGroups;
+            if( isset( $a->createRoles ) )
+                $this->create_roles                  = $a->createRoles;
+            if( isset( $a->createSites ) )
+                $this->create_sites                  = $a->createSites;
+            if( isset( $a->createUsers ) )
+                $this->create_users                  = $a->createUsers;
+            if( isset( $a->databaseExportTool ) )
+                $this->database_export_tool          = $a->databaseExportTool;
+            if( isset( $a->deleteAllUsers ) )
+                $this->delete_all_users              = $a->deleteAllUsers;
+            if( isset( $a->deleteAnyGroup ) )
+                $this->delete_any_group              = $a->deleteAnyGroup;
+            if( isset( $a->deleteMemberGroups ) )
+                $this->delete_member_groups          = $a->deleteMemberGroups;
+            if( isset( $a->deleteUsersInMemberGroups ) )
+                $this->delete_users_in_member_groups = $a->deleteUsersInMemberGroups;
+            if( isset( $a->diagnosticTests ) )
+                $this->diagnostic_tests              = $a->diagnosticTests;
+            if( isset( $a->editAccessRights ) )
+                $this->edit_access_rights            = $a->editAccessRights;
+            if( isset( $a->editAnyGroup ) )
+                $this->edit_any_group                = $a->editAnyGroup;
+            if( isset( $a->editAnyUser ) )
+                $this->edit_any_user                 = $a->editAnyUser;
+            if( isset( $a->editMemberGroups ) )
+                $this->edit_member_groups            = $a->editMemberGroups;
+            if( isset( $a->editSystemPreferences ) )
+                $this->edit_system_preferences       = $a->editSystemPreferences;
+            if( isset( $a->editUsersInMemberGroups ) )
+                $this->edit_users_in_member_groups   = $a->editUsersInMemberGroups;
+            if( isset( $a->forceLogout ) )
+                $this->force_logout                  = $a->forceLogout;
+            if( isset( $a->optimizeDatabase ) )
+                $this->optimize_database             = $a->optimizeDatabase;
+            if( isset( $a->searchingIndexing ) )
+                $this->searching_indexing            = $a->searchingIndexing;
+            if( isset( $a->syncLdap ) )
+                $this->sync_ldap                     = $a->syncLdap;
+            if( isset( $a->viewAllGroups ) )
+                $this->view_all_groups               = $a->viewAllGroups;
+            if( isset( $a->viewAllUsers ) )
+                $this->view_all_users                = $a->viewAllUsers;
+            if( isset( $a->viewMemberGroups ) )
+                $this->view_member_groups            = $a->viewMemberGroups;
+            if( isset( $a->viewSystemInfoAndLogs ) )
+                $this->view_system_info_and_logs     = $a->viewSystemInfoAndLogs;
+            if( isset( $a->viewUsersInMemberGroups ) )
+                $this->view_users_in_member_groups   = $a->viewUsersInMemberGroups;
         }
     }
     
