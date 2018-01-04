@@ -4,6 +4,8 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/4/2018 Added cloud transport-related entries in $types and $properties.
+  Added more tests in createIdString. Added the $command array and related methods.
   * 12/29/2017 Added getReadURL.
  */
 namespace cascade_ws_AOHS;
@@ -16,7 +18,7 @@ use cascade_ws_exception as e;
 
 class AssetOperationHandlerService
 {
-    const DEBUG = false;
+    const DEBUG = true;
     const DUMP  = false;
     const NAME_SPACE = "cascade_ws_AOHS";
 
@@ -28,6 +30,7 @@ class AssetOperationHandlerService
         $this->success        = '';
         $this->createdAssetId = '';
         $this->reply = new \stdClass();
+        $this->commands = array();
 
         try
         {
@@ -59,6 +62,7 @@ class AssetOperationHandlerService
     {
         $id_string = $this->createIdString( $identifier );
         $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $this->commands[] = $command;
         
         if( $comments != "" )
         {
@@ -75,6 +79,16 @@ class AssetOperationHandlerService
     public function checkOut( \stdClass $identifier ) : \stdClass
     {
         return $this->performOperationWithIdentifier( __function__, $identifier );
+    }
+    
+    public function clearCommands()
+    {
+        $this->commands = array();
+    }
+    
+    public function getCommands() : array
+    {
+        return $this->commands;
     }
     
     public function copy( \stdClass $identifier, \stdClass $newIdentifier, 
@@ -138,12 +152,20 @@ class AssetOperationHandlerService
     
     public function createIdString( \stdClass $id )
     {
-        $id_string = $id->type . '/';
-        
         if( isset( $id->id ) )
-            $id_string = $id_string . $id->id;
+            $id_string = $id->type . '/' . $id->id;
         else
-            $id_string = $id->type . '/' . $id->path->siteName . '/' . $id->path->path;
+        {
+            if( $id->type == "role" ||
+                $id->type == "site" ||
+                $id->type == "group" ||
+                $id->type == "user"
+            )
+                $id_string = $id->type . '/' . $id->path->path;
+            else
+                $id_string = 
+                    $id->type . '/' . $id->path->siteName . '/' . $id->path->path;
+        }
         return $id_string;
     }
     
@@ -419,8 +441,6 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
             
         $command = $this->url . __function__ . '/' . $id_string  . $this->auth;
         
-        echo $command, BR;
-        
         if( !is_null( $auditParams ) )
         {
             $params = array( 'auditParameters' => $auditParams );
@@ -521,8 +541,8 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
         }
         return $this->message;
     }
-
-    private function apiOperation( $command, $params=NULL ) : \stdClass
+    
+    private function apiOperation( string $command, array $params=NULL ) : \stdClass
     {
         $input_params = array(
             'http' => array(
@@ -530,12 +550,17 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
                     "Content-Type: application/x-www-form-urlencoded\r\n",
                 'method'  => 'POST'
             ) );
-            
+        
+        $entry = array( "command" => $command );
+        
         if( !is_null( $params ) )
         {
             $input_params[ 'http' ][ 'content' ] = json_encode( $params );
+            $entry[ "params" ] = json_encode( $params );
         }
-            
+        
+        $this->commands[] = $entry;
+
         return json_decode(
             file_get_contents(
                 $command, 
@@ -595,13 +620,14 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
     private $listed_messages;
     
     private $preferences;
+    private $commands;
     
-    // 42 properties
     // property array to generate methods
     /*@var array The array of property names */
     private $properties = array(
         c\P::ASSETFACTORY,
         c\P::ASSETFACTORYCONTAINER,
+        C\P::CLOUDTRANSPORT,
         c\P::CONNECTORCONTAINER,
         c\P::CONTENTTYPE,
         c\P::CONTENTTYPECONTAINER,
@@ -644,11 +670,11 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
         c\P::XSLTFORMAT
     );
     
-    // 46 types
     /*@var array The array of types of assets */
     private $types = array(
         c\T::ASSETFACTORY,
         c\T::ASSETFACTORYCONTAINER,
+        c\T::CLOUDTRANSPORT,
         c\T::CONNECTORCONTAINER,
         c\T::CONTENTTYPE,
         c\T::CONTENTTYPECONTAINER,
