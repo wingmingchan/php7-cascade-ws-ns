@@ -31,9 +31,9 @@ $doc_string = "<h2>Introduction</h2>
   name
   roleType
   globalAbilities
-    (36 properties, v.8.4.1)
+    (36 properties, v.8.7.1)
   siteAbilities
-    (48 properties, v.8.4.1)
+    (48 properties, v.8.7.1)
 </pre>
 <h2>Design Issues</h2>
 <p>Since there are too many methods (84 <code>get</code> and 84 <code>set</code> methods) involved here, I decide not to repeat these methods in various classes. Instead, I provide two <code>get</code> methods, i.e., <code>getGlobalAbilities()</code> and <code>getSiteAbilities()</code> in this class, returning a <code>GlobalAbilities</code> object and a <code>SiteAbilities</code> object respectively, allowing us to manipulate these two objects directly. Therefore, there are no <code>set</code> methods in this class.</p>
@@ -97,7 +97,7 @@ class Role extends Asset
         bool $exception=true 
     ) : Asset
     {
-        $asset                       = new \stdClass();
+        $asset = new \stdClass();
         if( isset( $this->global_abilities ) )
             $this->getProperty()->globalAbilities = $this->global_abilities->toStdClass();
         else
@@ -118,6 +118,7 @@ class Role extends Asset
             throw new e\EditingFailureException( 
                 S_SPAN . c\M::EDIT_ASSET_FAILURE . E_SPAN . $service->getMessage() );
         }
+
         return $this->reloadProperty();
     }
     
