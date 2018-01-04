@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>, German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/4/2018 Started adding REST code for testing.
   * 12/22/2017 Updated getAccessRights for REST.
   * 12/21/2017 Added $service to constructor of AccessRightsInformation.
   * 12/20/2017 Added call to getSites in createSite.
@@ -2836,27 +2837,43 @@ if( count( $messages ) > 0 )
         
         $search_for = AssetTemplate::getSearchInformation();
         $search_for->searchTerms = "*";
-        $search_for->searchTypes->searchType = Role::TYPE;
-        $search_for->searchFields->searchField = "name";
-
-        $this->service->search( $search_for );
+        
+        if( $this->service->isSoap() )
+        {
+            $search_for->searchTypes->searchType   = Role::TYPE;
+            $search_for->searchFields->searchField = "name";
+            $this->service->search( $search_for );
+        }
+        elseif( $this->service->isRest() )
+        {
+            $search_for->searchTypes  = array( Role::TYPE );
+            $search_for->searchFields = array( "name" );
+            $result = $this->service->search( $search_for );
+            //u\DebugUtility::dump( $result );
+        }
         
         if ( $this->service->isSuccessful() )
         {
-            if( !is_null( $this->service->getSearchMatches()->match ) )
-            {
+            if( $this->service->isSoap() &&
+                !is_null( $this->service->getSearchMatches()->match ) )
                 $roles = $this->service->getSearchMatches()->match;
+            elseif( $this->service->isRest() )
+                $roles = $result->matches;
         
-                foreach( $roles as $role )
-                {
-                    $role_identifier = new p\Identifier( $role );
-                    $this->roles[]   = $role_identifier;
-                    $role_object     = $role_identifier->getAsset( $this->service );
-                    if( self::DEBUG ) { u\DebugUtility::out( $role_object->getName() ); }
-                    $this->role_name_object_map[ $role_object->getName() ] = $role_object;
-                    $this->role_id_object_map[ $role_object->getId() ]     = $role_object;
-                }
+            foreach( $roles as $role )
+            {
+                $role_identifier = new p\Identifier( $role );
+                $this->roles[]   = $role_identifier;
+                $role_object     = $role_identifier->getAsset( $this->service );
+                if( self::DEBUG ) { u\DebugUtility::out( $role_object->getName() ); }
+                $this->role_name_object_map[ $role_object->getName() ] = $role_object;
+                $this->role_id_object_map[ $role_object->getId() ]     = $role_object;
             }
+        }
+        else
+        {
+            echo "Failed to search roles", BR;
+            echo $this->service->getMessage();
         }
         return $this->roles;
     }    
@@ -3556,7 +3573,9 @@ u\DebugUtility::dump( $assets );</example>
         
             if( !$this->service->isSuccessful() )
             {
-                echo $this->service->getLastResponse();
+                if( $this->service->isSoap() )
+                    echo $this->service->getLastResponse();
+                
                 throw new e\CreationErrorException(
                     S_SPAN . c\M::CREATE_ASSET_FAILURE . E_SPAN .
                     $this->service->getMessage() );
