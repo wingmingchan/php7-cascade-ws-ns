@@ -77,6 +77,7 @@ class StructuredData extends Property
 <example></example>
 <return-type></return-type>
 <exception></exception>
+<exception>NullServiceException</exception>
 </documentation>
 */
     public function __construct( 
@@ -86,6 +87,11 @@ class StructuredData extends Property
         $data2=NULL, 
         $data3=NULL )
     {
+        if( is_null( $service ) )
+            throw new e\NullServiceException( c\M::NULL_SERVICE );
+            
+        $this->service = $service;
+        
         // a data definition block will have a data definition id in the sd object
         // a page will need to pass in the data definition id
         if( isset( $sd ) )
@@ -113,7 +119,7 @@ class StructuredData extends Property
                 $service, $service->createId(
                     a\DataDefinition::TYPE, $this->definition_id ) );
             // turn structuredDataNode into an array
-            if( $service->isSoap() )
+            if( $this->service->isSoap() )
             {
                 if( isset( $sd->structuredDataNodes->structuredDataNode ) && 
                     !is_array( $sd->structuredDataNodes->structuredDataNode ) )
@@ -128,7 +134,7 @@ class StructuredData extends Property
                         "Number of nodes in std: " . count( $child_nodes ) ); }
                 }
             }
-            elseif( $service->isRest() )
+            elseif( $this->service->isRest() )
             {
                 if( isset( $sd->structuredDataNodes ) && 
                     !is_array( $sd->structuredDataNodes ) )
@@ -148,10 +154,6 @@ class StructuredData extends Property
         $this->node_map    = $this->getIdentifierNodeMap();
         $this->identifiers = array_keys( $this->node_map );
         $this->host_asset  = $data2;
-        
-        //$data2->dump();
-        
-        $this->service     = $service;
         
         if( self::DEBUG ) { u\DebugUtility::out( "First node ID: " . $first_node_id ); }
     }
