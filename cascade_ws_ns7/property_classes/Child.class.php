@@ -81,7 +81,7 @@ class Child extends Property
             if( isset( $c->recycled ) )
                 $this->recycled = $c->recycled;
             else
-            	$this->recycled = false;
+                $this->recycled = false;
         }
         else
         {
