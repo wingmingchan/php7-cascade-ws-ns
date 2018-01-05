@@ -290,15 +290,10 @@ class AssetTemplate
     
     public static function getGroup() : \stdClass
     {
-        $group                             = new \stdClass ();
-        $group->groupName                  = "";
-        $group->wysiwygAllowFontAssignment = false;
-        $group->wysiwygAllowFontFormatting = false;
-        $group->wysiwygAllowTextFormatting = false;
-        $group->wysiwygAllowViewSource     = false;
-        $group->wysiwygAllowImageInsertion = false;
-        $group->wysiwygAllowTableInsertion = false;
-        $group->role                       = 'Default';
+        $group            = new \stdClass ();
+        $group->groupName = "";
+        $group->role      = 'Default';
+        $group->users     = "";
 
         $asset        = new \stdClass ();
         $asset->group = $group;
