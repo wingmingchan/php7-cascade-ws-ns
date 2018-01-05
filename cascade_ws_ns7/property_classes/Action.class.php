@@ -58,10 +58,14 @@ class Action extends Property
     {
         if( isset( $a ) )
         {
-            $this->identifier  = $a->identifier;
-            $this->label       = $a->label;
-            $this->action_type = $a->actionType;
-            $this->next_id     = $a->nextId;
+            if( isset( $a->identifier ) )
+                $this->identifier  = $a->identifier;
+            if( isset( $a->label ) )
+                $this->label       = $a->label;
+            if( isset( $a->actionType ) )
+                $this->action_type = $a->actionType;
+            if( isset( $a->nextId ) )
+                $this->next_id     = $a->nextId;
         }
     }
     
