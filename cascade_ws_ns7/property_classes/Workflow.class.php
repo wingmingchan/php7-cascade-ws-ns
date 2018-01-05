@@ -101,13 +101,19 @@ class Workflow extends Property
         $data2=NULL, 
         $data3=NULL )
     {
+    /*
+        if( is_null( $service ) )
+            throw new e\NullServiceException( c\M::NULL_SERVICE );
+            
+        $this->service = $service;
+    */
+        
         if( isset( $wf ) )
         {
             $this->workflow        = $wf;
             $this->related_entity  = new Identifier( $wf->relatedEntity );
             $this->ordered_steps   = array();
             $this->unordered_steps = array();
-            $this->service         = $service;
         
             if( isset( $wf->orderedSteps ) && isset( $wf->orderedSteps->step ) )
             {
@@ -323,7 +329,7 @@ class Workflow extends Property
             }
         }
         
-        $us_count          = count( $this->unordered_steps );
+        $us_count = count( $this->unordered_steps );
         
         if( $us_count > 0 )
         {
@@ -357,6 +363,6 @@ class Workflow extends Property
     private $action_id_identifier_map;
     private $start_date;
     private $end_date;
-    private $service;
+    //private $service;
 }
 ?>
