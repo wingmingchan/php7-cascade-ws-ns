@@ -4,7 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>, German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
-  * 1/5/2018 Added a patch to createGroup (using roles instead of role).
+  * 1/5/2018 Added a patch to createGroup and createUser (using roles instead of role).
   * 1/4/2018 Started adding REST code for testing.
   * 12/22/2017 Updated getAccessRights for REST.
   * 12/21/2017 Added $service to constructor of AccessRightsInformation.
@@ -1261,7 +1261,9 @@ either an existing index block of type "folder", or an index block newly created
     }
     
 /**
-<documentation><description><p>Returns a <code>FtpTransport</code> object, representing either an existing ftp transport, or an ftp transport newly created by the method.</p></description>
+<documentation><description><p>Returns a <code>FtpTransport</code> object, representing
+either an existing ftp transport, or an ftp transport newly created by the method.
+Currently, this method only produces an FTP transport of a certain type. After the creation, call <code>FtpTransport::setProtocolAuthentication</code> to configure the transport.</p></description>
 <example>$ftp_transport = $cascade->createFtpTransport(
     $transport_parent, // parent container
     'webapp-ftp',      // name
@@ -1269,14 +1271,15 @@ either an existing index block of type "folder", or an index block newly created
     '123',             // port
     'test',            // username
     'test'             // password
-)->setDoPASV( true )->edit();</example>
+);</example>
 <return-type>Asset</return-type>
 <exception>CreationErrorException</exception>
 </documentation>
 */
     public function createFtpTransport( 
         TransportContainer $parent, string $name, 
-        string $server, string $port, string $username, string $password ) : Asset
+        string $server, string $port, string $username, string $password,
+        string $protocol=FtpTransport::PROTOCOL_TYPE_SFTP ) : Asset
     {
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(
@@ -1302,6 +1305,8 @@ either an existing index block of type "folder", or an index block newly created
         $asset->ftpTransport->password            = trim( $password );
         $asset->ftpTransport->hostName            = trim( $server );
         $asset->ftpTransport->port                = trim( $port );
+        $asset->ftpTransport->ftpProtocolType     = trim( $protocol );
+        $asset->ftpTransport->authMode            = FtpTransport::AUTH_TYPE_PASSWORD;
         
         return $this->createAsset(
             $asset, FtpTransport::TYPE, $this->getPath( $parent, $name ), 
@@ -1995,7 +2000,15 @@ either an existing index block of type "folder", or an index block newly created
         $asset->user->username = $user_name;
         $asset->user->password = $password;
         $asset->user->groups   = $group->getId();
-        $asset->user->role     = $global_role->getName();
+        
+        if( $this->service->isSoap() )
+        	$asset->user->role    = $global_role->getName();
+        // patch for 8.7.1
+        elseif( $this->service->isRest() )
+        {
+        	unset( $asset->user->role );
+        	$asset->user->roles = $global_role->getName();
+        }
         
         if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $asset ); }
         return $this->createAsset( $asset, User::TYPE, $user_name );
@@ -3578,8 +3591,6 @@ u\DebugUtility::dump( $assets );</example>
         }
         catch( \Exception $e )
         {
-        	u\DebugUtility::dump( $std );
-        
             $this->service->create( $std );
         
             if( !$this->service->isSuccessful() )
