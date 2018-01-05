@@ -96,9 +96,12 @@ class AclEntry extends Property
     {
         if( isset( $ae ) )
         {
-            $this->level = $ae->level;
-            $this->type  = $ae->type;
-            $this->name  = $ae->name;
+            if( isset( $ae->level ) )
+                $this->level = $ae->level;
+            if( isset( $ae->type ) )
+                $this->type  = $ae->type;
+            if( isset( $ae->name ) )
+                $this->name  = $ae->name;
         }
     }
     
