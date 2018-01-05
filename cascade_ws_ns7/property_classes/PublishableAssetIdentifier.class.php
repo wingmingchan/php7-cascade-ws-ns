@@ -62,10 +62,14 @@ class PublishableAssetIdentifier extends Property
         // could be NULL for text
         if( isset( $psi ) )
         {
-            $this->id       = $psi->id;
-            $this->path     = new Path( $psi->path );
-            $this->type     = $psi->type;
-            $this->recycled = $psi->recycled;
+            if( isset( $psi->id ) )
+                $this->id       = $psi->id;
+            if( isset( $psi->path ) )
+                $this->path     = new Path( $psi->path );
+            if( isset( $psi->type ) )
+                $this->type     = $psi->type;
+            if( isset( $psi->recycled ) )
+                $this->recycled = $psi->recycled;
         }
     }
     
