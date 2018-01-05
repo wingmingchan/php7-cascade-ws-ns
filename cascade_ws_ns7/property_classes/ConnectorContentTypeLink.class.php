@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/26/2017 Updated for REST.
   * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
@@ -52,7 +53,7 @@ class ConnectorContentTypeLink extends Property
 <documentation><description><p>The constructor.</p></description>
 <example></example>
 <return-type></return-type>
-<exception></exception>
+<exception>NullServiceException</exception>
 </documentation>
 */
     public function __construct( 
@@ -62,38 +63,63 @@ class ConnectorContentTypeLink extends Property
         $data2=NULL, 
         $data3=NULL )
     {
+        if( is_null( $service ) )
+            throw new e\NullServiceException( c\M::NULL_SERVICE );
+            
+        $this->service = $service;
+
         if( isset( $cctl ) )
         {
-            $this->content_type_id                    = $cctl->contentTypeId;
-            $this->content_type_path                  = $cctl->contentTypePath;
-            $this->page_configuration_id              = $cctl->pageConfigurationId;
-            $this->page_configuration_name            = $cctl->pageConfigurationName;
+            if( isset( $cctl->contentTypeId ) )
+                $this->content_type_id         = $cctl->contentTypeId;
+            if( isset( $cctl->contentTypePath ) )
+                $this->content_type_path       = $cctl->contentTypePath;
+            if( isset( $cctl->pageConfigurationId ) )
+                $this->page_configuration_id   = $cctl->pageConfigurationId;
+            if( isset( $cctl->pageConfigurationName ) )
+                $this->page_configuration_name = $cctl->pageConfigurationName;
 
-            if( isset( $service ) )
-            {
-                $this->metadata_set = 
-                    a\Asset::getAsset( $service,
-                        a\ContentType::TYPE,
-                        $this->content_type_id )->getMetadataSet();
-            }
+            $this->metadata_set = 
+                a\Asset::getAsset( $this->service,
+                    a\ContentType::TYPE,
+                    $this->content_type_id )->getMetadataSet();
             
             $this->connector_content_type_link_params = array();
             
-            if( isset( $cctl->connectorContentTypeLinkParams ) && 
-                isset( $cctl->connectorContentTypeLinkParams->
-                    connectorContentTypeLinkParam ) )
+            if( isset( $cctl->connectorContentTypeLinkParams ) )
             {
-                $params = $cctl->connectorContentTypeLinkParams->connectorContentTypeLinkParam;
-                
-                if( !is_array( $params ) )
+                if( $this->service->isSoap() &&
+                    isset( $cctl->connectorContentTypeLinkParams->
+                        connectorContentTypeLinkParam ) )
                 {
-                    $params = array( $params );
+                    $params = $cctl->connectorContentTypeLinkParams->
+                        connectorContentTypeLinkParam;
+                
+                    if( !is_array( $params ) )
+                    {
+                        $params = array( $params );
+                    }
+                
+                    foreach( $params as $param )
+                    {
+                        $this->connector_content_type_link_params[] = 
+                            new ConnectorContentTypeLinkParameter( $param );
+                    }
                 }
-                
-                foreach( $params as $param )
+                elseif( $this->service->isRest() )
                 {
-                    $this->connector_content_type_link_params[] = 
-                        new ConnectorContentTypeLinkParameter( $param );
+                    $params = $cctl->connectorContentTypeLinkParams;
+                    
+                    if( !is_array( $params ) )
+                    {
+                        $params = array( $params );
+                    }
+                
+                    foreach( $params as $param )
+                    {
+                        $this->connector_content_type_link_params[] = 
+                            new ConnectorContentTypeLinkParameter( $param );
+                    }
                 }
             }
         }
@@ -222,7 +248,11 @@ class ConnectorContentTypeLink extends Property
         $obj->contentTypePath                = $this->content_type_path;
         $obj->pageConfigurationId            = $this->page_configuration_id;
         $obj->pageConfigurationName          = $this->page_configuration_name;
-        $obj->connectorContentTypeLinkParams = new \stdClass();
+        
+        if( $this->service->isSoap() )
+            $obj->connectorContentTypeLinkParams = new \stdClass();
+        elseif( $this->service->isRest() )
+            $obj->connectorContentTypeLinkParams = array();
         
         $count = count( $this->connector_content_type_link_params );
         
@@ -230,17 +260,30 @@ class ConnectorContentTypeLink extends Property
         {
             if( $count == 1 )
             {
-                $obj->connectorContentTypeLinkParams->connectorContentTypeLinkParam =
-                    $this->connector_content_type_link_params[ 0 ]->toStdClass();
+                if( $this->service->isSoap() )
+                    $obj->connectorContentTypeLinkParams->
+                        connectorContentTypeLinkParam =
+                            $this->connector_content_type_link_params[ 0 ]->toStdClass();
+                elseif( $this->service->isRest() )
+                {
+                    $obj->connectorContentTypeLinkParams =
+                        array( $this->connector_content_type_link_params[ 0 ]->toStdClass() );
+                }
             }
             else
             {
-                $obj->connectorContentTypeLinkParams->connectorContentTypeLinkParam =
+                if( $this->service->isSoap() )
+                    $obj->connectorContentTypeLinkParams->connectorContentTypeLinkParam =
                     array();
 
                 for( $i = 0; $i < $count; $i++ )
                 {
-                    $obj->connectorContentTypeLinkParams->connectorContentTypeLinkParam[] =
+                    if( $this->service->isSoap() )
+                        $obj->connectorContentTypeLinkParams->
+                            connectorContentTypeLinkParam[] =
+                            $this->connector_content_type_link_params[ $i ]->toStdClass();
+                    elseif( $this->service->isRest() )
+                        $obj->connectorContentTypeLinkParams[] =
                         $this->connector_content_type_link_params[ $i ]->toStdClass();
                 }
             }
@@ -254,5 +297,6 @@ class ConnectorContentTypeLink extends Property
     private $page_configuration_id;
     private $page_configuration_name;
     private $connector_content_type_link_params;
+    private $service;
 }
 ?>
