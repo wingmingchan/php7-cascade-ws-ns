@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>, German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/5/2018 Added a patch to createGroup (using roles instead of role).
   * 1/4/2018 Started adding REST code for testing.
   * 12/22/2017 Updated getAccessRights for REST.
   * 12/21/2017 Added $service to constructor of AccessRightsInformation.
@@ -1362,7 +1363,15 @@ either an existing index block of type "folder", or an index block newly created
             
         $asset                   = AssetTemplate::getGroup();
         $asset->group->groupName = $group_name;
-        $asset->group->role      = $role_name;
+        
+        if( $this->service->isSoap() )
+        	$asset->group->role      = $role_name;
+        // patch for 8.7.1
+        elseif( $this->service->isRest() )
+        {
+        	unset( $asset->group->role );
+        	$asset->group->roles = $role_name;
+        }
         
         return $this->createAsset( $asset, Group::TYPE, $group_name );
     }
@@ -3569,6 +3578,8 @@ u\DebugUtility::dump( $assets );</example>
         }
         catch( \Exception $e )
         {
+        	u\DebugUtility::dump( $std );
+        
             $this->service->create( $std );
         
             if( !$this->service->isSuccessful() )
