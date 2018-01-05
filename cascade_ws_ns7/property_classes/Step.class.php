@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 12/26/2017 Changed constructor so that it works with REST.
   * 6/12/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
  */
@@ -54,6 +55,7 @@ class Step
 <example></example>
 <return-type></return-type>
 <exception></exception>
+<exception>NullServiceException</exception>
 </documentation>
 */
     public function __construct( 
@@ -63,27 +65,43 @@ class Step
         $data2=NULL, 
         $data3=NULL )
     {        
-        $this->identifier         = $s->identifier;
-        $this->label              = $s->label;
-        $this->step_type          = $s->stepType;
-        $this->owner              = $s->owner;
-        $this->actions            = array();
-        $this->action_identifiers = array();
+        if( is_null( $service ) )
+            throw new e\NullServiceException( c\M::NULL_SERVICE );
+            
+        $this->service = $service;
         
-        if( isset( $s->actions ) && isset( $s->actions->action ) )
+        if( isset( $s ) )
         {
-            $actions = $s->actions->action;
-            
-            if( !is_array( $actions ) )
+            if( isset( $s->identifier ) )
+                $this->identifier = $s->identifier;
+            if( isset( $s->label ) )
+                $this->label      = $s->label;
+            if( isset( $s->stepType ) )
+                $this->step_type  = $s->stepType;
+            if( isset( $s->owner ) )
+                $this->owner      = $s->owner;
+                
+            $this->actions            = array();
+            $this->action_identifiers = array();
+        
+            if( isset( $s->actions ) )
             {
-                $actions = array( $actions );
-            }
+                if( $this->service->isSoap() && isset( $s->actions->action ) )
+                    $actions = $s->actions->action;
+                elseif( $this->service->isRest() )
+                    $actions = $s->actions;
             
-            foreach( $actions as $action )
-            {
-                $a                          = new Action( $action );
-                $this->actions[]            = $a;
-                $this->action_identifiers[] = $a->getIdentifier();
+                if( !is_array( $actions ) )
+                {
+                    $actions = array( $actions );
+                }
+            
+                foreach( $actions as $action )
+                {
+                    $a                          = new Action( $action );
+                    $this->actions[]            = $a;
+                    $this->action_identifiers[] = $a->getIdentifier();
+                }
             }
         }
     }
@@ -197,5 +215,6 @@ class Step
     private $owner;
     private $actions;
     private $action_identifiers;
+    private $service;
 }
 ?>
