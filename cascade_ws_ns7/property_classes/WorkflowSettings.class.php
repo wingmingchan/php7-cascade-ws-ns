@@ -131,29 +131,29 @@ return $doc_string;
         
         if( isset( $wfs_std->workflowDefinitions ) )
         {
-        	if( $this->service->isSoap() &&
-				isset( $wfs_std->workflowDefinitions->assetIdentifier ) )
-			{
-				$asset_identifiers = $wfs_std->workflowDefinitions->assetIdentifier;
-			
-				if( !is_array( $asset_identifiers ) )
-				{
-					$asset_identifiers = array( $asset_identifiers );
-				}
-			
-				foreach( $asset_identifiers as $asset_identifier )
-				{
-					$this->workflow_definitions[] = new Identifier( $asset_identifier );
-				}
-			}
-			elseif( $this->service->isRest() )
-			{
-				foreach( $wfs_std->workflowDefinitions as $asset_identifier )
-				{
-					$this->workflow_definitions[] = new Identifier( $asset_identifier );
-				}
-			}
-		}	
+            if( $this->service->isSoap() &&
+                isset( $wfs_std->workflowDefinitions->assetIdentifier ) )
+            {
+                $asset_identifiers = $wfs_std->workflowDefinitions->assetIdentifier;
+            
+                if( !is_array( $asset_identifiers ) )
+                {
+                    $asset_identifiers = array( $asset_identifiers );
+                }
+            
+                foreach( $asset_identifiers as $asset_identifier )
+                {
+                    $this->workflow_definitions[] = new Identifier( $asset_identifier );
+                }
+            }
+            elseif( $this->service->isRest() )
+            {
+                foreach( $wfs_std->workflowDefinitions as $asset_identifier )
+                {
+                    $this->workflow_definitions[] = new Identifier( $asset_identifier );
+                }
+            }
+        }    
         
         $this->inherit_workflows = $wfs_std->inheritWorkflows;
         $this->require_workflow  = $wfs_std->requireWorkflow;
@@ -163,31 +163,31 @@ return $doc_string;
         if( isset( $wfs_std->inheritedWorkflowDefinitions ) )
         { 
             if( $this->service->isSoap() &&
-            	isset( $wfs_std->inheritedWorkflowDefinitions->assetIdentifier ) )
-			{
-				$asset_identifiers = $wfs_std->inheritedWorkflowDefinitions->
-					assetIdentifier;
-			
-				if( !is_array( $asset_identifiers ) )
-				{
-					$asset_identifiers = array( $asset_identifiers );
-				}
-			
-				foreach( $asset_identifiers as $asset_identifier )
-				{
-					$this->inherited_workflow_definitions[] = 
-						new Identifier( $asset_identifier );
-				}
-			}
-			elseif( $this->service->isRest() )
-			{
-				foreach( $wfs_std->inheritedWorkflowDefinitions as $asset_identifier )
-				{
-					$this->inherited_workflow_definitions[] =
-						new Identifier( $asset_identifier );
-				}
-			}
-		}
+                isset( $wfs_std->inheritedWorkflowDefinitions->assetIdentifier ) )
+            {
+                $asset_identifiers = $wfs_std->inheritedWorkflowDefinitions->
+                    assetIdentifier;
+            
+                if( !is_array( $asset_identifiers ) )
+                {
+                    $asset_identifiers = array( $asset_identifiers );
+                }
+            
+                foreach( $asset_identifiers as $asset_identifier )
+                {
+                    $this->inherited_workflow_definitions[] = 
+                        new Identifier( $asset_identifier );
+                }
+            }
+            elseif( $this->service->isRest() )
+            {
+                foreach( $wfs_std->inheritedWorkflowDefinitions as $asset_identifier )
+                {
+                    $this->inherited_workflow_definitions[] =
+                        new Identifier( $asset_identifier );
+                }
+            }
+        }
     }
     
 /**
