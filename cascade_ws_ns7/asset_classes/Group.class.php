@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/5/2018 Updated documentation.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/15/2017 Removed all methods related to configurations per Cascade 8.4.
   * 6/12/2017 Added WSDL.
@@ -27,12 +28,19 @@ use cascade_ws_property  as p;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>Group</code> object represents a group asset.</p>
+<p>A <code>Group</code> object represents a group asset. Note that there is a difference between SOAP and REST, as of Cascade 8.7.1: the <code>role</code> property in SOAP is named <code>roles</code> instead in REST. This name will definitely change in future versions.</p>
 <h2>Structure of <code>group</code></h2>
-<pre>group
+<pre>SOAP:
+group
   groupName
   users
   role
+  
+REST:
+group
+  groupName
+  users
+  roles
 </pre>
 <h2>Design Issues</h2>
 <p>As of Cascade 8.4.1, all <code>get</code> and <code>set</code> methods of this class, other than those related to users and roles, have been removed.</p>
@@ -192,7 +200,7 @@ class Group extends Asset
     }
     
 /**
-<documentation><description><p>Returns <code>role</code>. This is the global role assigned to the group.</p></description>
+<documentation><description><p>Returns <code>role</code> (or <code>roles</code>).</p></description>
 <example>echo $g->getRole(), BR;</example>
 <return-type>string</return-type>
 <exception></exception>
@@ -200,7 +208,10 @@ class Group extends Asset
 */
     public function getRole() : string
     {
-        return $this->getProperty()->role;
+    	if( isset( $this->getProperty()->role ) )
+        	return $this->getProperty()->role;
+        elseif( isset( $this->getProperty()->roles ) )
+        	return $this->getProperty()->roles;
     }
     
 /**
