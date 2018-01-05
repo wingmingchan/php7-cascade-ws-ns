@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/5/2018 Added code to createIdString to escape space.
   * 1/4/2018 Added cloud transport-related entries in $types and $properties.
   Added more tests in createIdString. Added the $command array and related methods.
   * 12/29/2017 Added getReadURL.
@@ -139,7 +140,7 @@ class AssetOperationHandlerService
         else
         {
             $id->path = new \stdClass();
-            $id->path->path     = $id_path;
+            $id->path->path = $id_path;
             
             if( $id_path == "/" )
                 $id->path->path = "%252F"; // the root folder
@@ -156,16 +157,27 @@ class AssetOperationHandlerService
             $id_string = $id->type . '/' . $id->id;
         else
         {
+        	$path = $id->path->path;
+        	
+        	if( $path != "%252F" )
+        		$path = str_replace( " ", "%20", $path );
+        	
             if( $id->type == "role" ||
                 $id->type == "site" ||
                 $id->type == "group" ||
                 $id->type == "user"
             )
-                $id_string = $id->type . '/' . $id->path->path;
+            {
+                $id_string = $id->type . '/' . $path;
+            }
             else
-                $id_string = 
-                    $id->type . '/' . $id->path->siteName . '/' . $id->path->path;
+            {
+                $id_string = $id->type . '/' . $id->path->siteName . '/' . $path;
+            }
         }
+        
+        $id_string = str_replace( "//", "/", $id_string );
+        
         return $id_string;
     }
     
@@ -411,8 +423,8 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
     public function read( \stdClass $identifier )
     {
         $id_string = $this->createIdString( $identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
-        $this->reply = $this->apiOperation( $command );
+        $command   = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $this->reply   = $this->apiOperation( $command );
         $this->success = $this->reply->success;
         
         if( $this->success )
@@ -560,10 +572,12 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
         }
         
         $this->commands[] = $entry;
+        
+        //u\DebugUtility::dump( $this->commands );
 
         return json_decode(
             file_get_contents(
-                $command, 
+                $command,
                 false, 
                 stream_context_create( $input_params ) ) );
     }
