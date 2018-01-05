@@ -50,6 +50,7 @@ class ActionDefinition
         $this->action_xml = $action_xml;
         $action_attr      = $action_xml->attributes();
         $this->identifier = $action_attr->identifier->__toString();
+        
         if( $action_attr->label )
             $this->label  = $action_attr->label->__toString();
         
