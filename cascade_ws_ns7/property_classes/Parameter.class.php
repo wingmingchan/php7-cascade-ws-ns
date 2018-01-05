@@ -57,8 +57,6 @@ class Parameter extends Property
     {
         if( isset( $p ) )
         {
-        	u\DebugUtility::dump( $p );
-        
             if( isset( $p->name ) )
                 $this->name  = $p->name;
             if( isset( $p->value ) )
