@@ -33,7 +33,7 @@ $doc_string = "<h2>Introduction</h2>
   globalAbilities
     (36 properties, v.8.7.1)
   siteAbilities
-    (48 properties, v.8.7.1)
+    (52 properties, v.8.7.1)
 </pre>
 <h2>Design Issues</h2>
 <p>Since there are too many methods (84 <code>get</code> and 84 <code>set</code> methods) involved here, I decide not to repeat these methods in various classes. Instead, I provide two <code>get</code> methods, i.e., <code>getGlobalAbilities()</code> and <code>getSiteAbilities()</code> in this class, returning a <code>GlobalAbilities</code> object and a <code>SiteAbilities</code> object respectively, allowing us to manipulate these two objects directly. Therefore, there are no <code>set</code> methods in this class.</p>
@@ -48,7 +48,70 @@ $doc_string .=
 return $doc_string;
 ?>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/role.php">role.php</a></li></ul>
+<postscript><h2>JSON Dump</h2>
+<pre>
+{
+  "roleType":"site",
+  "siteAbilities":
+  {
+    "bypassAllPermissionsChecks":false,
+    "uploadImagesFromWysiwyg":true,
+    "multiSelectCopy":true,
+    "multiSelectPublish":true,
+    "multiSelectMove":true,
+    "multiSelectDelete":true,
+    "editPageLevelConfigurations":true,
+    "editPageContentType":true,
+    "editDataDefinition":true,
+    "publishReadableHomeAssets":true,
+    "publishWritableHomeAssets":true,
+    "editAccessRights":false,
+    "viewVersions":true,
+    "activateDeleteVersions":true,
+    "accessAudits":false,
+    "bypassWorkflow":true,
+    "assignApproveWorkflowSteps":true,
+    "deleteWorkflows":true,
+    "breakLocks":true,
+    "assignWorkflowsToFolders":true,
+    "bypassAssetFactoryGroupsNewMenu":true,
+    "bypassDestinationGroupsWhenPublishing":true,
+    "bypassWorkflowDefintionGroupsForFolders":true,
+    "accessManageSiteArea":true,
+    "accessAssetFactories":true,
+    "accessConfigurationSets":true,
+    "accessDataDefinitions":true,
+    "accessMetadataSets":true,
+    "accessPublishSets":true,
+    "accessDestinations":true,
+    "accessTransports":true,
+    "accessWorkflowDefinitions":true,
+    "accessContentTypes":true,
+    "accessConnectors":true,
+    "publishReadableAdminAreaAssets":true,
+    "publishWritableAdminAreaAssets":true,
+    "importZipArchive":true,
+    "bulkChange":true,
+    "recycleBinViewRestoreUserAssets":true,
+    "recycleBinDeleteAssets":true,
+    "recycleBinViewRestoreAllAssets":true,
+    "moveRenameAssets":true,
+    "diagnosticTests":true,
+    "alwaysAllowedToToggleDataChecks":true,
+    "viewPublishQueue":true,
+    "reorderPublishQueue":true,
+    "cancelPublishJobs":true,
+    "sendStaleAssetNotifications":true,
+    "brokenLinkReportAccess":true,
+    "brokenLinkReportMarkFixed":true,
+    "bypassWysiwygEditorRestrictions":true,
+    "accessEditorConfigurations":true
+  },
+  "name":"Test WS Site Role",
+  "id":"23"
+}
+</pre>
+<h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/role.php">role.php</a></li></ul>
 </postscript>
 </documentation>
 */
