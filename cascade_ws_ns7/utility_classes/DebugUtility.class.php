@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>, Peter Thomas <thomaspe.upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/5/2018 Added dumpRESTCommands.
   * 9/15/2016 Added outputDate, outputDuration and setTimeSpaceLimits.
   * 8/26/2016 Added constant NAME_SPACE.
   * 8/24/2016 Added documentation comments and changed the output to SCRIPT_FILENAME.
@@ -13,6 +14,7 @@
  */
 namespace cascade_ws_utility; 
 
+use cascade_ws_AOHS      as aohs;
 use cascade_ws_asset     as a;
 use cascade_ws_exception as e;
 
@@ -48,7 +50,31 @@ the method call is from line 13 of the test program named <code>debug-utility.ph
         var_dump( $var );
         echo E_PRE . HR;
     }
-    
+
+/**
+<documentation><description><p>Outputs the contents of the array returned by <code>$service->getCommands()</code>.</p></description>
+<example>u\DebugUtility::dumpRESTCommands( $service->getCommands() );</example>
+<return-type>void</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function dumpRESTCommands( aohs\AssetOperationHandlerService $service )
+    {
+    	if( $service->isRest() )
+    	{
+        	self::getCallingInfo( $class, $line );
+			echo $class . "::" . $line . ": " . BR . S_PRE;
+			var_dump( $service->getCommands() );
+			echo E_PRE . HR;
+
+        	$service->clearCommands();
+        }
+        else
+        {
+        	self::out( "Currently the service object is associated with SOAP." );
+        }
+    }
+
 /**
 Outputs the message string.
 @param string $msg The message string
