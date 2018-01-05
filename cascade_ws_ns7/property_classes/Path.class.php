@@ -64,7 +64,6 @@ class Path extends Property
             
             if( isset( $p->siteId ) )
                 $this->site_id   = $p->siteId;
-                
             if( isset( $p->siteName ) )
                 $this->site_name = $p->siteName;
         }
