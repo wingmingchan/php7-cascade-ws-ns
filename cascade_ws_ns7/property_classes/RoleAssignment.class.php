@@ -60,10 +60,14 @@ class RoleAssignment extends Property
     {
         if( isset( $ra ) )
         {
-            $this->role_id   = $ra->roleId;
-            $this->role_name = $ra->roleName;
-            $this->users     = $ra->users;
-            $this->groups    = $ra->groups;
+            if( isset( $ra->roleId ) )
+                $this->role_id   = $ra->roleId;
+            if( isset( $ra->roleName ) )
+                $this->role_name = $ra->roleName;
+            if( isset( $ra->users ) )
+                $this->users     = $ra->users;
+            if( isset( $ra->groups ) )
+                $this->groups    = $ra->groups;
         }
     }
     
