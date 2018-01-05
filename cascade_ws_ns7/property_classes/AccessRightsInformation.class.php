@@ -4,7 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
-  * 12/22/2017 Updated for REST.
+  * 12/22/2017 Changed toStdClass so that it works with REST.
   * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/28/2016 Added setAccessRights, denyAccessToAllGroups, denyAccessToAllUsers.
@@ -126,7 +126,7 @@ class AccessRightsInformation extends Property
 $ari = $cascade->getAccessRights(
     a\Folder::TYPE, $folder_path, $site_name );</example>
 <return-type></return-type>
-<exception></exception>
+<exception>NullServiceException</exception>
 </documentation>
 */
     public function __construct( 
@@ -136,26 +136,26 @@ $ari = $cascade->getAccessRights(
         $data2=NULL, 
         $data3=NULL )
     {
-    	if( is_null( $service ) )
-    		throw new e\NullServiceException( c\M::NULL_SERVICE );
-    		
-    	$this->service = $service;
-    	
-		if( isset( $ari ) )
-		{
-			$this->identifier  = new Identifier( $ari->identifier );
-		
-		
-			if( isset( $ari->aclEntries ) )
-			{
-				if( $this->service->isSoap() && isset( $ari->aclEntries->aclEntry ) )
-					$this->processAclEntries( $ari->aclEntries->aclEntry );
-				elseif( $this->service->isRest() )
-					$this->processAclEntries( $ari->aclEntries );
-			}
-		
-			$this->all_level  = $ari->allLevel;
-		}
+        if( is_null( $service ) )
+            throw new e\NullServiceException( c\M::NULL_SERVICE );
+            
+        $this->service = $service;
+        
+        if( isset( $ari ) )
+        {
+            if( isset( $ari->identifier ) )
+                $this->identifier = new Identifier( $ari->identifier );
+        
+            if( isset( $ari->aclEntries ) )
+            {
+                if( $this->service->isSoap() && isset( $ari->aclEntries->aclEntry ) )
+                    $this->processAclEntries( $ari->aclEntries->aclEntry );
+                elseif( $this->service->isRest() )
+                    $this->processAclEntries( $ari->aclEntries );
+            }
+        
+            $this->all_level  = $ari->allLevel;
+        }
     }
     
 /**
@@ -583,10 +583,10 @@ $cascade->setAccessRights( $ari, true );</example>
         $obj->aclEntries           = new \stdClass();
         
         if( $this->service->isSoap() )
-        	$obj->aclEntries->aclEntry = $entry_array;
+            $obj->aclEntries->aclEntry = $entry_array;
         else
-        	$obj->aclEntries = $entry_array;
-        	
+            $obj->aclEntries = $entry_array;
+            
         $obj->allLevel = $this->all_level;
         
         return $obj;
