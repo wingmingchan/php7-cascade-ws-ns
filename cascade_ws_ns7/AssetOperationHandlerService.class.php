@@ -4,6 +4,8 @@
   Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   MIT Licensed
   Modification history:
+   1/8/2018 Added a while loop in siteCopy.
+   1/4/2018 Added cloud transport-related entries in $types and $properties.
    12/21/2017 Added isSoap and isRest.
    11/28/2017 Bugs fixed in publish and unpublish related to destinations.
    10/12/2017 Updated documentation.
@@ -1421,7 +1423,7 @@ $p  = $cascade->getAsset( a\Page::TYPE, "9a1416488b7f08ee5d439b31921d08b6" );
 $dest_web =
     $cascade->getAsset( a\Destination::TYPE, "03b2789b8b7f08ee357fca92fc1cfc40" );
 $dest_www =
-	$cascade->getAsset( a\Destination::TYPE, "c34d2a868b7f08ee4fe76bb87c352c01" );
+    $cascade->getAsset( a\Destination::TYPE, "c34d2a868b7f08ee4fe76bb87c352c01" );
 $service->publish( $p->getIdentifier(), 
     array( $dest_web->getIdentifier(), $dest_www->getIdentifier() ) );
 </example>
@@ -1757,8 +1759,35 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
         $site_copy_params->originalSiteName = $original_name;
         $site_copy_params->newSiteName      = $new_name;
 
-        $this->reply = $this->soapClient->siteCopy( $site_copy_params );
-        $this->storeResults( $this->reply->siteCopyReturn );
+        try
+        {
+            $this->soapClient->siteCopy( $site_copy_params );
+        }
+        catch( \Exception $e )
+        {
+            // do nothing
+        }
+        
+        $identifier = new \stdClass();
+        $identifier->type = a\MetadataSetContainer::TYPE;
+        $identifier->path = new \stdClass();
+        $identifier->path->path = "/";
+        $identifier->path->siteName = $new_name;
+        $counter = 0;
+        
+        while( $counter < 600 )
+        {
+            $this->read( $identifier );
+            sleep( 1 );
+            $counter++;
+            
+            if( $this->isSuccessful() )
+                break;
+        }
+        
+        if( !$this->isSuccessful() )
+            throw new e\SiteCreationFailureException(
+                S_SPAN . c\M::SITE_CREATION_FAILURE . E_SPAN );
     }
 
 /**
@@ -1890,12 +1919,12 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
     
     private $preferences;
     
-    // 42 properties
     // property array to generate methods
     /*@var array The array of property names */
     private $properties = array(
         c\P::ASSETFACTORY,
         c\P::ASSETFACTORYCONTAINER,
+        C\P::CLOUDTRANSPORT,
         c\P::CONNECTORCONTAINER,
         c\P::CONTENTTYPE,
         c\P::CONTENTTYPECONTAINER,
@@ -1938,11 +1967,11 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
         c\P::XSLTFORMAT
     );
     
-    // 46 types
     /*@var array The array of types of assets */
     private $types = array(
         c\T::ASSETFACTORY,
         c\T::ASSETFACTORYCONTAINER,
+        c\T::CLOUDTRANSPORT,
         c\T::CONNECTORCONTAINER,
         c\T::CONTENTTYPE,
         c\T::CONTENTTYPECONTAINER,
