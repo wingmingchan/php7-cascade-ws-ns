@@ -488,6 +488,8 @@ class T // types
     const CHECKIN                          = "check_in";
     const CHECK_OUT                        = "check_out";
     const CHECKOUT                         = "check_out";
+    const CLOUD_TRANSPORT                  = "transport_cloud";
+    const CLOUDTRANSPORT                   = "transport_cloud";
     const CONFIGURATION                    = "pageconfiguration";
     const CONFIGURATION_SET                = "pageconfigurationset";
     const CONFIGURATIONSET                 = "pageconfigurationset";
@@ -742,6 +744,7 @@ class T // types
     public static $type_class_name_map = array(
             T::ASSETFACTORY                  => 'AssetFactory',
             T::ASSETFACTORYCONTAINER         => 'AssetFactoryContainer',
+            T::CLOUDTRANSPORT                => 'CloudTransport',
             T::CONNECTORCONTAINER            => 'ConnectorContainer',
             T::CONTENTTYPE                   => 'ContentType',
             T::CONTENTTYPECONTAINER          => 'ContentTypeContainer',
@@ -788,6 +791,7 @@ class T // types
     public static $type_parent_type_map = array(
             T::ASSETFACTORY                  => T::ASSETFACTORYCONTAINER,
             T::ASSETFACTORYCONTAINER         => T::ASSETFACTORYCONTAINER,
+            T::CLOUDTRANSPORT                => T::TRANSPORT_CONTAINER,
             T::CONNECTORCONTAINER            => T::CONNECTORCONTAINER,
             T::CONTENTTYPE                   => T::CONTENTTYPECONTAINER,
             T::CONTENTTYPECONTAINER          => T::CONTENTTYPECONTAINER,
@@ -830,6 +834,7 @@ class T // types
     public static $type_property_name_map = array(
             T::ASSETFACTORY                  => P::ASSETFACTORY,
             T::ASSETFACTORYCONTAINER         => P::ASSETFACTORYCONTAINER,
+            T::CLOUDTRANSPORT                => P::CLOUDTRANSPORT,
             T::CONNECTORCONTAINER            => P::CONNECTORCONTAINER,
             T::CONTENTTYPE                   => P::CONTENTTYPE,
             T::CONTENTTYPECONTAINER          => P::CONTENTTYPECONTAINER,
