@@ -4,6 +4,8 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/8/2018 Changed createId so that the root metadata set container is read when
+  reading a site. Added a while loop in siteCopy.
   * 1/5/2018 Added code to createIdString to escape space.
   * 1/4/2018 Added cloud transport-related entries in $types and $properties.
   Added more tests in createIdString. Added the $command array and related methods.
@@ -123,6 +125,7 @@ class AssetOperationHandlerService
     public function createId(
         string $type, string $id_path, string $site_name = NULL ) : \stdClass
     {
+        //u\DebugUtility::out( $id_path );
         $id = new \stdClass();
         
         if( $this->isHexString( $id_path ) )
@@ -130,12 +133,19 @@ class AssetOperationHandlerService
         // patch for Cascade 8.7.1
         elseif( $type == c\T::SITE )
         {
-            // retrieve the site Default metadata set
-            $ms_id   = $this->createId( c\T::METADATASET, "Default", $id_path );
-            $ms      = $this->read( $ms_id );
+            // retrieve the site root metadata set container
+            $msc_id   = $this->createId( c\T::METADATASETCONTAINER, "/", $id_path );
+            $msc      = $this->read( $msc_id );
             // retrieve site id from metadata set
-            $site_id = $ms->metadataSet->siteId;
-            $id->id  = $site_id;
+            
+            //u\DebugUtility::dump( $msc );
+            
+            if( isset( $msc->metadataSetContainer->siteId ) )
+            	$id->id  = $msc->metadataSetContainer->siteId;
+        }
+        elseif( $type == c\T::GROUP || $type == c\T::USER )
+        {
+            $id->id = $id_path;
         }
         else
         {
@@ -147,6 +157,7 @@ class AssetOperationHandlerService
                 
             $id->path->siteName = $site_name;
         }
+        
         $id->type = $type;
         return $id;
     }
@@ -155,26 +166,29 @@ class AssetOperationHandlerService
     {
         if( isset( $id->id ) )
             $id_string = $id->type . '/' . $id->id;
-        else
+        elseif( isset( $id->path->path ) )
         {
-        	$path = $id->path->path;
-        	
-        	if( $path != "%252F" )
-        		$path = str_replace( " ", "%20", $path );
-        	
-            if( $id->type == "role" ||
-                $id->type == "site" ||
-                $id->type == "group" ||
-                $id->type == "user"
-            )
-            {
-                $id_string = $id->type . '/' . $path;
-            }
-            else
-            {
-                $id_string = $id->type . '/' . $id->path->siteName . '/' . $path;
-            }
+			$path = $id->path->path;
+		
+			if( $path != "%252F" )
+				$path = str_replace( " ", "%20", $path );
+		
+		
+			if( $id->type == "role" ||
+				$id->type == "site" ||
+				$id->type == "group" ||
+				$id->type == "user"
+			)
+			{
+				$id_string = $id->type . '/' . $path;
+			}
+			else
+			{
+				$id_string = $id->type . '/' . $id->path->siteName . '/' . $path;
+			}
         }
+        else
+        	$id_string = "";
         
         $id_string = str_replace( "//", "/", $id_string );
         
@@ -183,6 +197,8 @@ class AssetOperationHandlerService
     
     public function delete( \stdClass $identifier ) : \stdClass
     {
+        //u\DebugUtility::dump( $identifier );
+    
         return $this->performOperationWithIdentifier( __function__, $identifier );
     }
         
@@ -427,7 +443,7 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
         $this->reply   = $this->apiOperation( $command );
         $this->success = $this->reply->success;
         
-        if( $this->success )
+        if( $this->success == "true" )
             return $this->reply->asset;
         else
             return NULL;
@@ -509,7 +525,28 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
         $params->originalSiteName = $originalSiteName;
         $params->newSiteName      = $newSiteName;
         $this->reply   = $this->apiOperation( $command, $params );
+        
+        $command = $this->url . "read/metadatasetcontainer/$newSiteName/%252f" . $this->auth;
+        //u\DebugUtility::out( $command );
+        
+        $counter = 0;
+        
+        while( $counter < 600 )
+        {
+            $this->reply = $this->apiOperation( $command );
+            sleep( 1 );
+            $counter++;
+            
+            if( $this->reply->success == "true" )
+                break;
+        }
+        
         $this->success = $this->reply->success;
+        
+        if( $this->success != "true" )
+            throw new e\SiteCreationFailureException(
+                S_SPAN . c\M::SITE_CREATION_FAILURE . E_SPAN );
+        
         return $this->reply;
     }
     
@@ -554,8 +591,11 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
         return $this->message;
     }
     
-    private function apiOperation( string $command, array $params=NULL ) : \stdClass
+    private function apiOperation( string $command, $params=NULL )// : \stdClass
     {
+        //u\DebugUtility::dump( $command );
+        //u\DebugUtility::dump( $params );
+    
         $input_params = array(
             'http' => array(
                 'header'  => "Authorization: Basic " . $this->getAuthString() . "\r\n" .
@@ -593,9 +633,12 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
     private function performOperationWithIdentifier(
         string $opName, \stdClass $identifier ) : \stdClass
     {
+        //u\DebugUtility::dump( $identifier );
+    
         $id_string = $this->createIdString( $identifier );
         $command = $this->url . $opName . '/' . $id_string . $this->auth;
-        $this->reply = $this->apiOperation( $command );
+        //u\DebugUtility::out( $command );
+        $this->reply = $this->apiOperation( $command, $identifier );
         $this->success = $this->reply->success;
         return $this->reply;
     }
