@@ -111,8 +111,10 @@ abstract class Asset
                     $site_name = $identifier->path->siteName;
             }
             
-            if( !isset( $id ) )
+            if( !isset( $id ) && isset( $path ) )
                 $id = $path;
+            else
+            	$id = "";
             
             throw new e\NullAssetException(
                 S_SPAN . "The " . 
