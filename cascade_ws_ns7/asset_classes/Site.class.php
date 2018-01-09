@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/9/2018 Added removeNamingRuleAsset and clearNamingRuleAssets.
   * 12/29/2017 Added REST code and updated documentation.
   * 12/21/2017 Added getRoleAssignments.
   * 11/27/2017 Removed CSS properties and methods, added naming properties and methods.
@@ -365,6 +366,23 @@ class Site extends ScheduledPublishing
         return $this;
     }
     
+/**
+<documentation><description><p>Removes all strings from the <code>namingRuleAssets</code> array, and returns the calling object.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception>NullAssetException</exception>
+</documentation>
+*/
+	public function clearNamingRuleAssets() : Asset
+	{
+		if( isset( $this->getProperty()->namingRuleAssets ) &&
+			count( $this->getProperty()->namingRuleAssets ) > 0 )
+		{
+			$this->getProperty()->namingRuleAssets = array();
+		}
+		return $this;
+	}
+
 /**
 <documentation><description><p>Edits and returns the calling object.</p></description>
 <example></example>
@@ -1431,6 +1449,29 @@ representing the root asset factory container.</p></description>
     }
     
 /**
+<documentation><description><p>Removes the string from the <code>namingRuleAssets</code> array if it exists, and returns the calling object.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception>NullAssetException</exception>
+</documentation>
+*/
+	public function removeNamingRuleAsset( string $a ) : Asset
+	{
+		if( isset( $this->getProperty()->namingRuleAssets ) &&
+			count( $this->getProperty()->namingRuleAssets ) > 0 )
+		{
+			$temp_array = array();
+			
+			foreach( $this->getProperty()->namingRuleAssets as $asset )
+				if( $asset != $a )
+					$temp_array[] = $asset;
+		
+			$this->getProperty()->namingRuleAssets = $temp_array;
+		}
+		return $this;
+	}
+
+/**
 <documentation><description><p>Removes the role from <code>roleAssignments</code>, and returns the calling object.</p></description>
 <example></example>
 <return-type>Asset</return-type>
@@ -1606,7 +1647,8 @@ calling object. Note that when this property is set to <code>true</code>,
 /**
 <documentation><description><p>Sets <code>namingRuleAssets</code> and returns the calling
 object. Note that when this method is called successfully, <code>inheritNamingRules</code>
-will be set to <code>false</code>.</p></description>
+will be set to <code>false</code>. Also note that whatever asset types are already in the
+<code>namingRuleAssets</code> array will be kept.</p></description>
 <example>$s->setNamingRuleAssets( array( "file" ) )->edit();</example>
 <return-type>Asset</return-type>
 <exception>UnacceptableValueException</exception>
@@ -1618,7 +1660,7 @@ will be set to <code>false</code>.</p></description>
         {
             foreach( $assets as $asset )
             {
-                if( !is_string( $asset ) || !in_array( self::ASSETS ) )
+                if( !is_string( $asset ) || !in_array( $asset, self::ASSETS ) )
                 {
                     throw new e\UnacceptableValueException( 
                         S_SPAN . "The " . $asset->toString() . " is not acceptable." .
@@ -1628,7 +1670,22 @@ will be set to <code>false</code>.</p></description>
         }
     
         $this->getProperty()->inheritNamingRules = false;
-        //$this->getProperty()->namingRuleAssets = $assets;
+        
+        if( isset( $this->getProperty()->namingRuleAssets ) )
+        	$asset_array = $this->getProperty()->namingRuleAssets;
+        else
+        	$asset_array = array();
+        	
+        foreach( $assets as $asset )
+		{
+			if( !in_array( $asset, $asset_array ) )
+			{
+				$asset_array[] = $asset;
+			}
+		}
+        
+        $this->getProperty()->namingRuleAssets = $asset_array;
+        
         return $this;
     }
 
