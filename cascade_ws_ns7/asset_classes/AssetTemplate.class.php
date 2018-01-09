@@ -435,6 +435,11 @@ class AssetTemplate
         $site->unpublishOnExpiration      = true;
         $site->linkCheckerEnabled         = true;
         $site->externalLinkCheckOnPublish = false;
+        $site->inheritDataChecksEnabled   = true;
+        $site->spellCheckEnabled          = true;
+        $site->linkCheckEnabled           = true;
+        $site->accessibilityCheckEnabled  = true;
+        $site->inheritNamingRules         = true;
 
         $asset       = new \stdClass ();
         $asset->site = $site;
