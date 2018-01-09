@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>, German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/8/2018 Added REST code to getSites. Added more info to Exception thrown in deleteAsset.
   * 1/5/2018 Added a patch to createGroup and createUser (using roles instead of role).
   * 1/4/2018 Started adding REST code for testing.
   * 12/22/2017 Updated getAccessRights for REST.
@@ -1370,12 +1371,12 @@ Currently, this method only produces an FTP transport of a certain type. After t
         $asset->group->groupName = $group_name;
         
         if( $this->service->isSoap() )
-        	$asset->group->role      = $role_name;
+            $asset->group->role      = $role_name;
         // patch for 8.7.1
         elseif( $this->service->isRest() )
         {
-        	unset( $asset->group->role );
-        	$asset->group->roles = $role_name;
+            unset( $asset->group->role );
+            $asset->group->roles = $role_name;
         }
         
         return $this->createAsset( $asset, Group::TYPE, $group_name );
@@ -2002,12 +2003,12 @@ Currently, this method only produces an FTP transport of a certain type. After t
         $asset->user->groups   = $group->getId();
         
         if( $this->service->isSoap() )
-        	$asset->user->role    = $global_role->getName();
+            $asset->user->role    = $global_role->getName();
         // patch for 8.7.1
         elseif( $this->service->isRest() )
         {
-        	unset( $asset->user->role );
-        	$asset->user->roles = $global_role->getName();
+            unset( $asset->user->role );
+            $asset->user->roles = $global_role->getName();
         }
         
         if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $asset ); }
@@ -2317,7 +2318,8 @@ Currently, this method only produces an FTP transport of a certain type. After t
         
         if( !$this->service->isSuccessful() )
             throw new e\DeletionErrorException( 
-                S_SPAN . c\M::DELETE_ASSET_FAILURE . E_SPAN );
+                S_SPAN . c\M::DELETE_ASSET_FAILURE . 
+                $this->service->getMessage() . E_SPAN );
 
         unset( $a );
         return $this;
@@ -2990,14 +2992,20 @@ foreach( $sites as $site )
     {
         if( $this->sites == NULL || $force_list_refresh === true )
         {
-            $this->service->listSites();
+            if( $this->service->isSoap() )
+                $this->service->listSites();
+            elseif( $this->service->isRest() )
+                $sites = $this->service->listSites()->sites;
+                
             $this->name_site_map = array();
             
             if( $this->service->isSuccessful() )
             {
-                $assetIdentifiers = $this->service->getReply()->listSitesReturn->sites->assetIdentifier;
+                if( $this->service->isSoap() )
+                    $sites = $this->service->getReply()->listSitesReturn->
+                        sites->assetIdentifier;
                 
-                foreach( $assetIdentifiers as $identifier )
+                foreach( $sites as $identifier )
                 {
                     $site = new p\Identifier( $identifier );
                     $this->sites[] = $site;
