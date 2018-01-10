@@ -415,15 +415,15 @@ class AssetTemplate
     
     public static function getSearchInformation() : \stdClass
     {
-    	$searchInformation               = new \stdClass ();
-    	$searchInformation->searchTerms  = "";
-    	$searchInformation->siteId       = "";
-    	$searchInformation->siteName     = "";
-    	$searchInformation->searchFields = new \stdClass ();
-    	$searchInformation->searchFields->searchField = "";
-    	$searchInformation->searchTypes  = new \stdClass ();
-    	$searchInformation->searchTypes->searchType = "";
-    	return $searchInformation;
+        $searchInformation               = new \stdClass ();
+        $searchInformation->searchTerms  = "";
+        $searchInformation->siteId       = "";
+        $searchInformation->siteName     = "";
+        $searchInformation->searchFields = new \stdClass ();
+        $searchInformation->searchFields->searchField = "";
+        $searchInformation->searchTypes  = new \stdClass ();
+        $searchInformation->searchTypes->searchType = "";
+        return $searchInformation;
     }
 
     public static function getSite() : \stdClass
