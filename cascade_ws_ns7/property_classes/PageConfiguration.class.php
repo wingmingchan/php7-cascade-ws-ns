@@ -88,7 +88,7 @@ class PageConfiguration extends Property
     {
         if( is_null( $service ) )
             throw new e\NullServiceException( c\M::NULL_SERVICE );
-            
+        
         $this->service = $service;
 
         if( isset( $configuration ) )
