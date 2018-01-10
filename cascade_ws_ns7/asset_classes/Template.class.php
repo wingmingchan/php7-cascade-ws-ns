@@ -431,7 +431,10 @@ object.</p></description>
        
         if( $region_count == 0 )
         {
-            // do nothing
+            if( $this->getService()->isRest() )
+            {
+                $std->pageRegions = array();
+            }
         }
         else if( $region_count == 1 )
         {
@@ -461,7 +464,7 @@ object.</p></description>
                     $std->pageRegions[] = $temp[ $i ]->toStdClass();
             }
         }
-        
+
         return $std;
     }
     
