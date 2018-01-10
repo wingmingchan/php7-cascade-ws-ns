@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>, German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/10/2018 Added REST code to createPageConfigurationSet.
   * 1/8/2018 Added REST code to getSites. Added more info to Exception thrown in deleteAsset.
   * 1/5/2018 Added a patch to createGroup and createUser (using roles instead of role).
   * 1/4/2018 Started adding REST code for testing.
@@ -1511,7 +1512,13 @@ Currently, this method only produces an FTP transport of a certain type. After t
         $config->defaultConfiguration  = true;
         $config->templateId            = $t->getId();
         $config->templatePath          = $t->getPath();
-        $config->pageRegions           = $t->getPageRegionStdForPageConfiguration();
+        
+        if( $this->service->isSoap() )
+            $config->pageRegions       = $t->getPageRegionStdForPageConfiguration();
+        elseif( $this->service->isRest() )
+            $config->pageRegions       = $t->getPageRegionStdForPageConfiguration()
+                                             ->pageRegions;
+        
         $config->outputExtension       = $extension;
         $config->serializationType     = $type;
         
@@ -1519,7 +1526,11 @@ Currently, this method only produces an FTP transport of a certain type. After t
         $asset->pageConfigurationSet->name                = $name;
         $asset->pageConfigurationSet->parentContainerPath = $parent->getPath();
         $asset->pageConfigurationSet->siteName            = $parent->getSiteName();
-        $asset->pageConfigurationSet->pageConfigurations->pageConfiguration = $config;
+        
+        if( $this->service->isSoap() )
+            $asset->pageConfigurationSet->pageConfigurations->pageConfiguration = $config;
+        elseif( $this->service->isRest() )
+            $asset->pageConfigurationSet->pageConfigurations = array( $config );
         
         return $this->createAsset(
             $asset, PageConfigurationSet::TYPE, $this->getPath( $parent, $name ),
