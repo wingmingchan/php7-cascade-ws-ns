@@ -4,6 +4,7 @@
   * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/11/2018 Added binaryToCharArray to deal with binary data for REST.
   * 9/30/2016 Added getDatabasePHPCode.
   * 9/9/2016 Added $prefix to getMethodName.
   * 8/26/2016 Added constant NAME_SPACE.
@@ -29,6 +30,29 @@ class StringUtility
 {
     const NAME_SPACE = "cascade_ws_utility";
 
+/**
+<documentation><description><p>Returns a char array by converting the binary data.</p></description>
+<example>u\DebugUtility::dump(
+    StringUtility::binaryToCharArray( file_get_contents( $image_url ) );</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function binaryToCharArray( $data ) : array
+    {
+        $temp_array = array();
+        
+        if( isset( $data ) )
+        {
+            $data_array = unpack( "c*", $data );
+            
+            foreach( $data_array as $char )
+                $temp_array[] = $char;
+        }
+        
+        return $temp_array;
+    }
+    
 /**
 <documentation><description><p>Returns a string value of the bool.</p></description>
 <example>echo u\StringUtility::boolToString( true ), BR;</example>
@@ -79,7 +103,7 @@ eval( u\StringUtility::getDatabasePHPCode( $code ) );</example>
 */
     public static function getDatabasePHPCode( string $code ) : string
     {
-    	// remove start and end tag
+        // remove start and end tag
         $code = str_replace( '<system-region name="DEFAULT">', '', $code );
         $code = str_replace( '</system-region>', '', $code );
         // replace &gt;
