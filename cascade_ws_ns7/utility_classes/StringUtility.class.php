@@ -1,7 +1,8 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>, 
+                       German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 1/11/2018 Added binaryToCharArray to deal with binary data for REST.
@@ -43,12 +44,7 @@ class StringUtility
         $temp_array = array();
         
         if( isset( $data ) )
-        {
-            $data_array = unpack( "c*", $data );
-            
-            foreach( $data_array as $char )
-                $temp_array[] = $char;
-        }
+            return array_values( unpack( "c*", $data ) );
         
         return $temp_array;
     }
