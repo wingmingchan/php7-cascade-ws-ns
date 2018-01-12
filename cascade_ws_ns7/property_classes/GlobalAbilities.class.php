@@ -1,9 +1,10 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/11/2018 Updated up to 8.8. modifyDictionary not available yet.
   * 6/29/2017 Rewrote code for 8.4.1.
   * 6/12/2017 Added WSDL.
   * 9/7/2016 Added accessAdminArea.
@@ -24,7 +25,7 @@ use cascade_ws_asset     as a;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>GlobalAbilities</code> object represents the <code>globalAbilities</code> property found in a role asset. As of Cascade 8.7.1, there are 36 of them.</p>
+<p>A <code>GlobalAbilities</code> object represents the <code>globalAbilities</code> property found in a role asset. As of Cascade 8.8, there are 37 of them.</p>
 <h2>Properties of <code>globalAbilities</code> (Sorted)</h2>
 <pre>accessAllSites
 accessAudits
@@ -54,6 +55,7 @@ editMemberGroups
 editSystemPreferences
 editUsersInMemberGroups
 forceLogout
+modifyDictionary
 optimizeDatabase
 searchingIndexing
 syncLdap
@@ -149,6 +151,8 @@ class GlobalAbilities extends Property
                 $this->edit_users_in_member_groups   = $a->editUsersInMemberGroups;
             if( isset( $a->forceLogout ) )
                 $this->force_logout                  = $a->forceLogout;
+            if( isset( $a->optimizeDatabase ) )
+                $this->modify_dictionary             = $a->modifyDictionary; // 8.8
             if( isset( $a->optimizeDatabase ) )
                 $this->optimize_database             = $a->optimizeDatabase;
             if( isset( $a->searchingIndexing ) )
@@ -474,6 +478,17 @@ class GlobalAbilities extends Property
     public function getForceLogout() : bool
     {
         return $this->force_logout;
+    }
+
+/**
+<documentation><description><p>Returns <code>modifyDictionary</code>.</p></description>
+<example></example>
+<return-type>bool</return-type>
+</documentation>
+*/
+    public function getModifyDictionary() : bool
+    {
+        return $this->modify_dictionary;
     }
 
 /**
@@ -957,6 +972,20 @@ class GlobalAbilities extends Property
     }
 
 /**
+<documentation><description><p>Sets <code>modifyDictionary</code> and returns the calling object.</p></description>
+<example></example>
+<return-type>Property</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setModifyDictionary( bool $bool ) : Property
+    {
+        $this->checkBoolean( $bool );
+        $this->modify_dictionary = $bool;
+        return $this;
+    }
+
+/**
 <documentation><description><p>Sets <code>optimizeDatabase</code> and returns the calling object.</p></description>
 <example></example>
 <return-type>Property</return-type>
@@ -1154,6 +1183,7 @@ class GlobalAbilities extends Property
     private $edit_system_preferences;
     private $edit_users_in_member_groups;
     private $force_logout;
+    private $modify_dictionary;
     private $optimize_database;
     private $searching_indexing;
     private $sync_ldap;

@@ -1,9 +1,11 @@
 <?php 
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/12/2018 Added REST code to processRoleAssignments.
+  * 1/11/2018 Added getSiteImproveUrl and setSiteImproveUrl.
   * 1/9/2018 Added removeNamingRuleAsset and clearNamingRuleAssets.
   * 12/29/2017 Added REST code and updated documentation.
   * 12/21/2017 Added getRoleAssignments.
@@ -38,6 +40,7 @@ site
   id
   name
   url
+  siteImproveUrl
   extensionsToStrip (8.6)
   defaultMetadataSetId
   defaultMetadataSetPath
@@ -257,8 +260,8 @@ class Site extends ScheduledPublishing
     const ASSETS = array(
         "block", "file", "folder", "page", "symlink", "template", "reference", "format"
     );
-    
-    
+
+
 /**
 <documentation><description><p>The constructor, overriding the parent method to process role assignments.</p></description>
 <example></example>
@@ -272,7 +275,7 @@ class Site extends ScheduledPublishing
         parent::__construct( $service, $identifier );
         $this->processRoleAssignments();
     }
-    
+
 /**
 <documentation><description><p>Adds a new role to <code>roleAssignments</code>, and returns the calling object.</p></description>
 <example>$s->addRole( $r )->edit();</example>
@@ -285,23 +288,23 @@ class Site extends ScheduledPublishing
         if( $r == NULL )
             throw new e\NullAssetException( 
                 S_SPAN . c\M::NULL_ROLE . E_SPAN );
-            
+        
         if( $this->hasRole( $r ) )
         {
             return $this;
         }
-        
+    
         $ra = new \stdClass();
         $ra->roleId   = $r->getId();
         $ra->roleName = $r->getName();
         $ra->users    = NULL;
         $ra->groups   = NULL;
-        
+    
         $this->role_assignments[] = new p\RoleAssignment( $ra );
-        
+    
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Adds the group to the named role, and returns the calling object.</p></description>
 <example>$s->addUserToRole( 
@@ -316,12 +319,12 @@ class Site extends ScheduledPublishing
     public function addGroupToRole( Role $r, Group $g ) : Asset
     {
         $role_name = $r->getName();
-        
+    
         if( !$this->hasRole( $r ) )
         {
             $this->addRole( $r );
         }
-        
+    
         foreach( $this->role_assignments as $assignment )
         {
             if( $assignment->getRoleName() == $role_name )
@@ -330,10 +333,10 @@ class Site extends ScheduledPublishing
                 break;
             }
         }
-        
+    
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Adds the user to the named role, and returns the calling object.</p></description>
 <example>$s->addUserToRole( 
@@ -353,7 +356,7 @@ class Site extends ScheduledPublishing
         {
             $this->addRole( $r );
         }
-        
+    
         foreach( $this->role_assignments as $assignment )
         {
             if( $assignment->getRoleName() == $role_name )
@@ -362,10 +365,10 @@ class Site extends ScheduledPublishing
                 break;
             }
         }
-        
+    
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Removes all strings from the <code>namingRuleAssets</code> array, and returns the calling object.</p></description>
 <example></example>
@@ -373,15 +376,15 @@ class Site extends ScheduledPublishing
 <exception>NullAssetException</exception>
 </documentation>
 */
-	public function clearNamingRuleAssets() : Asset
-	{
-		if( isset( $this->getProperty()->namingRuleAssets ) &&
-			count( $this->getProperty()->namingRuleAssets ) > 0 )
-		{
-			$this->getProperty()->namingRuleAssets = array();
-		}
-		return $this;
-	}
+    public function clearNamingRuleAssets() : Asset
+    {
+        if( isset( $this->getProperty()->namingRuleAssets ) &&
+            count( $this->getProperty()->namingRuleAssets ) > 0 )
+        {
+            $this->getProperty()->namingRuleAssets = array();
+        }
+        return $this;
+    }
 
 /**
 <documentation><description><p>Edits and returns the calling object.</p></description>
@@ -399,7 +402,7 @@ class Site extends ScheduledPublishing
     ) : Asset
     {
         $site = $this->getProperty();
-        
+    
         if( $site->usesScheduledPublishing ) // publishing is scheduled
         {
             if( !isset( $site->timeToPublish ) ||
@@ -414,27 +417,27 @@ class Site extends ScheduledPublishing
                 $site->timeToPublish = substr(
                     $site->timeToPublish, 0, $pos );
             }
-      
+  
             if( !isset( $site->publishIntervalHours ) ||
                 is_null( $site->publishIntervalHours ) )
                 unset( $site->publishIntervalHours );
-                
+            
             if( !isset( $site->publishDaysOfWeek ) ||
                 is_null( $site->publishDaysOfWeek ) )
                 unset( $site->publishDaysOfWeek );
-                
+            
             if( !isset( $site->cronExpression ) ||
                 is_null( $site->cronExpression ) )
                 unset( $site->cronExpression );
         }
 
         $assignment_count      = count( $this->role_assignments );
-        
+    
         if( $this->getService()->isSoap() )
             $site->roleAssignments = new \stdClass();
         elseif( $this->getService()->isRest() )
             $site->roleAssignments = array();
-        
+    
         if( $assignment_count == 1 )
         {
             if( $this->getService()->isSoap() )
@@ -448,7 +451,7 @@ class Site extends ScheduledPublishing
         {
             if( $this->getService()->isSoap() )
                 $site->roleAssignments->roleAssignment = array();
-            
+        
             foreach( $this->role_assignments as $assignment )
             {
                 if( $this->getService()->isSoap() )
@@ -457,15 +460,15 @@ class Site extends ScheduledPublishing
                     $site->roleAssignments[] = $assignment->toStdClass();
             }
         }
-        
+    
         if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $site ); }
-        
+    
         $asset                                    = new \stdClass();
         $asset->{ $p = $this->getPropertyName() } = $site;
         // edit asset
         $service = $this->getService();
         $service->edit( $asset );
-        
+    
         if( !$service->isSuccessful() )
         {
             throw new e\EditingFailureException( 
@@ -473,7 +476,7 @@ class Site extends ScheduledPublishing
         }
         return $this->reloadProperty();
     }
-    
+
 /**
 <documentation><description><p>Returns <code>accessibilityCheckEnabled</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $s->getAccessibilityCheckEnabled() ), BR;</example>
@@ -497,7 +500,7 @@ class Site extends ScheduledPublishing
     {
         return $this->getBaseFolder()->getAssetTree();
     }
-    
+
 /**
 <documentation><description><p>Returns Base Folder (a <code>Folder</code> object).</p></description>
 <example></example>
@@ -515,7 +518,7 @@ class Site extends ScheduledPublishing
         }
         return $this->base_folder;
     }
-    
+
 /**
 <documentation><description><p>An alias of <code>getAssetTree</code>.</p></description>
 <example></example>
@@ -527,7 +530,7 @@ class Site extends ScheduledPublishing
     {
         return $this->getBaseFolder()->getAssetTree();
     }
-    
+
 /**
 <documentation><description><p>An alias of <code>getRootFolderId</code>.</p></description>
 <example></example>
@@ -539,7 +542,7 @@ class Site extends ScheduledPublishing
     {
         return $this->getRootFolderId();
     }
-    
+
 /**
 <documentation><description><p>Returns <code>defaultEditorConfigurationId</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $s->getDefaultEditorConfigurationId() ), BR;</example>
@@ -579,7 +582,7 @@ class Site extends ScheduledPublishing
     {
         return $this->getProperty()->defaultMetadataSetId;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>defaultMetadataSetPath</code>.</p></description>
 <example>echo $s->getDefaultMetadataSetPath(), BR;</example>
@@ -591,7 +594,7 @@ class Site extends ScheduledPublishing
     {
         return $this->getProperty()->defaultMetadataSetPath;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>extensionsToStrip</code>.</p></description>
 <example></example>
@@ -605,7 +608,7 @@ class Site extends ScheduledPublishing
             return $this->getProperty()->extensionsToStrip;
         return NULL;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>externalLinkCheckOnPublish</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $s->getExternalLinkCheckOnPublish() ), BR;</example>
@@ -641,7 +644,7 @@ class Site extends ScheduledPublishing
     {
         return $this->getProperty()->inheritNamingRules;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>linkCheckerEnabled</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $s->getLinkCheckerEnabled() ), BR;</example>
@@ -681,7 +684,7 @@ class Site extends ScheduledPublishing
             return $this->getProperty()->namingRuleCase;
         return NULL;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>namingRuleSpacing</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $s->getNamingRuleSpacing() ), BR;</example>
@@ -707,7 +710,7 @@ class Site extends ScheduledPublishing
     {
         return $this->getProperty()->recycleBinExpiration;
     }
-    
+
 /**
 <documentation><description><p>Returns an array of <code>roleAssignment</code> objects or an empty array.</p></description>
 <example></example>
@@ -754,7 +757,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getRootAssetFactoryContainer()->getAssetTree();
     }
-    
+
 /**
 <documentation><description><p>Returns <code>rootAssetFactoryContainerId</code>.</p></description>
 <example>echo $s->getRootAssetFactoryContainerId(), BR;</example>
@@ -766,7 +769,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getProperty()->rootAssetFactoryContainerId;
     }
-    
+
 /**
 <documentation><description><p>An alias of <code>getAssetTree</code>.</p></description>
 <example></example>
@@ -778,7 +781,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getAssetTree();
     }
-    
+
 /**
 <documentation><description><p>Returns an <code>ConnectorContainer</code> object representing the root connector container.</p></description>
 <example>$cc = $s->getRootConnectorContainer();</example>
@@ -812,7 +815,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getRootConnectorContainer()->getAssetTree();
     }
-    
+
 /**
 <documentation><description><p>Returns <code>rootConnectorContainerId</code>.</p></description>
 <example>echo $s->getRootConnectorContainerId(), BR;</example>
@@ -824,7 +827,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getProperty()->rootConnectorContainerId;
     }
-    
+
 /**
 <documentation><description><p>Returns an <code>ContentTypeContainer</code> object representing the root content type container.</p></description>
 <example>$ctc = $s->getRootContentTypeContainer();</example>
@@ -844,7 +847,7 @@ representing the root asset factory container.</p></description>
         }
         return $this->root_content_type_container;
     }
-    
+
 /**
 <documentation><description><p>Returns an <code>AssetTree</code> object rooted at the root content type container.</p></description>
 <example>u\DebugUtility::dump( u\XMLUtility::replaceBrackets( 
@@ -858,7 +861,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getRootContentTypeContainer()->getAssetTree();
     }
-    
+
 /**
 <documentation><description><p>Returns <code>rootContentTypeContainerId</code>.</p></description>
 <example>echo $s->getRootContentTypeContainerId(), BR;</example>
@@ -870,7 +873,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getProperty()->rootContentTypeContainerId;
     }
-    
+
 /**
 <documentation><description><p>Returns an <code>DataDefinitionContainer</code> object representing the root data definition container.</p></description>
 <example>$ddc = $s->getRootDataDefinitionContainer();</example>
@@ -890,7 +893,7 @@ representing the root asset factory container.</p></description>
         }
         return $this->root_data_definition_container;
     }
-    
+
 /**
 <documentation><description><p>Returns an <code>AssetTree</code> object rooted at the root data definition container.</p></description>
 <example>u\DebugUtility::dump( u\XMLUtility::replaceBrackets( 
@@ -904,7 +907,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getRootDataDefinitionContainer()->getAssetTree();
     }
-    
+
 /**
 <documentation><description><p>Returns <code>rootDataDefinitionContainerId</code>.</p></description>
 <example>echo $s->getRootDataDefinitionContainerId(), BR;</example>
@@ -940,7 +943,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getAssetTree();
     }
-    
+
 /**
 <documentation><description><p>Returns <code>rootFolderId</code>.</p></description>
 <example>echo $s->getRootFolderId(), BR;</example>
@@ -952,7 +955,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getProperty()->rootFolderId;
     }
-    
+
 /**
 <documentation><description><p>Returns an <code>MetadataSetContainer</code> object representing the root metadata set container.</p></description>
 <example>$mdc = $s->getRootMetadataSetContainer();</example>
@@ -972,7 +975,7 @@ representing the root asset factory container.</p></description>
         }
         return $this->root_metadata_set_container;
     }
-    
+
 /**
 <documentation><description><p>Returns an <code>AssetTree</code> object rooted at the root metadata set container.</p></description>
 <example>u\DebugUtility::dump( u\XMLUtility::replaceBrackets( 
@@ -986,7 +989,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getRootMetadataSetContainer()->getAssetTree();
     }
-    
+
 /**
 <documentation><description><p>Returns <code>rootMetadataSetContainerId</code>.</p></description>
 <example>echo $s->getRootMetadataSetContainerId(), BR;</example>
@@ -998,7 +1001,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getProperty()->rootMetadataSetContainerId;
     }
-    
+
 /**
 <documentation><description><p>Returns a <code>PageConfigurationSetContainer</code> object representing the root page configuration set container.</p></description>
 <example>$pcsc = $s->getRootPageConfigurationSetContainer();</example>
@@ -1018,7 +1021,7 @@ representing the root asset factory container.</p></description>
         }
         return $this->root_page_configuration_set_container;
     }
-    
+
 /**
 <documentation><description><p>Returns an <code>AssetTree</code> object rooted at the root page configuration set container.</p></description>
 <example>u\DebugUtility::dump( u\XMLUtility::replaceBrackets( 
@@ -1032,7 +1035,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getRootPageConfigurationSetContainer()->getAssetTree();
     }
-    
+
 /**
 <documentation><description><p>Returns <code>rootPageConfigurationSetContainerId</code>.</p></description>
 <example>echo $s->getRootPageConfigurationSetContainerId(), BR;</example>
@@ -1044,7 +1047,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getProperty()->rootPageConfigurationSetContainerId;
     }
-    
+
 /**
 <documentation><description><p>Returns a <code>PublishSetContainer</code> object representing the root publish set container.</p></description>
 <example>$psc = $s->getRootPublishSetContainer();</example>
@@ -1064,7 +1067,7 @@ representing the root asset factory container.</p></description>
         }
         return $this->root_publish_set_container;
     }
-    
+
 /**
 <documentation><description><p>Returns an <code>AssetTree</code> object rooted at the root publish set container.</p></description>
 <example>u\DebugUtility::dump( u\XMLUtility::replaceBrackets( 
@@ -1078,7 +1081,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getRootPublishSetContainer()->getAssetTree();
     }
-    
+
 /**
 <documentation><description><p>Returns <code>rootPublishSetContainerId</code>.</p></description>
 <example>echo $s->getRootPublishSetContainerId(), BR;</example>
@@ -1090,7 +1093,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getProperty()->rootPublishSetContainerId;
     }
-    
+
 /**
 <documentation><description><p>Returns a <code>SiteDestinationContainer</code> object representing the root site destination container.</p></description>
 <example>$sdc = $s->getRootSiteDestinationContainer();</example>
@@ -1110,7 +1113,7 @@ representing the root asset factory container.</p></description>
         }
         return $this->root_site_destination_container;
     }
-    
+
 /**
 <documentation><description><p>Returns an <code>AssetTree</code> object rooted at the root site destination container.</p></description>
 <example>u\DebugUtility::dump( u\XMLUtility::replaceBrackets( 
@@ -1124,7 +1127,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getRootSiteDestinationContainer()->getAssetTree();
     }
-    
+
 /**
 <documentation><description><p>Returns <code>rootSiteDestinationContainerId</code>.</p></description>
 <example>echo $s->getRootSiteDestinationContainerId(), BR;</example>
@@ -1136,7 +1139,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getProperty()->rootSiteDestinationContainerId;
     }
-    
+
 /**
 <documentation><description><p>Returns a <code>TransportContainer</code> object representing the root transport container.</p></description>
 <example>$tc = $s->getRootTransportContainer();</example>
@@ -1156,7 +1159,7 @@ representing the root asset factory container.</p></description>
         }
         return $this->root_transport_container;
     }
-    
+
 /**
 <documentation><description><p>Returns an <code>AssetTree</code> object rooted at the root transport container.</p></description>
 <example>u\DebugUtility::dump( u\XMLUtility::replaceBrackets( 
@@ -1170,7 +1173,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getRootTransportContainer()->getAssetTree();
     }
-    
+
 /**
 <documentation><description><p>Returns <code>rootTransportContainerId</code>.</p></description>
 <example>echo $s->getRootTransportContainerId(), BR;</example>
@@ -1182,7 +1185,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getProperty()->rootTransportContainerId;
     }
-    
+
 /**
 <documentation><description><p>Returns a <code>WorkflowDefinitionContainer</code> object representing the root workflow definition container.</p></description>
 <example>$wdc = $s->getRootWorkflowDefinitionContainer();</example>
@@ -1202,7 +1205,7 @@ representing the root asset factory container.</p></description>
         }
         return $this->root_workflow_definition_container;
     }
-    
+
 /**
 <documentation><description><p>Returns an <code>AssetTree</code> object rooted at the root workflow definition container.</p></description>
 <example>u\DebugUtility::dump( u\XMLUtility::replaceBrackets( 
@@ -1216,7 +1219,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getRootWorkflowDefinitionContainer()->getAssetTree();
     }
-    
+
 /**
 <documentation><description><p>Returns <code>rootWorkflowDefinitionContainerId</code>.</p></description>
 <example>echo $s->getRootWorkflowDefinitionContainerId(), BR;</example>
@@ -1228,7 +1231,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getProperty()->rootWorkflowDefinitionContainerId;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>scheduledPublishDestinationMode</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString(
@@ -1244,7 +1247,7 @@ representing the root asset factory container.</p></description>
             return $this->getProperty()->scheduledPublishDestinationMode;
         return NULL;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>scheduledPublishDestinations</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString(
@@ -1259,7 +1262,7 @@ representing the root asset factory container.</p></description>
             return $this->getProperty()->scheduledPublishDestinations;
         return NULL;
     }
-    
+
 /**
 <documentation><description><p>Returns an <code>AssetFactoryContainer</code> object representing the site asset factory container.</p></description>
 <example>$safc = $s->getSiteAssetFactoryContainer();</example>
@@ -1279,7 +1282,7 @@ representing the root asset factory container.</p></description>
         }
         return $this->root_site_asset_factory_container;
     }
-    
+
 /**
 <documentation><description><p>Return an <code>AssetTree</code> object rooted at the site asset factory container.</p></description>
 <example>u\DebugUtility::dump( u\XMLUtility::replaceBrackets( 
@@ -1293,7 +1296,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getSiteAssetFactoryContainer()->getAssetTree();
     }
-    
+
 /**
 <documentation><description><p>Returns <code>siteAssetFactoryContainerId</code>.</p></description>
 <example>echo $s->getSiteAssetFactoryContainerId(), BR;</example>
@@ -1305,7 +1308,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getProperty()->siteAssetFactoryContainerId;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>siteAssetFactoryContainerPath</code>.</p></description>
 <example>echo $s->getSiteAssetFactoryContainerPath(), BR;</example>
@@ -1317,7 +1320,21 @@ representing the root asset factory container.</p></description>
     {
         return $this->getProperty()->siteAssetFactoryContainerPath;
     }
-    
+
+/**
+<documentation><description><p>Returns <code>siteImproveUrl</code>.</p></description>
+<example>echo $s->getSiteImproveUrl(), BR;</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getSiteImproveUrl()
+    {
+        if( isset( $this->getProperty()->siteImproveUrl ) )
+            return $this->getProperty()->siteImproveUrl;
+        return NULL;
+    }
+
 /**
 <documentation><description><p>Returns <code>siteStartingPageId</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $s->getSiteStartingPageId() ), BR;</example>
@@ -1331,7 +1348,7 @@ representing the root asset factory container.</p></description>
             return $this->getProperty()->siteStartingPageId;
         return NULL;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>siteStartingPagePath</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $s->getSiteStartingPagePath() ), BR;</example>
@@ -1345,7 +1362,7 @@ representing the root asset factory container.</p></description>
             return $this->getProperty()->siteStartingPagePath;
         return NULL;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>siteStartingPageRecycled</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $s->getSiteStartingPageRecycled() ), BR;</example>
@@ -1357,7 +1374,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getProperty()->siteStartingPageRecycled;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>getSpellCheckEnabled</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $s->getSpellCheckEnabled() ), BR;</example>
@@ -1369,7 +1386,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getProperty()->siteStartingPageRecycled;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>unpublishOnExpiration</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $s->getUnpublishOnExpiration() ), BR;</example>
@@ -1381,7 +1398,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getProperty()->unpublishOnExpiration;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>url</code>.</p></description>
 <example>echo $s->getUrl(), BR;</example>
@@ -1393,7 +1410,7 @@ representing the root asset factory container.</p></description>
     {
         return $this->getProperty()->url;
     }
-    
+
 /**
 <documentation><description><p>Returns a bool, indicating whether the named role is associated with the site.</p></description>
 <example>echo u\StringUtility::boolToString( $s->hasRole(
@@ -1407,9 +1424,9 @@ representing the root asset factory container.</p></description>
         if( $r == NULL )
             throw new e\NullAssetException( 
                 S_SPAN . c\M::NULL_ROLE . E_SPAN );
-        
+    
         $role_name = $r->getName();
-        
+    
         foreach( $this->role_assignments as $assignment )
         {
             if( $assignment->getRoleName() == $role_name )
@@ -1435,9 +1452,9 @@ representing the root asset factory container.</p></description>
             $destination_std->id   = $destination->getId();
             $destination_std->type = $destination->getType();
         }
-        
+    
         $service = $this->getService();
-        
+    
         if( isset( $destination ) )
             $service->publish( 
                 $service->createId(
@@ -1447,7 +1464,7 @@ representing the root asset factory container.</p></description>
                 $service->createId( self::TYPE, $this->getProperty()->id ) );
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Removes the string from the <code>namingRuleAssets</code> array if it exists, and returns the calling object.</p></description>
 <example></example>
@@ -1455,21 +1472,21 @@ representing the root asset factory container.</p></description>
 <exception>NullAssetException</exception>
 </documentation>
 */
-	public function removeNamingRuleAsset( string $a ) : Asset
-	{
-		if( isset( $this->getProperty()->namingRuleAssets ) &&
-			count( $this->getProperty()->namingRuleAssets ) > 0 )
-		{
-			$temp_array = array();
-			
-			foreach( $this->getProperty()->namingRuleAssets as $asset )
-				if( $asset != $a )
-					$temp_array[] = $asset;
-		
-			$this->getProperty()->namingRuleAssets = $temp_array;
-		}
-		return $this;
-	}
+    public function removeNamingRuleAsset( string $a ) : Asset
+    {
+        if( isset( $this->getProperty()->namingRuleAssets ) &&
+            count( $this->getProperty()->namingRuleAssets ) > 0 )
+        {
+            $temp_array = array();
+        
+            foreach( $this->getProperty()->namingRuleAssets as $asset )
+                if( $asset != $a )
+                    $temp_array[] = $asset;
+    
+            $this->getProperty()->namingRuleAssets = $temp_array;
+        }
+        return $this;
+    }
 
 /**
 <documentation><description><p>Removes the role from <code>roleAssignments</code>, and returns the calling object.</p></description>
@@ -1483,16 +1500,16 @@ representing the root asset factory container.</p></description>
         if( $r == NULL )
             throw new e\NullAssetException( 
                 S_SPAN . c\M::NULL_ROLE . E_SPAN );
-        
+    
         if( !$this->hasRole( $r ) )
         {
             return $this;
         }
-        
+    
         $role_name = $r->getName();
-        
+    
         $temp = array();
-        
+    
         foreach( $this->role_assignments as $assignment )
         {
             if( $assignment->getRoleName() != $role_name )
@@ -1500,12 +1517,12 @@ representing the root asset factory container.</p></description>
                 $temp[] = $assignment;
             }
         }
-        
+    
         $this->role_assignments = $temp;
-        
+    
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Sets <code>accessibilityCheckEnabled</code> and returns the calling object.</p></description>
 <example>$s->setAccessibilityCheckEnabled( false )->edit();</example>
@@ -1522,7 +1539,7 @@ representing the root asset factory container.</p></description>
         $this->getProperty()->accessibilityCheckEnabled = $bool;
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Sets the default metadata set and returns the calling object.</p></description>
 <example>$s->setDefaultMetadataSet( 
@@ -1556,7 +1573,7 @@ representing the root asset factory container.</p></description>
         $this->getProperty()->extensionsToStrip = $ext;
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Sets <code>externalLinkCheckOnPublish</code> and returns the calling object.</p></description>
 <example>$s->setExternalLinkCheckOnPublish( true )->edit();</example>
@@ -1573,7 +1590,7 @@ representing the root asset factory container.</p></description>
         $this->getProperty()->externalLinkCheckOnPublish = $bool;
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Sets <code>inheritDataChecksEnabled</code> and returns the calling object.</p></description>
 <example>$s->setInheritDataChecksEnabled( true )->edit();</example>
@@ -1590,7 +1607,7 @@ representing the root asset factory container.</p></description>
         $this->getProperty()->inheritDataChecksEnabled = $bool;
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Sets <code>inheritNamingRules</code> and returns the
 calling object. Note that when this property is set to <code>true</code>,
@@ -1609,7 +1626,7 @@ calling object. Note that when this property is set to <code>true</code>,
         $this->getProperty()->inheritNamingRules = $bool;
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Sets <code>linkCheckEnabled</code> and returns the calling object.</p></description>
 <example>$s->setLinkCheckEnabled( false )->edit();</example>
@@ -1626,7 +1643,7 @@ calling object. Note that when this property is set to <code>true</code>,
         $this->getProperty()->linkCheckEnabled = $bool;
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Sets <code>linkCheckerEnabled</code> and returns the calling object.</p></description>
 <example>$s->setLinkCheckerEnabled( false )->edit();</example>
@@ -1643,7 +1660,7 @@ calling object. Note that when this property is set to <code>true</code>,
         $this->getProperty()->linkCheckerEnabled = $bool;
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Sets <code>namingRuleAssets</code> and returns the calling
 object. Note that when this method is called successfully, <code>inheritNamingRules</code>
@@ -1668,24 +1685,24 @@ will be set to <code>false</code>. Also note that whatever asset types are alrea
                 }
             }
         }
-    
+
         $this->getProperty()->inheritNamingRules = false;
-        
+    
         if( isset( $this->getProperty()->namingRuleAssets ) )
-        	$asset_array = $this->getProperty()->namingRuleAssets;
+            $asset_array = $this->getProperty()->namingRuleAssets;
         else
-        	$asset_array = array();
-        	
+            $asset_array = array();
+        
         foreach( $assets as $asset )
-		{
-			if( !in_array( $asset, $asset_array ) )
-			{
-				$asset_array[] = $asset;
-			}
-		}
-        
+        {
+            if( !in_array( $asset, $asset_array ) )
+            {
+                $asset_array[] = $asset;
+            }
+        }
+    
         $this->getProperty()->namingRuleAssets = $asset_array;
-        
+    
         return $this;
     }
 
@@ -1749,7 +1766,7 @@ will be set to <code>false</code>.</p></description>
         $this->getProperty()->recycleBinExpiration = $e;
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Sets <code>siteAssetFactoryContainerId</code> and <code>siteAssetFactoryContainerPath</code> and returns the calling object.</p></description>
 <example>$s->setSiteAssetFactoryContainer( 
@@ -1771,7 +1788,20 @@ will be set to <code>false</code>.</p></description>
         $this->getProperty()->siteAssetFactoryContainerPath = $a->getPath();
         return $this;
     }
-    
+
+/**
+<documentation><description><p>Sets <code>siteImproveUrl</code> and returns the calling object.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setSiteImproveUrl( string $u="" ) : Asset
+    {
+        $this->getProperty()->siteImproveUrl = $u;
+        return $this;
+    }
+
 /**
 <documentation><description><p>Sets <code>spellCheckEnabled</code> and returns the calling object.</p></description>
 <example>$s->setSpellCheckEnabled( false )->edit();</example>
@@ -1788,7 +1818,7 @@ will be set to <code>false</code>.</p></description>
         $this->getProperty()->spellCheckEnabled = $bool;
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Sets <code>siteStartingPageId</code> and <code>siteStartingPagePath</code> and returns the calling object.</p></description>
 <example>$s->setStartingPage( 
@@ -1810,7 +1840,7 @@ will be set to <code>false</code>.</p></description>
         $this->getProperty()->siteStartingPagePath = $p->getPath();
         return $this;
     }
-    
+
 /**
 <documentation><description><p>ets <code>unpublishOnExpiration</code> and returns the calling object.</p></description>
 <example>$s->setUnpublishOnExpiration( true )->edit();</example>
@@ -1827,7 +1857,7 @@ will be set to <code>false</code>.</p></description>
         $this->getProperty()->unpublishOnExpiration = $bool;
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Sets <code>url</code> and returns the calling object.</p></description>
 <example>$s->setUrl( 'http://www.upstate.edu/tuw-test' )->edit();</example>
@@ -1842,7 +1872,7 @@ will be set to <code>false</code>.</p></description>
             throw new e\EmptyValueException(
                 S_SPAN . c\M::EMPTY_URL . E_SPAN );
         }
-        
+    
         $this->getProperty()->url = $u;
         return $this;
     }
@@ -1851,24 +1881,36 @@ will be set to <code>false</code>.</p></description>
     {
         $this->role_assignments = array();
         
-        if( isset( $this->getProperty()->roleAssignments ) && 
-            isset( $this->getProperty()->roleAssignments->roleAssignment ) )
-            $ra = $this->getProperty()->roleAssignments->roleAssignment;
-        
+        if( $this->getService()->isSoap() )
+        {
+            if( isset( $this->getProperty()->roleAssignments ) && 
+                isset( $this->getProperty()->roleAssignments->roleAssignment ) )
+            {
+                $ra = $this->getProperty()->roleAssignments->roleAssignment;
+            }
+        }
+        elseif( $this->getService()->isRest() )
+        {
+            if( isset( $this->getProperty()->roleAssignments ) )
+            {
+                $ra = $this->getProperty()->roleAssignments;
+            }
+        }
+    
         if( isset( $ra ) )
         {
             if( !is_array( $ra ) )
             {
                 $ra = array( $ra );
             }
-            
+        
             foreach( $ra as $role_assignment )
             {
                 $this->role_assignments[] = new p\RoleAssignment( $role_assignment );
             }
         }
     }
-    
+
     private $role_assignments;
     private $base_folder;
     private $root_asset_factory_container;

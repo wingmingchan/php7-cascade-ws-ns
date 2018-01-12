@@ -1,7 +1,7 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 12/29/2017 Updated getSubscribers.
@@ -396,8 +396,7 @@ abstract class Asset
             $service->readAudits( $a_std );
         elseif( $service->isRest() )
         {
-            u\DebugUtility::dump( $a_std );
-        
+            //u\DebugUtility::dump( $a_std );
             if( isset( $a_std->auditType ) )
             {
                 $params = new \stdClass();

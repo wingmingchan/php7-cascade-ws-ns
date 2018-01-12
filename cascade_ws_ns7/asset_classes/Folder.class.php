@@ -1,7 +1,7 @@
 <?php 
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 1/2/2018 Added REST code to editWorkflowSettings.

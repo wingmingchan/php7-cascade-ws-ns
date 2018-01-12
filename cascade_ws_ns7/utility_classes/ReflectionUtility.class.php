@@ -1,7 +1,7 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 6/14/2017 Added eval to execute code embedded in documentation.

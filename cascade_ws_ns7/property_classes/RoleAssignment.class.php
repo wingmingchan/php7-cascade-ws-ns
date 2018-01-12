@@ -1,9 +1,10 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/12/2018 Changed return type of getGroups and getUsers.
   * 7/18/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
@@ -142,12 +143,14 @@ class RoleAssignment extends Property
 /**
 <documentation><description><p>Returns <code>groups</code> (a string).</p></description>
 <example></example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 </documentation>
 */
-    public function getGroups() : string
+    public function getGroups()
     {
-        return $this->groups;
+    	if( isset( $this->groups ) )
+        	return $this->groups;
+        return NULL;
     }
     
 /**
@@ -175,12 +178,12 @@ class RoleAssignment extends Property
 /**
 <documentation><description><p>Returns <code>users</code> (a string).</p></description>
 <example></example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 </documentation>
 */
-    public function getUsers() : string
+    public function getUsers()
     {
-        return $this->users;
+        return isset( $this->users ) ? $this->users : NULL;
     }
     
 /**

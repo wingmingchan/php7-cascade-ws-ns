@@ -1,7 +1,7 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 12/21/2017 Added the $service object to constructor and pass it into processStructuredDataNodes so that isSoap and isRest can be called. Changed toStdClass so that it works with REST.

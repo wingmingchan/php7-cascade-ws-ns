@@ -1,7 +1,7 @@
 <?php 
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 1/3/2018 Added code to test for NULL.
@@ -69,7 +69,7 @@ assetFactory
   plugins
     plugin (NULL, stdClass or array of stdClass)
 
-JSON:
+REST:
 assetFactory
   applicableGroups
   assetType
@@ -235,7 +235,12 @@ class AssetFactory extends ContainedAsset
     {
         // check the existence of the group
         $group = Asset::getAsset( $this->getService(), Group::TYPE, $group_name );
-        $group_string = $this->getProperty()->applicableGroups;
+        
+        if( isset( $this->getProperty()->applicableGroups ) )
+        	$group_string = $this->getProperty()->applicableGroups;
+        else
+        	$group_string = "";
+
         $group_array  = explode( ';', $group_string );
         
         if( !in_array( $group_name, $group_array ) )

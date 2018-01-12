@@ -1,7 +1,7 @@
 <?php 
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 9/18/2017 Added setProtocolAuthentication and removed other related methods for 8.6.

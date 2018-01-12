@@ -1,7 +1,7 @@
 <?php 
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -81,7 +81,8 @@ return $doc_string;
       "id":"086439518b7ffe8339ce5d13b34124b6",
       "path":{
         "path":"Test Connector Container/Google",
-        "siteId":"1f2172088b7ffe834c5fe91e9596d028" },
+        "siteId":"1f2172088b7ffe834c5fe91e9596d028"
+      },
       "type":"googleanalyticsconnector",
       "recycled":false } ],
     "parentContainerId":"1f2177b48b7ffe834c5fe91e1a7d31f4",

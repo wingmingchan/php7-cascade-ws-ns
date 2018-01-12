@@ -1,7 +1,7 @@
 <?php 
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 1/3/2018 Added code to test for NULL.
@@ -131,7 +131,7 @@ return $doc_string;
     "siteId":"1f2172088b7ffe834c5fe91e9596d028",
     "siteName":"cascade-admin-webapp",
     "name":"article_new",
-    "id":"1f2239118b7ffe834c5fe91e560a90e0"}},
+    "id":"1f2239118b7ffe834c5fe91e560a90e0" } },
   "success":true
 }</pre></postscript>
 </documentation>

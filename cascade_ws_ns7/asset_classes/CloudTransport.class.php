@@ -1,7 +1,7 @@
 <?php 
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 1/3/2018 Added code to test for NULL.
@@ -44,6 +44,27 @@ return $doc_string;
 ?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/cloud_transport.php">cloud_transport.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>
+{
+  "asset":{
+    "cloudTransport":{
+      "key":"abc",
+      "secret":"kf4*IG_ds%^#^!we",
+      "bucketName":"bucket",
+      "basePath":"formats",
+      "parentContainerId":"d74c033d8b7ffe8353cc17e99d90ee7f",
+      "parentContainerPath":"/",
+      "path":"Test Cloud",
+      "siteId":"d74c022e8b7ffe8353cc17e91b9b1050",
+      "siteName":"about-test",
+      "name":"Test Cloud",
+      "id":"e560afa68b7ffe8353cc17e923b9acb5"
+    }
+  }
+  ,"success":true
+}
+</pre>
 </postscript>
 </documentation>
 */

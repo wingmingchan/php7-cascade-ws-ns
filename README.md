@@ -1,8 +1,8 @@
 # php7-cascade-ws-ns
-<p>My Cascade web service library, using namespaces, written in PHP 7 for Cascade 8. Since the current working version is 8.7, I will not update any previous versions.</p>
+<p>My Cascade web service library, using namespaces, written in PHP 7 for Cascade 8. Since the current working version is 8.7/8.8, I will not update any previous versions.</p>
 <p>I am currently updating the library so that it will work with both SOAP and REST.</p>
 
-<p>Last modified: 12/27/2017, 10:15 AM</p>
+<p>Last modified: 1/11/2018, 3:30 PM</p>
 <p>Note that new code related to namingRuleAssets does not work for SOAP due to a bug.</p>
 
 <p>This version of the library makes use of features in PHP 7.</p>

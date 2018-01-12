@@ -1,7 +1,8 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>, German Drulyk <drulykg@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>, 
+                       German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 1/10/2018 Added REST code to createPageConfigurationSet.
@@ -433,56 +434,29 @@ an empty string must be passed in as the third argument if there is a fourth arg
     }
     
 /**
-<documentation><description><p>Copies the site, create a new site,
-and returns the newly created site object. By default this function will wait up 1 hour (3600 seconds) for Cascade's copy process to finish creating the site before throwing an exception. If it finishes early then it will return a <code>Site</code> object representing the new site. The value passed in for <code>$max_wait_seconds</code> can be any positive integer. If it is too small, then an exception will be thrown. In theory no number is too high.</p></description>
-<example>$cascade->copySite( $seed, 'test', 1 ); // This will likely throw an exception because Cascade's copy process almost never finishes this quickly</example>
+<documentation><description><p>Copies the site, create a new site, and returns the newly created site object.</p></description>
+<example>$cascade->copySite(
+    'seed_site',
+    'test',
+    30 // For Cascade versions < 8.7.1, the SOAP interface would just queue up the copy and immediately return a success so you can specify how long the library should manually check for the new site's existence; defaulted to 600 seconds.
+);</example>
 <return-type>Asset</return-type>
-<exception>UnacceptableValueException, SiteCreationFailureException</exception>
+<exception></exception>
 </documentation>
 */
     public function copySite(
-        Site $s, string $new_name, int $max_wait_seconds=3600 ) : Asset
+        Site $s, string $new_name, int $max_wait_seconds=0 ) : Asset
     {
-        if( !is_numeric( $max_wait_seconds ) || !$max_wait_seconds > 0 )
-            throw new e\UnacceptableValueException( 
-                S_SPAN . c\M::UNACCEPTABLE_SECONDS. E_SPAN );
-            
         // Send a site copy request to Cascade
-        $this->service->siteCopy( $s->getId(), $s->getName(), $new_name );
+        $this->service->siteCopy( $s->getId(), $s->getName(), $new_name, $max_wait_seconds );
         
-        // If a queue entry was created for this site
-        // then try and wait until the site has been created
-        if( $this->service->isSuccessful() )
-        {
-            // Start up a timer
-            $start = microtime( true );
-            
-            // Keep looping until we have exceeded $max_wait_seconds
-            while( ( microtime( true ) - $start ) < $max_wait_seconds )
-            {
-                try
-                {
-                    // *** IMPORTANT ***
-                    // Force the refresh of the cached sites list
-                    $this->getSites( true );
-                    
-                    // Try to get the new site
-                    $site = $this->getSite( $new_name );
-                    
-                    // This will only execute if $this->getSite( $new_name ) does not throw an exception 
-                    return $site;
-                }
-                catch( e\NoSuchSiteException $nsse )
-                {
-                    // The new site is not ready yet
-                    // Wait one second before trying getSite() again
-                    sleep( 1 );
-                }
-            }
-        }
+        // *** IMPORTANT ***
+        // Force the refresh of the cached sites list
+        $this->getSites( true );
         
-        throw new e\SiteCreationFailureException( 
-            S_SPAN . c\M::SITE_CREATION_FAILURE . E_SPAN . $this->service->getMessage() );
+        // Try to get the new site object
+        // This will only return an object if $this->getSite( $new_name ) does not throw an exception 
+        return $this->getSite( $new_name );
     }
     
 /* the create group */
@@ -3293,7 +3267,7 @@ foreach( $sites as $site )
                 S_SPAN . "The level $level is unacceptable." . E_SPAN );
         }
         
-        if( $a->getType() == Group::TYPE && $level ==c\T::READ )
+        if( $a->getType() == Group::TYPE && $level == c\T::READ )
         {
             if( self::DEBUG ) { u\DebugUtility::out( "Granting " . $a->getName() . " read access to " . $id_path ); }
             $func_name = 'grantGroupReadAccess';
@@ -3317,7 +3291,10 @@ foreach( $sites as $site )
         if( isset( $func_name ) )
         {
             $ari->$func_name( $a );
+            //u\DebugUtility::dump( $ari->toStdClass() );
             $this->setAccessRights( $ari, $applied_to_children );
+            $ari = $this->getAccessRights( $type, $id_path, $site_name );
+            //u\DebugUtility::dump( $ari->toStdClass() );
         }
         else
         {
@@ -3611,6 +3588,7 @@ u\DebugUtility::dump( $assets );</example>
         catch( \Exception $e )
         {
             $this->service->create( $std );
+            u\DebugUtility::dump( $std );
         
             if( !$this->service->isSuccessful() )
             {

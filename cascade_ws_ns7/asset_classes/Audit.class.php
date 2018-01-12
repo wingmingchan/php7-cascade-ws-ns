@@ -1,7 +1,7 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -73,7 +73,21 @@ $doc_string .=
 return $doc_string;
 ?>
 </description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/audit.php">audit.php</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/audit.php">audit.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>
+{
+  "user":"chanw",
+  "action":"edit",
+  "identifier":{
+    "id":"9a1416488b7f08ee5d439b31921d08b6",
+    "type":"page",
+    "recycled":false
+  },
+  "date":"Oct 3, 2017 10:51:58 AM"
+}
+</pre>
+</postscript>
 </documentation>
 */
 class Audit

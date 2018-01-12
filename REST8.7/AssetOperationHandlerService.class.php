@@ -1,9 +1,12 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
+                       German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/12/2018 Integrated German's new code into siteCopy.
+              success should be a bool, not a string.
   * 1/8/2018 Changed createId so that the root metadata set container is read when
   reading a site. Added a while loop in siteCopy.
   * 1/5/2018 Added code to createIdString to escape space.
@@ -112,9 +115,18 @@ class AssetOperationHandlerService
         $this->success = $this->reply->success;
         return $this->reply;
     }
-    
+
+/*
+object(stdClass)#22 (2) {
+  ["success"]=>
+  bool(false)
+  ["message"]=>
+  string(74) "java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT"
+}
+*/    
     public function create( \stdClass $asset ) : \stdClass
     {
+        //u\DebugUtility::dump( $asset );
         $command = $this->url . __function__ . $this->auth;
         $asset = array( 'asset' => $asset );
         $this->reply = $this->apiOperation( $command, $asset );
@@ -141,7 +153,7 @@ class AssetOperationHandlerService
             //u\DebugUtility::dump( $msc );
             
             if( isset( $msc->metadataSetContainer->siteId ) )
-            	$id->id  = $msc->metadataSetContainer->siteId;
+                $id->id  = $msc->metadataSetContainer->siteId;
         }
         elseif( $type == c\T::GROUP || $type == c\T::USER )
         {
@@ -168,27 +180,27 @@ class AssetOperationHandlerService
             $id_string = $id->type . '/' . $id->id;
         elseif( isset( $id->path->path ) )
         {
-			$path = $id->path->path;
-		
-			if( $path != "%252F" )
-				$path = str_replace( " ", "%20", $path );
-		
-		
-			if( $id->type == "role" ||
-				$id->type == "site" ||
-				$id->type == "group" ||
-				$id->type == "user"
-			)
-			{
-				$id_string = $id->type . '/' . $path;
-			}
-			else
-			{
-				$id_string = $id->type . '/' . $id->path->siteName . '/' . $path;
-			}
+            $path = $id->path->path;
+        
+            if( $path != "%252F" )
+                $path = str_replace( " ", "%20", $path );
+        
+        
+            if( $id->type == "role" ||
+                $id->type == "site" ||
+                $id->type == "group" ||
+                $id->type == "user"
+            )
+            {
+                $id_string = $id->type . '/' . $path;
+            }
+            else
+            {
+                $id_string = $id->type . '/' . $id->path->siteName . '/' . $path;
+            }
         }
         else
-        	$id_string = "";
+            $id_string = "";
         
         $id_string = str_replace( "//", "/", $id_string );
         
@@ -197,8 +209,6 @@ class AssetOperationHandlerService
     
     public function delete( \stdClass $identifier ) : \stdClass
     {
-        //u\DebugUtility::dump( $identifier );
-    
         return $this->performOperationWithIdentifier( __function__, $identifier );
     }
         
@@ -443,7 +453,7 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
         $this->reply   = $this->apiOperation( $command );
         $this->success = $this->reply->success;
         
-        if( $this->success == "true" )
+        if( $this->success === true )
             return $this->reply->asset;
         else
             return NULL;
@@ -516,7 +526,8 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
     }    
     
     public function siteCopy(
-        string $originalSiteId, string $originalSiteName, string $newSiteName ) :
+        string $originalSiteId, string $originalSiteName, 
+        string $newSiteName, int $max_wait_seconds=0 ) :
         \stdClass
     {
         $command = $this->url . __function__ . $this->auth;
@@ -525,27 +536,56 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
         $params->originalSiteName = $originalSiteName;
         $params->newSiteName      = $newSiteName;
         $this->reply   = $this->apiOperation( $command, $params );
+        u\DebugUtility::dump( $this->reply );
         
-        $command = $this->url . "read/metadatasetcontainer/$newSiteName/%252f" . $this->auth;
-        //u\DebugUtility::out( $command );
-        
-        $counter = 0;
-        
-        while( $counter < 600 )
-        {
-            $this->reply = $this->apiOperation( $command );
-            sleep( 1 );
-            $counter++;
+        // If $max_wait_seconds is less than 1 then this will immediately skip past the while loop
+        if( $max_wait_seconds < 1 )
+            $max_wait_seconds = ( (int) ini_get( 'max_execution_time' ) - 2 );
+
+        // max_execution_time could be 0 especially for CLI so we need to re-check $max_wait_seconds
+        if( $max_wait_seconds < 1 )
+            $max_wait_seconds = 600;
             
-            if( $this->reply->success == "true" )
-                break;
+        $start = microtime( true );
+        $site_copied_within_time_limit = false;
+            
+        if( $this->reply->success === true )
+        {
+            $command = $this->url .
+                "read/metadatasetcontainer/$newSiteName/%252f" . $this->auth;
+                
+            while( ( microtime( true ) - $start ) < $max_wait_seconds )
+            {
+                $this->reply = $this->apiOperation( $command );
+                
+                if( $this->reply->success === true )
+                {
+                    $site_copied_within_time_limit = true;
+                    break;
+                }
+                else
+                {
+                    sleep( 1 );
+                }
+            }
+            
+            $this->success = $this->reply->success;
+        }
+        else
+        {
+        	
+            throw new e\SiteCreationFailureException(
+                S_SPAN . $this->reply->message . E_SPAN );
         }
         
-        $this->success = $this->reply->success;
-        
-        if( $this->success != "true" )
+        if( !$site_copied_within_time_limit )
+        {
             throw new e\SiteCreationFailureException(
-                S_SPAN . c\M::SITE_CREATION_FAILURE . E_SPAN );
+                S_SPAN . 'Site copy has exceeded the max wait time of ' .
+                $max_wait_seconds .
+                '. The site copy process may still be processing within Cascade.' .
+                E_SPAN );
+        }
         
         return $this->reply;
     }
@@ -612,13 +652,11 @@ https://mydomain.myorg.edu:1234/api/v1/read/format/9fea17498b7ffe84964c931447df1
         }
         
         $this->commands[] = $entry;
-        
-        //u\DebugUtility::dump( $this->commands );
 
         return json_decode(
             file_get_contents(
                 $command,
-                false, 
+                false,
                 stream_context_create( $input_params ) ) );
     }
     

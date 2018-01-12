@@ -1,9 +1,10 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2017 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/10/2017 Modified various objects for REST.
   * 9/28/2017 Added getCloudTransport.
   * 1/5/2017 Added getSearchInformation.
   * 8/26/2016 Added constant NAME_SPACE.
