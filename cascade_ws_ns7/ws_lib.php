@@ -4,15 +4,9 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/16/2018 Added AssetOperationHandlerServiceRest, AssetOperationHandlerServiceSoap, and ServiceFactory.
  */
  
- /*
-use cascade_ws_constants as constants;
-use cascade_ws_utility   as utility;
-use cascade_ws_asset     as asset;
-use cascade_ws_exception as exception;
-*/
-
 require_once( 'AssetOperationHandlerService.class.php' );
 require_once( 'AssetOperationHandlerServiceRest.class.php' );
 require_once( 'AssetOperationHandlerServiceSoap.class.php' );
