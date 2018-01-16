@@ -15,7 +15,7 @@ $password = $_SERVER[ 'PHP_AUTH_PW' ];
 
 try
 {
-	$service = aohs\ServiceFactory::getService( $type, $url, $username, $password );
+    $service = aohs\ServiceFactory::getService( $type, $url, $username, $password );
     $cascade = new a\Cascade( $service );
     $report  = new a\Report( $cascade );
 }
@@ -30,6 +30,6 @@ catch( \Exception $e )
 }
 catch( \Error $er )
 {
-	echo S_PRE . $er . E_PRE; 
+    echo S_PRE . $er . E_PRE; 
 }
 ?>
