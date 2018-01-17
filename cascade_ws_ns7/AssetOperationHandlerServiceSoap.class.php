@@ -292,9 +292,10 @@ try
     $service->batch( $operations );
     u\DebugUtility::dump( $service->getReply()->batchReturn );
 }</example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    function batch( array $operations )
+    function batch( array $operations ) : \stdClass
     {
         $batch_param                 = new \stdClass();
         $batch_param->authentication = $this->auth;
@@ -303,6 +304,7 @@ try
         $this->reply = $this->soapClient->batch( $batch_param );
         // the returned object is an array
         $this->storeResults();
+        return $this->reply;
     }
 
 /**
@@ -336,9 +338,10 @@ return $doc_string;
 $id = $service->createId( a\File::TYPE, $path, "cascade-admin" );
 $service->checkIn( $id, 'Testing the checkIn method.' );
 </example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    function checkIn( \stdClass $identifier, string $comments='' )
+    function checkIn( \stdClass $identifier, string $comments='' ) : \stdClass
     {
         $checkin_param                 = new \stdClass();
         $checkin_param->authentication = $this->auth;
@@ -347,6 +350,7 @@ $service->checkIn( $id, 'Testing the checkIn method.' );
         
         $this->reply = $this->soapClient->checkIn( $checkin_param );
         $this->storeResults( $this->reply->checkInReturn );
+        return $this->reply;
     }
 
 /**
@@ -381,7 +385,7 @@ $service->checkOut( $id );
 </example>
 <return-type>string</return-type></documentation>
 */
-    function checkOut( \stdClass $identifier )
+    function checkOut( \stdClass $identifier ) : string
     {
         $checkout_param                 = new \stdClass();
         $checkout_param->authentication = $this->auth;
@@ -433,9 +437,10 @@ $new_name = "another-text-block";
 $do_workflow = false;
 $service->copy( $block_id, $parent_id, $new_name, $do_workflow );
 </example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function copy( \stdClass $identifier, \stdClass $newIdentifier, string $newName, bool $doWorkflow ) 
+    public function copy( \stdClass $identifier, \stdClass $newIdentifier, string $newName, bool $doWorkflow ) : \stdClass
     {
         $copy_params                 = new \stdClass();
         $copy_params->authentication = $this->auth;
@@ -447,6 +452,7 @@ $service->copy( $block_id, $parent_id, $new_name, $do_workflow );
         
         $this->reply = $this->soapClient->copy( $copy_params );
         $this->storeResults( $this->reply->copyReturn );
+        return $this->reply;
     }
 
 /**
@@ -632,9 +638,10 @@ $doc_string .= "</pre>";return $doc_string;
 <example>$path = "/_cascade/blocks/code/text-block2";
 $service->delete( $service->createId( a\TextBlock::TYPE, $path, "cascade-admin" ) );
 </example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function delete( \stdClass $identifier )
+    public function delete( \stdClass $identifier ) : \stdClass
     {
         $delete_params                 = new \stdClass();
         $delete_params->authentication = $this->auth;
@@ -642,6 +649,7 @@ $service->delete( $service->createId( a\TextBlock::TYPE, $path, "cascade-admin" 
         
         $this->reply = $this->soapClient->delete( $delete_params );
         $this->storeResults( $this->reply->deleteReturn );
+        return $this->reply;
     }
 
 /**
@@ -668,9 +676,10 @@ $doc_string .= "</pre>";return $doc_string;
 <example>$mid = "9e10ae5b8b7ffe8364375ac78e212e42";
 $service->deleteMessage( $service->createId( c\T::MESSAGE, $mid ) );
 </example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function deleteMessage( \stdClass $identifier )
+    public function deleteMessage( \stdClass $identifier ) : \stdClass
     {
         $delete_message_params                 = new \stdClass();
         $delete_message_params->authentication = $this->auth;
@@ -678,6 +687,7 @@ $service->deleteMessage( $service->createId( c\T::MESSAGE, $mid ) );
         
         $this->reply = $this->soapClient->deleteMessage( $delete_message_params );
         $this->storeResults( $this->reply->deleteMessageReturn );
+        return $this->reply;
     }
 
 /**
@@ -715,9 +725,10 @@ $doc_string .= "</pre>";return $doc_string;
 $asset->xhtmlDataDefinitionBlock = $block;
 $service->edit( $asset );
 </example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function edit( \stdClass $asset )
+    public function edit( \stdClass $asset ) : \stdClass
     {
         $edit_params                 = new \stdClass();
         $edit_params->authentication = $this->auth;
@@ -725,6 +736,7 @@ $service->edit( $asset );
         
         $this->reply = $this->soapClient->edit( $edit_params );
         $this->storeResults( $this->reply->editReturn );
+        return $this->reply;
     }
 
 /**
@@ -761,9 +773,11 @@ $doc_string .= "</pre>";return $doc_string;
 // false: do not apply to children
 $service->editAccessRights( $accessRightInfo, false ); 
 </example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function editAccessRights( \stdClass $accessRightsInformation, bool $applyToChildren )
+    public function editAccessRights(
+        \stdClass $accessRightsInformation, bool $applyToChildren ) : \stdClass
     {
         $edit_params                          = new \stdClass();
         $edit_params->authentication          = $this->auth;
@@ -772,6 +786,7 @@ $service->editAccessRights( $accessRightInfo, false );
 
         $this->reply = $this->soapClient->editAccessRights( $edit_params );
         $this->storeResults( $this->reply->editAccessRightsReturn );
+        return $this->reply;
     }
 
 /**
@@ -798,9 +813,10 @@ $doc_string .= "</pre>";return $doc_string;
 ?>
 </description>
 <example>$service->editPreference( "system_pref_allow_font_assignment", "off" );</example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function editPreference( string $name, string $value ) 
+    public function editPreference( string $name, string $value ) : \stdClass
     {
         $edit_preferences_param                    = new \stdClass();
         $edit_preferences_param->authentication    = $this->auth;
@@ -810,16 +826,18 @@ $doc_string .= "</pre>";return $doc_string;
         
         $this->reply = $this->soapClient->editPreference( $edit_preferences_param );
         $this->storeResults( $this->reply->editPreferenceReturn );
+        return $this->reply;
     }
 
 /**
 <documentation><description><p>An alias of <code>editPreference</code>.</p>
 </description>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function editPreferences( string $name, string $value ) 
+    public function editPreferences( string $name, string $value ) : \stdClass
     {
-        $this->editPreference( $name, $value );
+        return $this->editPreference( $name, $value );
     }
 
 /**
@@ -854,10 +872,12 @@ $doc_string .= "</pre>";return $doc_string;
 ?>
 </description>
 <example>$service->editWorkflowSettings( $workflowSettings, false, false );</example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
     public function editWorkflowSettings( 
-        \stdClass $workflowSettings, bool $applyInheritWorkflowsToChildren, bool $applyRequireWorkflowToChildren )
+        \stdClass $workflowSettings, bool $applyInheritWorkflowsToChildren, 
+        bool $applyRequireWorkflowToChildren ) : \stdClass
     {
         $edit_params                   = new \stdClass();
         $edit_params->authentication   = $this->auth;
@@ -867,6 +887,7 @@ $doc_string .= "</pre>";return $doc_string;
         
         $this->reply = $this->soapClient->editWorkflowSettings( $edit_params );
         $this->storeResults( $this->reply->editWorkflowSettingsReturn );
+        return $this->reply;
     }
 
 /**
@@ -1045,7 +1066,7 @@ u\DebugUtility::dump( $service->getListedMessages() );
 <example>echo $eval->replaceBrackets( $service->getPortType() );</example>
 <return-type>string</return-type></documentation>
 */
-    public function getPortType()
+    public function getPortType() : string
     {
         return $this->getXMLByPath( self::PORT_TYPE_PATH );
     }
@@ -1310,9 +1331,10 @@ $doc_string .= "</pre>";return $doc_string;
 ?>
 </description>
 <example></example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function listEditorConfigurations( \stdClass $id )
+    public function listEditorConfigurations( \stdClass $id ) : \stdClass
     {
         $list_editor_configurations_params                 = new \stdClass();
         $list_editor_configurations_params->authentication = $this->auth;
@@ -1327,6 +1349,7 @@ $doc_string .= "</pre>";return $doc_string;
             $this->listed_editor_configurations =
                 $this->reply->listEditorConfigurationsReturn->editorConfigurations;
         }
+        return $this->reply;
     }
 
 /**
@@ -1351,9 +1374,10 @@ $doc_string .= "</pre>";return $doc_string;
 ?>
 </description>
 <example>$service->listMessages();</example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function listMessages()
+    public function listMessages() : \stdClass
     {
         $list_messages_params                 = new \stdClass();
         $list_messages_params->authentication = $this->auth;
@@ -1365,6 +1389,7 @@ $doc_string .= "</pre>";return $doc_string;
         {
             $this->listed_messages = $this->reply->listMessagesReturn->messages;
         }
+        return $this->reply;
     }
 
 /**
@@ -1389,15 +1414,17 @@ $doc_string .= "</pre>";return $doc_string;
 ?>
 </description>
 <example>$service->listSites();</example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function listSites()
+    public function listSites() : \stdClass
     {
         $list_sites_params                 = new \stdClass();
         $list_sites_params->authentication = $this->auth;
         
         $this->reply = $this->soapClient->listSites( $list_sites_params );
         $this->storeResults( $this->reply->listSitesReturn );
+        return $this->reply;
     }
 /**
 <documentation><description>
@@ -1426,9 +1453,10 @@ $doc_string .= "</pre>";return $doc_string;
 </description>
 <example>$service->listSubscribers( 
     $service->createId( $type, $path, $site_name ) );</example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function listSubscribers( \stdClass $identifier )
+    public function listSubscribers( \stdClass $identifier ) : \stdClass
     {
         $list_subscribers_params                 = new \stdClass();
         $list_subscribers_params->authentication = $this->auth;
@@ -1436,6 +1464,7 @@ $doc_string .= "</pre>";return $doc_string;
         
         $this->reply = $this->soapClient->listSubscribers( $list_subscribers_params );
         $this->storeResults( $this->reply->listSubscribersReturn );
+        return $this->reply;
     }
 
 /**
@@ -1463,9 +1492,10 @@ $doc_string .= "</pre>";return $doc_string;
     $service->createIdWithIdType( $id, c\T::MESSAGE ), 
     c\T::UNREAD );
 </example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function markMessage( \stdClass $identifier, string $markType )
+    public function markMessage( \stdClass $identifier, string $markType ) : \stdClass
     {
         $mark_message_params                 = new \stdClass();
         $mark_message_params->authentication = $this->auth;
@@ -1474,6 +1504,7 @@ $doc_string .= "</pre>";return $doc_string;
         
         $this->reply = $this->soapClient->markMessage( $mark_message_params );
         $this->storeResults( $this->reply->markMessageReturn );
+        return $this->reply;
     }
 /**
 <documentation><description>
@@ -1501,9 +1532,11 @@ $doc_string .= "</pre>";return $doc_string;
 ?>
 </description>
 <example>$service->move( $block_id, $parent_id, $new_name, $do_workflow );</example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    function move( \stdClass $identifier, \stdClass $newIdentifier=NULL, string $newName="", bool $doWorkflow=false ) 
+    function move( \stdClass $identifier, \stdClass $newIdentifier=NULL, 
+        string $newName="", bool $doWorkflow=false ) : \stdClass
     {
         $move_params                 = new \stdClass();
         $move_params->authentication = $this->auth;
@@ -1515,6 +1548,7 @@ $doc_string .= "</pre>";return $doc_string;
         
         $this->reply = $this->soapClient->move( $move_params );
         $this->storeResults( $this->reply->moveReturn );
+        return $this->reply;
     }
 
 /**
@@ -1539,10 +1573,12 @@ $doc_string .= "</pre>";return $doc_string;
 ?>
 </description>
 <example>$service->performWorkflowTransition( $id, $action, 'Testing' );</example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
     public function performWorkflowTransition( 
-         string $workflowId, string $actionIdentifier, string $transitionComment='' )
+         string $workflowId, string $actionIdentifier,
+         string $transitionComment='' ) : \stdClass
     {
         $workflowTransitionInformation                    = new \stdClass();
         $workflowTransitionInformation->workflowId        = $workflowId;
@@ -1555,6 +1591,7 @@ $doc_string .= "</pre>";return $doc_string;
         
         $this->reply = $this->soapClient->performWorkflowTransition( $transition_params );
         $this->storeResults( $this->reply->performWorkflowTransitionReturn );
+        return $this->reply;
     }
 
 /**
@@ -1613,10 +1650,10 @@ $dest_www =
 $service->publish( $p->getIdentifier(), 
     array( $dest_web->getIdentifier(), $dest_www->getIdentifier() ) );
 </example>
-<return-type>void</return-type>
+<return-type>stdClass</return-type>
 </documentation>
 */
-    public function publish( \stdClass $identifier, $destination=NULL ) 
+    public function publish( \stdClass $identifier, $destination=NULL ) : \stdClass
     {
         $publish_param = new \stdClass();
         $publish_info  = new \stdClass();
@@ -1636,6 +1673,7 @@ $service->publish( $p->getIdentifier(),
         
         $this->reply = $this->soapClient->publish( $publish_param );
         $this->storeResults( $this->reply->publishReturn );
+        return $this->reply;
     }
 
 /**
@@ -1666,10 +1704,10 @@ return $doc_string;
 </description>
 <example>$service->read( 
     $service->createId( a\Folder::TYPE, $path, "cascade-admin" ) );</example>
-<return-type>void</return-type>
+<return-type>stdClass</return-type>
 </documentation>
 */
-    public function read( \stdClass $identifier ) 
+    public function read( \stdClass $identifier ) : \stdClass
     {
         if( self::DEBUG ) { u\DebugUtility::dump( $identifier ); }
         
@@ -1679,6 +1717,7 @@ return $doc_string;
         
         $this->reply = $this->soapClient->read( $read_param );
         $this->storeResults( $this->reply->readReturn );
+        return $this->reply;
     }
 
 /**
@@ -1716,9 +1755,10 @@ $doc_string .= "</pre>";return $doc_string;
 <example>$service->readAccessRights( 
     $service->createId( a\TextBlock::TYPE, $path, "cascade-admin" ) );
 </example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function readAccessRights( \stdClass $identifier ) 
+    public function readAccessRights( \stdClass $identifier ) : \stdClass
     {
         $read_param                 = new \stdClass();
         $read_param->authentication = $this->auth;
@@ -1726,6 +1766,7 @@ $doc_string .= "</pre>";return $doc_string;
         
         $this->reply = $this->soapClient->readAccessRights( $read_param );
         $this->storeResults( $this->reply->readAccessRightsReturn );
+        return $this->reply;
     }
 
 /**
@@ -1759,9 +1800,10 @@ $audit_params->identifier = $service->createId( a\Page::TYPE, $page_id );
 $audit_params->auditType  = c\T::EDIT;
 $service->readAudits( $audit_params );
 </example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function readAudits( \stdClass $params ) 
+    public function readAudits( \stdClass $params ) : \stdClass
     {
         $read_audits_param                  = new \stdClass();
         $read_audits_param->authentication  = $this->auth;
@@ -1770,6 +1812,7 @@ $service->readAudits( $audit_params );
         $this->reply = $this->soapClient->readAudits( $read_audits_param );
         $this->storeResults( $this->reply->readAuditsReturn );
         $this->audits  = $this->reply->readAuditsReturn->audits;
+        return $this->reply;
     }
 
 /**
@@ -1794,9 +1837,10 @@ $doc_string .= "</pre>";return $doc_string;
 ?>
 </description>
 <example>$service->readPreferences();</example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function readPreferences() 
+    public function readPreferences() : \stdClass
     {
         $read_preferences_param                  = new \stdClass();
         $read_preferences_param->authentication  = $this->auth;
@@ -1804,6 +1848,7 @@ $doc_string .= "</pre>";return $doc_string;
         $this->reply = $this->soapClient->readPreferences( $read_preferences_param );
         $this->storeResults( $this->reply->readPreferencesReturn );
         $this->preferences  = $this->reply->readPreferencesReturn->preferences;
+        return $this->reply;
     }
 
 /**
@@ -1832,9 +1877,10 @@ $doc_string .= "</pre>";return $doc_string;
 <example>$path = '/projects/web-services/reports/creating-format';
 $service->readWorkflowInformation( 
     $service->createId( a\Page::TYPE, $path, "cascade-admin" ) );</example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function readWorkflowInformation( \stdClass $identifier ) 
+    public function readWorkflowInformation( \stdClass $identifier ) : \stdClass
     {
         $read_param                 = new \stdClass();
         $read_param->authentication = $this->auth;
@@ -1842,6 +1888,7 @@ $service->readWorkflowInformation(
         
         $this->reply = $this->soapClient->readWorkflowInformation( $read_param );
         $this->storeResults( $this->reply->readWorkflowInformationReturn );
+        return $this->reply;
     }    
 
 /**
@@ -1873,9 +1920,10 @@ $doc_string .= "</pre>";return $doc_string;
 $service->readWorkflowSettings( 
     $service->createId( a\Folder::TYPE, "/", $site_name ) );
 </example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function readWorkflowSettings( \stdClass $identifier ) 
+    public function readWorkflowSettings( \stdClass $identifier ) : \stdClass
     {
         $read_param                 = new \stdClass();
         $read_param->authentication = $this->auth;
@@ -1883,12 +1931,13 @@ $service->readWorkflowSettings(
         
         $this->reply = $this->soapClient->readWorkflowSettings( $read_param );
         $this->storeResults( $this->reply->readWorkflowSettingsReturn );
+        return $this->reply;
     }
 
 /**
 <documentation><description><p>Retrieves a property of an asset.</p></description>
 <example>$page = $service->retrieve( $service->createId( a\Page::TYPE, $page_path, "cascade-admin" ) );</example>
-<return-type>stdClass</return-type></documentation>
+<return-type>mixed</return-type></documentation>
 */
     function retrieve( \stdClass $id, string $property="" )
     {
@@ -1946,9 +1995,10 @@ $doc_string .= "</pre>";return $doc_string;
 ?>
 </description>
 <example></example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function search( \stdClass $searchInfo ) 
+    public function search( \stdClass $searchInfo ) : \stdClass
     {
         $search_info_param                    = new \stdClass();
         $search_info_param->authentication    = $this->auth;
@@ -1957,6 +2007,7 @@ $doc_string .= "</pre>";return $doc_string;
         $this->reply = $this->soapClient->search( $search_info_param );
         $this->searchMatches = $this->reply->searchReturn->matches;
         $this->storeResults( $this->reply->searchReturn );
+        return $this->reply;
     }        
 
 /**
@@ -1978,9 +2029,10 @@ $message->subject = 'test';
 $message->body    = 'This is a test. This is only a test.';
 $service->sendMessage( $message );
 </example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function sendMessage( \stdClass $message ) 
+    public function sendMessage( \stdClass $message ) : \stdClass
     {
         $send_message_param                 = new \stdClass();
         $send_message_param->authentication = $this->auth;
@@ -1988,6 +2040,7 @@ $service->sendMessage( $message );
         
         $this->reply = $this->soapClient->sendMessage( $send_message_param );
         $this->storeResults( $this->reply->sendMessageReturn );
+        return $this->reply;
     }    
 
 /**
@@ -2026,11 +2079,12 @@ $seed_site_name = "_rwd_seed";
 $new_site_name  = "access-test";
 $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
 </example>
-<return-type>void</return-type></documentation>
+<return-type></return-type>
+</documentation>
 */
     function siteCopy(
         string $original_id, string $original_name, 
-        string $new_name, int $max_wait_seconds=0 ) 
+        string $new_name, int $max_wait_seconds=0 )
     {
         $site_copy_params                   = new \stdClass();
         $site_copy_params->authentication   = $this->auth;
@@ -2092,9 +2146,10 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
 /**
 <documentation><description><p>Unpublishes the asset with the given identifier.</p></description>
 <example>$service->unpublish( $service->createId( a\Page::TYPE, $page_path, "cascade-admin" ) );</example>
-<return-type>void</return-type></documentation>
+<return-type>stdClass</return-type>
+</documentation>
 */
-    public function unpublish( \stdClass $identifier, $destination=NULL ) 
+    public function unpublish( \stdClass $identifier, $destination=NULL ) : \stdClass
     {
         $publish_param = new \stdClass();
         $publish_info  = new \stdClass();
@@ -2114,6 +2169,7 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
         
         $this->reply = $this->soapClient->publish( $publish_param );
         $this->storeResults( $this->reply->publishReturn );
+        return $this->reply;
     }
     
     // helper functions
