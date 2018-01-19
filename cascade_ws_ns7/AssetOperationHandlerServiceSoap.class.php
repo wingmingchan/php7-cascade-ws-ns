@@ -1,10 +1,12 @@
 <?php
 /**
-  Author: Wing Ming Chan
-  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>, 
-                       German Drulyk <drulykg@upstate.edu>
+  Author: Wing Ming Chan, German Drulyk
+  Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>, 
+                     German Drulyk <drulykg@upstate.edu>
   MIT Licensed
   Modification history:
+   1/18/2018 Moved REST dump to AssetOperationHandlerServiceRest.
+   1/17/2018 Moved the private arrays to the parent.
    1/8/2018 Added a while loop in siteCopy.
    1/4/2018 Added cloud transport-related entries in $types and $properties.
    12/21/2017 Added isSoap and isRest.
@@ -55,7 +57,7 @@ use cascade_ws_exception as e;
 <description><?php global $eval, $service;
 $doc_string = "
 <h2>Introduction</h2>
-<p>This class encapsulates the WSDL URL, the authentication object, and the SoapClient object, and provides services of all operations defined in the WSDL. There are 28 operations defined in the WSDL:</p>
+<p>This class is a child class of <code>AssetOperationHandlerService</code>. It encapsulates the WSDL URL, the authentication object, the SoapClient object, and provides services of all operations defined in the WSDL. There are 28 operations defined in the WSDL:</p>
 <ul>
 <li>batch</li>
 <li>checkIn</li>
@@ -109,34 +111,7 @@ $doc_string = "
 <li><code>createX</code> methods to create IDs (stdClass objects) for asset retrieval</li>
 <li><code>get</code> methods to retrieve XML fragments from the WSDL</li>
 <li>Other minor methods</li>
-</ul>
-<h2>WSDL</h2>
-<h3>Elements</h3>";
-$doc_string .= $service->getElementNameList();
-$doc_string .= "<h3>Simple Types</h3>";
-$doc_string .= $service->getSimpleTypeNameList();
-$doc_string .= "<h3>Complex Types</h3>";
-$doc_string .= $service->getComplexTypeNameList();
-//$doc_string .= "<h3>authentication</h3>";
-$doc_string .=
-    $service->getXMLFragments( array(
-        array( "getComplexTypeXMLByName" => "authentication" ),
-        array( "getComplexTypeXMLByName" => "identifier" ),
-        array( "getComplexTypeXMLByName" => "path" ),
-        array( "getComplexTypeXMLByName" => "operation" ),
-    ) );
-
-
-$doc_string .= "<h3>Operation Result</h3><pre>";
-$doc_string .=
-    $eval->replaceBrackets($service->getComplexTypeXMLByName("operationResult"));
-$doc_string .= "</pre><h3>Messages</h3><pre>";
-$doc_string .=  $eval->replaceBrackets($service->getMessages());
-$doc_string .= "</pre><h3>Port Type</h3><pre>";
-$doc_string .= $eval->replaceBrackets($service->getPortType());
-$doc_string .= "</pre><h3>Binding</h3><pre>";
-$doc_string .= $eval->replaceBrackets($service->getBinding());
-$doc_string .= "</pre>";
+</ul>";
 return $doc_string; ?></description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/tree/master/working-with-AssetOperationHandlerService">working-with-AssetOperationHandlerService</a></li></ul></postscript>
 <advanced>
@@ -147,7 +122,6 @@ class AssetOperationHandlerServiceSoap extends AssetOperationHandlerService
 {
     const DEBUG        = false;
     const DUMP         = false;
-    const NAME_SPACE   = "cascade_ws_AOHS";
     
     // these constants are used to retrieve parts of the WSDL
     const BINDING_PATH = "//wsdl:definitions/wsdl:binding";
@@ -161,7 +135,12 @@ class AssetOperationHandlerServiceSoap extends AssetOperationHandlerService
     
 /**
 <documentation><description><p>The constructor.</p></description>
-<example>$service = new aohs\AssetOperationHandlerService( $wsdl, $auth );</example>
+<example>$type     = aohs\AssetOperationHandlerService::SOAP_STRING;
+$url      = "http://mydomain.edu:1234/ws/services/AssetOperationService?wsdl";
+$username = "wing";
+$password = "password";
+$auth     = ( object )[ 'username' => $username, 'password' => $password ];
+$service  = new aohs\AssetOperationHandlerServiceSoap( $type, $url, $auth );</example>
 <return-type>void</return-type></documentation>
 */
     public function __construct(
@@ -177,7 +156,7 @@ class AssetOperationHandlerServiceSoap extends AssetOperationHandlerService
         $this->lastRequest    = '';
         $this->lastResponse   = '';
         
-        foreach( $this->properties as $property )
+        foreach( $this->getProperties() as $property )
         {
             // turn a property name like 'publishSet' to 'PublishSet'
             $property = ucwords( $property );
@@ -317,20 +296,6 @@ $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("checkInResp
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("checkIn"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(2) {
-  [0]=>
-  string(135) \"https://mydomain.edu:1234/api/v1/checkIn/page/c12eb9978b7ffe83129ed6d80132aa29?u=wing&p=password\"
-  [1]=>
-  array(2) {
-    [\"command\"]=>
-    string(135) \"https://mydomain.edu:1234/api/v1/checkIn/page/c12eb9978b7ffe83129ed6d80132aa29?u=wing&p=password\"
-    [\"params\"]=>
-    string(22) \"{\"comments\":\"testing\"}\"
-  }
-}";
-$doc_string .= "</pre>";
-
 return $doc_string;
 ?>
 </description>
@@ -364,17 +329,6 @@ $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("checkOut"));
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("checkOutResult"));
-$doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(136) \"https://mydomain.edu:1234/api/v1/checkOut/page/c12eb9978b7ffe83129ed6d80132aa29?u=wing&p=password\"
-    [\"params\"]=>
-    string(55) \"{\"id\":\"c12eb9978b7ffe83129ed6d80132aa29\",\"type\":\"page\"}\"
-  }
-}";
 $doc_string .= "</pre>";
 return $doc_string;
 ?>
@@ -414,17 +368,7 @@ $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("copy"))
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("copyParameters"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(133) \"https://mydomain.edu:1234/api/v1/copy/block/089c28d98b7ffe83785cac8a79fe2145?u=wing&p=password\"
-    [\"params\"]=>
-    string(152) \"{\"copyParameters\":{\"destinationContainerIdentifier\":{\"id\":\"c12dcef18b7ffe83129ed6d85960d93d\",\"type\":\"folder\"},\"newName\":\"new-hello\",\"doWorkflow\":false}}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>// the block to be copy
@@ -467,17 +411,7 @@ $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("create"
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("createResult"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(96) \"https://mydomain.edu:1234/api/v1/create?u=wing&p=password\"
-    [\"params\"]=>
-    string(239) \"{\"asset\":{\"textBlock\":{\"text\":\"My new text block content\",\"metadataSetId\":\"618861da8b7ffe8377b637e8ad3dd499\",\"metadataSetPath\":\"_brisk:Block\",\"name\":\"new-text-block-again\",\"parentFolderPath\":\"_cascade\/blocks\/code\",\"siteName\":\"formats\"}}}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>// get the image data
@@ -622,17 +556,7 @@ $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("deleteRespo
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("delete"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(135) \"https://mydomain.edu:1234/api/v1/delete/block/0959f8158b7ffe83785cac8a915f92fa?u=wing&p=password\"
-    [\"params\"]=>
-    string(56) \"{\"id\":\"0959f8158b7ffe83785cac8a915f92fa\",\"type\":\"block\"}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$path = "/_cascade/blocks/code/text-block2";
@@ -660,17 +584,7 @@ $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("deleteMessa
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("deleteMessageResponse"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(144) \"https://mydomain.edu:1234/api/v1/deleteMessage/message/5dafb4228b7ffe833b19adb81c850f47?u=wing&p=password\"
-    [\"params\"]=>
-    string(58) \"{\"id\":\"5dafb4228b7ffe833b19adb81c850f47\",\"type\":\"message\"}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$mid = "9e10ae5b8b7ffe8364375ac78e212e42";
@@ -700,25 +614,7 @@ $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("editRespons
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("edit"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(2) {
-  [0]=>
-  array(1) {
-    [\"command\"]=>
-    string(133) \"https://mydomain.edu:1234/api/v1/read/block/c12da9c78b7ffe83129ed6d8411290fe?u=wing&p=password\"
-  }
-  [1]=>
-  array(2) {
-    [\"command\"]=>
-    string(94) \"https://mydomain.edu:1234/api/v1/edit?u=wing&p=password\"
-    [\"params\"]=>
-    string(2019) \"{\"asset\":{\"xhtmlDataDefinitionBlock\":{\"structuredData\":{\"definitionId\":\"618863658b7ffe8377b637e8ee4f3e42\",\"definitionPath\":\"_brisk:Wysiwyg\",\"structuredDataNodes\":[{\"type\":\"text\",\"identifier\":\"display\",\"text\":\"yes\",\"recycled\":false},{\"type\":\"group\",\"identifier\":\"wysiwyg-group\",\"structuredDataNodes\":[{\"type\":\"text\",\"identifier\":\"wysiwyg-content\",\"text\":\"<p>Content
-.<\/p>
-<p>
-Text appended.<\/p>\",\"recycled\":false},{\"type\":\"text\",\"identifier\":\"admin-options\",\"text\":\"::CONTENT-XML-CHECKBOX::\",\"recycled\":false}],\"recycled\":false}]},\"expirationFolderRecycled\":false,\"metadataSetId\":\"618861da8b7ffe8377b637e8ad3dd499\",\"metadataSetPath\":\"_brisk:Block\",\"metadata\":{\"dynamicFields\":[{\"name\":\"macro\",\"fieldValues\":[{\"value\":\"processWysiwygMacro\"}]}]},\"reviewOnSchedule\":false,\"reviewEvery\":0,\"parentFolderId\":\"c12dceb28b7ffe83129ed6d8535fb721\",\"parentFolderPath\":\"_cascade\/blocks\/data\",\"lastModifiedDate\":\"Nov 29, 2017 8:19:41 AM\",\"lastModifiedBy\":\"wing\",\"createdDate\":\"Nov 15, 2017 2:35:16 PM\",\"createdBy\":\"wing\",\"path\":\"_cascade\/blocks\/data\/latin-wysiwyg\",\"siteId\":\"c12d8c498b7ffe83129ed6d81ea4076a\",\"siteName\":\"formats\",\"name\":\"latin-wysiwyg\",\"id\":\"c12da9c78b7ffe83129ed6d8411290fe\"}}}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$asset = new \stdClass();
@@ -749,24 +645,7 @@ $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("editAccessR
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("editAccessRights"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(2) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(146) \"https://mydomain.edu:1234/api/v1/readAccessRights/folder/c12d8d0d8b7ffe83129ed6d86dd9f853?u=wing&p=password\"
-    [\"params\"]=>
-    string(57) \"{\"id\":\"c12d8d0d8b7ffe83129ed6d86dd9f853\",\"type\":\"folder\"}\"
-  }
-  [1]=>
-  array(2) {
-    [\"command\"]=>
-    string(146) \"https://mydomain.edu:1234/api/v1/editAccessRights/folder/c12d8d0d8b7ffe83129ed6d86dd9f853?u=wing&p=password\"
-    [\"params\"]=>
-    string(415) \"{\"accessRightsInformation\":{\"identifier\":{\"id\":\"c12d8d0d8b7ffe83129ed6d86dd9f853\",\"path\":{\"path\":\"\/\",\"siteId\":\"c12d8c498b7ffe83129ed6d81ea4076a\",\"siteName\":\"formats\"},\"type\":\"folder\",\"recycled\":false},\"aclEntries\":[{\"level\":\"read\",\"type\":\"group\",\"name\":\"CWT-Designers\"},{\"level\":\"write\",\"type\":\"user\",\"name\":\"wing\"},{\"level\":\"read\",\"type\":\"group\",\"name\":\"CWT-Designers\"}],\"allLevel\":\"none\"},\"applyToChildren\":true}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$accessRightInfo->aclEntries->aclEntry = $aclEntries;
@@ -799,17 +678,7 @@ $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("editPrefere
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("editPreferenceResult"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(104) \"https://mydomain.edu:1234/api/v1/editPreference?u=wing&p=password\"
-    [\"params\"]=>
-    string(93) \"{\"preference\":{\"name\":\"system_pref_global_area_external_link_check_on_publish\",\"value\":\"on\"}}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$service->editPreference( "system_pref_allow_font_assignment", "off" );</example>
@@ -850,25 +719,7 @@ $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("editWorkflo
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("editWorkflowSettings"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(2) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(150) \"https://mydomain.edu:1234/api/v1/readWorkflowSettings/folder/c12dcf268b7ffe83129ed6d81d964c24?u=wing&p=password\"
-    [\"params\"]=>
-    string(57) \"{\"id\":\"c12dcf268b7ffe83129ed6d81d964c24\",\"type\":\"folder\"}\"
-  }
-  [1]=>
-  array(2) {
-    [\"command\"]=>
-    string(150) \"https://mydomain.edu:1234/api/v1/editWorkflowSettings/folder/c12dcf268b7ffe83129ed6d81d964c24?u=wing&p=password\"
-    [\"params\"]=>
-    string(418) \"{\"workflowSettings\":{\"workflowDefinitions\":[{\"id\":\"3bdf56e78b7f085600a5bfd5770fe30e\",\"path\":{\"path\":\"Automatic News Publish Create Edit Copy\",\"siteId\":\"fd27691f8b7f08560159f3f02754e61d\",\"siteName\":\"_common\"},\"type\":\"workflowdefinition\",\"recycled\":false}],\"inheritedWorkflowDefinitions\":[],\"inheritWorkflows\":false,\"requireWorkflow\":false},\"applyInheritWorkflowsToChildren\":false,\"applyRequireWorkflowToChildren\":false}\"
-  }
-}
-";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$service->editWorkflowSettings( $workflowSettings, false, false );</example>
@@ -1125,7 +976,7 @@ $workflow = $service->getReadWorkflow();</example>
     }
 
 /**
-<documentation><description><p></p></description>
+<documentation><description><p>Gets the workflowSettings object after the call of readWorkflowSettings().</p></description>
 <example>$service->readWorkflowSettings( 
     $service->createId( a\Folder::TYPE, "/", $site_name ) );
 $workflowSettings = $service->getReadWorkflowSettings();
@@ -1138,7 +989,7 @@ $workflowSettings = $service->getReadWorkflowSettings();
     }
 
 /**
-<documentation><description><p>Gets the workflowSettings object after the call of readWorkflowSettings().</p></description>
+<documentation><description><p>Returns the reply.</p></description>
 <example>$reply = $service->getReply();</example>
 <return-type>stdClass</return-type></documentation>
 */
@@ -1200,11 +1051,12 @@ echo $service->getType( $id ), BR;
 */
     public function getType( string $id_string ) : string
     {
-        $type_count = count( $this->types );
+        $types      = $this->getTypes();
+        $type_count = count( $types );
         
         for( $i = 0; $i < $type_count; $i++ )
         {
-            $id = $this->createId( $this->types[ $i ], $id_string );
+            $id = $this->createId( $types[ $i ], $id_string );
             $operation = new \stdClass();
             $read_op   = new \stdClass();
     
@@ -1273,24 +1125,6 @@ return $doc_string;
     }
 
 /**
-<documentation><description><p>Returns a bool indicating whether the string is a 32-digit hex string.</p></description>
-<example>if( $service->isHexString( $id ) )
-    echo $service->getType( $id ), BR;</example>
-<return-type>bool</return-type></documentation>
-*/
-    public function isHexString( string $string ) : bool
-    {
-        $pattern = "/[0-9a-f]{32}/";
-        $matches = array();
-        
-        preg_match( $pattern, $string, $matches );
-        
-        if( isset( $matches[ 0 ] ) )
-            return $matches[ 0 ] == $string;
-        return false;
-    }
-
-/**
 <documentation><description><p>Returns true if an operation is successful.</p></description>
 <example>$service->readPreferences();
 if( $service->isSuccessful() )
@@ -1307,7 +1141,7 @@ if( $service->isSuccessful() )
 /**
 <documentation><description>
 <?php global $eval, $service;
-$doc_string = "<p>Lists editor configurations. The <code>$id</code> should
+$doc_string = "<p>Lists editor configurations. The <code>\$id</code> should
 be an <code>stdClass</code> object, the ID of a site.</p><pre>";
 $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("listEditorConfigurations"));
 $doc_string .= "\r";
@@ -1317,17 +1151,7 @@ $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("listEdi
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("editorConfiguration"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(152) \"https://mydomain.edu:1234/api/v1/listEditorConfigurations/site/c12d8c498b7ffe83129ed6d81ea4076a?u=wing&p=password\"
-    [\"params\"]=>
-    string(55) \"{\"id\":\"c12d8c498b7ffe83129ed6d81ea4076a\",\"type\":\"site\"}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example></example>
@@ -1362,15 +1186,7 @@ $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("listMessage
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("listMessagesResult"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(1) {
-    [\"command\"]=>
-    string(102) \"https://mydomain.edu:1234/api/v1/listMessages?u=wing&p=password\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$service->listMessages();</example>
@@ -1402,15 +1218,7 @@ $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("listSitesRe
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("listSitesResult"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(1) {
-    [\"command\"]=>
-    string(99) \"https://mydomain.edu:1234/api/v1/listSites?u=wing&p=password\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$service->listSites();</example>
@@ -1438,17 +1246,7 @@ $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("listSub
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("listSubscribersResult"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(144) \"https://mydomain.edu:1234/api/v1/listSubscribers/block/c12d9e7b8b7ffe83129ed6d851168bbf?u=wing&p=password\"
-    [\"params\"]=>
-    string(56) \"{\"id\":\"c12d9e7b8b7ffe83129ed6d851168bbf\",\"type\":\"block\"}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$service->listSubscribers( 
@@ -1475,17 +1273,7 @@ $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("markMessage
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("markMessageResponse"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(142) \"https://mydomain.edu:1234/api/v1/markMessage/message/6e8c72538b7ffe833b19adb8d79fa0bc?u=wing&p=password\"
-    [\"params\"]=>
-    string(21) \"{\"markType\":\"unread\"}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$service->markMessage( 
@@ -1518,17 +1306,7 @@ $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("move"))
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("moveParameters"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(133) \"https://mydomain.edu:1234/api/v1/move/block/089c28d98b7ffe83785cac8a79fe2145?u=wing&p=password\"
-    [\"params\"]=>
-    string(130) \"{\"moveParameters\":{\"destinationContainerIdentifier\":{\"id\":\"c12dce3c8b7ffe83129ed6d8f4f9b820\",\"type\":\"folder\"},\"doWorkflow\":false}}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$service->move( $block_id, $parent_id, $new_name, $do_workflow );</example>
@@ -1559,17 +1337,7 @@ $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("performWork
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("performWorkflowTransitionResponse"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(115) \"https://mydomain.edu:1234/api/v1/performWorkflowTransition?u=wing&p=password\"
-    [\"params\"]=>
-    string(146) \"{\"workflowTransitionInformation\":{\"workflowId\":\"1238fd1e8b7ffe83785cac8aa6c35877\",\"actionIdentifier\":\"finished\",\"transitionComment\":\"No comment\"}}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$service->performWorkflowTransition( $id, $action, 'Testing' );</example>
@@ -1626,17 +1394,7 @@ $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("publish
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("publishInformation"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(135) \"https://mydomain.edu:1234/api/v1/publish/page/9a1416488b7f08ee5d439b31921d08b6?u=wing&p=password\"
-    [\"params\"]=>
-    string(185) \"{\"publishInformation\":{\"destinations\":[{\"id\":\"c34b58ca8b7f08ee4fe76bb83ba1613b\",\"type\":\"destination\"},{\"id\":\"c34d2a868b7f08ee4fe76bb87c352c01\",\"type\":\"destination\"}],\"unpublish\":false}}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$folder_path = "projects/web-services/reports";
@@ -1688,17 +1446,6 @@ $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("read"))
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("readResult"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [\"command\"]=>
-  string(133) \"https://mydomain.edu:1234/api/v1/read/block/c12da9c78b7ffe83129ed6d8411290fe?u=wing&p=password\"
-}
-
-array(1) {
-  [\"command\"]=>
-  string(116) \"https://mydomain.edu:1234/api/v1/read/page/about/index?u=wing&p=password\"
-}";
-$doc_string .= "</pre>";
 return $doc_string;
 ?>
 </description>
@@ -1732,24 +1479,7 @@ $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("readAcc
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("readAccessRightsResult"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(2) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(146) \"https://mydomain.edu:1234/api/v1/readAccessRights/folder/c12d8d0d8b7ffe83129ed6d86dd9f853?u=wing&p=password\"
-    [\"params\"]=>
-    string(57) \"{\"id\":\"c12d8d0d8b7ffe83129ed6d86dd9f853\",\"type\":\"folder\"}\"
-  }
-  [1]=>
-  array(2) {
-    [\"command\"]=>
-    string(146) \"https://mydomain.edu:1234/api/v1/editAccessRights/folder/c12d8d0d8b7ffe83129ed6d86dd9f853?u=wing&p=password\"
-    [\"params\"]=>
-    string(415) \"{\"accessRightsInformation\":{\"identifier\":{\"id\":\"c12d8d0d8b7ffe83129ed6d86dd9f853\",\"path\":{\"path\":\"\/\",\"siteId\":\"c12d8c498b7ffe83129ed6d81ea4076a\",\"siteName\":\"formats\"},\"type\":\"folder\",\"recycled\":false},\"aclEntries\":[{\"level\":\"read\",\"type\":\"group\",\"name\":\"CWT-Designers\"},{\"level\":\"write\",\"type\":\"user\",\"name\":\"wing\"},{\"level\":\"read\",\"type\":\"group\",\"name\":\"CWT-Designers\"}],\"allLevel\":\"none\"},\"applyToChildren\":true}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$service->readAccessRights( 
@@ -1781,17 +1511,7 @@ $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("auditPa
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("readAuditsResult"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(101) \"https://mydomain.edu:1234/api/v1/readAudits/?u=wing&p=password\"
-    [\"params\"]=>
-    string(40) \"{\"auditParameters\":{\"auditType\":\"copy\"}}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$page_id = "980d85f48b7f0856015997e492c9b83b";
@@ -1825,15 +1545,7 @@ $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("readPrefere
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("readPreferencesResult"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(1) {
-    [\"command\"]=>
-    string(105) \"https://mydomain.edu:1234/api/v1/readPreferences?u=wing&p=password\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$service->readPreferences();</example>
@@ -1861,17 +1573,7 @@ $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("readWorkflo
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("readWorkflowInformationResult"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(151) \"https://mydomain.edu:1234/api/v1/readWorkflowInformation/page/c12deeb18b7ffe83129ed6d85a5d3d95?u=wing&p=password\"
-    [\"params\"]=>
-    string(55) \"{\"id\":\"c12deeb18b7ffe83129ed6d85a5d3d95\",\"type\":\"page\"}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$path = '/projects/web-services/reports/creating-format';
@@ -1903,17 +1605,7 @@ $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("readWor
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("readWorkflowSettingsResult"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(150) \"https://mydomain.edu:1234/api/v1/readWorkflowSettings/folder/b70a87c38b7ffe8353cc17e9fe08ff77?u=wing&p=password\"
-    [\"params\"]=>
-    string(57) \"{\"id\":\"b70a87c38b7ffe8353cc17e9fe08ff77\",\"type\":\"folder\"}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$site_name = "cascade-admin";
@@ -1981,17 +1673,7 @@ $doc_string .= "\r";
 // searchFieldString does not work in 7.14
 $doc_string .= $eval->replaceBrackets($service->getSimpleTypeXMLByName("searchFieldString"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(1) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(96) \"https://mydomain.edu:1234/api/v1/search?u=wing&p=password\"
-    [\"params\"]=>
-    string(114) \"{\"searchInformation\":{\"searchTerms\":\"group\",\"siteId\":\"61885ac08b7ffe8377b637e83a86cca5\",\"searchTypes\":[\"format\"]}}\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example></example>
@@ -2017,7 +1699,6 @@ $doc_string = "<p>Sends a message. Note that this operation is deprecated.</p><p
 $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("sendMessage"));
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("sendMessageResponse"));
-
 $doc_string .= "</pre>";
 return $doc_string;
 ?>
@@ -2053,22 +1734,7 @@ $doc_string .= $eval->replaceBrackets($service->getElementXMLByName("siteCopyRes
 $doc_string .= "\r";
 $doc_string .= $eval->replaceBrackets($service->getComplexTypeXMLByName("siteCopy"));
 $doc_string .= "</pre>";
-$doc_string .= "<p>REST info:</p><pre>";
-$doc_string .= "array(2) {
-  [0]=>
-  array(2) {
-    [\"command\"]=>
-    string(98) \"https://mydomain.edu:1234/api/v1/siteCopy?u=wing&p=password\"
-    [\"params\"]=>
-    string(115) \"{\"originalSiteId\":\"6a8d58418b7ffe83164c9314aed51787\",\"originalSiteName\":\"_rwd_seed\",\"newSiteName\":\"_rwd_seed_copy\"}\"
-  }
-  [1]=>
-  array(1) {
-    [\"command\"]=>
-    string(136) \"https://mydomain.edu:1234/api/v1/read/metadatasetcontainer/_rwd_seed_copy/%252f?u=wing&p=password\"
-  }
-}";
-$doc_string .= "</pre>";return $doc_string;
+return $doc_string;
 ?>
 </description>
 <example>$seed_site_id   = "a0d0fb818b7f08ee0990fe6e89648961";
@@ -2273,106 +1939,7 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
     private $listed_messages;
     
     private $preferences;
-    
-    // property array to generate methods
-    /*@var array The array of property names */
-    private $properties = array(
-        c\P::ASSETFACTORY,
-        c\P::ASSETFACTORYCONTAINER,
-        C\P::CLOUDTRANSPORT,
-        c\P::CONNECTORCONTAINER,
-        c\P::CONTENTTYPE,
-        c\P::CONTENTTYPECONTAINER,
-        c\P::DATADEFINITION,
-        c\P::DATADEFINITIONCONTAINER,
-        c\P::DATABASETRANSPORT,
-        c\P::DESTINATION,
-        c\P::FACEBOOKCONNECTOR,
-        c\P::FEEDBLOCK,
-        c\P::FILE,
-        c\P::FILESYSTEMTRANSPORT,
-        c\P::FOLDER,
-        c\P::FTPTRANSPORT,
-        c\P::GOOGLEANALYTICSCONNECTOR,
-        c\P::GROUP,
-        c\P::INDEXBLOCK,
-        c\P::METADATASET,
-        c\P::METADATASETCONTAINER,
-        c\P::PAGE,
-        c\P::PAGECONFIGURATIONSET,
-        c\P::PAGECONFIGURATIONSETCONTAINER,
-        c\P::PUBLISHSET,
-        c\P::PUBLISHSETCONTAINER,
-        c\P::REFERENCE,
-        c\P::ROLE,
-        c\P::SCRIPTFORMAT,
-        c\P::SITE,
-        c\P::SITEDESTINATIONCONTAINER,
-        c\P::SYMLINK,
-        c\P::TARGET,
-        c\P::TEMPLATE,
-        c\P::TEXTBLOCK,
-        c\P::TRANSPORTCONTAINER,
-        c\P::USER,
-        c\P::WORDPRESSCONNECTOR,
-        c\P::WORKFLOWDEFINITION,
-        c\P::WORKFLOWDEFINITIONCONTAINER,
-        c\P::XHTMLDATADEFINITIONBLOCK,
-        c\P::XMLBLOCK,
-        c\P::XSLTFORMAT
-    );
-    
-    /*@var array The array of types of assets */
-    private $types = array(
-        c\T::ASSETFACTORY,
-        c\T::ASSETFACTORYCONTAINER,
-        c\T::CLOUDTRANSPORT,
-        c\T::CONNECTORCONTAINER,
-        c\T::CONTENTTYPE,
-        c\T::CONTENTTYPECONTAINER,
-        c\T::DATADEFINITION,
-        c\T::DATADEFINITIONCONTAINER,
-        c\T::DESTINATION,
-        c\T::FACEBOOKCONNECTOR,
-        c\T::FEEDBLOCK,
-        c\T::FILE,
-        c\T::FOLDER,
-        c\T::GOOGLEANALYTICSCONNECTOR,
-        c\T::GROUP,
-        c\T::INDEXBLOCK,
-        c\T::MESSAGE,
-        c\T::METADATASET,
-        c\T::METADATASETCONTAINER,
-        c\T::PAGE,
-        c\T::PAGECONFIGURATION,
-        c\T::PAGECONFIGURATIONSET,
-        c\T::PAGECONFIGURATIONSETCONTAINER,
-        c\T::PAGEREGION,
-        c\T::PUBLISHSET,
-        c\T::PUBLISHSETCONTAINER,
-        c\T::REFERENCE,
-        c\T::ROLE,
-        c\T::SCRIPTFORMAT,
-        c\T::SITE,
-        c\T::SITEDESTINATIONCONTAINER,
-        c\T::SYMLINK,
-        c\T::TARGET,
-        c\T::TEMPLATE,
-        c\T::TEXTBLOCK,
-        c\T::TRANSPORTDB,
-        c\T::TRANSPORTFS,
-        c\T::TRANSPORTFTP,
-        c\T::TRANSPORTCONTAINER,
-        c\T::USER,
-        c\T::WORDPRESSCONNECTOR,
-        c\T::WORKFLOW,
-        c\T::WORKFLOWDEFINITION,
-        c\T::WORKFLOWDEFINITIONCONTAINER,
-        c\T::XHTMLDATADEFINITIONBLOCK,
-        c\T::XMLBLOCK,
-        c\T::XSLTFORMAT
-    );
-    
+
     /*@var array The array of readX names */
     private $read_methods = array();
     /*@var array The array of getX names */
