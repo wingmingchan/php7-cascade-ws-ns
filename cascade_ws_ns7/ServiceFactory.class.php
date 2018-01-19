@@ -5,6 +5,7 @@
                        German Drulyk <drulykg@upstate.edu>
   MIT Licensed
   Modification history:
+  1/19/2018 Added authInContent and related code.
   1/19/2018 Added documentation.
   1/16/2018 Class created.
  */
@@ -31,7 +32,19 @@ class ServiceFactory
 {
 /**
 <documentation><description>
-<p>Returns an <code>AssetOperationHandlerService</code> object.</p>
+<p>Returns an <code>AssetOperationHandlerService</code> object. <code>$context</code>, when defined, should be an array of the followig type:</p>
+<pre>$context =
+    array( 'trace' => 1,
+        'proxy_host' => "111.222.33.44",
+        'proxy_port' => "80",
+        'stream_context' => stream_context_create(
+              array( 'https' =>
+                array( 'proxy' => "tcp:// 111.222.33.44:80", 'request_fulluri' => true )
+            )
+        )
+    );
+</pre>
+<p>The value of the variable <code>$authInContent</code>, when provided, determines whether the authentication information should be included in the body. The variable is defaulted to <code>true</code>.</p>
 </description>
 <example>// REST
 $type     = aohs\AssetOperationHandlerService::REST_STRING;
@@ -51,7 +64,7 @@ $service  = aohs\ServiceFactory::getService( $type, $url, $username, $password )
 */
     public static function getService(
         string $type, string $url, string $username, string $password,
-        $context=NULL ) :
+        $context=NULL, bool $authInContent=true ) :
         AssetOperationHandlerService
     {
         $type = strtolower( $type );
@@ -65,9 +78,11 @@ $service  = aohs\ServiceFactory::getService( $type, $url, $username, $password )
         }
         elseif( $type === AssetOperationHandlerService::REST_STRING )
         {
-            return new AssetOperationHandlerServiceRest(
-                $type, $url, ( object ) [ 'u' => $username, 'p' => $password ],
-                $context );
+			return new AssetOperationHandlerServiceRest(
+				$type, $url, 
+				( object )[ 'u' => $username, 'p' => $password,
+					'authInContent' => $authInContent ],
+				$context );
         }
     }
 }
