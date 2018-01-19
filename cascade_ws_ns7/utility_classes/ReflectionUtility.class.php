@@ -720,9 +720,12 @@ method signatures.</p></description>
         $class_info = "";
         
         if( !isset( $r ) )
+        {
             $r = new \ReflectionClass( $obj );
+        }
             
-        $class_info = self::getClassXmlValue( $r->getDocComment(), $ele_name, $with_default );
+        $class_info =
+            self::getClassXmlValue( $r->getDocComment(), $ele_name, $with_default );
         
         if( $with_hr )
             $class_info .= HR;
