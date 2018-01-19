@@ -5,6 +5,7 @@
                        German Drulyk <drulykg@upstate.edu>
   MIT Licensed
   Modification history:
+  1/19/2018 Added authInContent and related code.
   1/18/2018 Added documentation.
   1/18/2018 Fixed a bug in readAudits.
   1/17/2018 Moved the private arrays to the parent.
@@ -71,7 +72,13 @@ $doc_string = "
     public function read( \stdClass \$identifier )
     {
         \$id_string = \$this->createIdString( \$identifier );
-        \$command   = \$this->url . __function__ . '/' . \$id_string . \$this->auth;
+        \$command   = \$this->url . __function__ . '/' . \$id_string;
+        
+        if( \$this->auth_in_content === false )
+        {
+            \$command .= \$this->auth;
+        }
+
         \$this->reply   = \$this->apiOperation( \$command );
         \$this->success = \$this->reply->success;
         
@@ -129,16 +136,26 @@ $service  = new aohs\AssetOperationHandlerServiceRest( $type, $url, $auth );</ex
         //$this->createdAssetId = '';
         $this->reply = new \stdClass();
         $this->commands = array();
+        // if not provided, defaulted to true
+        $this->auth_in_content = $auth->authInContent ?? true;
 
         try
         {
-            $json_str = json_encode( $auth );
-            $json_str = trim( $json_str, "{}" );
-            $json_str = str_replace( '"', '', $json_str );
-            $json_str = str_replace( ':', '=', $json_str );
-            $json_str = str_replace( ',', '&', $json_str );
-            $auth_str = str_replace( " ", "%20", $json_str );
-            $this->auth = '?' . $auth_str;
+            if( $this->auth_in_content === false )
+            {
+                $json_str = json_encode( $auth );
+                $json_str = trim( $json_str, "{}" );
+                $json_str = str_replace( '"', '', $json_str );
+                $json_str = str_replace( ':', '=', $json_str );
+                $json_str = str_replace( ',', '&', $json_str );
+                $auth_str = str_replace( " ", "%20", $json_str );
+                $this->auth = '?' . $auth_str;
+            }
+            else
+            {
+                unset( $auth->authInContent );
+                $this->auth = $auth;
+            }
         }
         catch( \Exception $e )
         {
@@ -189,7 +206,19 @@ u\DebugUtility::dump( $reply );
             }
             else
             {
-                $input_params[ 'http' ][ 'content' ] = json_encode( $params );
+                
+                if( $this->auth_in_content === false )
+                {
+                    $input_params[ 'http' ][ 'content' ] = json_encode( $params );
+                }
+                else
+                {
+                    $input_params[ 'http' ][ 'content' ] = 
+                        json_encode( array_merge( ( array )$params, 
+                            [ 'authentication' =>
+                                [ 'username' => $this->auth->u,
+                                  'password' => $this->auth->p ] ] ) );
+                }
             }
             
             // skip the id
@@ -198,8 +227,20 @@ u\DebugUtility::dump( $reply );
                 $entry[ "params" ] = json_encode( $params );
             }
         }
+        elseif( $this->auth_in_content === true )
+        {
+            $input_params[ 'http' ][ 'content' ] =
+                json_encode( 
+                    [ 'authentication' =>
+                        [ 'username' => $this->auth->u, 
+                          'password' => $this->auth->p ] ] );
+        }
         
         $this->commands[] = $entry;
+
+//u\DebugUtility::dump( $command );
+//u\DebugUtility::dump( $input_params );
+
 
         return json_decode(
             file_get_contents(
@@ -255,7 +296,13 @@ $service->checkIn( $id, 'Testing the checkIn method.' );
     public function checkIn( \stdClass $identifier, string $comments="" ) : \stdClass
     {
         $id_string = $this->createIdString( $identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $command   = $this->url . __function__ . '/' . $id_string;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
+        
         $this->commands[] = $command;
         
         if( $comments != "" )
@@ -362,7 +409,13 @@ $service->copy( $block_id, $parent_id, $new_name, $do_workflow );
         string $newName="", bool $doWorkflow=false ) : \stdClass
     {
         $id_string = $this->createIdString( $identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $command   = $this->url . __function__ . '/' . $id_string;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
+
         $params  = new \stdClass();
         $params->destinationContainerIdentifier = $newIdentifier;
         
@@ -425,7 +478,7 @@ $service->create( $asset );
 */
     public function create( \stdClass $asset ) : \stdClass
     {
-        u\DebugUtility::dump( $asset );
+        //u\DebugUtility::dump( $asset );
 /*
 object(stdClass)#22 (2) {
   ["success"]=>
@@ -434,7 +487,13 @@ object(stdClass)#22 (2) {
   string(74) "java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT"
 }
 */    
-        $command = $this->url . __function__ . $this->auth;
+		$command = $this->url . __function__;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
+
         $asset = array( 'asset' => $asset );
         $this->reply = $this->apiOperation( $command, $asset );
         $this->success = $this->reply->success;
@@ -622,9 +681,16 @@ $service->edit( $asset );
 </example>
 <return-type>stdClass</return-type>
 </documentation>
-*/    public function edit( \stdClass $asset ) : \stdClass
+*/    
+	public function edit( \stdClass $asset ) : \stdClass
     {
-        $command = $this->url . __function__ . $this->auth;
+    	$command = $this->url . __function__;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
+        
         $asset = array( 'asset' => $asset );
         $this->reply = $this->apiOperation( $command, $asset );
         $this->success = $this->reply->success;
@@ -672,7 +738,13 @@ $service->editAccessRights( $accessRightInfo, false );
         bool $applyToChildren=false ) : \stdClass
     {
         $id_string = $this->createIdString( $afInfo->identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $command   = $this->url . __function__ . '/' . $id_string;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
+        
         $params  = array( 
             'accessRightsInformation' => $afInfo, 
             'applyToChildren'         => $applyToChildren );
@@ -711,7 +783,13 @@ return $doc_string;
 */
     public function editPreference( string $name, string $value ) : \stdClass
     {
-        $command = $this->url . __function__ . $this->auth;
+    	$command = $this->url . __function__;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
+
         $params = new \stdClass();
         $params->name = $name;
         $params->value = $value;
@@ -780,7 +858,13 @@ return $doc_string;
     ) : \stdClass
     {
         $id_string = $this->createIdString( $identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $command   = $this->url . __function__ . '/' . $id_string;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
+        
         $params = new \stdClass();
         
         if( !is_null( $workflowDefinitions ) )
@@ -1080,7 +1164,13 @@ return $doc_string;
         \stdClass
     {
         $id_string = $this->createIdString( $identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $command   = $this->url . __function__ . '/' . $id_string;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
+        
         $params = new \stdClass();
         $params->markType = $markType;
         $this->reply = $this->apiOperation( $command, $params );
@@ -1122,7 +1212,13 @@ return $doc_string;
         string $newName="", bool $doWorkflow=false ) : \stdClass
     {
         $id_string = $this->createIdString( $identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $command   = $this->url . __function__ . '/' . $id_string;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
+        
         $params = new \stdClass();
         
         if( !is_null( $newIdentifier ) )
@@ -1168,7 +1264,13 @@ return $doc_string;
         string $workflowId, string $actionIdentifier, string $transitionComment=''
     ) : \stdClass
     {
-        $command = $this->url . __function__ . $this->auth;
+    	$command   = $this->url . __function__;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
+        
         $params = new \stdClass();
         $params->workflowId        = $workflowId;
         $params->actionIdentifier  = $actionIdentifier;
@@ -1223,7 +1325,12 @@ $service->publish( $p->getIdentifier(),
         \stdClass $identifier, $destination=NULL, $unpublish=false ) : \stdClass
     {
         $id_string = $this->createIdString( $identifier );
-        $command = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $command   = $this->url . __function__ . '/' . $id_string;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
         
         if( isset( $destination ) )
         {
@@ -1280,7 +1387,13 @@ return $doc_string;
     public function read( \stdClass $identifier )
     {
         $id_string = $this->createIdString( $identifier );
-        $command   = $this->url . __function__ . '/' . $id_string . $this->auth;
+        $command   = $this->url . __function__ . '/' . $id_string;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
+
         $this->reply   = $this->apiOperation( $command );
         $this->success = $this->reply->success;
         
@@ -1378,8 +1491,13 @@ $service->readAudits( $audit_params );
             $id_string = "group" . "/" . $identifier->groupname;
         elseif( isset( $identifier->roleid ) )
             $id_string = "role" . "/" . $identifier->roleid;
-            
-        $command = $this->url . __function__ . '/' . $id_string  . $this->auth;
+        
+        $command = $this->url . __function__ . '/' . $id_string;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }  
         
         if( !is_null( $auditParams ) )
         {
@@ -1555,7 +1673,13 @@ return $doc_string;
 */
     public function search( \stdClass $searchInfo ) : \stdClass
     {
-        $command = $this->url . __function__ . $this->auth;
+    	$command = $this->url . __function__;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
+        
         $params  = array( 'searchInformation' => $searchInfo );
         $this->reply   = $this->apiOperation( $command, $params );
         $this->success = $this->reply->success;
@@ -1585,7 +1709,13 @@ $service->sendMessage( $message );
 */
     public function sendMessage( \stdClass $message ) 
     {
-        $command = $this->url . __function__ . $this->auth;
+    	$command = $this->url . __function__;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
+
         $params  = new \stdClass();
         $params  = array( 'message' => $params );
         $this->reply   = $this->apiOperation( $command, $params );
@@ -1638,7 +1768,13 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
         string $newSiteName, int $max_wait_seconds=0 ) :
         \stdClass
     {
-        $command = $this->url . __function__ . $this->auth;
+    	$command   = $this->url . __function__;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
+        
         $params  = new \stdClass();
         $params->originalSiteId   = $originalSiteId;
         $params->originalSiteName = $originalSiteName;
@@ -1660,7 +1796,12 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
         if( $this->reply->success === true )
         {
             $command = $this->url .
-                "read/metadatasetcontainer/$newSiteName/%252f" . $this->auth;
+                "read/metadatasetcontainer/$newSiteName/%252f";
+        
+			if( $this->auth_in_content === false )
+			{
+				$command .= $this->auth;
+			}
                 
             while( ( microtime( true ) - $start ) < $max_wait_seconds )
             {
@@ -1711,7 +1852,13 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
     
     private function performOperation( string $opName ) : \stdClass
     {
-        $command = $this->url . $opName . $this->auth;
+    	$command = $this->url . $opName;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
+
         $this->reply = $this->apiOperation( $command );
         $this->success = $this->reply->success;
         return $this->reply;
@@ -1721,7 +1868,14 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
         string $opName, \stdClass $identifier ) : \stdClass
     {
         $id_string = $this->createIdString( $identifier );
-        $command = $this->url . $opName . '/' . $id_string . $this->auth;
+        
+        $command = $this->url . $opName . '/' . $id_string;
+        
+        if( $this->auth_in_content === false )
+        {
+            $command .= $this->auth;
+        }
+        
         $this->reply = $this->apiOperation( $command, $identifier );
         $this->success = $this->reply->success;
         return $this->reply;
@@ -1729,10 +1883,19 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
     
     private function getAuthString()
     {
-        $authString = str_replace( "u=", "", trim( $this->auth, '?' ) );
-        $authString = str_replace( "p=", "", $authString );
-        $authString = str_replace( "&", ":", $authString );
+        if( is_string( $this->auth ) )
+        {
+            $authString = str_replace( "u=", "", trim( $this->auth, '?' ) );
+            $authString = str_replace( "p=", "", $authString );
+            $authString = str_replace( "&", ":", $authString );
+        }
+        else
+        {
+            $authString = $this->auth->u . ":" . $this->auth->p;
+        }
+        
         $authString = base64_encode( $authString );
+        
         return $authString;
     }
 
@@ -1762,5 +1925,6 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
     
     private $preferences;
     private $commands;
+    private $auth_in_content;
 }
 ?>
