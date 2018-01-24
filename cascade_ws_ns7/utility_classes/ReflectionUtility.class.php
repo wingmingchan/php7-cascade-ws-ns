@@ -764,6 +764,7 @@ method signatures.</p></description>
         // create the SimpleXMLElement object
         try
         {
+        	//DebugUtility::out( $ele_name );
             $xml_ele = new \SimpleXMLElement( $xml_str );
             
             // look for the element and return the formatted text

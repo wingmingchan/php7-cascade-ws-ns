@@ -227,7 +227,8 @@ class Cascade
     const NAME_SPACE = "cascade_ws_asset";
 
 /**
-<documentation><description><p>The constructor. An instance of this class has been instantiated in an authenticatioin file.</p></description>
+<documentation>
+<description><p>The constructor. An instance of this class has been instantiated in an authenticatioin file.</p></description>
 <example>$cascade = new a\Cascade( $service );</example>
 <return-type></return-type>
 <exception></exception>
@@ -434,11 +435,13 @@ an empty string must be passed in as the third argument if there is a fourth arg
     }
     
 /**
-<documentation><description><p>Copies the site, create a new site, and returns the newly created site object.</p></description>
+<documentation>
+<description>
+<p>Copies the site, create a new site, and returns the newly created site object.</p></description>
 <example>$cascade->copySite(
     'seed_site',
     'test',
-    30 // For Cascade versions < 8.7.1, the SOAP interface would just queue up the copy and immediately return a success so you can specify how long the library should manually check for the new site's existence; defaulted to 600 seconds.
+    30 // For Cascade versions &lt; 8.7.1, the SOAP interface would just queue up the copy and immediately return a success so you can specify how long the library should manually check for the new site's existence; defaulted to 600 seconds.
 );</example>
 <return-type>Asset</return-type>
 <exception></exception>

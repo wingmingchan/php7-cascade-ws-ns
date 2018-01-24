@@ -226,7 +226,7 @@ return $doc_string;
   }  
 }
 
-<pre>http://mydomain.edu:1234/api/v1/read/block_XHTML_DATADEFINITION/9d9336e18b7ffe8353cc17e99daf87e1
+http://mydomain.edu:1234/api/v1/read/block_XHTML_DATADEFINITION/9d9336e18b7ffe8353cc17e99daf87e1
 
 {
   "asset":{
