@@ -141,12 +141,12 @@ information must be retrieved through the associated content type object.</p></d
 */
     public function setReviewEvery( int $days=30 ) : Asset
     {
-    	if( $days != 0 && $days != 30 && $days != 90 && $days != 180 && $days != 365 )
-    		throw new e\UnacceptableValueException( 
+        if( $days != 0 && $days != 30 && $days != 90 && $days != 180 && $days != 365 )
+            throw new e\UnacceptableValueException( 
                 S_SPAN . "The value $days must be 0, 30, 90, 180, or 365." . E_SPAN );
 
-    	if( $days != 0 )
-        	$this->getProperty()->reviewOnSchedule = true;
+        if( $days != 0 )
+            $this->getProperty()->reviewOnSchedule = true;
         $this->getProperty()->reviewEvery = $days;
         return $this;
     }

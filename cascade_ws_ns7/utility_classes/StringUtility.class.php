@@ -40,16 +40,16 @@ class StringUtility
 <exception></exception>
 </documentation>
 */
-	public static function attachStringWithDelimiter(
-		string $initial_string=NULL, string $delimiter, string $append ) : string
-	{
-    	$str_array = explode( $delimiter, $initial_string . $delimiter . $append );
+    public static function attachStringWithDelimiter(
+        string $initial_string=NULL, string $delimiter, string $append ) : string
+    {
+        $str_array = explode( $delimiter, $initial_string . $delimiter . $append );
         $str_array = array_flip( $str_array );
         unset( $str_array[ '' ] );
         $str_array = array_keys( $str_array );
 
         return implode( $delimiter, $str_array );
-	}
+    }
 /**
 <documentation><description><p>Returns a char array by converting the binary data.</p></description>
 <example>u\DebugUtility::dump(

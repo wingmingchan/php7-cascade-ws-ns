@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 6/26/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 5/28/2015 Added namespaces.
@@ -72,17 +73,43 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/metadata_set_container.php">metadata_set_container.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{"asset":{
-  "metadataSetContainer":{
-    "children":[],
-    "parentContainerId":"1f2176d58b7ffe834c5fe91ee998459c",
-    "parentContainerPath":"/",
-    "path":"Test Metadata Set Container",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"Test Metadata Set Container",
-    "id":"1f22acb08b7ffe834c5fe91eaf922b7d" } },
-  "success":true
+<pre>http://mydomain.edu:1234/api/v1/read/metadatasetcontainer/647db3ab8b7f085600ae2282d55a5b6d
+
+{
+  "asset":{
+    "metadataSetContainer":{
+      "children":[
+      {
+        "id":"647e291f8b7f085600ae22824372da97",
+        "path":{
+          "path":"Test Metadata Set Container/Test Child Container",
+          "siteId":"fd27691f8b7f08560159f3f02754e61d"
+        },
+        "type":"metadatasetcontainer",
+        "recycled":false
+      },
+      {
+        "id":"647e77e18b7f085600ae2282629d7ea0",
+        "path":{
+          "path":"Test Metadata Set Container/External Link",
+          "siteId":"fd27691f8b7f08560159f3f02754e61d"
+        },
+        "type":"metadataset",
+        "recycled":false
+      } ],
+      "parentContainerId":"fd276a9e8b7f08560159f3f0d0b72bac",
+      "parentContainerPath":"/",
+      "path":"Test Metadata Set Container",
+      "siteId":"fd27691f8b7f08560159f3f02754e61d",
+      "siteName":"_common",
+      "name":"Test Metadata Set Container",
+      "id":"647db3ab8b7f085600ae2282d55a5b6d"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre></postscript>
 </documentation>

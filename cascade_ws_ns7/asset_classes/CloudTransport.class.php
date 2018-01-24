@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 1/3/2018 Added code to test for NULL.
   * 9/27/2017 Class created.
  */
@@ -45,24 +46,27 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/cloud_transport.php">cloud_transport.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>
+<pre>http://mydomain.edu:1234/api/v1/read/transport_cloud/2428dfa38b7ffe8343b94c28b5616ed8
+
 {
   "asset":{
     "cloudTransport":{
-      "key":"abc",
+      "key":"blah",
       "secret":"kf4*IG_ds%^#^!we",
-      "bucketName":"bucket",
-      "basePath":"formats",
-      "parentContainerId":"d74c033d8b7ffe8353cc17e99d90ee7f",
+      "bucketName":"blah",
+      "parentContainerId":"0fa6f7e98b7ffe8343b94c28a1414bed",
       "parentContainerPath":"/",
-      "path":"Test Cloud",
-      "siteId":"d74c022e8b7ffe8353cc17e91b9b1050",
+      "path":"blah",
+      "siteId":"0fa6f6f18b7ffe8343b94c28251e132e",
       "siteName":"about-test",
-      "name":"Test Cloud",
-      "id":"e560afa68b7ffe8353cc17e923b9acb5"
+      "name":"blah",
+      "id":"2428dfa38b7ffe8343b94c28b5616ed8"
     }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
   }
-  ,"success":true
 }
 </pre>
 </postscript>

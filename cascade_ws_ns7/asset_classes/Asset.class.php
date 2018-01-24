@@ -114,7 +114,7 @@ abstract class Asset
             if( !isset( $id ) && isset( $path ) )
                 $id = $path;
             else
-            	$id = "";
+                $id = "";
             
             throw new e\NullAssetException(
                 S_SPAN . "The " . 

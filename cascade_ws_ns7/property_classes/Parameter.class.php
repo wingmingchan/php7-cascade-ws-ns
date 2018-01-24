@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/23/2018 Made value optional in toStdClass.
   * 12/29/2017 Update REST code.
   * 7/14/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -106,12 +107,17 @@ class Parameter extends Property
 */
     public function toStdClass() : \stdClass
     {
-        $obj        = new \stdClass();
+        $obj = new \stdClass();
         
-        if( isset( $this->name ) && isset( $this->value ) )
+        // value can be missing
+        if( isset( $this->name ) )
         {
             $obj->name  = $this->name;
-            $obj->value = $this->value;
+            
+            if( isset( $this->value ) )
+            {
+                $obj->value = $this->value;
+            }
         }
         
         return $obj;

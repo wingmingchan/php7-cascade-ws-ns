@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 1/2/2018 Added code to test for NULL.
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -80,30 +81,43 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/asset_factory_container.php">asset_factory_container.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{
-  "assetFactoryContainer":{
-    "applicableGroups":"22q",
-    "children":[
-    { "id":"1f217d608b7ffe834c5fe91ed245a520",
-      "path":{
-        "path":"Upload/test",
-        "siteId":"1f2172088b7ffe834c5fe91e9596d028" },
-      "type":"assetfactory",
-      "recycled":false },
-    { "id":"1f217b0b8b7ffe834c5fe91e4a8615fd",
-      "path":{
-        "path":"Upload/Upload Word and Other Documents",
-        "siteId":"1f2172088b7ffe834c5fe91e9596d028"},
-      "type":"assetfactory",
-      "recycled":false } ],
-    "description":"Upload",
-    "parentContainerId":"1f2174298b7ffe834c5fe91e544ee758",
-    "parentContainerPath":"/",
-    "path":"Upload",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"Upload",
-    "id":"1f217d838b7ffe834c5fe91e9832f910"}
+<pre>http://mydomain.edu:1234/api/v1/read/assetfactorycontainer/a14dd3958b7ffe830539acf004d370d7
+
+{
+  "asset":{
+    "assetFactoryContainer":{
+      "children":[
+      {
+        "id":"a14dd57d8b7ffe830539acf083f86623",
+        "path":{
+          "path":"Upstate/New Block",
+          "siteId":"a14dbc498b7ffe830539acf0443910e3"
+        },
+        "type":"assetfactory",
+        "recycled":false
+      },
+      {
+        "id":"a14dd4b18b7ffe830539acf0f5859fed",
+        "path":{
+          "path":"Upstate/New Folder",
+          "siteId":"a14dbc498b7ffe830539acf0443910e3"
+        },
+        "type":"assetfactory",
+        "recycled":false
+      } ],
+      "parentContainerId":"a14dd32b8b7ffe830539acf0fb523e5b",
+      "parentContainerPath":"/",
+      "path":"Upstate",
+      "siteId":"a14dbc498b7ffe830539acf0443910e3",
+      "siteName":"velocity-test",
+      "name":"Upstate",
+      "id":"a14dd3958b7ffe830539acf004d370d7"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

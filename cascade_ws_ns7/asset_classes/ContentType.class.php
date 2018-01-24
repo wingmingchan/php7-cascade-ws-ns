@@ -4,6 +4,8 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
+  * 1/23/2018 Added REST code to edit.
   * 1/3/2018 Added code to test for NULL.
   * 12/27/2017 Added REST code and updated documentation.
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -112,28 +114,69 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/content_type.php">content_type.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
-  "contentType":{
-    "pageConfigurationSetId":"d7b67e638b7f085600a0fcdc2ef6d531",
-    "pageConfigurationSetPath":"_common:3 Columns",
-    "dataDefinitionId":"1f24084f8b7ffe834c5fe91e2e4d7950",
-    "dataDefinitionPath":"article_new",
-    "metadataSetId":"1f22ac6a8b7ffe834c5fe91ec00145cb",
-    "metadataSetPath":"My Metadata Set",
-    "contentTypePageConfigurations":[ { 
-      "pageConfigurationId":"d7b67e658b7f085600a0fcdc6767c5fe",
-      "pageConfigurationName":"Desktop",
-      "publishMode":"all-destinations" } ],
-    "inlineEditableFields":[],
-    "parentContainerId":"1f2175d28b7ffe834c5fe91e3eb6485d",
-    "parentContainerPath":"/",
-    "path":"article_new",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"article_new",
-    "id":"1f2239118b7ffe834c5fe91e560a90e0" } },
-  "success":true
-}</pre></postscript>
+<pre>http://mydomain.edu:1234/api/v1/read/contenttype/e98e32fc8b7f08560139425c8b1403fd
+
+{
+  "asset":{
+    "contentType":{
+      "pageConfigurationSetId":"a55cc5398b7f0856002a5e1155e55531",
+      "pageConfigurationSetPath":"3 Columns Test",
+      "metadataSetId":"b893fd058b7f0856002a5e11185ff809",
+      "metadataSetPath":"Test",
+      "contentTypePageConfigurations":[
+      {
+        "pageConfigurationId":"a55cc53c8b7f0856002a5e114867c204",
+        "pageConfigurationName":"Desktop",
+        "publishMode":"all-destinations"
+      },
+      {
+        "pageConfigurationId":"a55cc53b8b7f0856002a5e11bb67df67",
+        "pageConfigurationName":"Mobile",
+        "publishMode":"all-destinations"
+      },
+      {
+        "pageConfigurationId":"a55cc53a8b7f0856002a5e1138ae8391",
+        "pageConfigurationName":"PDF",
+        "publishMode":"do-not-publish"
+      },
+      {
+        "pageConfigurationId":"a55cc53c8b7f0856002a5e11578116eb",
+        "pageConfigurationName":"Printer",
+        "publishMode":"all-destinations"
+      },
+      {
+        "pageConfigurationId":"69cdf70a8b7f085601b932cfc2b34894",
+        "pageConfigurationName":"XML",
+        "publishMode":"all-destinations"
+      } ],
+      "inlineEditableFields":[
+      {
+        "pageConfigurationName":"Desktop",
+        "pageRegionName":"DEFAULT",
+        "type":"dynamic-metadata",
+        "name":"dropdown"
+      },
+      {
+        "pageConfigurationName":"Desktop",
+        "pageRegionName":"DEFAULT",
+        "type":"dynamic-metadata",
+        "name":"multiselect"
+      } ],
+      "parentContainerId":"fd276cfc8b7f08560159f3f0db454558",
+      "parentContainerPath":"/",
+      "path":"Test Rename",
+      "siteId":"fd27691f8b7f08560159f3f02754e61d",
+      "siteName":"_common",
+      "name":"Test Rename",
+      "id":"e98e32fc8b7f08560139425c8b1403fd"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
+}
+</pre></postscript>
 </documentation>
 */
 class ContentType extends ContainedAsset
@@ -341,32 +384,78 @@ overriding the parent method to display the configuration set as well.</p></desc
     ) : Asset
     {
         $asset = new \stdClass();
-        $this->getProperty()->contentTypePageConfigurations->
-            contentTypePageConfiguration = array();
+        
+        if( $this->getService()->isSoap() )
+        {
+            $this->getProperty()->contentTypePageConfigurations->
+                contentTypePageConfiguration = array();
+        }
+        elseif( $this->getService()->isRest() )
+        {
+            $this->getProperty()->contentTypePageConfigurations = array();
+        }
         
         foreach( $this->content_type_page_configurations as $config )
         {
-            $this->getProperty()->contentTypePageConfigurations->
-                contentTypePageConfiguration[] = $config->toStdClass();
+            if( $this->getService()->isSoap() )
+            {
+                $this->getProperty()->contentTypePageConfigurations->
+                    contentTypePageConfiguration[] = $config->toStdClass();
+            }
+            elseif( $this->getService()->isRest() )
+            {
+                $this->getProperty()->contentTypePageConfigurations[] =
+                    $config->toStdClass();
+            }
         }
 
         $editable_count = count( $this->inline_editable_fields );
         
-        $this->getProperty()->inlineEditableFields = new \stdClass();
-        
+        if( $this->getService()->isSoap() )
+        {
+            $this->getProperty()->inlineEditableFields = new \stdClass();
+        }
+        elseif( $this->getService()->isRest() )
+        {
+            $this->getProperty()->inlineEditableFields = array();
+        }
+            
         if( $editable_count == 1 )
         {
-            $this->getProperty()->inlineEditableFields->inlineEditableField =
-                $this->inline_editable_fields[0]->toStdClass();
+            if( $this->getService()->isSoap() )
+            {
+                $this->getProperty()->inlineEditableFields->inlineEditableField =
+                    $this->inline_editable_fields[0]->toStdClass();
+            }
+            elseif( $this->getService()->isRest() )
+            {
+                $this->getProperty()->inlineEditableFields[] =
+                    $this->inline_editable_fields[0]->toStdClass();
+            }
         }
         else if( $editable_count > 1 )
         {
-            $this->getProperty()->inlineEditableFields->inlineEditableField = array();
+            if( $this->getService()->isSoap() )
+            {
+                $this->getProperty()->inlineEditableFields->inlineEditableField = array();
+            }
+            elseif( $this->getService()->isRest() )
+            {
+                $this->getProperty()->inlineEditableFields = array();
+            }
             
             foreach( $this->inline_editable_fields as $field )
             {
-                $this->getProperty()->inlineEditableFields->inlineEditableField[] =
-                    $field->toStdClass();
+                if( $this->getService()->isSoap() )
+                {
+                    $this->getProperty()->inlineEditableFields->inlineEditableField[] =
+                        $field->toStdClass();
+                }
+                elseif( $this->getService()->isRest() )
+                {
+                    $this->getProperty()->inlineEditableFields[] =
+                        $field->toStdClass();
+                }
             }
         }
         

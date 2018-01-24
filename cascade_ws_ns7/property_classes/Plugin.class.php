@@ -250,9 +250,9 @@ $af->edit();</example>
         $count     = count( $this->parameters );
         
         if( $this->service->isSoap() )
-        	$obj->parameters = new \stdClass();
+            $obj->parameters = new \stdClass();
         elseif( $this->service->isRest() )
-        	$obj->parameters = array();
+            $obj->parameters = array();
         
         if( $count == 0 )
         {
@@ -260,31 +260,31 @@ $af->edit();</example>
         }
         else if( $count == 1 )
         {
-        	if( $this->service->isSoap() )
-            	$obj->parameters->parameter = $this->parameters[ 0 ];
+            if( $this->service->isSoap() )
+                $obj->parameters->parameter = $this->parameters[ 0 ];
             elseif( $this->service->isRest() )
             {
-            	$param_std = $this->parameters[ 0 ]->toStdClass();
-            	
-            	if( isset( $param_std->name ) && isset( $param_std->value ) )
-            		$obj->parameters = array( $param_std );
+                $param_std = $this->parameters[ 0 ]->toStdClass();
+                
+                if( isset( $param_std->name ) && isset( $param_std->value ) )
+                    $obj->parameters = array( $param_std );
             }
         }
         else
         {
-        	if( $this->service->isSoap() )
-            	$obj->parameters->parameter = array();
+            if( $this->service->isSoap() )
+                $obj->parameters->parameter = array();
             
             foreach( $this->parameters as $parameter )
             {
-            	if( $this->service->isSoap() )
-                	$obj->parameters->parameter[] = $parameter->toStdClass();
+                if( $this->service->isSoap() )
+                    $obj->parameters->parameter[] = $parameter->toStdClass();
                 elseif( $this->service->isRest() )
                 {
-                	$param_std = $parameter->toStdClass();
-                	
-                	if( isset( $param_std->name ) && isset( $param_std->value ) )
-                		$obj->parameters[] = $param_std;
+                    $param_std = $parameter->toStdClass();
+                    
+                    if( isset( $param_std->name ) && isset( $param_std->value ) )
+                        $obj->parameters[] = $param_std;
                 }
             }
         }
@@ -303,10 +303,10 @@ $af->edit();</example>
         foreach( $parameters as $parameter )
         {
             if( $this->service->isSoap() )
-            	$this->parameters[] = new Parameter( $parameter );
-        	elseif( $this->service->isRest() &&
-        		isset( $parameter->name ) && isset( $parameter->value ) )
-            		$this->parameters[] = new Parameter( $parameter );
+                $this->parameters[] = new Parameter( $parameter );
+            elseif( $this->service->isRest() &&
+                isset( $parameter->name ) && isset( $parameter->value ) )
+                    $this->parameters[] = new Parameter( $parameter );
         }
     }
 

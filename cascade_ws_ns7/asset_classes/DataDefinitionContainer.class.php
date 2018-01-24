@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 6/22/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/11/2017 Added JSON structure and JSON dump.
@@ -74,23 +75,34 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/data_definition_container.php">data_definition_container.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
+<pre>http://mydomain.edu:1234/api/v1/read/datadefinitioncontainer/5501cc048b7f085600ae2282a4d548b7
+
+{
+  "asset":{
     "dataDefinitionContainer":{
-    "children":[ {
-      "id":"e3aceb867f00000118d3acfcaabcc1f4",
-      "path":{
-        "path":"DD Container/DD",
-        "siteId":"f7a963087f0000012693e3d9932e44ba"},
-        "type":"datadefinition",
-        "recycled":false } ],
-    "parentContainerId":"f7a9632d7f0000012693e3d9809faca9",
-    "parentContainerPath":"/",
-    "path":"DD Container",
-    "siteId":"f7a963087f0000012693e3d9932e44ba",
-    "siteName":"SUNY Upstate",
-    "name":"DD Container",
-    "id":"e3a9224c7f00000118d3acfc495173e2" } },
-  "success":true
+      "children":[
+      {
+        "id":"647808af8b7f085600ae2282bbfcfedd",
+        "path":{
+          "path":"Test Data Definition Container/Test Child Container",
+          "siteId":"fd27691f8b7f08560159f3f02754e61d"
+        },
+        "type":"datadefinitioncontainer",
+        "recycled":false
+      } ],
+      "parentContainerId":"fd276f068b7f08560159f3f0bf02df08",
+      "parentContainerPath":"/",
+      "path":"Test Data Definition Container",
+      "siteId":"fd27691f8b7f08560159f3f02754e61d",
+      "siteName":"_common",
+      "name":"Test Data Definition Container",
+      "id":"5501cc048b7f085600ae2282a4d548b7"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

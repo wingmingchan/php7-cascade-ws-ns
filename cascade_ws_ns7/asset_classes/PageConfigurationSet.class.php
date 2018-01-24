@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 12/27/2017 Added REST code and updated documentation.
     Changed signatures of setConfigurationPageRegionBlock and setConfigurationPageRegionFormat
     to allow NULL values.
@@ -119,30 +120,39 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page_configuration_set.php">page_configuration_set.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>
-{ "asset":{
+<pre>http://mydomain.edu:1234/api/v1/read/pageconfigurationset/6188631a8b7ffe8377b637e8d9af95ee
+
+{
+  "asset":{
     "pageConfigurationSet":{
-      "pageConfigurations":[ {
-        "name":"RWD",
+      "pageConfigurations":[
+      {
+        "name":"HTM",
         "defaultConfiguration":true,
-        "templateId":"c44a60887f0000014d7031654a242191",
-        "templatePath":"suny-upstate/templates/RWD",
+        "templateId":"618863fc8b7ffe8377b637e865012e5d",
+        "templatePath":"core/xml",
         "formatRecycled":false,
         "pageRegions":[],
         "serializationType":"HTML",
         "outputExtension":".php",
         "includeXMLDeclaration":false,
-        "publishable":true,"id":"c44dbf5c7f0000014d703165b91a4add" } ],
-      "parentContainerId":"a246c72c7f0000011d450d2a4d922aa4",
-      "parentContainerPath":"suny-upstate",
-      "path":"suny-upstate/RWD",
-      "siteId":"9c8883d07f00000140b4daea7170b336",
-      "siteName":"POPs",
-      "name":"RWD",
-      "id":"c44dbf5c7f0000014d7031654a7b54a9" } },
-  "success":true
-}
-</pre>
+        "publishable":true,
+        "id":"6188631a8b7ffe8377b637e8e5007426"
+      } ],
+      "parentContainerId":"61885b988b7ffe8377b637e865c21202",
+      "parentContainerPath":"/",
+      "path":"HTM",
+      "siteId":"61885ac08b7ffe8377b637e83a86cca5",
+      "siteName":"_brisk",
+      "name":"HTM",
+      "id":"6188631a8b7ffe8377b637e8d9af95ee"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
+}</pre>
 </postscript>
 </documentation>
 */

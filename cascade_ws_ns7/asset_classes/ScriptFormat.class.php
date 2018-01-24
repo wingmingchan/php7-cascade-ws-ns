@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 6/29/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/12/2017 Added WSDL.
   * 1/17/2017 Added JSON dump.
@@ -48,21 +49,29 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/script_format.php">script_format.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
-  "scriptFormat":{
-    "script":"##",
-    "parentFolderId":"1f22ab8e8b7ffe834c5fe91e555a2a38",
-    "parentFolderPath":"_cascade/formats/test-velocity",
-    "lastModifiedDate":"Sep 12, 2016 12:04:00 PM",
-    "lastModifiedBy":"wing",
-    "createdDate":"Sep 12, 2016 12:04:00 PM",
-    "createdBy":"wing",
-    "path":"_cascade/formats/test-velocity/test-config",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"test-config",
-    "id":"1f24139b8b7ffe834c5fe91ea124b974" } },
-  "success":true
+<pre>http://mydomain.edu:1234/api/v1/read/format_SCRIPT/c12ed4e58b7ffe83129ed6d8d7ef4a97
+
+{
+  "asset":{
+    "scriptFormat":{
+      "script":"## this is for external-nav\r\n#if( !$siteConfigMap )\r\n#set( $siteConfigMap \u003d {} )\r\n#end\r\n#set( $siteConfigMap[ \u0027siteLocalCSS\u0027 ]       \u003d \"site://cascade-admin/_extra/local.css\" )\r\n#set( $siteConfigMap[ \u0027siteTitleString\u0027 ]    \u003d \"Formats\" )\r\n#set( $siteConfigMap[ \u0027siteNavHomeString\u0027 ]  \u003d \"Home\" )\r\n#set( $siteConfigMap[ \u0027siteContactPerson\u0027 ]  \u003d \"Wing Ming Chan\" )\r\n#set( $siteConfigMap[ \u0027siteContactEmail\u0027 ]   \u003d \"chanw\" )\r\n\r\n## override the design setup\r\n#set( $pagesWithoutBreadcrumbs \u003d [] )\r\n#set( $siteConfigMap[ \u0027pagesWithoutBreadcrumbs\u0027 ]     \u003d $pagesWithoutBreadcrumbs )\r\n#set( $siteConfigMap[ \u0027breadcrumbsHomeString\u0027 ]       \u003d \"Formats Home\" )\r\n#set( $siteConfigMap[ \u0027breadcrumbsSeparatorString\u0027 ]  \u003d \"➤\" )\r\n##set( $siteConfigMap[ \u0027displayHtmlCode\u0027 ]             \u003d true )\r\n#set( $siteConfigMap[ \u0027pagesWithoutH1\u0027 ]          \u003d [ \"_extra/reusable-component\", \"_extra/blank-page\" ] )\r\n\r\n",
+      "parentFolderId":"c12dce028b7ffe83129ed6d8fdc88b47",
+      "parentFolderPath":"_cascade",
+      "lastModifiedDate":"Jan 23, 2018 10:28:53 AM",
+      "lastModifiedBy":"wing",
+      "createdDate":"Nov 15, 2017 2:36:32 PM",
+      "createdBy":"wing",
+      "path":"_cascade/setup",
+      "siteId":"c12d8c498b7ffe83129ed6d81ea4076a",
+      "siteName":"formats",
+      "name":"setup",
+      "id":"c12ed4e58b7ffe83129ed6d8d7ef4a97"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

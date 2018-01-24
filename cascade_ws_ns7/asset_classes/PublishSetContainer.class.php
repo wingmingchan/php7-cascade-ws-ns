@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 6/28/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
@@ -74,17 +75,34 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/publish_set_container.php">publish_set_container.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
-  "publishSetContainer":{
-    "children":[],
-    "parentContainerId":"1f21774c8b7ffe834c5fe91e130d561a",
-    "parentContainerPath":"/",
-    "path":"Test Publish Set Container",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"Test Publish Set Container",
-    "id":"ad6ebf308b7ffe83664b9bd4760644e6" } },
-  "success":true
+<pre>http://mydomain.edu:1234/api/v1/read/publishsetcontainer/0952d9758b7ffe8339ce5d13a1ad5e0a
+
+{
+  "asset":{
+    "publishSetContainer":{
+      "children":[
+      {
+        "id":"28a960258b7ffe8343b94c282741f634",
+        "path":{
+          "path":"Test Container/test",
+          "siteId":"fd27691f8b7f08560159f3f02754e61d"
+        },
+        "type":"publishset",
+        "recycled":false
+      } ],
+      "parentContainerId":"fd276e5a8b7f08560159f3f0e8f79c2f",
+      "parentContainerPath":"/",
+      "path":"Test Container",
+      "siteId":"fd27691f8b7f08560159f3f02754e61d",
+      "siteName":"_common",
+      "name":"Test Container",
+      "id":"0952d9758b7ffe8339ce5d13a1ad5e0a"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

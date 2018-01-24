@@ -60,18 +60,18 @@ the method call is from line 13 of the test program named <code>debug-utility.ph
 */
     public static function dumpRESTCommands( aohs\AssetOperationHandlerService $service )
     {
-    	if( $service->isRest() )
-    	{
-        	self::getCallingInfo( $class, $line );
-			echo $class . "::" . $line . ": " . BR . S_PRE;
-			var_dump( $service->getCommands() );
-			echo E_PRE . HR;
+        if( $service->isRest() )
+        {
+            self::getCallingInfo( $class, $line );
+            echo $class . "::" . $line . ": " . BR . S_PRE;
+            var_dump( $service->getCommands() );
+            echo E_PRE . HR;
 
-        	$service->clearCommands();
+            $service->clearCommands();
         }
         else
         {
-        	self::out( "Currently the service object is associated with SOAP." );
+            self::out( "Currently the service object is associated with SOAP." );
         }
     }
 

@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/10/2017 Added JSON structure and JSON dump.
@@ -74,25 +75,61 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/connector_container.php">connector_container.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
-  "connectorContainer":{
-    "children":[
-    {
-      "id":"086439518b7ffe8339ce5d13b34124b6",
-      "path":{
-        "path":"Test Connector Container/Google",
-        "siteId":"1f2172088b7ffe834c5fe91e9596d028"
+<pre>http://mydomain.edu:1234/api/v1/read/connectorcontainer/2436012e8b7ffe8343b94c2803783fb1
+
+{
+  "asset":{
+    "connectorContainer":{
+      "children":[
+      {
+        "id":"243d93498b7ffe8343b94c28de034795",
+        "path":{
+          "path":"Test Connector Container/ga",
+          "siteId":"0fa6f6f18b7ffe8343b94c28251e132e"
+        },
+        "type":"googleanalyticsconnector",
+        "recycled":false
       },
-      "type":"googleanalyticsconnector",
-      "recycled":false } ],
-    "parentContainerId":"1f2177b48b7ffe834c5fe91e1a7d31f4",
-    "parentContainerPath":"/",
-    "path":"Test Connector Container",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"Test Connector Container",
-    "id":"03dbe3628b7ffe8339ce5d132b740004" } },
-  "success":true
+      {
+        "id":"244081a88b7ffe8343b94c28b1197a9d",
+        "path":{
+          "path":"Test Connector Container/tw",
+          "siteId":"0fa6f6f18b7ffe8343b94c28251e132e"
+        },
+        "type":"twitterconnector",
+        "recycled":false
+      },
+      {
+        "id":"243c73ba8b7ffe8343b94c28ebf34eb1",
+        "path":{
+          "path":"Test Connector Container/wp",
+          "siteId":"0fa6f6f18b7ffe8343b94c28251e132e"
+        },
+        "type":"wordpressconnector",
+        "recycled":false
+      },
+      {
+        "id":"243fb6bc8b7ffe8343b94c2812745ebf",
+        "path":{
+          "path":"Test Connector Container/sp",
+          "siteId":"0fa6f6f18b7ffe8343b94c28251e132e"
+        },
+        "type":"spectateconnector",
+        "recycled":false
+      } ],
+      "parentContainerId":"0fa6f7878b7ffe8343b94c28eecf4668",
+      "parentContainerPath":"/",
+      "path":"Test Connector Container",
+      "siteId":"0fa6f6f18b7ffe8343b94c28251e132e",
+      "siteName":"about-test",
+      "name":"Test Connector Container",
+      "id":"2436012e8b7ffe8343b94c2803783fb1"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

@@ -40,7 +40,7 @@ abstract class Property
 */
 abstract class Property
 {
-	const NAME_SPACE = "cascade_ws_property";
+    const NAME_SPACE = "cascade_ws_property";
 
 /**
 <documentation><description></description>

@@ -127,7 +127,7 @@ class StructuredDataNodePhantom extends Property
             }
             else
             {
-            	$this->required = false;
+                $this->required = false;
             }
             
             // type mostly for setText
@@ -143,7 +143,7 @@ class StructuredDataNodePhantom extends Property
             }
             else
             {
-            	$this->multi_line = false;
+                $this->multi_line = false;
             }
             
             // is it wysiwyg?
@@ -153,7 +153,7 @@ class StructuredDataNodePhantom extends Property
             }
             else
             {
-            	$this->wysiwyg = false;
+                $this->wysiwyg = false;
             }
             
             // add the index if this is a multiple field
@@ -1409,64 +1409,64 @@ class StructuredDataNodePhantom extends Property
             }
             else if( $this->text_type == self::TEXT_TYPE_CALENDAR ) // month-day-year
             {
-            	if( !is_null( $text ) && $text != "" )
-            	{
-					$date_array = explode( '-', $text );
-				
-					// must have three parts
-					if( count( $date_array ) != 3 )
-					{
-						throw new e\UnacceptableValueException( 
-							S_SPAN . "$text is not an acceptable date value." . E_SPAN );
-					}
-				
-					list( $month, $day, $year ) = $date_array;
-				
-					// convert strings to integers
-					$month = intval( $month );
-					$day   = intval( $day );
-					$year  = intval( $year );
-				
-					// check the date
-					if( !checkdate( $month, $day, $year ) )
-					{
-						throw new e\UnacceptableValueException( 
-							S_SPAN . "$text is not an acceptable date value." . E_SPAN );
-					}
-				
-					// compare years, Cascade only has a range of 20 years
-					$today     = getdate();
-					$this_year = $today[ 'year' ];
-				
-					if( abs( $this_year - $year ) > 10 )
-					{
-						throw new e\UnacceptableValueException( 
-							S_SPAN . "$text is not an acceptable date value." . E_SPAN );
-					}
-				
-					// convert integers back to strings
-					if( $month < 10 )
-					{
-						$month_string = '0' . $month;
-					}
-					else
-					{
-						$month_string = $month;
-					}
-				
-					if( $day < 10 )
-					{
-						$day_string = '0' . $day;
-					}
-					else
-					{
-						$day_string = $day;
-					}
-				
-					$this->text = $month_string . '-' . $day_string . '-' . $year;
-				}
-				else
-					$this->text = $text;
+                if( !is_null( $text ) && $text != "" )
+                {
+                    $date_array = explode( '-', $text );
+                
+                    // must have three parts
+                    if( count( $date_array ) != 3 )
+                    {
+                        throw new e\UnacceptableValueException( 
+                            S_SPAN . "$text is not an acceptable date value." . E_SPAN );
+                    }
+                
+                    list( $month, $day, $year ) = $date_array;
+                
+                    // convert strings to integers
+                    $month = intval( $month );
+                    $day   = intval( $day );
+                    $year  = intval( $year );
+                
+                    // check the date
+                    if( !checkdate( $month, $day, $year ) )
+                    {
+                        throw new e\UnacceptableValueException( 
+                            S_SPAN . "$text is not an acceptable date value." . E_SPAN );
+                    }
+                
+                    // compare years, Cascade only has a range of 20 years
+                    $today     = getdate();
+                    $this_year = $today[ 'year' ];
+                
+                    if( abs( $this_year - $year ) > 10 )
+                    {
+                        throw new e\UnacceptableValueException( 
+                            S_SPAN . "$text is not an acceptable date value." . E_SPAN );
+                    }
+                
+                    // convert integers back to strings
+                    if( $month < 10 )
+                    {
+                        $month_string = '0' . $month;
+                    }
+                    else
+                    {
+                        $month_string = $month;
+                    }
+                
+                    if( $day < 10 )
+                    {
+                        $day_string = '0' . $day;
+                    }
+                    else
+                    {
+                        $day_string = $day;
+                    }
+                
+                    $this->text = $month_string . '-' . $day_string . '-' . $year;
+                }
+                else
+                    $this->text = $text;
             }
             else
             {
@@ -1496,8 +1496,8 @@ class StructuredDataNodePhantom extends Property
             {
                 if( $this->text_type == self::TEXT_TYPE_CHECKBOX )
                 {
-                	$text = str_replace( self::CHECKBOX_PREFIX, "", $text );
-                	
+                    $text = str_replace( self::CHECKBOX_PREFIX, "", $text );
+                    
                     // unacceptable input
                     if( $text != $this->items && $text != '' && 
                         $text != self::CHECKBOX_PREFIX )

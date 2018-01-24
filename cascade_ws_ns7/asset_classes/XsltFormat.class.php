@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 6/30/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/12/2017 Added WSDL.
   * 1/17/2017 Added JSON dump.
@@ -49,21 +50,29 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/xslt_format.php">xslt_format.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
-  "xsltFormat":{
-    "xml":"...",
-    "parentFolderId":"1f22a5fc8b7ffe834c5fe91ec2acf245",
-    "parentFolderPath":"_cascade/formats/test-xslt",
-    "lastModifiedDate":"Dec 19, 2016 11:11:12 AM",
-    "lastModifiedBy":"wing",
-    "createdDate":"Sep 12, 2016 12:04:04 PM",
-    "createdBy":"wing",
-    "path":"_cascade/formats/test-xslt/rwd-slideshow-test",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"rwd-slideshow-test",
-    "id":"1f2422858b7ffe834c5fe91ecd110f7a" } },
-  "success":true
+<pre>http://mydomain.edu:1234/api/v1/read/format_XSLT/fd27c1988b7f08560159f3f012c360e7
+
+{
+  "asset":{
+    "xsltFormat":{
+      "xml":"\u003c?xml version\u003d\"1.0\" encoding\u003d\"UTF-8\"?\u003e\r\n\u003c!DOCTYPE xsl:stylesheet [\u003c!ENTITY nbsp \"\u0026amp;#160;\"\u003e]\u003e\r\n\u003cxsl:stylesheet version\u003d\"1.0\" xmlns:xsl\u003d\"http://www.w3.org/1999/XSL/Transform\"\u003e\r\n\t\u003cxsl:output indent\u003d\"yes\" method\u003d\"xml\"/\u003e\r\n    \r\n    \u003c!-- This format is used by media site --\u003e\r\n    \r\n\t\u003cxsl:variable name\u003d\"image-extensions\"\u003ejpg,gif,png\u003c/xsl:variable\u003e\r\n\t\r\n\t\u003c!-- The following match is in the event it is from an index block in the data definition --\u003e\r\n\t\u003cxsl:template match\u003d\"path | name\"/\u003e\r\n\t\r\n\t\u003c!-- Find the first configuration, and copy the template content --\u003e\r\n\t\u003cxsl:template match\u003d\"system-index-block\"\u003e\r\n\t\t\u003cxsl:if test\u003d\"//system-page[@current]/summary\"\u003e\r\n\t\t\t\u003cp\u003e\u003cxsl:value-of select\u003d\"//system-page[@current\u003d\u0027true\u0027]/summary\"/\u003e\u003c/p\u003e\r\n\t\t\u003c/xsl:if\u003e\r\n\t\t\u003cul\u003e\r\n\t\t\t\u003cxsl:apply-templates select\u003d\"system-folder | system-page[name !\u003d \u0027index\u0027 and name !\u003d \u0027default\u0027] | system-file | system-symlink\"/\u003e\r\n\t\t\u003c/ul\u003e\r\n\t\u003c/xsl:template\u003e\r\n\t\r\n\t\u003cxsl:template match\u003d\"system-folder\"\u003e\r\n\t\t\u003cxsl:if test\u003d\"display-name\"\u003e\r\n\t\t\t\u003cli\u003e\r\n\t\t\t\t\u003ca\u003e\r\n\t\t\t\t\t\u003cxsl:choose\u003e\r\n\t\t\t\t\t\t\u003cxsl:when test\u003d\"system-page/name \u003d \u0027index\u0027\"\u003e\u003cxsl:attribute name\u003d\"href\"\u003e\u003cxsl:value-of select\u003d\"path\"/\u003e/index\u003c/xsl:attribute\u003e\u003c/xsl:when\u003e\r\n\t\t\t\t\t\t\u003cxsl:otherwise\u003e\u003cxsl:attribute name\u003d\"href\"\u003e\u003cxsl:value-of select\u003d\"path\"/\u003e/index\u003c/xsl:attribute\u003e\u003c/xsl:otherwise\u003e\r\n\t\t\t\t\t\u003c/xsl:choose\u003e\r\n\t\t\t\t\t\u003cxsl:value-of select\u003d\"display-name\"/\u003e\r\n\t\t\t\t\u003c/a\u003e\r\n\t\t\t\u003c/li\u003e\r\n\t\t\t\u003cxsl:apply-templates select\u003d\"system-page[name !\u003d \u0027index\u0027 and name !\u003d \u0027default\u0027] | system-file | system-symlink\"/\u003e\r\n\t\t\u003c/xsl:if\u003e\r\n\t\u003c/xsl:template\u003e\r\n\t\r\n\t\u003cxsl:template match\u003d\"system-file\"\u003e\r\n\t\t\u003cxsl:variable name\u003d\"extension\"\u003e\r\n\t\t\t\u003cxsl:call-template name\u003d\"getExtension\"\u003e\r\n\t\t\t\t\u003cxsl:with-param name\u003d\"path\"\u003e\u003cxsl:value-of select\u003d\"path\"/\u003e\u003c/xsl:with-param\u003e\r\n\t\t\t\u003c/xsl:call-template\u003e\r\n\t\t\u003c/xsl:variable\u003e\r\n\t\t\u003cxsl:choose\u003e\r\n\t\t\t\u003cxsl:when test\u003d\"@current\u003d\u0027true\u0027\"\u003e\r\n\t\t\t \u003c/xsl:when\u003e\r\n\t\t\t\u003cxsl:otherwise\u003e\r\n\t\t\t\t\u003cli\u003e\r\n\t\t\t\t\t\u003c!-- Output the name of the page as a link --\u003e\r\n\t\t\t\t\t\u003ca class\u003d\"navlefttitle\" href\u003d\"{path}\"\u003e\r\n\t\t\t\t\t\t\u003cxsl:if test\u003d\"contains($image-extensions,$extension)\"\u003e\r\n\t\t\t\t\t\t\t\u003cimg alt\u003d\"{name}\" border\u003d\"0\" src\u003d\"{path}\"/\u003e\u003cbr/\u003e\r\n\t\t\t\t\t\t\u003c/xsl:if\u003e\r\n\t\t\t\t\t\t\u003cxsl:choose\u003e\r\n\t\t\t\t\t\t\t\u003cxsl:when test\u003d\"display-name !\u003d \u0027\u0027\"\u003e\r\n\t\t\t\t\t\t\t\t\u003cxsl:value-of select\u003d\"name\"/\u003e - \u003cxsl:value-of select\u003d\"display-name\"/\u003e\r\n\t\t\t\t\t\t\t\u003c/xsl:when\u003e\r\n\t\t\t\t\t\t\t\u003cxsl:otherwise\u003e\r\n\t\t\t\t\t\t\t\t\u003cxsl:value-of select\u003d\"name\"/\u003e\r\n\t\t\t\t\t\t\t\u003c/xsl:otherwise\u003e\r\n\t\t\t\t\t\t\u003c/xsl:choose\u003e\r\n\t\t\t\t\t\u003c/a\u003e\r\n\t\t\t\t\t\u003cxsl:if test\u003d\"summary\"\u003e\r\n\t\t\t\t\t\t\u0026nbsp;\u003cxsl:value-of select\u003d\"summary\"/\u003e\u003cbr/\u003e\r\n\t\t\t\t\t\t\u003cxsl:value-of select\u003d\"author\"/\u003e\u003cbr/\u003e\r\n\t\t\t\t\t\u003c/xsl:if\u003e\r\n\t\t\t\t\u003c/li\u003e\r\n\t\t\t\u003c/xsl:otherwise\u003e\r\n\t\t\u003c/xsl:choose\u003e\r\n\t\u003c/xsl:template\u003e\r\n\t\r\n\t\u003cxsl:template match\u003d\"system-page\"\u003e\r\n\t\t\u003cxsl:choose\u003e\r\n\t\t\t\u003cxsl:when test\u003d\"@current\u003d\u0027true\u0027\"\u003e\r\n\t\t\t \u003c/xsl:when\u003e\r\n\t\t\t\u003cxsl:otherwise\u003e\r\n\t\t\t\t\u003cli\u003e\r\n\t\t\t\t\t\u003cxsl:if test\u003d\"dynamic-metadata[name\u003d\u0027Date and Time\u0027]/value !\u003d \u0027\u0027\"\u003e\r\n\t\t\t\t\t\t\u003cxsl:value-of select\u003d\"dynamic-metadata[name\u003d\u0027Date and Time\u0027]/value\"/\u003e\u003cbr/\u003e\r\n\t\t\t\t\t\u003c/xsl:if\u003e\r\n\t\t\t\t\t\u003ca class\u003d\"navlefttitle\"\u003e\r\n\t\t\t\t\t\t\u003cxsl:attribute name\u003d\"href\"\u003e\u003cxsl:value-of select\u003d\"path\"/\u003e\u003c/xsl:attribute\u003e\r\n\t\t\t\t\t\t\u003cxsl:value-of select\u003d\"display-name\"/\u003e\r\n\t\t\t\t\t\u003c/a\u003e\r\n\t\t\t\t\t\u003cxsl:if test\u003d\"summary\"\u003e\r\n\t\t\t\t\t\t\u0026nbsp;\u003cxsl:value-of select\u003d\"summary\"/\u003e\u003cbr/\u003e\r\n\t\t\t\t\t\u003c/xsl:if\u003e\r\n\t\t\t\t\t\u003cxsl:if test\u003d\"dynamic-metadata[name\u003d\u0027Posted By\u0027]/value !\u003d \u0027\u0027\"\u003e\r\n\t\t\t\t\t\t\u003cxsl:value-of select\u003d\"dynamic-metadata[name\u003d\u0027Posted By\u0027]/value\"/\u003e\u003cbr/\u003e\r\n\t\t\t\t\t\u003c/xsl:if\u003e\r\n\t\t\t\t\u003c/li\u003e\r\n\t\t\t\u003c/xsl:otherwise\u003e\r\n\t\t\u003c/xsl:choose\u003e\r\n\t\u003c/xsl:template\u003e\r\n\t\r\n\t\u003cxsl:template match\u003d\"system-symlink\"\u003e\r\n\t\t\u003cxsl:choose\u003e\r\n\t\t\t\u003cxsl:when test\u003d\"@current\u003d\u0027true\u0027\"\u003e\r\n         \u003c/xsl:when\u003e\r\n\t\t\t\u003cxsl:otherwise\u003e\r\n\t\t\t\t\u003cli\u003e\r\n\t\t\t\t\t\u003ca class\u003d\"navlefttitle\"\u003e\r\n\t\t\t\t\t\t\u003cxsl:attribute name\u003d\"href\"\u003e\u003cxsl:value-of select\u003d\"link\"/\u003e\u003c/xsl:attribute\u003e\r\n\t\t\t\t\t\t\u003cxsl:value-of select\u003d\"name\"/\u003e\r\n\t\t\t\t\t\u003c/a\u003e\r\n\t\t\t\t\t\u003cxsl:if test\u003d\"summary\"\u003e\r\n\t\t\t\t\t\t\u0026nbsp;\u003cxsl:value-of select\u003d\"summary\"/\u003e\u003cbr/\u003e\r\n\t\t\t\t\t\u003c/xsl:if\u003e\r\n\t\t\t\t\u003c/li\u003e\r\n\t\t\t\u003c/xsl:otherwise\u003e\r\n\t\t\u003c/xsl:choose\u003e\r\n\t\u003c/xsl:template\u003e\r\n\t\r\n\t\u003cxsl:template name\u003d\"getExtension\"\u003e\r\n\t\t\u003cxsl:param name\u003d\"path\"/\u003e\r\n\t\t\u003cxsl:choose\u003e\r\n\t\t\t\u003cxsl:when test\u003d\"contains($path,\u0027.\u0027)\"\u003e\r\n\t\t\t\t\u003cxsl:call-template name\u003d\"getExtension\"\u003e\r\n\t\t\t\t\t\u003cxsl:with-param name\u003d\"path\"\u003e\r\n\t\t\t\t\t\t\u003cxsl:value-of select\u003d\"substring-after($path,\u0027.\u0027)\"/\u003e\r\n\t\t\t\t\t\u003c/xsl:with-param\u003e\r\n\t\t\t\t\u003c/xsl:call-template\u003e\r\n\t\t\t\u003c/xsl:when\u003e\r\n\t\t\t\u003cxsl:otherwise\u003e\r\n\t\t\t\t\u003cxsl:value-of select\u003d\"$path\"/\u003e\r\n\t\t\t\u003c/xsl:otherwise\u003e\r\n\t\t\u003c/xsl:choose\u003e\r\n\t\u003c/xsl:template\u003e\r\n\u003c/xsl:stylesheet\u003e",
+      "parentFolderId":"fd2791df8b7f08560159f3f0e8c463af",
+      "parentFolderPath":"formats/index",
+      "lastModifiedDate":"Jan 23, 2018 10:50:57 AM",
+      "lastModifiedBy":"wing",
+      "createdDate":"Aug 6, 2012 2:17:17 PM",
+      "createdBy":"admin",
+      "path":"formats/index/folder summary",
+      "siteId":"fd27691f8b7f08560159f3f02754e61d",
+      "siteName":"_common",
+      "name":"folder summary",
+      "id":"fd27c1988b7f08560159f3f012c360e7"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

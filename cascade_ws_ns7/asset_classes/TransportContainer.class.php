@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 6/30/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
@@ -74,18 +75,25 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/transport_container.php">transport_container.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>
-{ "asset":{
+<pre>http://mydomain.edu:1234/api/v1/read/transportcontainer/28496b318b7ffe8343b94c28cf0ffabb
+
+{
+  "asset":{
     "transportContainer":{
       "children":[],
-      "parentContainerId":"f7a963357f0000012693e3d98d968254",
+      "parentContainerId":"0fa6f7e98b7ffe8343b94c28a1414bed",
       "parentContainerPath":"/",
-      "path":"Transport Container",
-      "siteId":"f7a963087f0000012693e3d9932e44ba",
-      "siteName":"SUNY Upstate",
-      "name":"Transport Container",
-      "id":"e3b0b7247f00000118d3acfc42c96feb"}},
-  "success":true
+      "path":"Test Transport Container",
+      "siteId":"0fa6f6f18b7ffe8343b94c28251e132e",
+      "siteName":"about-test",
+      "name":"Test Transport Container",
+      "id":"28496b318b7ffe8343b94c28cf0ffabb"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

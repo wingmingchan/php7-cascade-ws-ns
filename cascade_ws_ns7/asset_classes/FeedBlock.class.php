@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 12/27/2017 Updated documentation.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -112,28 +113,37 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/feed_block.php">feed_block.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
-  "feedBlock":{
-    "feedURL":"http://www.upstate.edu/news/",
-    "expirationFolderRecycled":false,
-    "metadataSetId":"358be6af8b7ffe83164c9314f9a3c1a6",
-    "metadataSetPath":"_common_assets:Block",
-    "metadata":{
-      "dynamicFields":[ {
-        "name":"macro",
-        "fieldValues":[ { "value":"" } ] } ] },
-    "parentFolderId":"1f22ab188b7ffe834c5fe91eed1a064a",
-    "parentFolderPath":"_cascade/blocks/feed",
-    "lastModifiedDate":"Sep 12, 2016 12:01:57 PM",
-    "lastModifiedBy":"wing",
-    "createdDate":"Sep 12, 2016 12:01:57 PM",
-    "createdBy":"wing",
-    "path":"_cascade/blocks/feed/hannonhill-sandbox-wing-asset",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"hannonhill-sandbox-wing-asset",
-    "id":"1f22332a8b7ffe834c5fe91e33ecd4c7"}},
-  "success":true
+<pre>http://mydomain.edu:1234/api/v1/read/block_FEED/c12d93f48b7ffe83129ed6d8b74902e1
+
+{
+  "asset":{
+    "feedBlock":{
+      "feedURL":"http://www.upstate.edu/web-services/_extra/internal-nav.php",
+      "expirationFolderRecycled":false,
+      "metadataSetId":"c12dd0738b7ffe83129ed6d86580d804",
+      "metadataSetPath":"Default",
+      "metadata":{
+        "author":"Wing"
+      },
+      "reviewOnSchedule":false,
+      "reviewEvery":60,
+      "parentFolderId":"c12dcf268b7ffe83129ed6d81d964c24",
+      "parentFolderPath":"_extra",
+      "lastModifiedDate":"Jan 23, 2018 8:45:20 AM",
+      "lastModifiedBy":"wing",
+      "createdDate":"Nov 15, 2017 2:35:10 PM",
+      "createdBy":"wing",
+      "path":"_extra/internal-nav-feed",
+      "siteId":"c12d8c498b7ffe83129ed6d81ea4076a",
+      "siteName":"formats",
+      "name":"internal-nav-feed",
+      "id":"c12d93f48b7ffe83129ed6d8b74902e1"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

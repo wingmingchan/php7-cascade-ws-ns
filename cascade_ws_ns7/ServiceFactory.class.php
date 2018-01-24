@@ -78,11 +78,11 @@ $service  = aohs\ServiceFactory::getService( $type, $url, $username, $password )
         }
         elseif( $type === AssetOperationHandlerService::REST_STRING )
         {
-			return new AssetOperationHandlerServiceRest(
-				$type, $url, 
-				( object )[ 'u' => $username, 'p' => $password,
-					'authInContent' => $authInContent ],
-				$context );
+            return new AssetOperationHandlerServiceRest(
+                $type, $url, 
+                ( object )[ 'u' => $username, 'p' => $password,
+                    'authInContent' => $authInContent ],
+                $context );
         }
     }
 }

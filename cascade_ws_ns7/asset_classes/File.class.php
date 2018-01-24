@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 1/3/2018 Added code to test for NULL.
   * 9/8/2017 Fixed a bug in setText.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -133,30 +134,41 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/file.php">file.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>
-{ "asset":{
+<pre>http://mydomain.edu:1234/api/v1/read/file/0fbcfbcb8b7ffe8343b94c28fe1f07e7
+
+{
+  "asset":{
     "file":{
-      "data":[-1,...-39],
+      "text":"@media only print {\r\n\r\n@page{size: landscape}\r\n\r\nbody{
+width:100%}",
+      "data":[...],
       "rewriteLinks":false,
       "maintainAbsoluteLinks":false,
       "shouldBePublished":true,
       "shouldBeIndexed":true,
       "expirationFolderRecycled":false,
-      "metadataSetId":"9c8883aa7f00000140b4daeab7c5079c",
+      "metadataSetId":"0fa6f6f08b7ffe8343b94c28a0eaa566",
       "metadataSetPath":"Default",
-      "metadata":{"displayName":"PreviewSlide.jpg"},
-      "parentFolderId":"a226b81c7f0000011d450d2ac664948d",
-      "parentFolderPath":"suny-upstate",
-      "lastModifiedDate":"May 13, 2016 10:51:15 AM",
-      "lastModifiedBy":"david",
-      "createdDate":"May 13, 2016 10:51:15 AM",
-      "createdBy":"david",
-      "path":"suny-upstate/PreviewSlide.jpg",
-      "siteId":"9c8883d07f00000140b4daea7170b336",
-      "siteName":"POPs",
-      "name":"PreviewSlide.jpg",
-      "id":"aad0905d7f0000017b71f4bcf6283903"}},
-  "success":true
+      "metadata":{},
+      "reviewOnSchedule":false,
+      "reviewEvery":0,
+      "parentFolderId":"0fb201648b7ffe8343b94c28dc10ad7c",
+      "parentFolderPath":"_extra",
+      "lastModifiedDate":"Jan 23, 2018 9:42:13 AM",
+      "lastModifiedBy":"wing",
+      "createdDate":"Jan 19, 2018 1:44:58 PM",
+      "createdBy":"wing",
+      "path":"_extra/style.css",
+      "siteId":"0fa6f6f18b7ffe8343b94c28251e132e",
+      "siteName":"about-test",
+      "name":"style.css",
+      "id":"0fbcfbcb8b7ffe8343b94c28fe1f07e7"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

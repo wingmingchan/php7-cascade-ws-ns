@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 1/5/2018 Updated documentation.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/15/2017 Removed all methods related to configurations per Cascade 8.4.
@@ -55,13 +56,22 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/group.php">group.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
-  "group":{
-    "groupName":"22q",
-    "users":"marrinae",
-    "roles":"Default" } },
-  "success":true
-}</pre>
+<pre>http://mydomain.edu:1234/api/v1/read/group/22q
+
+{
+  "asset":{
+    "group":{
+      "groupName":"22q",
+      "users":"marrinae",
+      "roles":"Default"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
+}
+</pre>
 </postscript>
 </documentation>
 */
@@ -208,10 +218,10 @@ class Group extends Asset
 */
     public function getRole() : string
     {
-    	if( isset( $this->getProperty()->role ) )
-        	return $this->getProperty()->role;
+        if( isset( $this->getProperty()->role ) )
+            return $this->getProperty()->role;
         elseif( isset( $this->getProperty()->roles ) )
-        	return $this->getProperty()->roles;
+            return $this->getProperty()->roles;
     }
     
 /**

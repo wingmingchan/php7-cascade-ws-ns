@@ -1052,34 +1052,34 @@ The input string should have the following format: <code>"yyyy-mm-ddThh:mm:ss"</
         }
         else if( $count == 1 )
         {
-        	if( $this->service->isSoap() )
-        	{
-            	$obj->dynamicFields = new \stdClass();
-            	$obj->dynamicFields->dynamicField =
-            		$this->dynamic_fields[0]->toStdClass();
+            if( $this->service->isSoap() )
+            {
+                $obj->dynamicFields = new \stdClass();
+                $obj->dynamicFields->dynamicField =
+                    $this->dynamic_fields[0]->toStdClass();
             }
             elseif( $this->service->isRest() )
             {
-            	$obj->dynamicFields = array( $this->dynamic_fields[0]->toStdClass() );
+                $obj->dynamicFields = array( $this->dynamic_fields[0]->toStdClass() );
             }
         }
         else
         {
-        	if( $this->service->isSoap() )
-        	{
-            	$obj->dynamicFields = new \stdClass();
-            	$obj->dynamicFields->dynamicField = array();
+            if( $this->service->isSoap() )
+            {
+                $obj->dynamicFields = new \stdClass();
+                $obj->dynamicFields->dynamicField = array();
             }
             elseif( $this->service->isRest() )
-            	$obj->dynamicFields = array();
+                $obj->dynamicFields = array();
             
             for( $i = 0; $i < $count; $i++ )
             {
-            	if( $this->service->isSoap() )
-                	$obj->dynamicFields->dynamicField[] = 
-                    	$this->dynamic_fields[ $i ]->toStdClass();
+                if( $this->service->isSoap() )
+                    $obj->dynamicFields->dynamicField[] = 
+                        $this->dynamic_fields[ $i ]->toStdClass();
                 elseif( $this->service->isRest() )
-                	$obj->dynamicFields[] = $this->dynamic_fields[ $i ]->toStdClass();
+                    $obj->dynamicFields[] = $this->dynamic_fields[ $i ]->toStdClass();
             }
         }
         

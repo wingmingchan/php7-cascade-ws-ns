@@ -26,11 +26,11 @@ class EvalUtility
 <documentation><description><p>The constructor.</p></description>
 </documentation>
 */
-	public function __construct()
+    public function __construct()
     {
-    	/* empty constructor */
-	}
-	
+        /* empty constructor */
+    }
+    
 /**
 <documentation><description><p>Calls <code>DebugUtility::dump</code>.</p></description>
 <example>$eval->dump( $asset );</example>
@@ -38,11 +38,11 @@ class EvalUtility
 <exception></exception>
 </documentation>
 */
-	public function dump( $obj )
-	{
-		DebugUtility::dump( $obj );
-		return $this;
-	}
+    public function dump( $obj )
+    {
+        DebugUtility::dump( $obj );
+        return $this;
+    }
 
 /**
 <documentation><description><p>Calls <code>XMLUtility::replaceBrackets</code>.</p></description>

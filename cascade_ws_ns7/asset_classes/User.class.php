@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 1/3/2018 Added code to test for NULL.
   * 9/14/2017 Added getLdapDN.
   * 6/30/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -51,21 +52,24 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/user.php">user.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>
-{ "asset":{
+<pre>http://mydomain.edu:1234/api/v1/read/user/wing
+
+{
+  "asset":{
     "user":{
-      "username":"admin",
-      "fullName":"CMS Administrator",
-      "email":"admin@site.com",
+      "username":"wing",
+      "email":"wing",
       "authType":"normal",
       "password":"fk3*h\u0026_sd%^#^!ew",
       "enabled":true,
-      "groups":"ALL;Administrators",
-      "defaultGroup":"Administrators",
-      "roles":"Administrator",
-      "defaultSiteId":"9cdfcef17f0000017046c78b5bee4e6b",
-      "defaultSiteName":"Bradley Wagner University - example.edu" } },
-  "success":true
+      "groups":"Administrators",
+      "roles":"Administrator"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

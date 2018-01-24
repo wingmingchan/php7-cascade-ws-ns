@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 6/30/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
@@ -110,46 +111,50 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/text_block.php">text_block.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>
-{ "asset":{
+<pre>http://mydomain.edu:1234/api/v1/read/block_TEXT/089c28d98b7ffe83785cac8a79fe2145
+
+{
+  "asset":{
     "textBlock":{
-      "text":"Some text here.",
+      "text":"My new text block content",
       "expirationFolderRecycled":false,
-      "metadataSetId":"45a6e8db7f00000178d6a41af950de9e",
-      "metadataSetPath":"Block",
+      "metadataSetId":"618861da8b7ffe8377b637e8ad3dd499",
+      "metadataSetPath":"_brisk:Block",
       "metadata":{
-        "displayName":"",
-        "title":"",
-        "summary":"",
-        "teaser":"",
-        "keywords":"",
-        "metaDescription":"",
-        "author":"",
+        "author":null,
+        "displayName":null,
+        "endDate":null,
+        "keywords":null,
+        "metaDescription":null,
+        "reviewDate":null,
+        "startDate":null,
+        "summary":null,
+        "teaser":null,
+        "title":null,
         "dynamicFields":[ {
           "name":"macro",
-          "fieldValues":[ {
-            "value":"processTextBlock" } ]
-          },
-          {
-            "name":"dummy",
-            "fieldValues":[{
-              "value":"dummy" } ]
-          } ]
+          "fieldValues":[]
+        } ]
       },
-      "parentFolderId":"45a78dc77f00000178d6a41a7cd3b6b2",
-      "parentFolderPath":"blocks",
-      "lastModifiedDate":"Dec 28, 2016 8:40:19 AM",
+      "reviewOnSchedule":false,
+      "reviewEvery":0,
+      "parentFolderId":"c12dce3c8b7ffe83129ed6d8f4f9b820",
+      "parentFolderPath":"_cascade\/blocks",
+      "lastModifiedDate":"Jan 23, 2018 8:20:41 AM",
       "lastModifiedBy":"wing",
-      "createdDate":"Dec 28, 2016 8:39:21 AM",
+      "createdDate":"Nov 29, 2017 11:28:59 AM",
       "createdBy":"wing",
-      "path":"blocks/text",
-      "siteId":"3e15e3fe0a00016b00677c0a42ef3909",
-      "siteName":"wing",
-      "name":"text",
-      "id":"45a81b127f00000178d6a41acb6004f7"
+      "path":"_cascade\/blocks\/hello",
+      "siteId":"c12d8c498b7ffe83129ed6d81ea4076a",
+      "siteName":"formats",
+      "name":"hello",
+      "id":"089c28d98b7ffe83785cac8a79fe2145"
     }
   },
-  "success":true
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

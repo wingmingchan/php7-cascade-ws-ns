@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 1/22/2018 Added code to pass in the $service object to the DynamicMetadataFieldDefinition class.
   * 1/3/2018 Added code to test for NULL.
   * 12/27/2017 Updated documentation.
@@ -148,107 +149,103 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/metadata_set.php">metadata_set.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>
-{ "asset":{
+<pre>http://mydomain.edu:1234/api/v1/read/metadataset/647e77e18b7f085600ae2282629d7ea0
+
+{
+  "asset":{
     "metadataSet":{
       "authorFieldRequired":false,
-      "authorFieldVisibility":"visible",
+      "authorFieldVisibility":"hidden",
       "descriptionFieldRequired":false,
-      "descriptionFieldVisibility":"visible",
-      "displayNameFieldRequired":false,
-      "displayNameFieldVisibility":"visible",
+      "descriptionFieldVisibility":"hidden",
+      "displayNameFieldRequired":true,
+      "displayNameFieldVisibility":"inline",
       "endDateFieldRequired":false,
-      "endDateFieldVisibility":"visible",
+      "endDateFieldVisibility":"hidden",
       "expirationFolderFieldRequired":false,
       "expirationFolderFieldVisibility":"visible",
       "keywordsFieldRequired":false,
-      "keywordsFieldVisibility":"visible",
+      "keywordsFieldVisibility":"hidden",
       "reviewDateFieldRequired":false,
-      "reviewDateFieldVisibility":"visible",
+      "reviewDateFieldVisibility":"hidden",
       "startDateFieldRequired":false,
-      "startDateFieldVisibility":"visible",
+      "startDateFieldVisibility":"hidden",
       "summaryFieldRequired":false,
-      "summaryFieldVisibility":"visible",
+      "summaryFieldVisibility":"hidden",
       "teaserFieldRequired":false,
-      "teaserFieldVisibility":"visible",
+      "teaserFieldVisibility":"hidden",
       "titleFieldRequired":false,
-      "titleFieldVisibility":"visible",
-      "dynamicMetadataFieldDefinitions":[ 
-      { 
-        "name":"text",
-        "label":"Text",
-        "fieldType":"text",
+      "titleFieldVisibility":"hidden",
+      "dynamicMetadataFieldDefinitions":[
+      {
+        "name":"exclude-from-menu-bar",
+        "label":"Exclude from Menu Bar",
+        "fieldType":"checkbox",
         "required":false,
-        "visibility":"visible",
-        "possibleValues":[]
+        "visibility":"inline",
+        "possibleValues":[
+        {
+          "value":"Yes",
+          "selectedByDefault":false
+        } ]
       },
       {
-        "name":"radio",
-        "label":"Radio",
+        "name":"displayed-as-submenu",
+        "label":"Display As Submenu",
+        "fieldType":"checkbox",
+        "required":false,
+        "visibility":"inline",
+        "possibleValues":[
+        {
+          "value":"Yes",
+          "selectedByDefault":false
+        } ]
+      },
+      {
+        "name":"pdf-icon",
+        "label":"PDF Icon",
+        "fieldType":"checkbox",
+        "required":false,
+        "visibility":"inline",
+        "possibleValues":[
+        {
+          "value":"Yes",
+          "selectedByDefault":false
+        } ]
+      },
+      {
+        "name":"other-icon",
+        "label":"Other Icon",
         "fieldType":"radio",
         "required":false,
-        "visibility":"visible",
-        "possibleValues":[ 
+        "visibility":"inline",
+        "possibleValues":[
         {
-          "value":"yes",
-          "selectedByDefault":true },
+          "value":"None",
+          "selectedByDefault":true
+        },
         {
-          "value":"no",
-          "selectedByDefault":false } ]
-      },
-      {
-        "name":"dropdown",
-        "label":"Dropdown",
-        "fieldType":"dropdown",
-        "required":false,
-        "visibility":"visible",
-        "possibleValues":[ 
+          "value":"External",
+          "selectedByDefault":false
+        },
         {
-          "value":"Option 1",
-          "selectedByDefault":false },
-        {
-          "value":"Option 2",
-          "selectedByDefault":false } ] 
-      },
-      {
-        "name":"checkbox",
-        "label":"Checkbox",
-        "fieldType":"checkbox",
-        "required":true,
-        "visibility":"visible",
-        "possibleValues":[ 
-        {
-          "value":"This",
-          "selectedByDefault":true },
-        {
-          "value":"That",
-          "selectedByDefault":false } ] 
-      },
-      {
-        "name":"multiselect",
-        "label":"Multiselect",
-        "fieldType":"multiselect",
-        "required":false,
-        "visibility":"visible",
-        "possibleValues":[ 
-        {
-          "value":"One",
-          "selectedByDefault":false },
-        {
-          "value":"Two",
-          "selectedByDefault":false },
-        {
-          "value":"Three",
-          "selectedByDefault":false } ]
-        } ],
-        "parentContainerId":"f7a963417f0000012693e3d9d1302ce2",
-        "parentContainerPath":"/",
-        "path":"Block",
-        "siteId":"f7a963087f0000012693e3d9932e44ba",
-        "siteName":"SUNY Upstate",
-        "name":"Block",
-        "id":"e39d38037f00000118d3acfc8aff7434" } },
-  "success":true
+          "value":"Intra",
+          "selectedByDefault":false
+        } ]
+      } ],
+      "parentContainerId":"647db3ab8b7f085600ae2282d55a5b6d",
+      "parentContainerPath":"Test Metadata Set Container",
+      "path":"Test Metadata Set Container/External Link",
+      "siteId":"fd27691f8b7f08560159f3f02754e61d",
+      "siteName":"_common",
+      "name":"External Link",
+      "id":"647e77e18b7f085600ae2282629d7ea0"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

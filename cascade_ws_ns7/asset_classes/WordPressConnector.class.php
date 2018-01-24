@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 6/30/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
@@ -58,7 +59,7 @@ wordPressConnector
   verifiedDate
   connectorParameters (array)
   connectorContentTypeLinks (array)
-  	stdClass
+      stdClass
       contentTypeId
       contentTypePath
       pageConfigurationId
@@ -92,30 +93,44 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/wp_connector.php">wp_connector.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
-  "wordPressConnector":{
-    "auth1":"wing",
-    "auth2":"kf4*IG_ds%^#^!we",
-    "url":"blogs.upstate.edu",
-    "verified":false,
-    "connectorParameters":[],
-    "connectorContentTypeLinks":[ {
-      "contentTypeId":"1f2238f48b7ffe834c5fe91e0baabfc7",
-      "contentTypePath":"article_old",
-      "pageConfigurationId":"d7b67e658b7f085600a0fcdc6767c5fe",
-      "pageConfigurationName":"_common:Desktop",
-      "connectorContentTypeLinkParams":[ { 
-        "name":"Metadata mapping for categories" },
-        {"name":"Metadata mapping for tags" } ] } ],
-    "parentContainerId":"03dbe3628b7ffe8339ce5d132b740004",
-    "parentContainerPath":"Test Connector Container",
-    "path":"Test Connector Container/Word Press",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"Word Press",
-    "id":"f95e2b688b7ffe8339ce5d131397b292"}},
-  "success":true
-}</pre>
+<pre>http://mydomain.edu:1234/api/v1/read/wordpressconnector/243c73ba8b7ffe8343b94c28ebf34eb1
+
+{
+  "asset":{
+    "wordPressConnector":{
+      "auth2":"kf4*IG_ds%^#^!we",
+      "url":"http://www.upstate.edu/cardiacsurgery-dev",
+      "verified":false,
+      "connectorParameters":[],
+      "connectorContentTypeLinks":[
+      {
+        "contentTypeId":"d7b9363f8b7f085600a0fcdc8f82a7a6",
+        "contentTypePath":"_common:3 Columns",
+        "pageConfigurationId":"d7b67e658b7f085600a0fcdc6767c5fe",
+        "pageConfigurationName":"_common:Desktop",
+        "connectorContentTypeLinkParams":[
+          {
+            "name":"Metadata mapping for categories"
+          },
+          {
+            "name":"Metadata mapping for tags"
+          } ]
+      } ],
+      "parentContainerId":"2436012e8b7ffe8343b94c2803783fb1",
+      "parentContainerPath":"Test Connector Container",
+      "path":"Test Connector Container/wp",
+      "siteId":"0fa6f6f18b7ffe8343b94c28251e132e",
+      "siteName":"about-test",
+      "name":"wp",
+      "id":"243c73ba8b7ffe8343b94c28ebf34eb1"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
+}
+</pre>
 </postscript>
 </documentation>
 */

@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 1/3/2018 Added code to test for NULL.
   * 9/14/2017 Added getExtensionsToStrip and setExtensionsToStrip.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -72,25 +73,35 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/destination.php">destination.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
-  "destination":{
-    "parentContainerId":"1f2178198b7ffe834c5fe91eafd5fd78",
-    "parentContainerPath":"/",
-    "transportId":"ec1098338b7ffe8330d802d7b038cf35",
-    "transportPath":"_common:webapp-cascade8",
-    "directory":"cascade-admin",
-    "enabled":true,
-    "checkedByDefault":true,
-    "publishASCII":false,
-    "usesScheduledPublishing":false,
-    "sendReportOnErrorOnly":false,
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"webapp",
-    "id":"1f2239578b7ffe834c5fe91ee9cac23f" } },
-  "success":true
+<pre>http://mydomain.edu:1234/api/v1/read/destination/c12dad828b7ffe83129ed6d81fc31265
+
+{
+  "asset":{
+    "destination":{
+      "parentContainerId":"c12d918b8b7ffe83129ed6d80a701fef",
+      "parentContainerPath":"/",
+      "transportId":"2844531b8b7ffe8343b94c28ccbfc7f7",
+      "transportPath":"about-test:ftp",
+      "applicableGroups":"Administrators",
+      "directory":"formats",
+      "enabled":true,
+      "checkedByDefault":true,
+      "publishASCII":false,
+      "usesScheduledPublishing":false,
+      "sendReportOnErrorOnly":false,
+      "siteId":"c12d8c498b7ffe83129ed6d81ea4076a",
+      "siteName":"formats",
+      "webUrl":"http://web.upstate.edu/formats","name":"formats-web",
+      "id":"c12dad828b7ffe83129ed6d81fc31265"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
-</pre></postscript>
+</pre>
+</postscript>
 </documentation>
 */
 class Destination extends ScheduledPublishing

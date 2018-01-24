@@ -129,7 +129,7 @@ class information.</p></description>
                 S_CODE . self::getSignature( $method ) . E_CODE .
                 self::getMethodXmlValue( $obj, $method->getName(), "description", "", "", $method ) .
                 self::getMethodXmlValue( $obj, $method->getName(), "example",
-                	"<p>Example:</p>" .
+                    "<p>Example:</p>" .
                     S_PRE, E_PRE, $method, false ) .
                 E_LI;
         }
@@ -677,11 +677,11 @@ method signatures.</p></description>
                             }
                             else
                             {
-                            	if( $param_type == "string" && $default_value != "" && 
-                            	    !StringUtility::startsWith( $default_value, '"' ) )
-                            	{
-                            		$default_value = '"' . $default_value . '"';
-                            	}
+                                if( $param_type == "string" && $default_value != "" && 
+                                    !StringUtility::startsWith( $default_value, '"' ) )
+                                {
+                                    $default_value = '"' . $default_value . '"';
+                                }
                                 $method_info .= " = $default_value";
                             }
                         }
@@ -786,11 +786,11 @@ method signatures.</p></description>
                     
                     // added 6/14/2017
                     if( strpos( $str, '<?php' ) !== false )
-                    	$str = eval( ' ?>' . $str . '<?php ' );
+                        $str = eval( ' ?>' . $str . '<?php ' );
                     
                     if( is_null( $str ) )
-                    	$str = "";
-                    	
+                        $str = "";
+                        
                     return $str;
                 }
             }

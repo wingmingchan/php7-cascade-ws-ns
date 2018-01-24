@@ -1450,7 +1450,7 @@ chooser node, allowing users to choose a page.</p></description>
 normal text fields, and fields of type datetime and calendar, and returns the calling
 object. Inside the method <code>str_replace</code> is called. If an array of fully
 qualified identifiers is also passed in, then only those nodes will be affected.</p></description>
-<example>// affects all text nodes	
+<example>// affects all text nodes    
 $sd->replaceText( "Wonderful", "Amazing" )->getHostAsset()->edit();</example>
 <return-type>Property</return-type>
 <exception></exception>
@@ -1964,8 +1964,8 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
         
         if( $source->isTextNode( $id ) || $source->isWYSIWYG( $id ) )
         {
-        	try
-        	{
+            try
+            {
                 $target->setText( $id, $source->getText( $id ) );
                 
                 if( $target->getText( $id ) == NULL )
@@ -1973,7 +1973,7 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
             }
             catch( e\NoSuchValueException $e )
             {
-            	// do nothing to skip phantom values
+                // do nothing to skip phantom values
             }
         }
         elseif( $source->isAssetNode( $id ) )
@@ -1991,7 +1991,7 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
                         {
                             $target->setPage( $id, 
                                 $source->getService()->getAsset(
-                                	a\Page::TYPE, $page_id ) );
+                                    a\Page::TYPE, $page_id ) );
                         }
                         break;
                     case c\T::FILE:
@@ -2001,7 +2001,7 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
                         {
                             $target->setFile( $id, 
                                 $source->getService()->getAsset(
-                                	a\File::TYPE, $file_id ) );
+                                    a\File::TYPE, $file_id ) );
                         }
                         break;
                     case c\T::BLOCK:
@@ -2020,7 +2020,7 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
                         {
                             $target->setSymlink( $id,
                                 $source->getService()->getAsset(
-                                	a\Symlink::TYPE, $symlink_id ) );
+                                    a\Symlink::TYPE, $symlink_id ) );
                         }
                         break;
                     case c\T::PFS:

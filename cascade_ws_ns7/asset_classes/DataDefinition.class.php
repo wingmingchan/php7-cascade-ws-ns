@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 12/27/2017 Added REST code.
   * 6/20/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -157,20 +158,25 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/data_definition.php">data_definition.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
-  "dataDefinition":{
-    "xml":"\u003csystem-data-structure\u003e\r\n  \u003ctext multi-line\u003d\"true\"
-identifier\u003d\"Summary\" label\u003d\"Summary\"/\u003e\r\n  \u003ctext
-multi-line\u003d\"true\" identifier\u003d\"body\"
-label\u003d\"Body\"/\u003e\r\n\u003c/system-data-structure\u003e",
-    "parentContainerId":"1f2176588b7ffe834c5fe91eab1be7e7",
-    "parentContainerPath":"/",
-    "path":"article_new",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"article_new",
-    "id":"1f24084f8b7ffe834c5fe91e2e4d7950" } },
-  "success":true
+<pre>http://mydomain.edu:1234/api/v1/read/datadefinition/fd27a12d8b7f08560159f3f087ef9165
+
+{
+  "asset":{
+    "dataDefinition":{
+      "xml":"\u003csystem-data-structure\u003e\n   \u003ctext default\u003d\"See default region in individual configurations for more details. The information on this page is not changed directly but rather indirectly via an index block that is automatically updated.\" identifier\u003d\"placeholder\" label\u003d\"Placeholder - Block placed in DEFAULT region\" multi-line\u003d\"true\"/\u003e\n\u003c/system-data-structure\u003e",
+      "parentContainerId":"fd276f068b7f08560159f3f0bf02df08",
+      "parentContainerPath":"/",
+      "path":"Placeholder",
+      "siteId":"fd27691f8b7f08560159f3f02754e61d",
+      "siteName":"_common",
+      "name":"Placeholder",
+      "id":"fd27a12d8b7f08560159f3f087ef9165"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

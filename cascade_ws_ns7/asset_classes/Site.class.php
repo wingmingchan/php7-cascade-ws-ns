@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 1/12/2018 Added REST code to processRoleAssignments.
   * 1/11/2018 Added getSiteImproveUrl and setSiteImproveUrl.
   * 1/9/2018 Added removeNamingRuleAsset and clearNamingRuleAssets.
@@ -193,36 +194,40 @@ object(stdClass)#10 (34) {
 }
 </pre>
 <h2>JSON Dump</h2>
-<pre>
+<pre>http://mydomain.edu:1234/api/v1/read/site/0fa6f6f18b7ffe8343b94c28251e132e
+
 {
   "asset":{
     "site":{
-      "defaultMetadataSetId":"c12dd0738b7ffe83129ed6d86580d804",
+      "defaultMetadataSetId":"0fa6f6f08b7ffe8343b94c28a0eaa566",
       "defaultMetadataSetPath":"Default",
-      "siteAssetFactoryContainerId":"c12d932d8b7ffe83129ed6d8112a2203",
+      "siteAssetFactoryContainerId":"0fa6f7688b7ffe8343b94c284f318b63",
       "siteAssetFactoryContainerPath":"Default",
       "siteStartingPageRecycled":false,
-      "url":"http://www.upstate.edu/formats",
+      "url":"http://www.upstate.edu",
+      "siteImproveUrl":"https://www.google.com/",
       "recycleBinExpiration":"15",
-      "roleAssignments":[ {
-        "roleId":"8",
-        "roleName":"Site-Administrator"
+      "roleAssignments":[
+      {
+        "roleId":"271",
+        "roleName":"Test WS Site Role",
+        "users":"test-ws-user"
       } ],
       "usesScheduledPublishing":false,
       "sendReportOnErrorOnly":false,
-      "rootFolderId":"c12d8d0d8b7ffe83129ed6d86dd9f853",
-      "rootAssetFactoryContainerId":"c12d8dbe8b7ffe83129ed6d84cc7c0c7",
-      "rootPageConfigurationSetContainerId":"c12d8e0c8b7ffe83129ed6d885ebd843",
-      "rootContentTypeContainerId":"c12d90058b7ffe83129ed6d81395b93a",
-      "rootDataDefinitionContainerId":"c12d90528b7ffe83129ed6d87f0a0643",
-      "rootMetadataSetContainerId":"c12d909e8b7ffe83129ed6d849f35757",
-      "rootPublishSetContainerId":"c12d90e58b7ffe83129ed6d884612ddf",
-      "rootSiteDestinationContainerId":"c12d918b8b7ffe83129ed6d80a701fef",
-      "rootTransportContainerId":"c12d91d58b7ffe83129ed6d8c3e45888",
-      "rootWorkflowDefinitionContainerId":"c12d8cc78b7ffe83129ed6d8693cf2f7",
-      "rootConnectorContainerId":"c12d913d8b7ffe83129ed6d8e9bb4cbf",
-      "unpublishOnExpiration":false,
-      "linkCheckerEnabled":false,
+      "rootFolderId":"0fa6f6fc8b7ffe8343b94c282bf4e100",
+      "rootAssetFactoryContainerId":"0fa6f7378b7ffe8343b94c286d081809",
+      "rootPageConfigurationSetContainerId":"0fa6f77a8b7ffe8343b94c28f91e4b01",
+      "rootContentTypeContainerId":"0fa6f7c38b7ffe8343b94c28a89a74d7",
+      "rootDataDefinitionContainerId":"0fa6f7d08b7ffe8343b94c2859f282eb",
+      "rootMetadataSetContainerId":"0fa6f8108b7ffe8343b94c288b3ebd24",
+      "rootPublishSetContainerId":"0fa6f7de8b7ffe8343b94c2874a23606",
+      "rootSiteDestinationContainerId":"0fa6f7f58b7ffe8343b94c28d64b3e7e",
+      "rootTransportContainerId":"0fa6f7e98b7ffe8343b94c28a1414bed",
+      "rootWorkflowDefinitionContainerId":"0fa6f8038b7ffe8343b94c28997165ca",
+      "rootConnectorContainerId":"0fa6f7878b7ffe8343b94c28eecf4668",
+      "unpublishOnExpiration":true,
+      "linkCheckerEnabled":true,
       "externalLinkCheckOnPublish":false,
       "inheritDataChecksEnabled":true,
       "spellCheckEnabled":true,
@@ -230,14 +235,17 @@ object(stdClass)#10 (34) {
       "accessibilityCheckEnabled":true,
       "inheritNamingRules":false,
       "namingRuleCase":"LOWER",
-      "namingRuleSpacing":"HYPHEN",
-      "namingRuleAssets":["template", "file"],
-      "name":"formats",
-      "id":"c12d8c498b7ffe83129ed6d81ea4076a"
+      "namingRuleSpacing":"REMOVE",
+      "name":"about-test",
+      "id":"0fa6f6f18b7ffe8343b94c28251e132e"
     }
   },
-  "success":true
-}</pre>
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
+}
+</pre>
 </postscript>
 </documentation>
 */

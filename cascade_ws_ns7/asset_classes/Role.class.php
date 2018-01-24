@@ -6,6 +6,7 @@
   * Modification history:
   * 6/28/2017 Replaced static WSDL code with call to getXMLFragments.
   * Removed JSON dump. Updated documentation.
+  * 1/24/2018 Updated documentation.
   * 6/12/2017 Added WSDL.
   * 1/17/2017 Added JSON dump.
   * 5/28/2015 Added namespaces.
@@ -31,9 +32,9 @@ $doc_string = "<h2>Introduction</h2>
   name
   roleType
   globalAbilities
-    (36 properties, v.8.7.1)
+    (37 properties, v.8.8)
   siteAbilities
-    (52 properties, v.8.7.1)
+    (52 properties, v.8.8)
 </pre>
 <h2>Design Issues</h2>
 <p>Since there are too many methods (84 <code>get</code> and 84 <code>set</code> methods) involved here, I decide not to repeat these methods in various classes. Instead, I provide two <code>get</code> methods, i.e., <code>getGlobalAbilities()</code> and <code>getSiteAbilities()</code> in this class, returning a <code>GlobalAbilities</code> object and a <code>SiteAbilities</code> object respectively, allowing us to manipulate these two objects directly. Therefore, there are no <code>set</code> methods in this class.</p>
@@ -49,66 +50,127 @@ return $doc_string;
 ?>
 </description>
 <postscript><h2>JSON Dump</h2>
-<pre>
+<pre>http://mydomain.edu:1234/api/v1/read/role/10
+
 {
-  "roleType":"site",
-  "siteAbilities":
-  {
-    "bypassAllPermissionsChecks":false,
-    "uploadImagesFromWysiwyg":true,
-    "multiSelectCopy":true,
-    "multiSelectPublish":true,
-    "multiSelectMove":true,
-    "multiSelectDelete":true,
-    "editPageLevelConfigurations":true,
-    "editPageContentType":true,
-    "editDataDefinition":true,
-    "publishReadableHomeAssets":true,
-    "publishWritableHomeAssets":true,
-    "editAccessRights":false,
-    "viewVersions":true,
-    "activateDeleteVersions":true,
-    "accessAudits":false,
-    "bypassWorkflow":true,
-    "assignApproveWorkflowSteps":true,
-    "deleteWorkflows":true,
-    "breakLocks":true,
-    "assignWorkflowsToFolders":true,
-    "bypassAssetFactoryGroupsNewMenu":true,
-    "bypassDestinationGroupsWhenPublishing":true,
-    "bypassWorkflowDefintionGroupsForFolders":true,
-    "accessManageSiteArea":true,
-    "accessAssetFactories":true,
-    "accessConfigurationSets":true,
-    "accessDataDefinitions":true,
-    "accessMetadataSets":true,
-    "accessPublishSets":true,
-    "accessDestinations":true,
-    "accessTransports":true,
-    "accessWorkflowDefinitions":true,
-    "accessContentTypes":true,
-    "accessConnectors":true,
-    "publishReadableAdminAreaAssets":true,
-    "publishWritableAdminAreaAssets":true,
-    "importZipArchive":true,
-    "bulkChange":true,
-    "recycleBinViewRestoreUserAssets":true,
-    "recycleBinDeleteAssets":true,
-    "recycleBinViewRestoreAllAssets":true,
-    "moveRenameAssets":true,
-    "diagnosticTests":true,
-    "alwaysAllowedToToggleDataChecks":true,
-    "viewPublishQueue":true,
-    "reorderPublishQueue":true,
-    "cancelPublishJobs":true,
-    "sendStaleAssetNotifications":true,
-    "brokenLinkReportAccess":true,
-    "brokenLinkReportMarkFixed":true,
-    "bypassWysiwygEditorRestrictions":true,
-    "accessEditorConfigurations":true
+  "asset":{
+    "role":{
+      "roleType":"global",
+      "globalAbilities":{
+        "bypassAllPermissionsChecks":false,
+        "editAccessRights":false,
+        "accessAudits":false,
+        "accessSiteManagement":false,
+        "createSites":false,
+        "accessAllSites":true,
+        "viewSystemInfoAndLogs":false,
+        "forceLogout":false,
+        "diagnosticTests":false,
+        "accessSecurityArea":false,
+        "optimizeDatabase":false,
+        "syncLdap":false,
+        "configureLogging":false,
+        "searchingIndexing":false,
+        "accessConfiguration":false,
+        "editSystemPreferences":false,
+        "broadcastMessages":false,
+        "viewUsersInMemberGroups":false,
+        "viewAllUsers":false,
+        "createUsers":false,
+        "deleteUsersInMemberGroups":false,
+        "deleteAllUsers":false,
+        "viewMemberGroups":false,
+        "viewAllGroups":false,
+        "createGroups":false,
+        "deleteMemberGroups":false,
+        "accessRoles":false,
+        "createRoles":false,
+        "deleteAnyGroup":false,
+        "editAnyUser":false,
+        "editUsersInMemberGroups":false,
+        "editAnyGroup":false,
+        "editMemberGroups":false,
+        "changeIdentity":false,
+        "accessDefaultEditorConfiguration":false,
+        "databaseExportTool":false,
+        "modifyDictionary":false
+      },
+      "name":"Default",
+      "id":"10"
+    }
   },
-  "name":"Test WS Site Role",
-  "id":"23"
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
+}
+
+{
+  "asset":{
+    "role":{
+      "roleType":"site",
+      "siteAbilities":{
+        "bypassAllPermissionsChecks":true,
+        "uploadImagesFromWysiwyg":true,
+        "multiSelectCopy":true,
+        "multiSelectPublish":true,
+        "multiSelectMove":true,
+        "multiSelectDelete":true,
+        "editPageLevelConfigurations":true,
+        "editPageContentType":true,
+        "editDataDefinition":true,
+        "publishReadableHomeAssets":true,
+        "publishWritableHomeAssets":true,
+        "editAccessRights":true,
+        "viewVersions":true,
+        "activateDeleteVersions":true,
+        "accessAudits":true,
+        "bypassWorkflow":true,
+        "assignApproveWorkflowSteps":true,
+        "deleteWorkflows":true,
+        "breakLocks":true,
+        "assignWorkflowsToFolders":true,
+        "bypassAssetFactoryGroupsNewMenu":true,
+        "bypassDestinationGroupsWhenPublishing":true,
+        "bypassWorkflowDefintionGroupsForFolders":true,
+        "accessManageSiteArea":true,
+        "accessAssetFactories":true,
+        "accessConfigurationSets":true,
+        "accessDataDefinitions":true,
+        "accessMetadataSets":true,
+        "accessPublishSets":true,
+        "accessDestinations":true,
+        "accessTransports":true,
+        "accessWorkflowDefinitions":true,
+        "accessContentTypes":true,
+        "accessConnectors":true,
+        "publishReadableAdminAreaAssets":true,
+        "publishWritableAdminAreaAssets":true,
+        "importZipArchive":true,
+        "bulkChange":true,
+        "recycleBinViewRestoreUserAssets":true,
+        "recycleBinDeleteAssets":true,
+        "recycleBinViewRestoreAllAssets":true,
+        "moveRenameAssets":true,
+        "diagnosticTests":true,
+        "alwaysAllowedToToggleDataChecks":true,
+        "viewPublishQueue":true,
+        "reorderPublishQueue":true,
+        "cancelPublishJobs":true,
+        "sendStaleAssetNotifications":true,
+        "brokenLinkReportAccess":false,
+        "brokenLinkReportMarkFixed":false,
+        "bypassWysiwygEditorRestrictions":true,
+        "accessEditorConfigurations":true
+      },
+      "name":"My Test Site Role",
+      "id":"210"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 <h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/role.php">role.php</a></li></ul>

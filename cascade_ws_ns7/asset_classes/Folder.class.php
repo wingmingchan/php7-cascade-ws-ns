@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 1/2/2018 Added REST code to editWorkflowSettings.
   * 7/31/2017 Added getIncludeInStaleContent and setIncludeInStaleContent. Still a bug in 8.5.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -87,15 +88,14 @@ folder
   
 REST:
 folder
-  children (array)
-    stdClass
-      id
+  children (array of stdClass)
+    id
+    path
       path
-        path
-        siteId
-        siteName
-      type
-      recycled
+      siteId
+      siteName
+    type
+    recycled
   shouldBePublished
   shouldBeIndexed
   lastPublishedDate
@@ -116,12 +116,10 @@ folder
     summary
     teaser
     title
-    dynamicFields (array)
-      stdClass
-        name
-        fieldValues (array)
-          stdClass
-            value
+    dynamicFields (array of stdClass)
+      name
+      fieldValues (array of stdClass)
+        value
   parentFolderId
   parentFolderPath
   lastModifiedDate
@@ -147,58 +145,80 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/folder.php">folder.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>
-{ "asset":{
+<pre>http://mydomain.edu:1234/api/v1/read/folder/c12dce028b7ffe83129ed6d8fdc88b47
+
+{
+  "asset":{
     "folder":{
       "children":[ {
-        "id":"c4482f1f7f0000014d70316543f95810",
-        "path":{ "path":"suny-upstate/templates/RWD",
-          "siteId":"9c8883d07f00000140b4daea7170b336" },
-        "type":"template",
-        "recycled":false },
+        "id":"c12dce3c8b7ffe83129ed6d8f4f9b820",
+        "path":{
+          "path":"_cascade/blocks",
+          "siteId":"c12d8c498b7ffe83129ed6d81ea4076a"
+        },
+        "type":"folder",
+        "recycled":false
+      },
       {
-        "id":"c44960a07f0000014d70316501c2184a",
-        "path":{ "path":"suny-upstate/templates/",
-          "siteId":"9c8883d07f00000140b4daea7170b336" },
-        "type":"template",
-        "recycled":false },
+        "id":"462b39458b7ffe831131a6676b151f57",
+        "path":{
+          "path":"_cascade/formats",
+          "siteId":"c12d8c498b7ffe83129ed6d81ea4076a"
+        }
+        ,
+        "type":"folder",
+        "recycled":false
+      },
       {
-        "id":"c449b0ff7f0000014d703165d32ba6cd",
-        "path":{ "path":"suny-upstate/templates/",
-          "siteId":"9c8883d07f00000140b4daea7170b336" },
-        "type":"template",
-        "recycled":false },
-      {
-        "id":"c44a60887f0000014d7031654a242191",
-        "path":{ "path":"suny-upstate/templates/RWD",
-          "siteId":"9c8883d07f00000140b4daea7170b336" },
-        "type":"template",
-        "recycled":false } ],
-      "shouldBePublished":true,
-      "shouldBeIndexed":true,
+        "id":"c12ed4e58b7ffe83129ed6d8d7ef4a97",
+        "path":{
+          "path":"_cascade/setup",
+          "siteId":"c12d8c498b7ffe83129ed6d81ea4076a"
+        }
+        ,
+        "type":"format_SCRIPT",
+        "recycled":false
+      } ],
+      "includeInStaleContent":true,
+      "shouldBePublished":false,
+      "shouldBeIndexed":false,
       "expirationFolderRecycled":false,
-      "metadataSetId":"9c8883aa7f00000140b4daeab7c5079c",
-      "metadataSetPath":"Default",
+      "metadataSetId":"6188622e8b7ffe8377b637e84e639b54",
+      "metadataSetPath":"_brisk:Folder",
       "metadata":{
-        "displayName":"",
-        "title":"",
-        "summary":"",
-        "teaser":"",
-        "keywords":"",
-        "metaDescription":"",
-        "author":"" },
-      "parentFolderId":"a226b81c7f0000011d450d2ac664948d",
-      "parentFolderPath":"suny-upstate",
-      "lastModifiedDate":"May 18, 2016 9:15:24 AM",
+        "displayName":"_cascade",
+        "dynamicFields":[ {
+          "name":"exclude-from-menu",
+          "fieldValues":[]
+        },
+        {
+          "name":"exclude-from-left-folder-nav",
+          "fieldValues":[]
+        },
+        {
+          "name":"exclude-from-mobile-menu",
+          "fieldValues":[]
+        } ]
+      },
+      "reviewOnSchedule":false,
+      "reviewEvery":0,
+      "parentFolderId":"c12d8d0d8b7ffe83129ed6d86dd9f853",
+      "parentFolderPath":"/",
+      "lastModifiedDate":"Jan 23, 2018 9:22:11 AM",
       "lastModifiedBy":"wing",
-      "createdDate":"May 18, 2016 9:15:24 AM",
+      "createdDate":"Nov 15, 2017 2:35:25 PM",
       "createdBy":"wing",
-      "path":"suny-upstate/templates",
-      "siteId":"9c8883d07f00000140b4daea7170b336",
-      "siteName":"POPs",
-      "name":"templates",
-      "id":"c4389bc17f0000014d7031651f80292e" } },
-  "success":true
+      "path":"_cascade",
+      "siteId":"c12d8c498b7ffe83129ed6d81ea4076a",
+      "siteName":"formats",
+      "name":"_cascade",
+      "id":"c12dce028b7ffe83129ed6d8fdc88b47"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 12/27/2017 Added REST code and updated documentation.
   * 11/28/2017 Changed parent class to FolderContainedAsset.
   * 6/30/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -107,30 +108,39 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/template.php">template.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>
-{ "asset":{
+<pre>http://mydomain.edu:1234/api/v1/read/template/618863fc8b7ffe8377b637e865012e5d
+
+{
+  "asset":{
     "template":{
       "formatRecycled":false,
-      "pageRegions":[ {
+      "pageRegions":[
+      {
         "name":"DEFAULT",
         "blockRecycled":false,
         "noBlock":false,
         "formatRecycled":false,
         "noFormat":false,
-        "id":"f9193e647f00000118d3acfc1e28111c" } ],
-      "xml":"\u003csystem-region name\u003d\"DEFAULT\"/\u003e",
-      "parentFolderId":"f7a9630b7f0000012693e3d99c134cef",
-      "parentFolderPath":"/",
-      "lastModifiedDate":"Dec 13, 2016 11:52:10 AM",
-      "lastModifiedBy":"wing ming.chan",
-      "createdDate":"Dec 13, 2016 11:52:10 AM",
-      "createdBy":"wing ming.chan",
-      "path":"XML",
-      "siteId":"f7a963087f0000012693e3d9932e44ba",
-      "siteName":"SUNY Upstate",
-      "name":"XML",
-      "id":"f9193e647f00000118d3acfc223b5493"}},
-  "success":true
+        "id":"618863fc8b7ffe8377b637e88aa902ea"
+      }],
+      "xml":"\u003c!--#*doc\n\u003cdocumentation\u003e\n\u003ch2\u003eIntroduction\u003c/h2\u003e\n\u003cp\u003eThis is the only template defined in Brisk and used by all page types.\u003c/p\u003e\n\u003c/documentation\u003e\ndoc*###--\u003e\u003csystem-region name\u003d\"DEFAULT\"/\u003e",
+      "parentFolderId":"61885fb68b7ffe8377b637e84c00f48d",
+      "parentFolderPath":"core",
+      "lastModifiedDate":"Jan 24, 2018 11:06:30 AM",
+      "lastModifiedBy":"wing",
+      "createdDate":"Sep 8, 2017 8:48:02 AM",
+      "createdBy":"wing",
+      "path":"core/xml",
+      "siteId":"61885ac08b7ffe8377b637e83a86cca5",
+      "siteName":"_brisk",
+      "name":"xml",
+      "id":"618863fc8b7ffe8377b637e865012e5d"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

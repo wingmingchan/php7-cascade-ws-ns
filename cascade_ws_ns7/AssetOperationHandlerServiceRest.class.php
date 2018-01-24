@@ -206,7 +206,6 @@ u\DebugUtility::dump( $reply );
             }
             else
             {
-                
                 if( $this->auth_in_content === false )
                 {
                     $input_params[ 'http' ][ 'content' ] = json_encode( $params );
@@ -236,11 +235,8 @@ u\DebugUtility::dump( $reply );
                           'password' => $this->auth->p ] ] );
         }
         
+        //$entry[ "http-content" ] = $input_params[ 'http' ][ 'content' ];
         $this->commands[] = $entry;
-
-//u\DebugUtility::dump( $command );
-//u\DebugUtility::dump( $input_params );
-
 
         return json_decode(
             file_get_contents(
@@ -335,8 +331,6 @@ $doc_string .= "array(1) {
   array(2) {
     [\"command\"]=>
     string(136) \"https://mydomain.edu:1234/api/v1/checkOut/page/c12eb9978b7ffe83129ed6d80132aa29?u=wing&p=password\"
-    [\"params\"]=>
-    string(55) \"{\"id\":\"c12eb9978b7ffe83129ed6d80132aa29\",\"type\":\"page\"}\"
   }
 }";
 $doc_string .= "</pre>";
@@ -487,7 +481,7 @@ object(stdClass)#22 (2) {
   string(74) "java.lang.IllegalStateException: Expected BEGIN_ARRAY but was BEGIN_OBJECT"
 }
 */    
-		$command = $this->url . __function__;
+        $command = $this->url . __function__;
         
         if( $this->auth_in_content === false )
         {
@@ -682,9 +676,9 @@ $service->edit( $asset );
 <return-type>stdClass</return-type>
 </documentation>
 */    
-	public function edit( \stdClass $asset ) : \stdClass
+    public function edit( \stdClass $asset ) : \stdClass
     {
-    	$command = $this->url . __function__;
+        $command = $this->url . __function__;
         
         if( $this->auth_in_content === false )
         {
@@ -783,7 +777,7 @@ return $doc_string;
 */
     public function editPreference( string $name, string $value ) : \stdClass
     {
-    	$command = $this->url . __function__;
+        $command = $this->url . __function__;
         
         if( $this->auth_in_content === false )
         {
@@ -1264,7 +1258,7 @@ return $doc_string;
         string $workflowId, string $actionIdentifier, string $transitionComment=''
     ) : \stdClass
     {
-    	$command   = $this->url . __function__;
+        $command   = $this->url . __function__;
         
         if( $this->auth_in_content === false )
         {
@@ -1558,8 +1552,6 @@ $doc_string .= "array(1) {
   array(2) {
     [\"command\"]=>
     string(151) \"https://mydomain.edu:1234/api/v1/readWorkflowInformation/page/c12deeb18b7ffe83129ed6d85a5d3d95?u=wing&p=password\"
-    [\"params\"]=>
-    string(55) \"{\"id\":\"c12deeb18b7ffe83129ed6d85a5d3d95\",\"type\":\"page\"}\"
   }
 }";
 $doc_string .= "</pre>";
@@ -1595,8 +1587,6 @@ $doc_string .= "array(1) {
   array(2) {
     [\"command\"]=>
     string(150) \"https://mydomain.edu:1234/api/v1/readWorkflowSettings/folder/b70a87c38b7ffe8353cc17e9fe08ff77?u=wing&p=password\"
-    [\"params\"]=>
-    string(57) \"{\"id\":\"b70a87c38b7ffe8353cc17e9fe08ff77\",\"type\":\"folder\"}\"
   }
 }";
 $doc_string .= "</pre>";
@@ -1673,7 +1663,7 @@ return $doc_string;
 */
     public function search( \stdClass $searchInfo ) : \stdClass
     {
-    	$command = $this->url . __function__;
+        $command = $this->url . __function__;
         
         if( $this->auth_in_content === false )
         {
@@ -1709,7 +1699,7 @@ $service->sendMessage( $message );
 */
     public function sendMessage( \stdClass $message ) 
     {
-    	$command = $this->url . __function__;
+        $command = $this->url . __function__;
         
         if( $this->auth_in_content === false )
         {
@@ -1768,7 +1758,7 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
         string $newSiteName, int $max_wait_seconds=0 ) :
         \stdClass
     {
-    	$command   = $this->url . __function__;
+        $command   = $this->url . __function__;
         
         if( $this->auth_in_content === false )
         {
@@ -1798,10 +1788,10 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
             $command = $this->url .
                 "read/metadatasetcontainer/$newSiteName/%252f";
         
-			if( $this->auth_in_content === false )
-			{
-				$command .= $this->auth;
-			}
+            if( $this->auth_in_content === false )
+            {
+                $command .= $this->auth;
+            }
                 
             while( ( microtime( true ) - $start ) < $max_wait_seconds )
             {
@@ -1852,7 +1842,7 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
     
     private function performOperation( string $opName ) : \stdClass
     {
-    	$command = $this->url . $opName;
+        $command = $this->url . $opName;
         
         if( $this->auth_in_content === false )
         {

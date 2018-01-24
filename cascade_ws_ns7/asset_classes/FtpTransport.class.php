@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 9/18/2017 Added setProtocolAuthentication and removed other related methods for 8.6.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -55,6 +56,35 @@ return $doc_string;
 ?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/ftp_transport.php">ftp_transport.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>http://mydomain.edu:1234/api/v1/read/transport/2844531b8b7ffe8343b94c28ccbfc7f7
+
+{
+  "asset":{
+    "ftpTransport":{
+      "hostName":"server",
+      "port":1234,
+      "username":"wing",
+      "password":"kf4*IG_ds%^#^!we",
+      "privateKey":"kf4*IG_ds%^#^!we",
+      "directory":"about",
+      "doPASV":false,
+      "ftpProtocolType":"FTP",
+      "parentContainerId":"0fa6f7e98b7ffe8343b94c28a1414bed",
+      "parentContainerPath":"/",
+      "path":"ftp",
+      "siteId":"0fa6f6f18b7ffe8343b94c28251e132e",
+      "siteName":"about-test",
+      "name":"ftp",
+      "id":"2844531b8b7ffe8343b94c28ccbfc7f7"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
+}
+</pre>
 </postscript>
 </documentation>
 */

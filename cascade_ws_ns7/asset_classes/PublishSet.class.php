@@ -4,6 +4,8 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
+  * 1/24/2018 Added REST code to edit.
   * 6/28/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
@@ -135,28 +137,29 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/publish_set.php">publish_set.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>
-{ "asset":{
+<pre>http://mydomain.edu:1234/api/v1/read/publishset/28a960258b7ffe8343b94c282741f634
+
+{
+  "asset":{
     "publishSet":{
       "files":[],
-      "folders":[ {
-        "id":"f7a9630b7f0000012693e3d99c134cef",
-        "path":{
-          "path":"/",
-		  "siteId":"f7a963087f0000012693e3d9932e44ba" },
-          "type":"folder",
-          "recycled":false } ],
+      "folders":[],
       "pages":[],
       "usesScheduledPublishing":false,
       "sendReportOnErrorOnly":false,
-      "parentContainerId":"e3b3f79d7f00000118d3acfc87f7c51e",
-      "parentContainerPath":"Publish Set Container",
-      "path":"Publish Set Container/Publish Set",
-      "siteId":"f7a963087f0000012693e3d9932e44ba",
-      "siteName":"SUNY Upstate",
-      "name":"Publish Set",
-      "id":"e3b44aa47f00000118d3acfc4bb73848" } },
-  "success":true
+      "parentContainerId":"0952d9758b7ffe8339ce5d13a1ad5e0a",
+      "parentContainerPath":"Test Container",
+      "path":"Test Container/test",
+      "siteId":"fd27691f8b7f08560159f3f02754e61d",
+      "siteName":"_common",
+      "name":"test",
+      "id":"28a960258b7ffe8343b94c282741f634"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>
@@ -281,21 +284,45 @@ class PublishSet extends ScheduledPublishing
         
         if( $files_count == 0 )
         {
-            $publish_set->files = new \stdClass();
+            if( $this->getService()->isSoap() )
+            {
+                $publish_set->files = new \stdClass();
+            }
+            elseif( $this->getService()->isRest() )
+            {
+                $publish_set->files = array();
+            }
         }
         else if( $files_count == 1 )
         {
-            $publish_set->files->publishableAssetIdentifier = 
-                $this->files[ 0 ]->toStdClass();
+            if( $this->getService()->isSoap() )
+            {
+                $publish_set->files->publishableAssetIdentifier = 
+                    $this->files[ 0 ]->toStdClass();
+            }
+            elseif( $this->getService()->isRest() )
+            {
+                $publish_set->files = array( $this->files[ 0 ]->toStdClass() );
+            }
         }
         else
         {
-            $this->getProperty()->files->publishableAssetIdentifier = array();
+            if( $this->getService()->isSoap() )
+            {
+                $this->getProperty()->files->publishableAssetIdentifier = array();
+            }
             
             for( $i = 0; $i < $files_count; $i++ )
             {
-                $publish_set->files->publishableAssetIdentifier[] =
-                    $this->files[ $i ]->toStdClass();
+                if( $this->getService()->isSoap() )
+                {
+                    $publish_set->files->publishableAssetIdentifier[] =
+                        $this->files[ $i ]->toStdClass();
+                }
+                elseif( $this->getService()->isRest() )
+                {
+                    $this->getProperty()->files[] = $this->files[ $i ]->toStdClass();
+                }
             }
         }
     
@@ -303,21 +330,45 @@ class PublishSet extends ScheduledPublishing
         
         if( $folders_count == 0 )
         {
-            $publish_set->folders = new \stdClass();
+            if( $this->getService()->isSoap() )
+            {
+                $publish_set->folders = new \stdClass();
+            }
+            elseif( $this->getService()->isRest() )
+            {
+                $publish_set->folders = array();
+            }
         }
         else if( $folders_count == 1 )
         {
-            $publish_set->folders->publishableAssetIdentifier = 
-                $this->folders[ 0 ]->toStdClass();
+            if( $this->getService()->isSoap() )
+            {
+                $publish_set->folders->publishableAssetIdentifier = 
+                    $this->folders[ 0 ]->toStdClass();
+            }
+            elseif( $this->getService()->isRest() )
+            {
+                $publish_set->folders = array( $this->folders[ 0 ]->toStdClass() );
+            }
         }
         else
         {
-            $publish_set->folders->publishableAssetIdentifier = array();
+            if( $this->getService()->isSoap() )
+            {
+                $this->getProperty()->folders->publishableAssetIdentifier = array();
+            }
             
             for( $i = 0; $i < $folders_count; $i++ )
             {
-                $publish_set->folders->publishableAssetIdentifier[] =
-                    $this->folders[ $i ]->toStdClass();
+                if( $this->getService()->isSoap() )
+                {
+                    $publish_set->folders->publishableAssetIdentifier[] =
+                        $this->folders[ $i ]->toStdClass();
+                }
+                elseif( $this->getService()->isRest() )
+                {
+                    $this->getProperty()->folders[] = $this->folders[ $i ]->toStdClass();
+                }
             }
         }
     
@@ -325,21 +376,45 @@ class PublishSet extends ScheduledPublishing
         
         if( $pages_count == 0 )
         {
-            $publish_set->pages = new \stdClass();
+            if( $this->getService()->isSoap() )
+            {
+                $publish_set->pages = new \stdClass();
+            }
+            elseif( $this->getService()->isRest() )
+            {
+                $publish_set->pages = array();
+            }
         }
         else if( $pages_count == 1 )
         {
-            $publish_set->pages->publishableAssetIdentifier = 
-                $this->pages[ 0 ]->toStdClass();
+            if( $this->getService()->isSoap() )
+            {
+                $publish_set->pages->publishableAssetIdentifier = 
+                    $this->pages[ 0 ]->toStdClass();
+            }
+            elseif( $this->getService()->isRest() )
+            {
+                $publish_set->pages = array( $this->pages[ 0 ]->toStdClass() );
+            }
         }
         else
         {
-            $publish_set->pages->publishableAssetIdentifier = array();
+            if( $this->getService()->isSoap() )
+            {
+                $this->getProperty()->pages->publishableAssetIdentifier = array();
+            }
             
             for( $i = 0; $i < $pages_count; $i++ )
             {
-                $publish_set->pages->publishableAssetIdentifier[] =
-                    $this->pages[ $i ]->toStdClass();
+                if( $this->getService()->isSoap() )
+                {
+                    $publish_set->pages->publishableAssetIdentifier[] =
+                        $this->pages[ $i ]->toStdClass();
+                }
+                elseif( $this->getService()->isRest() )
+                {
+                    $this->getProperty()->pages[] = $this->pages[ $i ]->toStdClass();
+                }
             }
         }
 
@@ -359,15 +434,15 @@ class PublishSet extends ScheduledPublishing
             }
       
             if( !isset( $publish_set->publishIntervalHours ) ||
-            	is_null( $publish_set->publishIntervalHours ) )
+                is_null( $publish_set->publishIntervalHours ) )
                 unset( $publish_set->publishIntervalHours );
                 
             if( !isset( $publish_set->publishDaysOfWeek ) ||
-            	is_null( $publish_set->publishDaysOfWeek ) )
+                is_null( $publish_set->publishDaysOfWeek ) )
                 unset( $publish_set->publishDaysOfWeek );
                 
             if( !isset( $publish_set->cronExpression ) ||
-            	is_null( $publish_set->cronExpression ) )
+                is_null( $publish_set->cronExpression ) )
                 unset( $publish_set->cronExpression );
         }
 

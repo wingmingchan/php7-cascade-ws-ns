@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 12/27/2017 Updated documentation.
   * 6/30/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -112,25 +113,43 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/xml_block.php">xml_block.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
-  "xmlBlock":{
-    "xml":"...",
-    "expirationFolderRecycled":false,
-    "metadataSetId":"4dddf3e58b7f085600a0fcdc06afa7df",
-    "metadataSetPath":"_common:Default",
-    "metadata":{},
-    "parentFolderId":"1f22ab188b7ffe834c5fe91eed1a064a",
-    "parentFolderPath":"_cascade/blocks/feed",
-    "lastModifiedDate":"Sep 12, 2016 12:01:32 PM",
-    "lastModifiedBy":"wing",
-    "createdDate":"Sep 12, 2016 12:01:32 PM",
-    "createdBy":"wing",
-    "path":"_cascade/blocks/feed/xml",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"xml",
-    "id":"1f21d1ef8b7ffe834c5fe91e94c764d8"}},
-  "success":true
+<pre>http://mydomain.edu:1234/api/v1/read/block_XML/c12d969c8b7ffe83129ed6d8bf50e2db
+
+{
+  "asset":{
+    "xmlBlock":{
+      "xml":"\u003cscript\u003e\n    \u003ccode\u003e\n#chanwDisplayDocumentation( \"chanw_initialization\" \"core/library/velocity/chanw\" \"_brisk\" )\n    \u003c/code\u003e\n\u003c/script\u003e",
+      "expirationFolderRecycled":false,
+      "metadataSetId":"618861da8b7ffe8377b637e8ad3dd499",
+      "metadataSetPath":"_brisk:Block",
+      "metadata":
+      {
+        "dynamicFields":[ {
+          "name":"macro",
+          "fieldValues":[ {
+            "value":"chanwProcessScript"
+          } ]
+        } ]
+      },
+      "reviewOnSchedule":false,
+      "reviewEvery":0,
+      "parentFolderId":"c12dce7e8b7ffe83129ed6d8b2e9ddb0",
+      "parentFolderPath":"_cascade/blocks/script",
+      "lastModifiedDate":"Jan 23, 2018 9:03:48 AM",
+      "lastModifiedBy":"wing",
+      "createdDate":"Nov 15, 2017 2:35:11 PM",
+      "createdBy":"wing",
+      "path":"_cascade/blocks/script/test-macro",
+      "siteId":"c12d8c498b7ffe83129ed6d81ea4076a",
+      "siteName":"formats",
+      "name":"test-macro",
+      "id":"c12d969c8b7ffe83129ed6d8bf50e2db"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre></postscript>
 </documentation>

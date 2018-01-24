@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 12/28/2017 Added REST code and updated documentation.
   * 8/1/2017 Added getBlock.
   * 6/26/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -275,56 +276,204 @@ return $doc_string;
 
 </ul>
 <h2>JSON Dump</h2>
-<pre>
-{ "asset":{
-    "page":{
-      "contentTypeId":"c45a3de47f0000014d7031655feac983",
-      "contentTypePath":"suny-upstate/RWD",
-      "structuredData":{
-        "structuredDataNodes":[ {
-          "type":"text",
-          "identifier":"h1",
-          "text":"Wonderful!",
-          "recycled":false } ] },
-      "pageConfigurations":[ {
-        "name":"RWD",
+<pre>http://mydomain.edu:1234/api/v1/read/page/9e19b89f8b7ffe8353cc17e9c1ab52bb
+
+{
+  "asset":
+  {
+    "page":
+    {
+      "contentTypeId":"61885ed98b7ffe8377b637e8eabc34b0",
+      "contentTypePath":"_brisk:Page",
+      "structuredData":
+      {
+        "structuredDataNodes":[
+        {
+          "type":"group",
+          "identifier":"pre-main-group",
+          "structuredDataNodes":[
+          {
+            "type":"asset",
+            "identifier":"mul-pre-main-chooser",
+            "assetType":"block",
+            "recycled":false
+          } ],
+          "recycled":false
+        },
+        {
+          "type":"group",
+          "identifier":"main-group",
+          "structuredDataNodes":[
+          {
+            "type":"asset",
+            "identifier":"mul-pre-h1-chooser",
+            "assetType":"block",
+            "recycled":false
+          },
+          {
+            "type":"text",
+            "identifier":"h1",
+            "text":"Formats",
+            "recycled":false
+          },
+          {
+            "type":"asset",
+            "identifier":"mul-post-h1-chooser",
+            "assetType":"block",
+            "recycled":false
+          },
+          {
+            "type":"text",
+            "identifier":"float-pre-content-blocks-around-wysiwyg-content",
+            "text":"::CONTENT-XML-CHECKBOX::",
+            "recycled":false
+          },
+          {
+            "type":"text",
+            "identifier":"wysiwyg",
+            "text":"\u003cp\u003eFormats, especially Velocity formats, play a central role in the Standard Model. The architecture of the multiple-design master site relies heavily on formats. Here I want to document the processes of building and using library code. I also provide tutorials and documentation on various Java packages.\u003c/p\u003e",
+            "recycled":false
+          },
+          {
+            "type":"asset",
+            "identifier":"mul-post-wysiwyg-chooser",
+            "assetType":"block",
+            "recycled":false
+          } ],
+          "recycled":false
+        },
+        {
+          "type":"group",
+          "identifier":"post-main-group",
+          "structuredDataNodes":[
+          {
+            "type":"asset",
+            "identifier":"mul-post-main-chooser",
+            "assetType":"block",
+            "recycled":false
+          } ],
+          "recycled":false
+        },
+        {
+          "type":"group",
+          "identifier":"top-group",
+          "structuredDataNodes":[
+          {
+            "type":"asset",
+            "identifier":"mul-top-group-chooser",
+            "assetType":"block",
+            "recycled":false
+          } ],
+          "recycled":false
+        },
+        {
+          "type":"group",
+          "identifier":"bottom-group",
+          "structuredDataNodes":[
+          {
+            "type":"asset",
+            "identifier":"mul-bottom-group-chooser",
+            "assetType":"block",
+            "recycled":false
+          } ],
+          "recycled":false
+        },
+        {
+          "type":"group",
+          "identifier":"admin-group",
+          "structuredDataNodes":[
+          {
+            "type":"asset",
+            "identifier":"master-level-override",
+            "assetType":"block",
+            "recycled":false
+          },
+          {
+            "type":"asset",
+            "identifier":"page-level-override",
+            "blockId":"be0493ed8b7ffe833b19adb83da1d76f",
+        "blockPath":"_brisk:app/components/blocks/script/include-no-content-script",
+            "assetType":"block",
+            "recycled":false
+          } ],
+          "recycled":false
+        } ]
+      },
+      "pageConfigurations":[
+      {
+        "name":"Page",
         "defaultConfiguration":true,
-        "templateId":"c44a60887f0000014d7031654a242191",
-        "templatePath":"suny-upstate/templates/RWD",
+        "templateId":"618863fc8b7ffe8377b637e865012e5d",
+        "templatePath":"_brisk:core/xml",
+        "formatId":"618878dd8b7ffe8377b637e88e2153e9",
+        "formatPath":"_brisk:core/page_template",
         "formatRecycled":false,
-        "pageRegions":[ {
+        "pageRegions":[
+        {
           "name":"DEFAULT",
+          "blockId":"61885d428b7ffe8377b637e8d0cc3dbe",
+          "blockPath":"_brisk:core/calling-page",
           "blockRecycled":false,
           "noBlock":false,
+          "formatId":"61886d138b7ffe8377b637e8b81d2135",
+          "formatPath":"_brisk:core/startup",
           "formatRecycled":false,
           "noFormat":false,
-          "id":"c44a60887f0000014d703165451aa818" } ],
+          "id":"618862fe8b7ffe8377b637e8b8644e1f"
+        } ],
         "includeXMLDeclaration":false,
         "publishable":false,
-        "id":"c44dbf5c7f0000014d703165b91a4add" } ],
+        "id":"9e19b8a08b7ffe8353cc17e92bd3d070"
+      } ],
       "maintainAbsoluteLinks":false,
       "shouldBePublished":true,
       "shouldBeIndexed":true,
       "expirationFolderRecycled":false,
-      "metadata":{
-        "displayName":"",
-        "title":"",
-        "summary":"",
-        "teaser":"",
-        "keywords":"",
-        "metaDescription":"",
-        "author":"" },
-      "parentFolderId":"a226b81c7f0000011d450d2ac664948d",
-      "parentFolderPath":"suny-upstate",
-      "lastModifiedDate":"May 18, 2016 11:35:25 AM",
+      "metadata":
+      {
+        "displayName":"Formats",
+        "title":"Formats",
+        "reviewDate":"Dec 28, 2017 8:51:00 AM",
+        "dynamicFields":[
+        {
+          "name":"exclude-from-menu",
+          "fieldValues":[]
+        },
+        {
+          "name":"exclude-from-left-folder-nav",
+          "fieldValues":[]
+        },
+        {
+          "name":"exclude-from-mobile-menu",
+          "fieldValues":[]
+        },
+        {
+          "name":"tree-picker",
+          "fieldValues":[
+          {
+            "value":"inherited"
+          } ]
+        } ]
+      },
+      "reviewOnSchedule":false,
+      "reviewEvery":0,
+      "parentFolderId":"c12d8d0d8b7ffe83129ed6d86dd9f853",
+      "parentFolderPath":"/",
+      "lastModifiedDate":"Jan 24, 2018 9:10:13 AM",
       "lastModifiedBy":"wing",
-      "createdDate":"May 18, 2016 11:35:25 AM",
+      "createdDate":"Dec 28, 2017 12:09:33 PM",
       "createdBy":"wing",
-      "path":"suny-upstate/my-first-page",
-      "siteId":"9c8883d07f00000140b4daea7170b336",
-      "siteName":"POPs","name":"my-first-page",
-      "id":"c4b8cb807f0000014d703165d37b79a7" } },
-  "success":true
+      "path":"test2",
+      "siteId":"c12d8c498b7ffe83129ed6d81ea4076a",
+      "siteName":"formats",
+      "name":"test2",
+      "id":"9e19b89f8b7ffe8353cc17e9c1ab52bb"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>
@@ -364,15 +513,15 @@ page configurations and structured data.</p></description>
             // structuredDataNode could be empty for xml pages
             if( isset( $this->getProperty()->structuredData ) )
             {
-            	if( $this->getService()->isSoap() &&
-                	isset( $this->getProperty()->
+                if( $this->getService()->isSoap() &&
+                    isset( $this->getProperty()->
                     structuredData->structuredDataNodes->structuredDataNode ) )
-            	{
-                	$this->processStructuredData( $this->data_definition_id );
+                {
+                    $this->processStructuredData( $this->data_definition_id );
                 }
                 elseif( $this->getService()->isRest() )
                 {
-                	$this->processStructuredData( $this->data_definition_id );
+                    $this->processStructuredData( $this->data_definition_id );
                 }
             }
         }
@@ -544,16 +693,16 @@ successfully, it no longer exists and there will be no structured data to proces
         }
         
         if( $this->getService()->isSoap() )
-        	$page->pageConfigurations->pageConfiguration = array();
+            $page->pageConfigurations->pageConfiguration = array();
         elseif( $this->getService()->isRest() )
-        	$page->pageConfigurations = array();
+            $page->pageConfigurations = array();
         
         foreach( $this->page_configurations as $config )
         {
-        	if( $this->getService()->isSoap() )
-        		$page->pageConfigurations->pageConfiguration[] = $config->toStdClass();
-        	elseif( $this->getService()->isRest() )
-        		$page->pageConfigurations[] = $config->toStdClass();
+            if( $this->getService()->isSoap() )
+                $page->pageConfigurations->pageConfiguration[] = $config->toStdClass();
+            elseif( $this->getService()->isRest() )
+                $page->pageConfigurations[] = $config->toStdClass();
         }
         
         if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $page->pageConfigurations ); }

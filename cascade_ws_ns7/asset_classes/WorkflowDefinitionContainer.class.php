@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 6/30/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
@@ -74,23 +75,25 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/workflow_definition_container.php">workflow_definition_container.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
-  "workflowDefinitionContainer":{
-    "children":[ 
-    { "id":"1f2421c78b7ffe834c5fe91e9d7913b5",
-      "path":{
-        "path":"Test Workflow Container/Test Child Container",
-        "siteId":"1f2172088b7ffe834c5fe91e9596d028"},
-      "type":"workflowdefinitioncontainer",
-      "recycled":false } ],
-    "parentContainerId":"1f2172958b7ffe834c5fe91edc1f2412",
-    "parentContainerPath":"/",
-    "path":"Test Workflow Container",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"Test Workflow Container",
-    "id":"1f2421b28b7ffe834c5fe91effa66c81"}},
-  "success":true
+<pre>http://mydomain.edu:1234/api/v1/read/workflowdefinitioncontainer/28f068db8b7ffe8343b94c28e4459d6a
+
+{
+  "asset":{
+    "workflowDefinitionContainer":{
+      "children":[],
+      "parentContainerId":"61885ae28b7ffe8377b637e83740714f",
+      "parentContainerPath":"/",
+      "path":"Test Workflow Def Container",
+      "siteId":"61885ac08b7ffe8377b637e83a86cca5",
+      "siteName":"_brisk",
+      "name":"Test Workflow Def Container",
+      "id":"28f068db8b7ffe8343b94c28e4459d6a"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

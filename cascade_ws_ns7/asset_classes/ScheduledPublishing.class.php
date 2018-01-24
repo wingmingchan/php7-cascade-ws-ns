@@ -108,10 +108,10 @@ returns the calling object.</p></description>
         $g_name       = $g->getName();
         
         if( isset( $this->getProperty()->sendReportToGroups ) )
-        	$group_string = $this->getProperty()->sendReportToGroups;
+            $group_string = $this->getProperty()->sendReportToGroups;
         else
-        	$group_string = "";
-        	
+            $group_string = "";
+            
         $group_array  = explode( ';', $group_string );
         
         if( !in_array( $g_name, $group_array ) )
@@ -143,9 +143,9 @@ returns the calling object.</p></description>
         $u_name      = $u->getName();
         
         if( isset( $this->getProperty()->sendReportToUsers ) )
-        	$user_string = $this->getProperty()->sendReportToUsers;
+            $user_string = $this->getProperty()->sendReportToUsers;
         else
-        	$user_string = "";
+            $user_string = "";
         
         $user_array  = explode( ';', $user_string );
         
@@ -170,7 +170,7 @@ returns the calling object.</p></description>
     public function getCronExpression()
     {
         if( isset( $this->getProperty()->cronExpression ) )
-        	return $this->getProperty()->cronExpression;
+            return $this->getProperty()->cronExpression;
         return NULL;
     }
     
@@ -196,7 +196,7 @@ returns the calling object.</p></description>
     public function getPublishDaysOfWeek()
     {
         if( isset( $this->getProperty()->publishDaysOfWeek ) )
-        	return $this->getProperty()->publishDaysOfWeek;
+            return $this->getProperty()->publishDaysOfWeek;
         return NULL;
     }
     
@@ -210,7 +210,7 @@ returns the calling object.</p></description>
     public function getPublishIntervalHours()
     {
         if( isset( $this->getProperty()->publishIntervalHours ) )
-        	return $this->getProperty()->publishIntervalHours;
+            return $this->getProperty()->publishIntervalHours;
         return NULL;
     }
     
@@ -224,7 +224,7 @@ returns the calling object.</p></description>
     public function getScheduledDestinationMode()
     {
         if( isset( $this->getProperty()->scheduledPublishDestinationMode ) )
-        	return $this->getProperty()->scheduledPublishDestinationMode;
+            return $this->getProperty()->scheduledPublishDestinationMode;
         return NULL;
     }
   
@@ -250,7 +250,7 @@ returns the calling object.</p></description>
     public function getSendReportToGroups()
     {
         if( isset( $this->getProperty()->sendReportToGroups ) )
-        	return $this->getProperty()->sendReportToGroups;
+            return $this->getProperty()->sendReportToGroups;
         return NULL;
     }
     
@@ -264,7 +264,7 @@ returns the calling object.</p></description>
     public function getSendReportToUsers()
     {
         if( isset( $this->getProperty()->sendReportToUsers ) )
-        	return $this->getProperty()->sendReportToUsers;
+            return $this->getProperty()->sendReportToUsers;
         return NULL;
     }
 
@@ -278,7 +278,7 @@ returns the calling object.</p></description>
     public function getTimeToPublish()
     {
         if( isset( $this->getProperty()->timeToPublish ) )
-        	return $this->getProperty()->timeToPublish;
+            return $this->getProperty()->timeToPublish;
         return NULL;
     }
     

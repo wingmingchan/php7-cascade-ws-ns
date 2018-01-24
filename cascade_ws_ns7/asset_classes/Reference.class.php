@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 6/28/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/12/2017 Added WSDL.
   * 1/17/2017 Added JSON dump.
@@ -48,22 +49,35 @@ $doc_string .=
     ) );
 return $doc_string;
 ?>
-
-
-<pre>&lt;complexType name="reference">
-  &lt;complexContent>
-    &lt;extension base="impl:folder-contained-asset">
-      &lt;sequence>
-        &lt;element maxOccurs="1" minOccurs="0" name="referencedAssetId" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="0" name="referencedAssetPath" type="xsd:string"/>
-        &lt;element maxOccurs="1" minOccurs="1" name="referencedAssetType" type="impl:entityTypeString"/>
-      &lt;/sequence>
-    &lt;/extension>
-  &lt;/complexContent>
-&lt;/complexType>
-</pre>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/reference.php">reference.php</a></li></ul>
+<pre>http://mydomain.edu:1234/api/v1/read/reference/28c750538b7ffe8343b94c28494a5cf8
+
+{
+  "asset":{
+    "reference":{
+      "referencedAssetId":"0fba8a9c8b7ffe8343b94c28b76ed48a",
+      "referencedAssetPath":"index",
+      "referencedAssetType":"page",
+      "parentFolderId":"0fa6f6fc8b7ffe8343b94c282bf4e100",
+      "parentFolderPath":"/",
+      "lastModifiedDate":"Jan 24, 2018 10:26:46 AM",
+      "lastModifiedBy":"wing",
+      "createdDate":"Jan 24, 2018 10:26:46 AM",
+      "createdBy":"wing",
+      "path":"index-ref",
+      "siteId":"0fa6f6f18b7ffe8343b94c28251e132e",
+      "siteName":"about-test",
+      "name":"index-ref",
+      "id":"28c750538b7ffe8343b94c28494a5cf8"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
+}
+</pre>
 </postscript>
 </documentation>
 */

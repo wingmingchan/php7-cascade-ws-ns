@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 1/3/2018 Added code to test for NULL.
   * 12/29/2017 Added REST code.
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -110,30 +111,34 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/asset_factory.php">asset_factory.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>
-{ 
-  "assetFactory":{
-    "applicableGroups":"SUNY Upstate-testers",
-    "assetType":"page",
-    "baseAssetId":"c45b81837f0000014d7031650a7252a2",
-    "baseAssetPath":"suny-upstate/base-assets/index",
-    "baseAssetRecycled":false,
-    "placementFolderRecycled":false,
-    "allowSubfolderPlacement":true,
-    "description":"Create New Page",
-    "folderPlacementPosition":0,
-    "overwrite":true,
-    "workflowMode":"folder-controlled",
-    "plugins":[ {
-      "name":"com.cms.assetfactory.FileLimitPlugin",
-      "parameters":[] } ],
-    "parentContainerId":"a23a47017f0000011d450d2affc6b348",
-    "parentContainerPath":"suny-upstate",
-    "path":"suny-upstate/New Page",
-    "siteId":"9c8883d07f00000140b4daea7170b336",
-    "siteName":"POPs",
-    "name":"New Page",
-    "id":"c45e55597f0000014d70316542bae384" }
+<pre>http://mydomain.edu:1234/api/v1/read/assetfactory/a14dd4e58b7ffe830539acf06baf07b3
+
+{
+  "asset":{
+    "assetFactory":{
+      "assetType":"page",
+      "baseAssetId":"6a7d05c98b7ffe83164c9314d1e6ca01",
+      "baseAssetPath":"_common_assets:base-assets/new-folder/index",
+      "baseAssetRecycled":false,
+      "placementFolderRecycled":false,
+      "allowSubfolderPlacement":false,
+      "folderPlacementPosition":0,
+      "overwrite":false,
+      "workflowMode":"folder-controlled",
+      "plugins":[],
+      "parentContainerId":"a14dd3958b7ffe830539acf004d370d7",
+      "parentContainerPath":"Upstate",
+      "path":"Upstate/New Page",
+      "siteId":"a14dbc498b7ffe830539acf0443910e3",
+      "siteName":"velocity-test",
+      "name":"New Page",
+      "id":"a14dd4e58b7ffe830539acf06baf07b3"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>
@@ -237,9 +242,9 @@ class AssetFactory extends ContainedAsset
         $group = Asset::getAsset( $this->getService(), Group::TYPE, $group_name );
         
         if( isset( $this->getProperty()->applicableGroups ) )
-        	$group_string = $this->getProperty()->applicableGroups;
+            $group_string = $this->getProperty()->applicableGroups;
         else
-        	$group_string = "";
+            $group_string = "";
 
         $group_array  = explode( ';', $group_string );
         

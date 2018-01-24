@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 6/29/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
@@ -110,28 +111,51 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/symlink.php">symlink.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>
-{ "asset":{
+<pre>http://mydomain.edu:1234/api/v1/read/symlink/5045ce7a8b7ffe8353cc17e9559b8b12
+
+{
+  "asset":{
     "symlink":{
-      "linkURL":"http://help.hannonhill.com/discussions/product-feedback",
+      "linkURL":"http://www.upstate.edu/president/",
       "expirationFolderRecycled":false,
-      "metadataSetId":"f7a963087f0000012693e3d9b68e9e1d",
-      "metadataSetPath":"Default",
-      "metadata":{},
-      "parentFolderId":"f7a9630b7f0000012693e3d99c134cef",
+      "metadataSetId":"618862168b7ffe8377b637e883fd8dcc",
+      "metadataSetPath":"_brisk:Symlink",
+      "metadata":{
+        "displayName":"President\u0027s Office",
+        "title":"Link",
+        "dynamicFields":[ {
+          "name":"exclude-from-menu",
+          "fieldValues":[]
+        },
+        {
+          "name":"exclude-from-left-folder-nav",
+          "fieldValues":[]
+        },
+        {
+          "name":"exclude-from-mobile-menu",
+          "fieldValues":[]
+        } ]
+      },
+      "reviewOnSchedule":false,
+      "reviewEvery":60,
+      "parentFolderId":"5044ba638b7ffe8353cc17e9188c8096",
       "parentFolderPath":"/",
-      "lastModifiedDate":"Apr 8, 2016 3:56:27 PM",
-      "lastModifiedBy":"tim.reilly",
-      "createdDate":"Apr 8, 2016 3:56:27 PM",
-      "createdBy":"tim.reilly",
-      "path":"GIVE US FEEDBACK",
-      "siteId":"f7a963087f0000012693e3d9932e44ba",
-      "siteName":"SUNY Upstate",
-      "name":"GIVE US FEEDBACK",
-      "id":"f7a967857f0000012693e3d97239afde"}},
-  "success":true
-}
-</pre>
+      "lastModifiedDate":"Jan 23, 2018 11:02:41 AM",
+      "lastModifiedBy":"wing",
+      "createdDate":"Dec 13, 2017 9:27:20 AM",
+      "createdBy":"wing",
+      "path":"president",
+      "siteId":"5044b9f98b7ffe8353cc17e9f24c362d",
+      "siteName":"about",
+      "name":"president",
+      "id":"5045ce7a8b7ffe8353cc17e9559b8b12"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
+}</pre>
 </postscript>
 </documentation>
 */

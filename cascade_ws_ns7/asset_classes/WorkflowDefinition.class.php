@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 1/3/2018 Added code to test for NULL.
   * 11/27/2017 Added move-related methods.
   * 6/30/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -53,6 +54,34 @@ return $doc_string;
 ?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/workflow_definition.php">workflow_definition.php</a></li></ul>
+<h2>JSON Dump</h2>
+<pre>http://mydomain.edu:1234/api/v1/read/workflowdefinition/b408830e8b7ffe835446afac3b3923ba
+
+{
+  "asset":{
+    "workflowDefinition":{
+      "copy":false,
+      "create":false,
+      "delete":true,
+      "edit":false,
+      "move":false,
+      "namingBehavior":"auto-name",
+      "xml":"\u003csystem-workflow-definition name\u003d\"Unpublish and Delete\" initial-step\u003d\"initialize\" \u003e\n    \u003ctriggers\u003e\n        \u003ctrigger name\u003d\"AssignStepIfUser\" class\u003d\"com.cms.workflow.function.AssignStepIfUser\" /\u003e\n        \u003ctrigger name\u003d\"AssignToGroupOwningAsset\" class\u003d\"com.cms.workflow.function.AssignToGroupOwningAsset\" /\u003e\n        \u003ctrigger name\u003d\"AssignToSpecifiedGroup\" class\u003d\"com.cms.workflow.function.AssignToSpecifiedGroup\" /\u003e\n        \u003ctrigger name\u003d\"AssignToWorkflowOwner\" class\u003d\"com.cms.workflow.function.AssignToWorkflowOwner\" /\u003e\n        \u003ctrigger name\u003d\"CopyFolder\" class\u003d\"com.cms.workflow.function.CopyFolder\" /\u003e\n        \u003ctrigger name\u003d\"com.cms.workflow.function.CreateNewWorkflowTrigger\" class\u003d\"com.cms.workflow.function.CreateNewWorkflowTrigger\" /\u003e\n        \u003ctrigger name\u003d\"Delete\" class\u003d\"com.cms.workflow.function.Delete\" /\u003e\n        \u003ctrigger name\u003d\"UnpublishAndDelete\" class\u003d\"com.cms.workflow.function.DeleteAndUnpublish\" /\u003e\n        \u003ctrigger name\u003d\"DeleteParentFolder\" class\u003d\"com.cms.workflow.function.DeleteParentFolderTrigger\" /\u003e\n        \u003ctrigger name\u003d\"Email\" class\u003d\"com.cms.workflow.function.EmailProvider\" /\u003e\n        \u003ctrigger name\u003d\"Merge\" class\u003d\"com.cms.workflow.function.Merge\" /\u003e\n        \u003ctrigger name\u003d\"PreserveCurrentUser\" class\u003d\"com.cms.workflow.function.PreserveCurrentUser\" /\u003e\n        \u003ctrigger name\u003d\"PublishContainingPublishSet\" class\u003d\"com.cms.workflow.function.PublishContainingPublishSetTrigger\" /\u003e\n        \u003ctrigger name\u003d\"PublishParentFolder\" class\u003d\"com.cms.workflow.function.PublishParentFolderTrigger\" /\u003e\n        \u003ctrigger name\u003d\"PublishSet\" class\u003d\"com.cms.workflow.function.PublishSetTrigger\" /\u003e\n        \u003ctrigger name\u003d\"Publish\" class\u003d\"com.cms.workflow.function.Publisher\" /\u003e\n        \u003ctrigger name\u003d\"Version\" class\u003d\"com.cms.workflow.function.Version\" /\u003e\n        \u003ctrigger name\u003d\"CreateNewWorkflow\" class\u003d\"com.cms.workflow.function.CreateNewWorkflowsTrigger\" /\u003e\n    \u003c/triggers\u003e\n    \u003csteps\u003e\n        \u003cstep type\u003d\"system\" identifier\u003d\"initialize\" label\u003d\"Initialization\" \u003e\n            \u003cactions\u003e\n                \u003caction identifier\u003d\"publish\" label\u003d\"Publish\" move\u003d\"forward\" \u003e\n                    \u003ctrigger name\u003d\"UnpublishAndDelete\" /\u003e\n                \u003c/action\u003e\n            \u003c/actions\u003e\n        \u003c/step\u003e\n        \u003cstep type\u003d\"system\" identifier\u003d\"finished\" label\u003d\"Finished\" /\u003e\n    \u003c/steps\u003e\n    \u003cnon-ordered-steps/\u003e\n\u003c/system-workflow-definition\u003e",
+      "parentContainerId":"fd2770ba8b7f08560159f3f03223b508",
+      "parentContainerPath":"/",
+      "path":"Unpublish and Delete",
+      "siteId":"fd27691f8b7f08560159f3f02754e61d",
+      "siteName":"_common",
+      "name":"Unpublish and Delete",
+      "id":"b408830e8b7ffe835446afac3b3923ba"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
+}
+</pre>
 </postscript>
 </documentation>
 */

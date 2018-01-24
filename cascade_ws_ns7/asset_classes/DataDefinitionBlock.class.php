@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 8/1/2017 Added getNodeBlock.
   * 6/20/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -161,36 +162,102 @@ return $doc_string;
 <li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/xhtml_block.php">xhtml_block.php</a></li>
 </ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
-  "xhtmlDataDefinitionBlock":{
-    "structuredData":{
-      "definitionId":"ead5f08a8b7ffe83164c9314c0bc0983",
-      "definitionPath":"_common_assets:WYSIWYG",
-      "structuredDataNodes":[ {
-        "type":"text",
-        "identifier":"block-type",
-        "text":"wysiwyg",
-        "recycled":false } ] },
-    "expirationFolderId":"1f22a7c88b7ffe834c5fe91e546e8b1e",
-    "expirationFolderPath":"_cascade/blocks/data",
-    "expirationFolderRecycled":false,
-    "metadataSetId":"345f42988b7ffe83164c93149a0faa9a",
-    "metadataSetPath":"_common_assets:Default",
-    "metadata":{"displayName":"Block",
-    "startDate":"Nov 27, 2016 12:00:00 AM"},
-    "parentFolderId":"1f22a7c88b7ffe834c5fe91e546e8b1e",
-    "parentFolderPath":"_cascade/blocks/data",
-    "lastModifiedDate":"Jan 10, 2017 1:03:40 PM",
-    "lastModifiedBy":"wing",
-    "createdDate":"Sep 12, 2016 12:01:51 PM",
-    "createdBy":"wing",
-    "path":"_cascade/blocks/data/wysiwyg",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"wysiwyg",
-    "id":"1f221ae38b7ffe834c5fe91e33a3b33b" } },
-  "success":true
-}</pre>
+<pre>http://mydomain.edu:1234/api/v1/read/block_XHTML_DATADEFINITION/c12da9c78b7ffe83129ed6d8411290fe
+
+{
+  "asset":{
+    "xhtmlDataDefinitionBlock":{
+      "structuredData":{
+        "definitionId":"618863658b7ffe8377b637e8ee4f3e42",
+        "definitionPath":"_brisk:Wysiwyg",
+        "structuredDataNodes":[ {
+          "type":"text",
+          "identifier":"display",
+          "text":"yes",
+          "recycled":false
+        },
+        {
+          "type":"group",
+          "identifier":"wysiwyg-group",
+          "structuredDataNodes":[ {
+            "type":"text",
+            "identifier":"wysiwyg-content",
+            "text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris vitae arcu diam.",
+            "recycled":false
+          },
+          {
+            "type":"text",
+            "identifier":"admin-options",
+            "text":"::CONTENT-XML-CHECKBOX::",
+            "recycled":false
+          } ],
+          "recycled":false
+        } ]
+      },
+      "expirationFolderRecycled":false,
+      "metadataSetId":"618861da8b7ffe8377b637e8ad3dd499",
+      "metadataSetPath":"_brisk:Block",
+      "metadata":{
+        "dynamicFields":[ {
+          "name":"macro",
+          "fieldValues":[ {
+            "value":"processWysiwygMacro"
+          } ]
+        } ]
+      },
+      "reviewOnSchedule":false,
+      "reviewEvery":0,
+      "parentFolderId":"c12dceb28b7ffe83129ed6d8535fb721",
+      "parentFolderPath":"_cascade/blocks/data",
+      "lastModifiedDate":"Jan 23, 2018 8:33:48 AM",
+      "lastModifiedBy":"wing",
+      "createdDate":"Nov 15, 2017 2:35:16 PM",
+      "createdBy":"wing",
+      "path":"_cascade/blocks/data/latin-wysiwyg",
+      "siteId":"c12d8c498b7ffe83129ed6d81ea4076a",
+      "siteName":"formats",
+      "name":"latin-wysiwyg",
+      "id":"c12da9c78b7ffe83129ed6d8411290fe"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }  
+}
+
+<pre>http://mydomain.edu:1234/api/v1/read/block_XHTML_DATADEFINITION/9d9336e18b7ffe8353cc17e99daf87e1
+
+{
+  "asset":{
+    "xhtmlDataDefinitionBlock":
+    {
+      "xhtml":"\u003cdiv class\u003d\"text_red\"\u003eThis is meaningless!\u003c/div\u003e",
+      "expirationFolderRecycled":false,
+      "metadataSetId":"c12dd0738b7ffe83129ed6d86580d804",
+      "metadataSetPath":"Default",
+      "metadata":{},
+      "reviewOnSchedule":false,
+      "reviewEvery":0,
+      "parentFolderId":"c12dceb28b7ffe83129ed6d8535fb721",
+      "parentFolderPath":"_cascade/blocks/data",
+      "lastModifiedDate":"Jan 23, 2018 9:11:29 AM",
+      "lastModifiedBy":"wing",
+      "createdDate":"Dec 28, 2017 9:42:38 AM",
+      "createdBy":"wing",
+      "path":"_cascade/blocks/data/test-xhtml",
+      "siteId":"c12d8c498b7ffe83129ed6d81ea4076a",
+      "siteName":"formats",
+      "name":"test-xhtml",
+      "id":"9d9336e18b7ffe8353cc17e99daf87e1"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
+}
+</pre>
 </postscript>
 </documentation>
 */
@@ -1310,11 +1377,11 @@ chooser node, allowing users to choose a page.</p></description>
 */
     public function mapData() : Asset
     {
-    	if( $this->getService()->isSoap() )
-    	{
-        	$this->checkStructuredData();
-        	$new_sd = $this->structured_data->mapData();
-        	return $this->setStructuredData( $new_sd );
+        if( $this->getService()->isSoap() )
+        {
+            $this->checkStructuredData();
+            $new_sd = $this->structured_data->mapData();
+            return $this->setStructuredData( $new_sd );
         }
         return $this;
     }

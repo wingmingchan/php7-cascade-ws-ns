@@ -91,14 +91,14 @@ class Preference
 */
     public function display() : Preference
     {
-    	$table_string = "<table  class='preferences' summary='Preferences'>" .
+        $table_string = "<table  class='preferences' summary='Preferences'>" .
             "<caption>System Preferences</caption>" .
             "<tr class='preferences-header'><th>Name</th><th>Value</th></tr>";
             
         foreach( $this->names as $name )
         {
-        	$table_string .= "<tr><td>$name</td><td>" . 
-        		$this->map[ $name ] . "</th></tr>";
+            $table_string .= "<tr><td>$name</td><td>" . 
+                $this->map[ $name ] . "</th></tr>";
         }
         
         $table_string .= "</table>" . HR ;
@@ -144,11 +144,11 @@ class Preference
 */
     public function getNameList() : string
     {
-    	$name_list = "<ul>";
-    	
+        $name_list = "<ul>";
+        
         foreach( $this->names as $name )
         {
-        	$name_list .= "<li>$name</li>";
+            $name_list .= "<li>$name</li>";
         }
         
         $name_list .= "</ul>";

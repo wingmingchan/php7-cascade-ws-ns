@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 6/26/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
@@ -73,17 +74,25 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page_configuration_set_container.php">page_configuration_set_container.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
-  "pageConfigurationSetContainer":{
-    "children":[],
-    "parentContainerId":"1f2175268b7ffe834c5fe91ea94519a0",
-    "parentContainerPath":"/",
-    "path":"Test Configuration Set Container",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"Test Configuration Set Container",
-    "id":"ad2b3c068b7ffe83664b9bd40724496c"}},
-  "success":true
+<pre>http://mydomain.edu:1234/api/v1/read/pageconfigurationsetcontainer/648977a98b7f085600ae228293a97bf5
+
+{
+  "asset":{
+    "pageConfigurationSetContainer":{
+      "children":[],
+      "parentContainerId":"64890d7a8b7f085600ae22821b18cabf",
+      "parentContainerPath":"Test Configuration Container",
+      "path":"Test Configuration Container/Test Child Container",
+      "siteId":"fd27691f8b7f08560159f3f02754e61d",
+      "siteName":"_common",
+      "name":"Test Child Container",
+      "id":"648977a98b7f085600ae228293a97bf5"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

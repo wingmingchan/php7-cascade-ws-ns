@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 12/27/2017 Updated documentation.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -173,48 +174,55 @@ return $doc_string;
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/index_block_folder.php">index_block_folder.php</a></li>
 <li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/index_block_content.php">index_block_content.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{"asset":{
-  "indexBlock":{
-    "indexedFolderId":"1f22a9b58b7ffe834c5fe91e954a68d4",
-    "indexedFolderPath":"_cascade/bootstrap-js",
-    "indexedFolderRecycled":false,
-    "indexBlockType":"folder",
-    "maxRenderedAssets":0,
-    "depthOfIndex":4,
-    "indexPages":true,
-    "indexBlocks":false,
-    "indexLinks":false,
-    "indexFiles":false,
-    "indexRegularContent":true,
-    "indexSystemMetadata":false,
-    "indexUserMetadata":false,
-    "indexAccessRights":false,
-    "indexUserInfo":false,
-    "indexWorkflowInfo":false,
-    "appendCallingPageData":false,
-    "sortMethod":"folder-order",
-    "sortOrder":"ascending",
-    "pageXML":"render",
-    "renderingBehavior":"render-normally",
-    "expirationFolderRecycled":false,
-    "metadataSetId":"358be6af8b7ffe83164c9314f9a3c1a6",
-    "metadataSetPath":"_common_assets:Block",
-    "metadata":{
-      "dynamicFields":[ {
-        "name":"macro",
-        "fieldValues":[ { "value":"" } ] } ] },
-    "parentFolderId":"1f22a76f8b7ffe834c5fe91e2bd49427",
-    "parentFolderPath":"_cascade/blocks/index",
-    "lastModifiedDate":"Sep 12, 2016 12:01:36 PM",
-    "lastModifiedBy":"wing",
-    "createdDate":"Sep 12, 2016 12:01:36 PM",
-    "createdBy":"wing",
-    "path":"_cascade/blocks/index/gallery",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"gallery",
-    "id":"1f21e1fc8b7ffe834c5fe91ece2e3ece"}},
-  "success":true
+<pre>http://mydomain.edu:1234/api/v1/read/block_INDEX/987203c88b7ffe8353cc17e9ed0bab6c
+
+{
+  "asset":{
+    "indexBlock":{
+      "indexedFolderId":"c12dce028b7ffe83129ed6d8fdc88b47",
+      "indexedFolderPath":"_cascade",
+      "indexedFolderRecycled":false,
+      "indexBlockType":"folder",
+      "maxRenderedAssets":50,
+      "depthOfIndex":3,
+      "indexPages":true,
+      "indexBlocks":true,
+      "indexLinks":true,
+      "indexFiles":true,
+      "indexRegularContent":true,
+      "indexSystemMetadata":true,
+      "indexUserMetadata":true,
+      "indexAccessRights":true,
+      "indexUserInfo":true,
+      "indexWorkflowInfo":true,
+      "appendCallingPageData":true,
+      "sortMethod":"last-modified-date",
+      "sortOrder":"descending",
+      "pageXML":"render-current-page-only",
+      "renderingBehavior":"hierarchy",
+      "expirationFolderRecycled":false,
+      "metadataSetId":"c12dd0738b7ffe83129ed6d86580d804",
+      "metadataSetPath":"Default",
+      "metadata":{},
+      "reviewOnSchedule":false,
+      "reviewEvery":0,
+      "parentFolderId":"c12dcef18b7ffe83129ed6d85960d93d",
+      "parentFolderPath":"_cascade/blocks/code",
+      "lastModifiedDate":"Jan 23, 2018 8:54:15 AM",
+      "lastModifiedBy":"wing",
+      "createdDate":"Dec 27, 2017 9:48:17 AM",
+      "createdBy":"wing",
+      "path":"_cascade/blocks/code/test-folder-index",
+      "siteId":"c12d8c498b7ffe83129ed6d81ea4076a",
+      "siteName":"formats",
+      "name":"test-folder-index",
+      "id":"987203c88b7ffe8353cc17e9ed0bab6c"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>

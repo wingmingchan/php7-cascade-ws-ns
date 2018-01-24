@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/24/2018 Updated documentation.
   * 6/20/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 1/10/2017 Added JSON dump.
@@ -49,23 +50,32 @@ return $doc_string;
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/database_transport.php">database_transport.php</a></li></ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
-  "databaseTransport":{
-    "transportSiteId":1,
-    "serverName":"db",
-    "serverPort":80,
-    "databaseName":"db",
+<pre>http://mydomain.edu:1234/api/v1/read/transport_db/24af01918b7ffe8343b94c28de598720
+
+{
+  "asset":{
+    "databaseTransport":{
+      "transportSiteId":0,
+      "serverName":"blah",
+      "serverPort":1,
+      "databaseName":"blah",
+      "username":"blah",
+      "password":"",
+      "parentContainerId":"0fa6f7e98b7ffe8343b94c28a1414bed",
+      "parentContainerPath":"/",
+      "path":"db",
+      "siteId":"0fa6f6f18b7ffe8343b94c28251e132e",
+      "siteName":"about-test",
+      "name":"db",
+      "id":"24af01918b7ffe8343b94c28de598720"
+    }
+  },
+  "authentication":{
     "username":"user",
-    "password":"",
-    "parentContainerId":"042b48d78b7ffe8339ce5d13f348500d",
-    "parentContainerPath":"Transport Container",
-    "path":"Transport Container/Test DB",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"Test DB",
-    "id":"042cdef08b7ffe8339ce5d137abd4718" } },
-  "success":true
-}</pre>
+    "password":"secret"
+  }
+}
+</pre>
 </postscript>
 </documentation>
 */

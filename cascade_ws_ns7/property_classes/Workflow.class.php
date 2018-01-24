@@ -176,11 +176,11 @@ class Workflow extends Property
 */
     public function getCurrentStepPossibleActions()
     {
-    	if( isset(
-    	    $this->ordered_step_possible_action_map[ $this->workflow->currentStep ] ) )
-        	return $this->ordered_step_possible_action_map[ $this->workflow->currentStep ];
+        if( isset(
+            $this->ordered_step_possible_action_map[ $this->workflow->currentStep ] ) )
+            return $this->ordered_step_possible_action_map[ $this->workflow->currentStep ];
         else
-        	return NULL;
+            return NULL;
     }
     
 /**
@@ -247,17 +247,17 @@ class Workflow extends Property
     public function isPossibleAction( string $a_name ) : bool
     {
         if( isset( $this->ordered_step_possible_action_map[
-            	$this->workflow->currentStep ] ) &&
-        	is_array( $this->ordered_step_possible_action_map[
-            	$this->workflow->currentStep ] ) &&
+                $this->workflow->currentStep ] ) &&
+            is_array( $this->ordered_step_possible_action_map[
+                $this->workflow->currentStep ] ) &&
             in_array( $a_name,
                 $this->ordered_step_possible_action_map[ $this->workflow->currentStep ] ) )
             return true;
             
         if( isset( $this->unordered_step_possible_action_map[
-            	$this->workflow->currentStep ] ) &&
-        	is_array( $this->unordered_step_possible_action_map[
-            	$this->workflow->currentStep ] ) &&
+                $this->workflow->currentStep ] ) &&
+            is_array( $this->unordered_step_possible_action_map[
+                $this->workflow->currentStep ] ) &&
             in_array( $a_name,
                 $this->unordered_step_possible_action_map[ $this->workflow->currentStep ] ) )
             return true;
