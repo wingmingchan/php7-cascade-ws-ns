@@ -4,6 +4,12 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/6/2018 Added removePhantomNodes (of type B).
+  * 2/5/2018 Added removePhantomValues.
+  * 1/24/2018 Updated documentation.
+  * 8/1/2017 Added getNodeBlock.
+  * 6/20/2017 Replaced static WSDL code with call to getXMLFragments.
+  * 6/13/2017 Added WSDL.
   * 1/11/2017 Added JSON structure and JSON dump.
   * 11/2/2016 Added searchTextByPattern and searchWYSIWYGByPattern.
   * 10/25/2016 Added hasPossibleValues, isMultipleField and isMultipleNode.
@@ -30,8 +36,10 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
-<p>A <code>DataDefinitionBlock</code> object represents an asset of type <code>xhtmlDataDefinitionBlock</code>. This class is a sub-class of <a href="http://www.upstate.edu/web-services/api/asset-classes/block.php"><code>Block</code></a>.</p>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>DataDefinitionBlock</code> object represents an asset of type <code>xhtmlDataDefinitionBlock</code>. This class is a sub-class of <a href=\"http://www.upstate.edu/web-services/api/asset-classes/block.php\"><code>Block</code></a>.</p>
 <p>This class can be used to manipulate both data definition blocks and xhtml blocks. The only test available to tell them apart is the <code>DataDefinitionBlock::hasStructuredData</code> method. When it returns true, the block is a data definition block; else it is an xhtml block. We cannot consider the <code>xhtml</code> property because it can be <code>NULL</code> for both block sub-types.</p>
 <p>I could have split this class into two: <code>DataDefinitionBlock</code> and <code>XhtmlBlock</code>. But this difference between with and without using a data definition also exists in a page, and I do not think I should split the <code>Page</code> class into two. Therefore, I use the same class to deal with these two types of <code>xhtmlDataDefinitionBlock</code>.</p>
 <h2>Structure of <code>xhtmlDataDefinitionBlock</code></h2>
@@ -91,7 +99,7 @@ xhtmlDataDefinitionBlock
         recycled
   xhtml
   
-JSON:
+REST:
 xhtmlDataDefinitionBlock
   structuredData
   structuredData
@@ -136,6 +144,18 @@ xhtmlDataDefinitionBlock
   name
   id
 </pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "xhtmlDataDefinitionBlock" ),
+        array( "getComplexTypeXMLByName" => "structured-data" ),
+        array( "getComplexTypeXMLByName" => "structured-data-nodes" ),
+        array( "getComplexTypeXMLByName" => "structured-data-node" ),
+        array( "getSimpleTypeXMLByName"  => "structured-data-type" ),
+        array( "getSimpleTypeXMLByName"  => "structured-data-asset-type" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul>
 <li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/data_block.php">data_block.php</a></li>
@@ -144,36 +164,102 @@ xhtmlDataDefinitionBlock
 <li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/xhtml_block.php">xhtml_block.php</a></li>
 </ul>
 <h2>JSON Dump</h2>
-<pre>{ "asset":{
-  "xhtmlDataDefinitionBlock":{
-    "structuredData":{
-      "definitionId":"ead5f08a8b7ffe83164c9314c0bc0983",
-      "definitionPath":"_common_assets:WYSIWYG",
-      "structuredDataNodes":[ {
-        "type":"text",
-        "identifier":"block-type",
-        "text":"wysiwyg",
-        "recycled":false } ] },
-    "expirationFolderId":"1f22a7c88b7ffe834c5fe91e546e8b1e",
-    "expirationFolderPath":"_cascade/blocks/data",
-    "expirationFolderRecycled":false,
-    "metadataSetId":"345f42988b7ffe83164c93149a0faa9a",
-    "metadataSetPath":"_common_assets:Default",
-    "metadata":{"displayName":"Block",
-    "startDate":"Nov 27, 2016 12:00:00 AM"},
-    "parentFolderId":"1f22a7c88b7ffe834c5fe91e546e8b1e",
-    "parentFolderPath":"_cascade/blocks/data",
-    "lastModifiedDate":"Jan 10, 2017 1:03:40 PM",
-    "lastModifiedBy":"wing",
-    "createdDate":"Sep 12, 2016 12:01:51 PM",
-    "createdBy":"wing",
-    "path":"_cascade/blocks/data/wysiwyg",
-    "siteId":"1f2172088b7ffe834c5fe91e9596d028",
-    "siteName":"cascade-admin-webapp",
-    "name":"wysiwyg",
-    "id":"1f221ae38b7ffe834c5fe91e33a3b33b" } },
-  "success":true
-}</pre>
+<pre>http://mydomain.edu:1234/api/v1/read/block_XHTML_DATADEFINITION/c12da9c78b7ffe83129ed6d8411290fe
+
+{
+  "asset":{
+    "xhtmlDataDefinitionBlock":{
+      "structuredData":{
+        "definitionId":"618863658b7ffe8377b637e8ee4f3e42",
+        "definitionPath":"_brisk:Wysiwyg",
+        "structuredDataNodes":[ {
+          "type":"text",
+          "identifier":"display",
+          "text":"yes",
+          "recycled":false
+        },
+        {
+          "type":"group",
+          "identifier":"wysiwyg-group",
+          "structuredDataNodes":[ {
+            "type":"text",
+            "identifier":"wysiwyg-content",
+            "text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris vitae arcu diam.",
+            "recycled":false
+          },
+          {
+            "type":"text",
+            "identifier":"admin-options",
+            "text":"::CONTENT-XML-CHECKBOX::",
+            "recycled":false
+          } ],
+          "recycled":false
+        } ]
+      },
+      "expirationFolderRecycled":false,
+      "metadataSetId":"618861da8b7ffe8377b637e8ad3dd499",
+      "metadataSetPath":"_brisk:Block",
+      "metadata":{
+        "dynamicFields":[ {
+          "name":"macro",
+          "fieldValues":[ {
+            "value":"processWysiwygMacro"
+          } ]
+        } ]
+      },
+      "reviewOnSchedule":false,
+      "reviewEvery":0,
+      "parentFolderId":"c12dceb28b7ffe83129ed6d8535fb721",
+      "parentFolderPath":"_cascade/blocks/data",
+      "lastModifiedDate":"Jan 23, 2018 8:33:48 AM",
+      "lastModifiedBy":"wing",
+      "createdDate":"Nov 15, 2017 2:35:16 PM",
+      "createdBy":"wing",
+      "path":"_cascade/blocks/data/latin-wysiwyg",
+      "siteId":"c12d8c498b7ffe83129ed6d81ea4076a",
+      "siteName":"formats",
+      "name":"latin-wysiwyg",
+      "id":"c12da9c78b7ffe83129ed6d8411290fe"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }  
+}
+
+http://mydomain.edu:1234/api/v1/read/block_XHTML_DATADEFINITION/9d9336e18b7ffe8353cc17e99daf87e1
+
+{
+  "asset":{
+    "xhtmlDataDefinitionBlock":
+    {
+      "xhtml":"\u003cdiv class\u003d\"text_red\"\u003eThis is meaningless!\u003c/div\u003e",
+      "expirationFolderRecycled":false,
+      "metadataSetId":"c12dd0738b7ffe83129ed6d86580d804",
+      "metadataSetPath":"Default",
+      "metadata":{},
+      "reviewOnSchedule":false,
+      "reviewEvery":0,
+      "parentFolderId":"c12dceb28b7ffe83129ed6d8535fb721",
+      "parentFolderPath":"_cascade/blocks/data",
+      "lastModifiedDate":"Jan 23, 2018 9:11:29 AM",
+      "lastModifiedBy":"wing",
+      "createdDate":"Dec 28, 2017 9:42:38 AM",
+      "createdBy":"wing",
+      "path":"_cascade/blocks/data/test-xhtml",
+      "siteId":"c12d8c498b7ffe83129ed6d81ea4076a",
+      "siteName":"formats",
+      "name":"test-xhtml",
+      "id":"9d9336e18b7ffe8353cc17e99daf87e1"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
+}
+</pre>
 </postscript>
 </documentation>
 */
@@ -400,6 +486,21 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
     {
         $this->checkStructuredData();
         return $this->structured_data->getAssetNodeType( $identifier );
+    }
+
+/**
+<documentation><description><p>Returns block attached to the node or <code>null</code>.
+Since there is a <code>static</code> method <code>getBlock</code> defined in
+<code>Block</code>, this method must have a different name.</p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception>WrongBlockTypeException</exception>
+</documentation>
+*/
+    public function getNodeBlock( string $identifier )
+    {
+        $this->checkStructuredData();
+        return $this->structured_data->getBlock( $identifier );
     }
 
 /**
@@ -1282,7 +1383,7 @@ chooser node, allowing users to choose a page.</p></description>
     }
     
 /**
-<documentation><description><p>Removes all phantom nodes of type B, and returns the calling object.</p></description>
+<documentation><description><p>Removes all phantom nodes of type B, and returns the calling object. Because this method relies on the <code>batch</code> operation, which is not defined for REST (Cascade 8.7.1), it only works for SOAP.</p></description>
 <example></example>
 <return-type>Asset</return-type>
 <exception>WrongBlockTypeException</exception>
@@ -1290,9 +1391,13 @@ chooser node, allowing users to choose a page.</p></description>
 */
     public function mapData() : Asset
     {
-        $this->checkStructuredData();
-        $new_sd = $this->structured_data->mapData();
-        return $this->setStructuredData( $new_sd );
+        if( $this->getService()->isSoap() )
+        {
+            $this->checkStructuredData();
+            $new_sd = $this->structured_data->mapData();
+            return $this->setStructuredData( $new_sd );
+        }
+        return $this;
     }
 
 /**
