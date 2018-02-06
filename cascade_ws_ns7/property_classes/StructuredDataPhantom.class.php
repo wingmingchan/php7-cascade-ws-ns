@@ -4,6 +4,13 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/5/2018 Added phantom value-related code.
+  * 12/21/2017 Added the $service object to constructor and pass it into processStructuredDataNodes so that isSoap and isRest can be called. Changed toStdClass so that it works with REST.
+  * 12/19/2017 Added throwException with asset id and path information in messages,
+  and added calls to throwException in setX methods.
+  * 8/1/2017 Added getBlock.
+  * 7/18/2017 Replaced static WSDL code with call to getXMLFragments.
+  * 6/13/2017 Added WSDL.
   * 11/3/2016 Added code to copyData to bypass phantom values.
   * 10/24/2016 Added hasPossibleValues; multiple bug fixes.
   * 8/11/2016 Added getService in both this class and StructuredDataPhantom to work with phantom nodes.
@@ -32,8 +39,10 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
-<p>A <code>StructuredData</code> object represents a <code>structuredData</code> property found in a <a href="http://www.upstate.edu/web-services/api/asset-classes/data-definition-block.php"><code>a\DataDefinitionBlock</code></a> object and a <a href="http://www.upstate.edu/web-services/api/asset-classes/page.php"><code>a\Page</code></a> object.</p>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>StructuredData</code> object represents a <code>structuredData</code> property found in a <a href=\"http://www.upstate.edu/web-services/api/asset-classes/data-definition-block.php\"><code>a\DataDefinitionBlock</code></a> object and a <a href=\"http://www.upstate.edu/web-services/api/asset-classes/page.php\"><code>a\Page</code></a> object.</p>
 <h2>Structure of <code>structuredData</code></h2>
 <pre>structuredData
   definitionId
@@ -45,6 +54,17 @@ use cascade_ws_asset     as a;
 <ul>
 <li>A <code>StructuredData</code> object contains a <code>a\DataDefinition</code> object so that it can pass it along to its children.</li>
 </ul>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "structured-data" ),
+        array( "getComplexTypeXMLByName" => "structured-data-nodes" ),
+        array( "getComplexTypeXMLByName" => "structured-data-node" ),
+        array( "getSimpleTypeXMLByName"  => "structured-data-type" ),
+        array( "getSimpleTypeXMLByName"  => "structured-data-asset-type" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/structured_data.php">structured_data.php</a></li></ul></postscript>
 </documentation>
@@ -58,6 +78,7 @@ class StructuredDataPhantom extends Property
 <example></example>
 <return-type></return-type>
 <exception></exception>
+<exception>NullServiceException</exception>
 </documentation>
 */
     public function __construct( 
@@ -67,8 +88,13 @@ class StructuredDataPhantom extends Property
         $data2=NULL, 
         $data3=NULL )
     {
+        if( is_null( $service ) )
+            throw new e\NullServiceException( c\M::NULL_SERVICE );
+            
+        $this->service = $service;
+        
         // a data definition block will have a data definition id in the sd object
-        // a page will need to pass into the data definition id
+        // a page will need to pass in the data definition id
         if( isset( $sd ) )
         {
             // store the data
@@ -94,26 +120,41 @@ class StructuredDataPhantom extends Property
                 $service, $service->createId(
                     a\DataDefinition::TYPE, $this->definition_id ) );
             // turn structuredDataNode into an array
-            if( isset( $sd->structuredDataNodes->structuredDataNode ) && 
-                !is_array( $sd->structuredDataNodes->structuredDataNode ) )
+            if( $this->service->isSoap() )
             {
-                $child_nodes = array( $sd->structuredDataNodes->structuredDataNode );
+                if( isset( $sd->structuredDataNodes->structuredDataNode ) && 
+                    !is_array( $sd->structuredDataNodes->structuredDataNode ) )
+                {
+                    $child_nodes = array( $sd->structuredDataNodes->structuredDataNode );
+                }
+                elseif( isset( $sd->structuredDataNodes->structuredDataNode ) )
+                {
+                    $child_nodes = $sd->structuredDataNodes->structuredDataNode;
+                
+                    if( self::DEBUG ) { u\DebugUtility::out(
+                        "Number of nodes in std: " . count( $child_nodes ) ); }
+                }
             }
-            elseif( isset( $sd->structuredDataNodes->structuredDataNode ) )
+            elseif( $this->service->isRest() )
             {
-                $child_nodes = $sd->structuredDataNodes->structuredDataNode;
-                if( self::DEBUG ) { u\DebugUtility::out(
-                    "Number of nodes in std: " . count( $child_nodes ) ); }
+                if( isset( $sd->structuredDataNodes ) && 
+                    !is_array( $sd->structuredDataNodes ) )
+                {
+                    $child_nodes = array( $sd->structuredDataNodes );
+                }
+                elseif( isset( $sd->structuredDataNodes ) )
+                {
+                    $child_nodes = $sd->structuredDataNodes;
+                }
             }
             // convert stdClass to objects
             StructuredDataNodePhantom::processStructuredDataNodePhantom( 
-                '', $this->children, $child_nodes, $this->data_definition );
+                '', $this->children, $child_nodes, $this->data_definition, $service );
         }
         
         $this->node_map    = $this->getIdentifierNodeMap();
         $this->identifiers = array_keys( $this->node_map );
         $this->host_asset  = $data2;
-        $this->service     = $service;
         
         if( self::DEBUG ) { u\DebugUtility::out( "First node ID: " . $first_node_id ); }
     }
@@ -155,12 +196,14 @@ same data.</p></description>
         $parent_id   = $first_node->getParentId();
         $parent_node = $this->getNode( $parent_id );
         
-        if( self::DEBUG ) { u\DebugUtility::out( "Parent ID: " . $parent_id ); }
-        $shared_id = StructuredDataNodePhantom::removeLastIndex( $first_node_id );
-        if( self::DEBUG ) { u\DebugUtility::out( "Shared ID: " . $shared_id ); }
+        if( self::DEBUG ) 
+        { 
+            u\DebugUtility::out( "Parent ID: " . $parent_id );
+            $shared_id = StructuredDataNode::removeLastIndex( $first_node_id );
+            u\DebugUtility::out( "Shared ID: " . $shared_id ); 
+        }
 
         $parent_node->addChildNode( $first_node_id );
-        
         $temp = $this->node_map;
         asort( $temp );
         $this->identifiers = array_keys( $temp );
@@ -247,6 +290,19 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
         }
 
         return $node->getAssetType();
+    }
+    
+/**
+<documentation><description><p>Returns the block attached to the named node or <code>null</code>.</p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getBlock( string $node_name )
+    {
+        if( isset( $this->node_map[ $node_name ] ) )
+            return $this->node_map[ $node_name ]->getBlock( $this->service );
     }
     
 /**
@@ -701,7 +757,7 @@ of type B in the structured data.</p></description>
         {
             if( !in_array( $id, $temp_ids ) )
             {
-                echo "Phantom node identifier: ", $id, BR;
+                //echo "Phantom node identifier: ", $id, BR;
                 return true;
             }
         }
@@ -1584,7 +1640,7 @@ qualified identifiers of nodes where the pattern is found. Inside the method <co
         a\DataBlock::TYPE, "1f21e3268b7ffe834c5fe91e2e0a7b2d" ) )->
     getHostAsset()->edit();</example>
 <return-type>Property</return-type>
-<exception></exception>
+<exception>NodeException, EmptyValueException</exception>
 </documentation>
 */
     public function setBlock( string $node_name, a\Block $block=NULL ) : Property
@@ -1592,9 +1648,16 @@ qualified identifiers of nodes where the pattern is found. Inside the method <co
         if( self::DEBUG ) { u\DebugUtility::dump( $block ); }
         if( self::DEBUG ) { u\DebugUtility::out( $node_name ); }
         
-        if( isset( $this->node_map[ $node_name ] ) )
-            $this->node_map[ $node_name ]->setBlock( $block );
-        return $this;
+        try
+        {
+            if( isset( $this->node_map[ $node_name ] ) )
+                $this->node_map[ $node_name ]->setBlock( $block );
+            return $this;
+        }
+        catch( \Exception $e )
+        {
+            $this->throwException( $e );
+        }
     }
     
 /**
@@ -1627,14 +1690,21 @@ qualified identifiers of nodes where the pattern is found. Inside the method <co
     getHostAsset()->edit();
 </example>
 <return-type>Property</return-type>
-<exception></exception>
+<exception>NodeException, EmptyValueException</exception>
 </documentation>
 */
     public function setFile( string $node_name, a\File $file=NULL ) : Property
     {
-        if( isset( $this->node_map[ $node_name ] ) )
-            $this->node_map[ $node_name ]->setFile( $file );
-        return $this;
+        try
+        {
+            if( isset( $this->node_map[ $node_name ] ) )
+                $this->node_map[ $node_name ]->setFile( $file );
+            return $this;
+        }
+        catch( \Exception $e )
+        {
+            $this->throwException( $e );
+        }
     }
     
 /**
@@ -1651,14 +1721,21 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
     getHostAsset()->edit();
 </example>
 <return-type>Property</return-type>
-<exception></exception>
+<exception>NodeException, EmptyValueException</exception>
 </documentation>
 */
     public function setLinkable( string $node_name, a\Linkable $linkable=NULL ) : Property
     {
-        if( isset( $this->node_map[ $node_name ] ) )
-            $this->node_map[ $node_name ]->setLinkable( $linkable );
-        return $this;
+        try
+        {
+            if( isset( $this->node_map[ $node_name ] ) )
+                $this->node_map[ $node_name ]->setLinkable( $linkable );
+            return $this;
+        }
+        catch( \Exception $e )
+        {
+            $this->throwException( $e );
+        }
     }
     
 /**
@@ -1674,14 +1751,21 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
     getHostAsset()->edit();
 </example>
 <return-type>Property</return-type>
-<exception></exception>
+<exception>NodeException, EmptyValueException</exception>
 </documentation>
 */
     public function setPage( string $node_name, a\Page $page=NULL ) : Property
     {
-        if( isset( $this->node_map[ $node_name ] ) )
-            $this->node_map[ $node_name ]->setPage( $page );
-        return $this;
+        try
+        {
+            if( isset( $this->node_map[ $node_name ] ) )
+                $this->node_map[ $node_name ]->setPage( $page );
+            return $this;
+        }
+        catch( \Exception $e )
+        {
+            $this->throwException( $e );
+        }
     }
     
 /**
@@ -1697,14 +1781,21 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
     getHostAsset()->edit();
 </example>
 <return-type>Property</return-type>
-<exception></exception>
+<exception>NodeException, EmptyValueException</exception>
 </documentation>
 */
     public function setSymlink( string $node_name, a\Symlink $symlink=NULL ) : Property
     {
-        if( isset( $this->node_map[ $node_name ] ) )
-            $this->node_map[ $node_name ]->setSymlink( $symlink );
-        return $this;
+        try
+        {
+            if( isset( $this->node_map[ $node_name ] ) )
+                $this->node_map[ $node_name ]->setSymlink( $symlink );
+            return $this;
+        }
+        catch( \Exception $e )
+        {
+            $this->throwException( $e );
+        }
     }
     
 /**
@@ -1712,14 +1803,21 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
 <example>$sd->setText( "group;text-box", "Some new text" )->
     getHostAsset()->edit();</example>
 <return-type>Property</return-type>
-<exception></exception>
+<exception>NodeException, EmptyValueException, NoSuchValueException, UnacceptableValueException</exception>
 </documentation>
 */
     public function setText( string $node_name, string $text=NULL ) : Property
     {
-        if( isset( $this->node_map[ $node_name ] ) )
-            $this->node_map[ $node_name ]->setText( $text );
-        return $this;
+        try
+        {
+            if( isset( $this->node_map[ $node_name ] ) )
+                $this->node_map[ $node_name ]->setText( $text );
+            return $this;
+        }
+        catch( \Exception $e )
+        {
+            $this->throwException( $e );
+        }
     }
     
 /**
@@ -1833,19 +1931,32 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
         
         if( $child_count == 1 )
         {
-            $obj->structuredDataNodes                     = new \stdClass();
-            $obj->structuredDataNodes->structuredDataNode =
-                $this->children[0]->toStdClass();
+            $obj->structuredDataNodes = new \stdClass();
+            
+            if( $this->service->isSoap() )
+                $obj->structuredDataNodes->structuredDataNode =
+                    $this->children[0]->toStdClass();
+            elseif( $this->service->isRest() )
+                $obj->structuredDataNodes =
+                    array( $this->children[0]->toStdClass() );
         }
         else
         {
-            $obj->structuredDataNodes                     = new \stdClass();
-            $obj->structuredDataNodes->structuredDataNode = array();
+            $obj->structuredDataNodes = new \stdClass();
+            
+            if( $this->service->isSoap() )
+                $obj->structuredDataNodes->structuredDataNode = array();
+            elseif( $this->service->isRest() )
+                $obj->structuredDataNodes = array();
             
             for( $i = 0; $i < $child_count; $i++ )
             {
-                $obj->structuredDataNodes->structuredDataNode[] =
-                    $this->children[$i]->toStdClass();
+                if( $this->service->isSoap() )
+                    $obj->structuredDataNodes->structuredDataNode[] =
+                        $this->children[$i]->toStdClass();
+                elseif( $this->service->isRest() )
+                    $obj->structuredDataNodes[] =
+                        $this->children[$i]->toStdClass();
             }
         }
         return $obj;
@@ -2041,6 +2152,11 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
                 // do nothing to skip deleted blocks
             }
         }
+    }
+    
+    private function throwException( $e )
+    {
+        u\DebugUtility::throwException( $this->getHostAsset(), $e );
     }
 
     private $definition_id;
