@@ -4,17 +4,38 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/6/2018 Added global functions used by $admin
   * 1/27/2017 Added assetTreeSearchForNeedleInHaystack.
  */
-use cascade_ws_AOHS as aohs;
+use cascade_ws_AOHS      as aohs;
 use cascade_ws_constants as c;
-use cascade_ws_asset as a;
-use cascade_ws_property as p;
-use cascade_ws_utility as u;
+use cascade_ws_asset     as a;
+use cascade_ws_property  as p;
+use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
  
 // global functions for AssetTree
-function assetTreeCount( aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+
+function assetTreeAssociateWithMetadataSet( 
+    aohs\AssetOperationHandlerService $service, 
+    p\Child $child, $params=NULL, &$results=NULL )
+{
+    // get the child type
+    $type = $child->getType();
+
+    // the metadata set must be supplied
+    if( !is_array( $params ) || !isset( $params[ $type ][ a\MetadataSet::TYPE ] ) )
+        throw new e\NullAssetException( 
+            S_SPAN . "The metadata set must be supplied for $type" . E_SPAN );
+    // retrieve the metadata set
+    $ms = $params[ $type ][ a\MetadataSet::TYPE ];
+    // associate metadata set with asset
+    $child->getAsset( $service )->setMetadataSet( $ms );        
+}
+
+function assetTreeCount(
+    aohs\AssetOperationHandlerService $service, 
+    p\Child $child, $params=NULL, &$results=NULL )
 {
     $type = $child->getType();
     
@@ -33,7 +54,6 @@ function assetTreeGetAssets( aohs\AssetOperationHandlerService $service, p\Child
 {
     if( is_array( $results ) )
     {
-        // $results[ __FUNCTION__ ][ $child->getType() ][] = $child->getAsset( $service );
         $results[ c\F::GET_ASSETS ][ $child->getType() ][] = $child->getAsset( $service );
     }
 }
@@ -43,36 +63,119 @@ function assetTreePublish( aohs\AssetOperationHandlerService $service, p\Child $
     $service->publish( $child->toStdClass() );
 }
 
-function assetTreeAssociateWithMetadataSet( 
+function assetTreeRemoveAsset( 
     aohs\AssetOperationHandlerService $service, 
     p\Child $child, $params=NULL, &$results=NULL )
 {
-        // get the child type
-        $type = $child->getType();
-
-        // the metadata set must be supplied
-        if( !is_array( $params ) || !isset( $params[ $type ][ a\MetadataSet::TYPE ] ) )
-            throw new e\NullAssetException( 
-                S_SPAN . "The metadata set must be supplied for $type" . E_SPAN );
-        // retrieve the metadata set
-        $ms = $params[ $type ][ a\MetadataSet::TYPE ];
-        // associate metadata set with asset
-        $child->getAsset( $service )->setMetadataSet( $ms );        
-}
-
-function assetTreeReportOrphans( 
-    aohs\AssetOperationHandlerService $service, 
-    p\Child $child, $params=NULL, &$results=NULL )
-{
-    if( is_array( $results ) )
+    if( is_array( $results ) &&
+        is_array( $results[ c\F::REPORT_ORPHANS ] ) &&
+        in_array( 
+            $child->getPathPath(), $results[ c\F::REPORT_ORPHANS ][ $child->getType() ] ) )
     {
-        $subscribers = $child->getAsset( $service )->getSubscribers();
-        
-        if( $subscribers == NULL )
+        if( isset( $params[ c\F::REMOVE_ASSET ][ c\F::UNCONDITIONAL_REMOVAL ] ) &&
+            $params[ c\F::REMOVE_ASSET ][ c\F::UNCONDITIONAL_REMOVAL ] == true )
         {
-            $results[ c\F::REPORT_ORPHANS ][ $child->getType() ][] = $child->getPathPath();
+            $service->delete( $child->toStdClass() );
+        }
+        // if the id and path are NOT found in the array
+        else if( 
+            !in_array( 
+                $child->getId(), $params[ c\F::REMOVE_ASSET ][ $child->getType() ] ) && 
+            !in_array( 
+                $child->getPathPath(), $params[ c\F::REMOVE_ASSET ][ $child->getType() ] )
+        )
+        {
+            $service->delete( $child->toStdClass() );
         }
     }
+}
+
+function assetTreeRemovePhantomNodes(
+    aohs\AssetOperationHandlerService $service, 
+    p\Child $child, $params=NULL, &$results=NULL )
+{
+    // get the child type
+    $type = $child->getType();
+    
+    // the results array is optional
+    if( isset( $results ) )
+    {
+        if( !isset( $results[ $type ] ) )
+        {
+            $results[ $type ] = array();
+            $results[ $type ][ "A" ] = array();
+            $results[ $type ][ "B" ] = array();
+        }
+    }
+
+    if( $type != a\Page::TYPE && $type != a\DataDefinitionBlock::TYPE )
+    {
+        return;
+    }
+    
+    try
+    {
+        $asset = $child->getAsset( $service );
+        
+        // type B
+        if( $asset->hasPhantomNodes() )
+        {
+            $asset->removePhantomNodes( $results );
+        }
+    }
+    // type A
+    catch( e\NoSuchFieldException $e )
+    {
+        switch( $type )
+        {
+            case a\DataDefinitionBlock::TYPE:
+                $asset = new a\DataDefinitionBlockPhantom(
+                    $service, $service->createId(
+                        a\DataDefinitionBlockPhantom::TYPE, $child->getId() ) );
+                break;
+            case a\Page::TYPE:
+                $asset = new a\PagePhantom(
+                    $service, $service->createId(
+                        a\PagePhantom::TYPE, $child->getId() ) );
+                break;
+        }
+        $dd           = $asset->getDataDefinition();
+        $healthy_sd   = new p\StructuredData(
+            $dd->getStructuredData(), $service, $dd->getId() );
+        $phantom_sd   = $asset->getStructuredDataPhantom();
+        $healthy_sd   = $healthy_sd->removePhantomNodes( $phantom_sd );
+    
+        $asset->setStructuredData( $healthy_sd );
+        
+        if( isset( $results ) )
+        {
+        	$results[ $type ][ "A" ][] = $child->getPathPath();
+        }
+    }
+}
+
+function assetTreeRemovePhantomValues(
+    aohs\AssetOperationHandlerService $service, 
+    p\Child $child, $params=NULL, &$results=NULL )
+{
+    // get the child type
+    $type = $child->getType();
+    
+    // the results array is optional
+    if( isset( $results ) )
+    {
+        if( !isset( $results[ $type ] ) )
+        {
+            $results[ $type ] = array();
+        }
+    }
+
+    if( $type != a\Page::TYPE && $type != a\DataDefinitionBlock::TYPE )
+    {
+        return;
+    }
+    
+    $child->getAsset( $service )->removePhantomValues( $results );
 }
 
 function assetTreeReportAssetFactoryGroupAssignment( 
@@ -170,6 +273,44 @@ function assetTreeReportMetadataFlag(
     }
 }
 
+function assetTreeReportNumberOfTemplates(
+    aohs\AssetOperationHandlerService $service, 
+    p\Child $child, $params=NULL, &$results=NULL )
+{
+    if( !isset( $params[ 'cache' ] ) )
+        throw new e\ReportException( c\M::NULL_CACHE );
+        
+    // set up cache
+    $cache = $params[ 'cache' ];
+
+    // get type of asset
+    $type = $child->getType();
+    
+    if( $type != a\Template::TYPE )
+        return;
+    
+    if( !isset( $results[ $type ][ 'number' ] ) )
+        $results[ $type ][ 'number' ] = 0;
+
+    $results[ $type ][ 'number' ]++;
+}
+
+function assetTreeReportOrphans( 
+    aohs\AssetOperationHandlerService $service, 
+    p\Child $child, $params=NULL, &$results=NULL )
+{
+    if( is_array( $results ) )
+    {
+        $subscribers = $child->getAsset( $service )->getSubscribers();
+        
+        if( $subscribers == NULL )
+        {
+            $results[ c\F::REPORT_ORPHANS ][ $child->getType() ][] =
+                $child->getPathPath();
+        }
+    }
+}
+
 function assetTreeReportPageWithPageLevelBlockFormat(
     aohs\AssetOperationHandlerService $service, 
     p\Child $child, $params=NULL, &$results=NULL )
@@ -194,25 +335,76 @@ function assetTreeReportPageWithPageLevelBlockFormat(
     }
 }
 
-function assetTreeReportNumberOfTemplates(
-    aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+function assetTreeReportPhantomNodes( 
+    aohs\AssetOperationHandlerService $service, 
+    p\Child $child, array $params=NULL, array &$results=NULL )
 {
-    if( !isset( $params[ 'cache' ] ) )
-        throw new e\ReportException( c\M::NULL_CACHE );
+    if( !isset( $results ) || !is_array( $results ) )
+        throw new \Exception( "The results array is required" );
         
-    // set up cache
-    $cache = $params[ 'cache' ];
-
-    // get type of asset
     $type = $child->getType();
     
-    if( $type != a\Template::TYPE )
+    if( !isset( $results[ $type ] ) )
+    {
+        $results[ $type ] = array( "A" => array(), "B" => array() );
+    }
+    
+    if( $type != a\Page::TYPE && $type != a\DataDefinitionBlock::TYPE )
         return;
     
-    if( !isset( $results[ $type ][ 'number' ] ) )
-        $results[ $type ][ 'number' ] = 0;
+    try
+    {
+        $asset = $child->getAsset( $service );
+        
+        if( $asset->hasPhantomNodes() )
+        {
+            $results[ $type ][ "B" ][] = $child->getPathPath();
+        }
+    }
+    catch( e\NoSuchFieldException $e )
+    {
+        $results[ $type ][ "A" ][] = $child->getPathPath();
+    }
+}
 
-    $results[ $type ][ 'number' ]++;
+function assetTreeReportPhantomValues(
+    aohs\AssetOperationHandlerService $service, 
+    p\Child $child, $params=NULL, &$results=NULL )
+{
+    if( !isset( $results ) || !is_array( $results ) )
+        throw new \Exception( "The results array is required" );
+        
+    $type = $child->getType();
+    
+    if( !isset( $results[ $type ] ) )
+    {
+        $results[ $type ] = array();
+    }
+    
+    if( !isset( $results[ "phantom" ] ) )
+    {
+    	$results[ "phantom" ] = array();
+    }
+
+    if( $type != a\Page::TYPE && $type != a\DataDefinitionBlock::TYPE )
+    {
+        return;
+    }
+    
+    try
+    {
+    	if( $child->getAsset( $service )->getStructuredData()->hasPhantomValues() )
+    	{
+        	$results[ $type ][] = $child->getPathPath();
+    	}
+    }
+    // type A only
+    catch( e\NoSuchFieldException $e )
+    {
+    	// skip the asset
+    	$results[ "phantom" ][] = $child->getPathPath();
+    	return;	
+    }
 }
 
 function assetTreeReportTemplateFormatPaths(
@@ -258,6 +450,39 @@ function assetTreeReportTemplatePaths(
     $path = $child->getPathPath();
         
     $results[ $type ][] = $path;
+}
+
+function assetTreeSearchByName( 
+    aohs\AssetOperationHandlerService $service, 
+    p\Child $child, $params=NULL, &$results=NULL )
+{
+    if( is_array( $results ) )
+    {
+        $path = $child->getPathPath();
+        $type = $child->getType();
+        
+        // no name supplied
+        if( !isset( $params[ c\F::SEARCH_BY_NAME ][ $type ][ 'name' ] ) )
+        {
+            return;
+        }
+        else
+        {
+            $name = $params[ c\F::SEARCH_BY_NAME ][ $type ][ 'name' ];
+        }
+
+        if( !isset( $results[ c\F::SEARCH_BY_NAME ] ) )
+        {
+            $results[ c\F::SEARCH_BY_NAME ] = array(); //
+            
+            if( !isset( $results[ c\F::SEARCH_BY_NAME ][ $type ] ) )
+                $results[ c\F::SEARCH_BY_NAME ][ $type ] = array();
+        }
+        
+        // if name is found in asset name
+        if( strpos( $path, $name ) !== false )
+            $results[ c\F::SEARCH_BY_NAME ][ $type ][] = $path;
+    }
 }
 
 function assetTreeSearchForString( 
@@ -312,66 +537,6 @@ function assetTreeStoreAssetPath(
         }
 
         $results[ c\F::STORE_ASSET_PATH ][] = $child->getPathPath();
-    }
-}
-
-function assetTreeRemoveAsset( 
-    aohs\AssetOperationHandlerService $service, 
-    p\Child $child, $params=NULL, &$results=NULL )
-{
-    if( is_array( $results ) &&
-        is_array( $results[ c\F::REPORT_ORPHANS ] ) &&
-        in_array( 
-            $child->getPathPath(), $results[ c\F::REPORT_ORPHANS ][ $child->getType() ] ) )
-    {
-        if( isset( $params[ c\F::REMOVE_ASSET ][ c\F::UNCONDITIONAL_REMOVAL ] ) &&
-            $params[ c\F::REMOVE_ASSET ][ c\F::UNCONDITIONAL_REMOVAL ] == true )
-        {
-            $service->delete( $child->toStdClass() );
-        }
-        // if the id and path are NOT found in the array
-        else if( 
-            !in_array( 
-                $child->getId(), $params[ c\F::REMOVE_ASSET ][ $child->getType() ] ) && 
-            !in_array( 
-                $child->getPathPath(), $params[ c\F::REMOVE_ASSET ][ $child->getType() ] )
-        )
-        {
-            $service->delete( $child->toStdClass() );
-        }
-    }
-}
-
-function assetTreeSearchByName( 
-    aohs\AssetOperationHandlerService $service, 
-    p\Child $child, $params=NULL, &$results=NULL )
-{
-    if( is_array( $results ) )
-    {
-        $path = $child->getPathPath();
-        $type = $child->getType();
-        
-        // no name supplied
-        if( !isset( $params[ c\F::SEARCH_BY_NAME ][ $type ][ 'name' ] ) )
-        {
-            return;
-        }
-        else
-        {
-            $name = $params[ c\F::SEARCH_BY_NAME ][ $type ][ 'name' ];
-        }
-
-        if( !isset( $results[ c\F::SEARCH_BY_NAME ] ) )
-        {
-            $results[ c\F::SEARCH_BY_NAME ] = array(); //
-            
-            if( !isset( $results[ c\F::SEARCH_BY_NAME ][ $type ] ) )
-                $results[ c\F::SEARCH_BY_NAME ][ $type ] = array();
-        }
-        
-        // if name is found in asset name
-        if( strpos( $path, $name ) !== false )
-            $results[ c\F::SEARCH_BY_NAME ][ $type ][] = $path;
     }
 }
 ?>
