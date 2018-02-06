@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/5/2018 Added phantom value-related code.
   * 12/21/2017 Added the $service object to constructor and pass it into processStructuredDataNodes so that isSoap and isRest can be called. Changed toStdClass so that it works with REST.
   * 12/19/2017 Added throwException with asset id and path information in messages,
   and added calls to throwException in setX methods.
@@ -770,8 +771,62 @@ of type B in the structured data.</p></description>
         {
             if( !in_array( $id, $temp_ids ) )
             {
-                echo "Phantom node identifier: ", $id, BR;
+                //echo "Phantom node identifier: ", $id, BR;
                 return true;
+            }
+        }
+        return false;
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether there are phantom values
+in the structured data.</p></description>
+<example></example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function hasPhantomValues() : bool // detects phantom values
+    {
+        $dd_ids   = $this->data_definition->getIdentifiers();
+        $sd_ids   = $this->getIdentifiers();
+        $temp_ids = array();
+        
+        foreach( $sd_ids as $id )
+        {
+            if( $this->hasPossibleValues( $id ) )
+            {
+                $possible_values = $this->data_definition->getPossibleValues( $id );
+                $actual_values   =
+                	u\StringUtility::getExplodedStringArray(
+                		a\DataDefinition::DELIMITER,
+                        str_replace(
+                            StructuredDataNode::SELECTOR_PREFIX,
+                            "",
+                            str_replace(
+                                structuredDataNode::CHECKBOX_PREFIX,
+                                "",
+                                $this->getText( $id )
+                            )
+                        )
+                    );
+                
+                if( is_array( $actual_values ) )
+                {
+                    foreach( $actual_values as $value )
+                    {
+                        if( !in_array( $value, $possible_values ) )
+                        {
+                        	//echo $identifier, BR;
+                            return true;
+                        }
+                    }
+                }
+                elseif( !in_array( $actual_values, $possible_values ) )
+                {
+                	//echo $identifier, BR;
+                    return true;
+                }
             }
         }
         return false;
@@ -1553,6 +1608,17 @@ chooser node, allowing users to choose a page.</p></description>
             }
         }
         return $new_sd;
+    }
+    
+    public function removePhantomValues() : Property
+    {
+        $ids = $this->identifiers;
+    
+        foreach( $this->identifiers as $identifier )
+        {
+            $this->node_map[ $identifier ]->removePhantomValues();
+        }
+        return $this;
     }
 
 /**
