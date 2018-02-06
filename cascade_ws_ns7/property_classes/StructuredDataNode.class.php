@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/5/2018 Added phantom value-related code.
   * 12/28/2017 Added code to unset properties when NULL.
   * 12/27/2017 Added more REST code.
   * 12/21/2017 Added the $service object to constructor and processStructuredDataNodes so that isSoap and isRest can be called. Changed toStdClass so that it works with REST.
@@ -1240,6 +1241,75 @@ class StructuredDataNode extends Property
         }
             
         unset( $this->node_map, $last_node_id );
+        
+        return $this;
+    }
+    
+    public function removePhantomValues() : Property
+    {
+        // only relevant to four types of text nodes
+        if( !$this->isTextNode() ||
+            ( $this->text_type != self::TEXT_TYPE_CHECKBOX &&
+              $this->text_type != self::TEXT_TYPE_DROPDOWN &&
+              $this->text_type != self::TEXT_TYPE_RADIO &&
+              $this->text_type != self::TEXT_TYPE_SELECTOR ) )
+        {
+            return $this;
+        }
+        else
+        {
+                $actual_values   =
+                	u\StringUtility::getExplodedStringArray(
+                		a\DataDefinition::DELIMITER,
+                        str_replace(
+                            StructuredDataNode::SELECTOR_PREFIX,
+                            "",
+                            str_replace(
+                                structuredDataNode::CHECKBOX_PREFIX,
+                                "",
+                                $this->getText( $id )
+                            )
+                        )
+                    );
+/*
+            $actual_values   =
+                explode(
+                    a\DataDefinition::DELIMITER,
+                    str_replace(
+                        StructuredDataNode::SELECTOR_PREFIX,
+                        "",
+                        str_replace(
+                            structuredDataNode::CHECKBOX_PREFIX,
+                            "",
+                            $this->getText()
+                        )
+                    )
+                );
+*/    
+            $dd_id = u\StringUtility::getFullyQualifiedIdentifierWithoutPositions(
+                $this->identifier );
+        
+            $possible_values = $this->data_definition->getPossibleValues( $dd_id );
+            $valid_values    = array();
+        
+            foreach( $actual_values as $actual_value )
+            {
+                if( in_array( $actual_value, $possible_values ) )
+                {
+                    $valid_values[] = $actual_value;
+                }
+            }
+        
+            if( $this->data_definition->getRequired( $this->identifier ) &&
+                count( $valid_values ) == 0 )
+            {
+                $valid_values[] =
+                    $this->data_definition->getField( $this->identifier )[ "default" ];
+            }
+        
+            $input_string = implode( a\DataDefinition::DELIMITER, $valid_values );
+            $this->setText( $input_string );
+        }
         
         return $this;
     }
