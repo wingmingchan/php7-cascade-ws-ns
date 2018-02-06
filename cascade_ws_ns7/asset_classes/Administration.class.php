@@ -1,12 +1,13 @@
 <?php
 /**
-  * Author: Wing Ming Chan
-  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
+  * Author: Wing Ming Chan, German Drulyk
+  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>, 
+  *                    German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/6/2018 Added publishAll.
   * 2/2/2018 Class created.
  */
-
 namespace cascade_ws_asset;
 
 use cascade_ws_constants as c;
@@ -15,12 +16,31 @@ use cascade_ws_utility   as u;
 use cascade_ws_exception as e;
 use cascade_ws_property  as p;
 
+/**
+<documentation>
+<description>
+<h2>Introduction</h2>
+<p>The <code>Administration</code> class is a high-level class that can be used to manage sites.
+The class provides methods to modify assets at the site/folder level using asset tree traversal.
+An object named <code>$admin</code> should be initialized in an authentication file:</p>
+<pre>
+$admin = new a\Administration( $cascade );
+</pre>
+</description>
+<postscript></postscript>
+</documentation>
+*/
 class Administration
 {
     const DEBUG      = false;
     const DUMP       = false;
     const NAME_SPACE = "cascade_ws_asset";
     
+/**
+<documentation><description><p>The constructor. Note that the <code>$cascade</code> object is passed into the constructor.</p></description>
+<exception>NullServiceException</exception>
+</documentation>
+*/
     public function __construct( Cascade $cascade )
     {
         if( $cascade == NULL )
@@ -32,6 +52,31 @@ class Administration
         $this->service = $cascade->getService();
     }
     
+/**
+<documentation><description><p>Associates types of assets with the corresponding metadata set.
+An entry in the param array should be a string (asset type) as the key and an array as its value.
+The inner array should contain information about the folder containing assets of the desired type and information about the metadata set.
+Information can be <code>Asset</code> objects, or a single ID string, or an array of two strings (the site name and the folder path).</p></description>
+<example>
+    $admin->associateAssetsWithMetadataSets( array(
+        // the type of assets to be associated with the metadata set
+        a\Folder::TYPE => array(
+            // the folder containing the assets
+            a\Folder::TYPE      => array( "_cascade/blocks", $site_name ),
+            // the metadata set
+            a\MetadataSet::TYPE => $cascade->getAsset(
+                a\MetadataSet::TYPE, "6188622e8b7ffe8377b637e84e639b54" )
+        ),
+        a\XmlBlock::TYPE => array(
+            a\Folder::TYPE      => "48a581eb8b7ffe834bd90c8f2ef6b1bb",
+            a\MetadataSet::TYPE => "618861da8b7ffe8377b637e8ad3dd499"
+        )
+    ) );
+</example>
+<return-type>Administration</return-type>
+<exception>NoSuchTypeException</exception>
+</documentation>
+*/
     public function associateAssetsWithMetadataSets( array $array ) : Administration
     {
         $type_array  = $this->service->getTypes();
@@ -82,79 +127,103 @@ class Administration
         return $this;
     }
     
+/**
+<documentation><description><p>Publishes all publishable assets by issuing a publish command on each asset. If <code>$folder_path</code> is provided, then only assets in the corresponding folder will be published. There should be at least one type string supplied.</p></description>
+<example>$admin->publishAllFiles( "about" ); // all files in the site
+
+$admin->publishAllFiles( "about", "images" ); // all files in the images folder
+</example>
+<return-type>Administration</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function publishAll(
+        string $site_name, string $folder_path=NULL, 
+        string $type, string ...$more_types ) : Administration
+    {
+        if( !is_null( $folder_path ) )
+        {
+            $folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
+        }
+        else
+        {
+            $folder = $this->cascade->getSite( $site_name )->getBaseFolder();
+        }
+        
+        foreach( array_merge( array( $type ), $more_types ) as $v )
+        {
+            $type_array[ $v ] = array( "assetTreePublish" );
+        }
+        
+        $folder->getAssetTree()->traverse( $type_array );
+    
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Publishes all files by issuing a publish command on each individual file. If <code>$folder_path</code> is provided, then only files in the corresponding folder will be published.</p></description>
+<example>$admin->publishAllFiles( "about" ); // all files in the site
+
+$admin->publishAllFiles( "about", "images" ); // all files in the images folder
+</example>
+<return-type>Administration</return-type>
+<exception></exception>
+</documentation>
+*/
     public function publishAllFiles(
-    	string $site_name, string $folder_path=NULL ) : Administration
+        string $site_name, string $folder_path=NULL ) : Administration
     {
-    	if( !is_null( $folder_path ) )
-    	{
-    		$folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
-    	}
-    	else
-    	{
-    		$folder = $this->cascade->getSite( $site_name )->getBaseFolder();
-    	}
-    
-        $folder->getAssetTree()->traverse(
-            array( File::TYPE => array( "assetTreePublish" ) )
-        );
-    
-        return $this;
+        return $this->publishAll( $site_name, $folder_path, File::TYPE );
     }
     
+/**
+<documentation><description><p>Publishes all files and pages by issuing a publish command on each individual file/page. If <code>$folder_path</code> is provided, then only files/pages in the corresponding folder will be published.</p></description>
+<example>$admin->publishAllFilesPages( "about" ); // all files in the site
+</example>
+<return-type>Administration</return-type>
+<exception></exception>
+</documentation>
+*/
     public function publishAllFilesPages(
-    	string $site_name, string $folder_path=NULL ) : Administration
+        string $site_name, string $folder_path=NULL ) : Administration
     {
-    	if( !is_null( $folder_path ) )
-    	{
-    		$folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
-    	}
-    	else
-    	{
-    		$folder = $this->cascade->getSite( $site_name )->getBaseFolder();
-    	}
-    
-        $folder->getAssetTree()->traverse(
-            array(
-                File::TYPE => array( "assetTreePublish" ),
-                Page::TYPE => array( "assetTreePublish" )
-            )
-        );
-    
-        return $this;
+        return $this->publishAll( $site_name, $folder_path, File::TYPE, Page::TYPE );
     }
     
+/**
+<documentation><description><p>Publishes all pages by issuing a publish command on each individual page. If <code>$folder_path</code> is provided, then only pages in the corresponding folder will be published.</p></description>
+<example>$admin->publishAllPages( "about" ); // all files in the site
+</example>
+<return-type>Administration</return-type>
+<exception></exception>
+</documentation>
+*/
     public function publishAllPages(
-    	string $site_name, string $folder_path=NULL ) : Administration
+        string $site_name, string $folder_path=NULL ) : Administration
     {
-    	if( !is_null( $folder_path ) )
-    	{
-    		$folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
-    	}
-    	else
-    	{
-    		$folder = $this->cascade->getSite( $site_name )->getBaseFolder();
-    	}
-    
-        $folder->getAssetTree()->traverse(
-            array( Page::TYPE => array( "assetTreePublish" ) )
-        );
-    
-        return $this;
+        return $this->publishAll( $site_name, $folder_path, Page::TYPE );
     }
     
-    // remove phantom nodes and values NoSuchFieldException
+/**
+<documentation><description><p>Removes phantom nodes of both type A and B from pages and data definition blocks. If <code>$folder_path</code> is provided, then only pages/blocks in the corresponding folder will be affected. If an array is also supplied, then the array will store paths of all pages/blocks that are modified.</p></description>
+<example>$admin->removePhantomNodes( "about" );
+</example>
+<return-type>Administration</return-type>
+<exception></exception>
+</documentation>
+*/
     public function removePhantomNodes(
         string $site_name, string $folder_path=NULL,
         array &$results=NULL ) : Administration
     {
-    	if( !is_null( $folder_path ) )
-    	{
-    		$folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
-    	}
-    	else
-    	{
-    		$folder = $this->cascade->getSite( $site_name )->getBaseFolder();
-    	}
+        if( !is_null( $folder_path ) )
+        {
+            $folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
+        }
+        else
+        {
+            $folder = $this->cascade->getSite( $site_name )->getBaseFolder();
+        }
     
         $folder->getAssetTree()->traverse(
             array(
@@ -168,19 +237,26 @@ class Administration
         return $this;
     }
     
-    
+/**
+<documentation><description><p>Removes phantom values from pages and data definition blocks. If <code>$folder_path</code> is provided, then only pages/blocks in the corresponding folder will be affected. If an array is also supplied, then the array will store paths of all pages/blocks that are modified.</p></description>
+<example>$admin->removePhantomValues( "about" );
+</example>
+<return-type>Administration</return-type>
+<exception></exception>
+</documentation>
+*/
     public function removePhantomValues(
         string $site_name, string $folder_path=NULL,
         array &$results=NULL ) : Administration
     {
-    	if( !is_null( $folder_path ) )
-    	{
-    		$folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
-    	}
-    	else
-    	{
-    		$folder = $this->cascade->getSite( $site_name )->getBaseFolder();
-    	}
+        if( !is_null( $folder_path ) )
+        {
+            $folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
+        }
+        else
+        {
+            $folder = $this->cascade->getSite( $site_name )->getBaseFolder();
+        }
     
         $folder->getAssetTree()->traverse(
             array(
@@ -194,18 +270,26 @@ class Administration
         return $this;
     }
     
-    // report phantom nodes and values NoSuchFieldException
+/**
+<documentation><description><p>Reports phantom nodes in pages and data definition blocks. If <code>$folder_path</code> is provided, then only pages/blocks in the corresponding folder will be examined. The array for storing the report must be supplied.</p></description>
+<example>
+$admin->reportPhantomNodes( "about" );
+</example>
+<return-type>Administration</return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportPhantomNodes(
         string $site_name, string $folder_path=NULL, array &$results ) : Administration
     {
-    	if( !is_null( $folder_path ) )
-    	{
-    		$folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
-    	}
-    	else
-    	{
-    		$folder = $this->cascade->getSite( $site_name )->getBaseFolder();
-    	}
+        if( !is_null( $folder_path ) )
+        {
+            $folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
+        }
+        else
+        {
+            $folder = $this->cascade->getSite( $site_name )->getBaseFolder();
+        }
     
         $folder->getAssetTree()->traverse(
             array(
@@ -219,17 +303,26 @@ class Administration
         return $this;
     }
     
+/**
+<documentation><description><p>Reports phantom values in pages and data definition blocks. If <code>$folder_path</code> is provided, then only pages/blocks in the corresponding folder will be examined. The array for storing the report must be supplied.</p></description>
+<example>
+$admin->reportPhantomNodes( "about" );
+</example>
+<return-type>Administration</return-type>
+<exception></exception>
+</documentation>
+*/
     public function reportPhantomValues(
-    	string $site_name, string $folder_path=NULL, array &$results  ) : array
+        string $site_name, string $folder_path=NULL, array &$results  ) : array
     {
-    	if( !is_null( $folder_path ) )
-    	{
-    		$folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
-    	}
-    	else
-    	{
-    		$folder = $this->cascade->getSite( $site_name )->getBaseFolder();
-    	}
+        if( !is_null( $folder_path ) )
+        {
+            $folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
+        }
+        else
+        {
+            $folder = $this->cascade->getSite( $site_name )->getBaseFolder();
+        }
     
         $folder->getAssetTree()->traverse(
             array(
@@ -247,9 +340,6 @@ class Administration
     {
         if( is_string( $param ) && $this->service->isHexString( $param ) )
         {
-            u\DebugUtility::out( $type );
-            u\DebugUtility::out( $param );
-        
             $asset = $this->cascade->getAsset( $type, $param );
         }
         elseif( is_array( $param ) &&
