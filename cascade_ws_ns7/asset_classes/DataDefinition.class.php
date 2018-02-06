@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/5/2018 Added getRequired, getPossibleValues, and updated processSimpleXMLElement.
   * 1/24/2018 Updated documentation.
   * 12/27/2017 Added REST code.
   * 6/20/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -148,6 +149,10 @@ Consider an example:</p>
 element. To retrieve this array, we just need to call the <code>getField</code> method and
 pass in the fully qualified identifier like
 <code>\"simpleslideshow-image-caption\"</code>.</p>
+<p>Although I adopt the \"garbage in, garbage out\" principle as mentioned above, I do
+enforce the principle of data integrity here. Specifically, when the value of a field of
+type checkbox, radiobutton, dropdown, or multiselect is required and yet no default value
+is suppled, I will throw an exception. This is necessary for me to fix the problem of phantom values.</p>
 <h2>WSDL</h2>";
 $doc_string .=
     $service->getXMLFragments( array(
@@ -193,7 +198,7 @@ class DataDefinition extends ContainedAsset
 process the definition XML.</p></description>
 <example></example>
 <return-type></return-type>
-<exception></exception>
+<exception>MissingDefaultValueException</exception>
 </documentation>
 */
     public function __construct( 
@@ -331,6 +336,41 @@ The flag <code>$formatted</code> controls whether the XML should be formatted fo
     public function getIdentifiers() : array
     {
         return $this->identifiers;
+    }
+    
+/**
+<documentation><description><p>Returns an array of strings, containing possible values of
+a field. If a field does not have possible values, the method returns an empty array.</p></description>
+<example>u\DebugUtility::dump( $dd->getPossibleValues( $id ) );</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getPossibleValues( string $field_name ) : array
+    {
+        if( !isset( $this->attributes[ $field_name ][ c\T::ITEMS ] ) )
+        {
+            return array();
+        }
+        
+        return explode( self::DELIMITER, $this->attributes[ $field_name ][ c\T::ITEMS ] );
+    }
+    
+/**
+<documentation><description><p>Returns a bool, indicating whether a value is required.</p></description>
+<example>u\DebugUtility::dump( u\StringUtility::boolToString( $dd->getRequired( $id ) ) );</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getRequired( string $field_name ) : bool
+    {
+        if( !isset( $this->attributes[ $field_name ][ "required" ] ) )
+        {
+            return false;
+        }
+        
+        return $this->attributes[ $field_name ][ "required" ];
     }
     
 /**
@@ -473,6 +513,16 @@ $dd->setXML( $xml )->edit();</example>
             $name       = $child->getName();
             $identifier = $child[ c\T::IDENTIFIER ]->__toString();
             $old_group  = $group_names;
+            $default_v  = trim( $child->attributes()->{ $a = "default" } );
+            
+            if( isset( $default_v ) )
+            {
+                $default = $default_v;
+            }
+            else
+            {
+                $default = "";
+            }
             
             if( $name == c\T::GROUP )
             {
@@ -529,7 +579,23 @@ $dd->setXML( $xml )->edit();</example>
                 
                     foreach( $child->{$p = "$item_name-item"} as $item )
                     {
-                        $text[] = $item->attributes()->{ $a = c\T::VALUE };
+                        $text[]  = $item->attributes()->{ $a = c\T::VALUE };
+                        
+                        // checkbox
+                        // use the first selected value as the default
+                        if( !is_null( $item->attributes()->{$a = "checked"} ) )
+                        {
+                            $default = $item->attributes()->{ $a = c\T::VALUE };
+                        }
+                        // multiselect
+                        if( !is_null( $item->attributes()->{$a = "selected"} ) )
+                        {
+                            $default = $item->attributes()->{ $a = c\T::VALUE };
+                        }
+                        elseif( !isset( $default ) )
+                        {
+                            $default = "";
+                        }
                     }
                     
                     $value_string = implode( self::DELIMITER, $text );
@@ -545,16 +611,46 @@ $dd->setXML( $xml )->edit();</example>
                 {
                     $attribute_array[ c\T::ITEMS ] = $value_string;
                 }
+                // the default value
+                if( $default != "" )
+                {
+                	$attribute_array[ "default" ] = (string)$default;
+                }
+                
                 // create the attribute array
                 foreach( $attributes as $key => $value )
                 {
-                    $attribute_array[$key] = $value->__toString();
+                    $attribute_array[ $key ] = $value->__toString();
+                }
+                
+                // for fields that have possible values
+                // if a field requires a default
+                if( isset( $attribute_array[ c\T::ITEMS ] ) )
+                {
+                    $array = explode( self::DELIMITER, $attribute_array[ c\T::ITEMS ] );
+                }
+                
+                // $default is not a possble value
+                if( isset( $array ) && in_array( $default, $array ) === false )
+                {
+                    $default = "";
+                }
+                
+                if( isset( $attribute_array[ "required" ] ) &&
+                    ( !isset( $default ) || $default === "" ) && 
+                    ( $type == c\T::CHECKBOX || $type == c\T::DROPDOWN ||
+                      $type == c\T::RADIOBUTTON || $type == c\T::MULTISELECTOR )
+                )
+                {
+                    throw new e\MissingDefaultValueException( S_SPAN .
+                        "The required field \"" .
+                        $identifier . "\" does not have a valid default value." .
+                        E_SPAN );
                 }
                 
                 // add identifier/attribute array to $this->attributes
                 // add the first item
-                $this->attributes[ $group_names . $identifier ] = 
-                    $attribute_array;
+                $this->attributes[ $group_names . $identifier ] = $attribute_array;
             }
         }
     }
