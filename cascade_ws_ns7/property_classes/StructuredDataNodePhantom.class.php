@@ -4,6 +4,14 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/5/2018 Added phantom value-related code.
+  * 12/28/2017 Added code to unset properties when NULL.
+  * 12/27/2017 Added more REST code.
+  * 12/21/2017 Added the $service object to constructor and processStructuredDataNodes so that isSoap and isRest can be called. Changed toStdClass so that it works with REST.
+  * 9/19/2017 Fixed a bug in processStructuredDataNodes.
+  * 8/1/2017 Added getBlock.
+  * 7/18/2017 Replaced static WSDL code with call to getXMLFragments.
+  * 6/13/2017 Added WSDL.
   * 10/17/2016 Bug fixes.
   * 6/2/2016 Added aliases. Replaced most string literals with constants.
   * 6/1/2016 Added isBlockChooser, isCalendarNode, isCheckboxNode, isDatetimeNode, isDropdownNode,
@@ -24,8 +32,10 @@ use cascade_ws_exception as e;
 use cascade_ws_asset     as a;
 
 /**
-<documentation><description><h2>Introduction</h2>
-<p>A <code>StructuredDataNode</code> object represents a <code>structuredDataNode</code> property found in a <a href="http://www.upstate.edu/web-services/api/property-classes/structured-data.php"><code>StructuredData</code></a> object inside a <a href="http://www.upstate.edu/web-services/api/asset-classes/data-definition-block.php"><code>a\DataDefinitionBlock</code></a> object. This property can also be found in a <a href="http://www.upstate.edu/web-services/api/asset-classes/page.php"><code>a\Page</code></a> object.</p>
+<documentation><description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
+<p>A <code>StructuredDataNode</code> object represents a <code>structuredDataNode</code> property found in a <a href=\"http://www.upstate.edu/web-services/api/property-classes/structured-data.php\"><code>StructuredData</code></a> object inside a <a href=\"http://www.upstate.edu/web-services/api/asset-classes/data-definition-block.php\"><code>a\DataDefinitionBlock</code></a> object. This property can also be found in a <a href=\"http://www.upstate.edu/web-services/api/asset-classes/page.php\"><code>a\Page</code></a> object.</p>
 <p>A <code>StructuredDataNode</code> object can have descendants of the same <code>StructuredDataNode</code> type. Therefore, there must be recursion in the constructor and the <code>toStdClass</code> method.</p>
 <h2>Structure of <code>structureDataNode</code></h2>
 <pre>structuredDataNode (stdClass or array of stdClass)
@@ -52,9 +62,19 @@ use cascade_ws_asset     as a;
 <p>For a field allowing multiple instances, the fully qualified identifier of the first instance is suffixed with '<code>;0</code>', the second instance is suffixed with '<code>;1</code>' and so on. Therefore, if our text field in the group <code>test-group</code> is a multiple text field, then the fully qualified identifier of the first instance of the text will be <code>test-group;test-text;0</code>. Note that this fully qualified identifier remain unchanged even if we add more instances to other fields preceding it. The '<code>;0</code>' part indicates that this is the first instance of this field. Now I can use these fully qualified identifiers as keys for quick look-up.</p>
 <h2>Design Issues</h2>
 <ul>
-<li>A <code>StructuredDataNode</code> object contains a <a href="http://www.upstate.edu/web-services/api/asset-classes/data-definition.php"><code>a\DataDefinition</code></a> object. When a text value assigned to a node, the text value is checked against the definition of the field to make sure it is a valid value.</li>
+<li>A <code>StructuredDataNode</code> object contains a <a href=\"http://www.upstate.edu/web-services/api/asset-classes/data-definition.php\"><code>a\DataDefinition</code></a> object. When a text value assigned to a node, the text value is checked against the definition of the field to make sure it is a valid value.</li>
 <li>Possible values of a multiple-item field can be retrieved using the <code>getItems</code> method.</li>
 </ul>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "structured-data-nodes" ),
+        array( "getComplexTypeXMLByName" => "structured-data-node" ),
+        array( "getSimpleTypeXMLByName"  => "structured-data-type" ),
+        array( "getSimpleTypeXMLByName"  => "structured-data-asset-type" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/property-class-test-code/structured_data_node.php">structured_data_node.php</a></li></ul></postscript>
 </documentation>
@@ -77,7 +97,7 @@ class StructuredDataNodePhantom extends Property
 <documentation><description><p>The constructor.</p></description>
 <example></example>
 <return-type></return-type>
-<exception></exception>
+<exception>NullServiceException</exception>
 </documentation>
 */
     public function __construct( 
@@ -87,10 +107,18 @@ class StructuredDataNodePhantom extends Property
         $index=NULL, 
         $parent_id=NULL ) 
     {
+        if( is_null( $service ) )
+            throw new e\NullServiceException( c\M::NULL_SERVICE );
+            
+        $this->service = $service;
+    
         if( isset( $node ) ) // $node always a single non-NULL object
         {
             $this->parent_id       = $parent_id;
-            $this->type            = $node->type;
+            
+            if( isset( $node->type ) )
+                $this->type        = $node->type;
+                
             $this->data_definition = $dd;
             $this->node_map        = array();
             
@@ -98,7 +126,6 @@ class StructuredDataNodePhantom extends Property
             // note that parent_id ends with a semi-colon
             $this->identifier = $parent_id . $node->identifier;
             
-            // check if this is a multiple field
             $field_identifier = self::getFieldIdentifier( $this->identifier );
             $field            = $this->data_definition->getField( $field_identifier );
             
@@ -166,16 +193,37 @@ class StructuredDataNodePhantom extends Property
             if( $this->type != c\T::GROUP ) // text or asset
             {
                 $this->structured_data_nodes = NULL;
-                $this->text         = $node->text;
-                $this->asset_type   = $node->assetType;
-                $this->block_id     = $node->blockId;
-                $this->block_path   = $node->blockPath;
-                $this->file_id      = $node->fileId;
-                $this->file_path    = $node->filePath;
-                $this->page_id      = $node->pageId;
-                $this->page_path    = $node->pagePath;
-                $this->symlink_id   = $node->symlinkId;
-                $this->symlink_path = $node->symlinkPath;
+                $this->text         = NULL;
+                $this->asset_type   = NULL;
+                $this->block_id     = NULL;
+                $this->block_path   = NULL;
+                $this->file_id      = NULL;
+                $this->file_path    = NULL;
+                $this->page_id      = NULL;
+                $this->page_path    = NULL;
+                $this->symlink_id   = NULL;
+                $this->symlink_path = NULL;
+                
+                if( isset( $node->text ) )
+                    $this->text         = $node->text;
+                if( isset( $node->assetType ) )
+                    $this->asset_type   = $node->assetType;
+                if( isset( $node->blockId ) )
+                    $this->block_id     = $node->blockId;
+                if( isset( $node->blockPath ) )
+                    $this->block_path   = $node->blockPath;
+                if( isset( $node->fileId ) )
+                    $this->file_id      = $node->fileId;
+                if( isset( $node->filePath ) )
+                    $this->file_path    = $node->filePath;
+                if( isset( $node->pageId ) )
+                    $this->page_id      = $node->pageId;
+                if( isset( $node->pagePath ) )
+                    $this->page_path    = $node->pagePath;
+                if( isset( $node->symlinkId ) )
+                    $this->symlink_id   = $node->symlinkId;
+                if( isset( $node->symlinkPath ) )
+                    $this->symlink_path = $node->symlinkPath;
                 $this->node_map     = array( $this->identifier => $this );
             }
             else // group
@@ -238,7 +286,7 @@ class StructuredDataNodePhantom extends Property
         
         // remove digits and semi-colons, turning node id to field id
         $field_id = self::getFieldIdentifier( $node_id );
-        if( self::DEBUG ) { u\DebugUtility::out( "Node ID: " . $node_id . BR . "Field ID: " . $field_id ); }
+        if( self::DEBUG ) { u\DebugUtility::out( "Field ID: " . $field_id ); }
         
         if( !$this->data_definition->isMultiple( $field_id ) )
         {
@@ -274,7 +322,9 @@ class StructuredDataNodePhantom extends Property
         if( self::DEBUG ) { u\DebugUtility::out( "Parent ID: " . $this->parent_id ); }
         
         $clone_obj = new StructuredDataNode( 
-            $this->toStdClass(), NULL, $this->data_definition, 0, $this->parent_id );
+            $this->toStdClass(), $this->service, $this->data_definition, 0, 
+            $this->parent_id );
+            
         if( self::DEBUG ) { u\DebugUtility::dump( $clone_obj->toStdClass() ); }
         
         // work out the new identifier
@@ -305,12 +355,13 @@ class StructuredDataNodePhantom extends Property
                 
             case c\T::GROUP:
                 echo "Type: " . $this->type . BR .
-                    "Identifier: " . $this->identifier . BR;
+                     "Identifier: " . $this->identifier . BR,
+                     "Children size: " . count( $this->structured_data_nodes ) . BR;
                 break;
                 
             case c\T::TEXT:
                 echo "Type: " . $this->type . BR .
-                    "Identifier: " . $this->identifier . BR;
+                     "Identifier: " . $this->identifier . BR;
                 break;
         }
         return $this;
@@ -342,7 +393,24 @@ class StructuredDataNodePhantom extends Property
     {
         return $this->asset_type;
     }
-    
+
+/**
+<documentation><description><p>Returns the block attached to this node or <code>null</code>.</p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+
+    public function getBlock( aohs\AssetOperationHandlerService $service )
+    {
+        if( !is_null( $this->block_id ) )
+        {
+            return a\Block::getBlock( $service, $this->block_id );
+        }
+        return null;
+    }
+
 /**
 <documentation><description><p>Returns <code>blockId</code>.</p></description>
 <example></example>
@@ -1676,36 +1744,90 @@ class StructuredDataNodePhantom extends Property
             if( $node_count == 1 )
             {
                 $obj->structuredDataNodes = new \stdClass();
-                $obj->structuredDataNodes->structuredDataNode =
-                    $this->structured_data_nodes[0]->toStdClass();
+                
+                if( $this->service->isSoap() )
+                    $obj->structuredDataNodes->structuredDataNode =
+                        $this->structured_data_nodes[0]->toStdClass();
+                elseif( $this->service->isRest() )
+                    $obj->structuredDataNodes =
+                        array( $this->structured_data_nodes[0]->toStdClass() );
             }
             else
             {
                 $obj->structuredDataNodes = new \stdClass();
-                $obj->structuredDataNodes->structuredDataNode = array();
+                
+                if( $this->service->isSoap() )
+                    $obj->structuredDataNodes->structuredDataNode = array();
+                elseif( $this->service->isRest() )
+                    $obj->structuredDataNodes = array();
         
                 for( $i = 0; $i < $node_count; $i++ )
                 {
-                    $obj->structuredDataNodes->structuredDataNode[] = 
-                        $this->structured_data_nodes[$i]->toStdClass();
+                    if( $this->service->isSoap() )
+                        $obj->structuredDataNodes->structuredDataNode[] = 
+                            $this->structured_data_nodes[$i]->toStdClass();
+                    elseif( $this->service->isRest() )
+                        $obj->structuredDataNodes[] = 
+                            $this->structured_data_nodes[$i]->toStdClass();
                 }
             }
         }
         else
         {
-            $obj->structuredDataNodes = NULL;
+            //$obj->structuredDataNodes = NULL;
+            unset( $obj->structuredDataNodes );
         }
     
-        $obj->text        = $this->text;
-        $obj->assetType   = $this->asset_type;
-        $obj->blockId     = $this->block_id;
-        $obj->blockPath   = $this->block_path;
-        $obj->fileId      = $this->file_id;
-        $obj->filePath    = $this->file_path;
-        $obj->pageId      = $this->page_id;
-        $obj->pagePath    = $this->page_path;
-        $obj->symlinkId   = $this->symlink_id;
-        $obj->symlinkPath = $this->symlink_path;
+        if( isset( $this->text ) )
+            $obj->text        = $this->text;
+        else
+            unset( $obj->text );
+            
+        if( isset( $this->asset_type ) )
+            $obj->assetType   = $this->asset_type;
+        else
+            unset( $obj->assetType );
+            
+        if( isset( $this->block_id ) )
+            $obj->blockId   = $this->block_id;
+        else
+            unset( $obj->blockId );
+            
+        if( isset( $this->block_path ) )
+            $obj->blockPath   = $this->block_path;
+        else
+            unset( $obj->blockPath );
+            
+        if( isset( $this->file_id ) )
+            $obj->fileId   = $this->file_id;
+        else
+            unset( $obj->fileId );
+            
+        if( isset( $this->file_path ) )
+            $obj->filePath   = $this->file_path;
+        else
+            unset( $obj->filePath );
+            
+        if( isset( $this->page_id ) )
+            $obj->pageId   = $this->page_id;
+        else
+            unset( $obj->pageId );
+            
+        if( isset( $this->page_path ) )
+            $obj->pagePath   = $this->page_path;
+        else
+            unset( $obj->pagePath );
+            
+        if( isset( $this->symlink_id ) )
+            $obj->symlinkId   = $this->symlink_id;
+        else
+            unset( $obj->symlinkId );
+            
+        if( isset( $this->symlink_path ) )
+            $obj->symlinkPath   = $this->symlink_path;
+        else
+            unset( $obj->symlinkPath );
+            
         $obj->recycled    = $this->recycled;
         
         return $obj;
@@ -1799,7 +1921,7 @@ class StructuredDataNodePhantom extends Property
         string $parent_id, array &$node_array,
         $node_std, a\DataDefinition $data_definition=NULL )
     {
-        if( self::DEBUG ) { u\DebugUtility::out( "Parent ID: " . $parent_id ); }  
+        if( self::DEBUG ) { u\DebugUtility::out( "Parent ID: " . $parent_id ); }
         
         if( !is_array( $node_std ) )
         {
@@ -1813,12 +1935,16 @@ class StructuredDataNodePhantom extends Property
         $previous_identifier;
         $current_identifier;
         $cur_index = 0;
+        $processed_mul_ids = array();
         
         // work out the id of the current node for the data definition
         // no digits in the fully qualified identifiers
         for( $i = 0; $i < $node_count; $i++ )
         {
-            $fq_identifier = $node_std[$i]->identifier;
+            if( isset( $node_std[ $i ]->identifier ) )
+            {
+                $fq_identifier = $node_std[ $i ]->identifier;
+            }
             
             if( $parent_id != '' )
             {
@@ -1837,6 +1963,7 @@ class StructuredDataNodePhantom extends Property
                 $fq_identifier = 
                     $temp . self::DELIMITER . $node_std[$i]->identifier;
             }
+        
             
             try
             {
@@ -1855,16 +1982,24 @@ class StructuredDataNodePhantom extends Property
             // a multiple text or group, work out fully qualified identifier
             if( $is_multiple )
             {
-                // an old one, keep counting
-                if( isset( $previous_identifier ) && 
-                    $previous_identifier == $current_identifier ) 
+                if( !in_array( $fq_identifier, array_keys( $processed_mul_ids ) ) )
                 {
-                    $cur_index++;
+                    $processed_mul_ids[ $fq_identifier ] = 0;
                 }
-                else // a new one, start from 0 again
+                else
                 {
-                    $cur_index = 0;
+                    $processed_mul_ids[ $fq_identifier ] += 1;
                 }
+            }
+            
+            // a multiple text or group, work out fully qualified identifier
+            if( $is_multiple )
+            {
+                $cur_index = $processed_mul_ids[ $fq_identifier ];
+            }
+            else
+            {
+                $cur_index = 0;
             }
             
             if( $parent_id != '' )
@@ -1875,11 +2010,10 @@ class StructuredDataNodePhantom extends Property
             else
             {
                 $n = new StructuredDataNodePhantom( 
-                    $node_std[$i], NULL, $data_definition, $cur_index );
+                    $node_std[$i], $service, $data_definition, $cur_index );
             }
             
             $n->parent_id = $parent_id;
-            
             $node_array[ $i ] = $n;
         }
     }
