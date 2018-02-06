@@ -4,6 +4,12 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/5/2018 Added removePhantomValues.
+  * 1/24/2018 Updated documentation.
+  * 12/28/2017 Added REST code and updated documentation.
+  * 8/1/2017 Added getBlock.
+  * 6/26/2017 Replaced static WSDL code with call to getXMLFragments.
+  * 6/13/2017 Added WSDL.
   * 1/17/2017 Added JSON structure and JSON dump.
   * 11/2/2016 Added hasPossibleValues, isMultipleField and isMultipleNode.
   * Rewrote code so that methods like getDataDefinitionId, getDataDefinitionPath do
@@ -53,15 +59,17 @@ use cascade_ws_property  as p;
 
 /**
 <documentation>
-<description><h2>Introduction</h2>
+<description>
+<?php global $service;
+$doc_string = "<h2>Introduction</h2>
 <p>The <code>Page</code> class can be used to represent a page asset and is a sub-class of
-<a href="http://www.upstate.edu/web-services/api/asset-classes/linkable.php"><code>Linkable</code></a>.
+<a href=\"http://www.upstate.edu/web-services/api/asset-classes/linkable.php\"><code>Linkable</code></a>.
 This class can be used to manipulate pages with or without a data definition. The only
 test available to tell them apart is the <code>Page::hasStructuredData</code> method. When
 it returns true, the page is a page associated with a data definition; else it is not. We
 cannot consider the <code>xhtml</code> property because it can be <code>NULL</code> for
 both page sub-types. But note that a page that is associated with data definition and has absolutely no data, this method will return <code>false</code>. Then we have to try to retrieve the associated data definition by calling <code>getDataDefinition</code>, though this method may throw a <code>WrongPageTypeException</code>.</p>
-<p>As I point out in <a href="http://www.upstate.edu/web-services/api/asset-classes/data-definition-block.php"><code>DataDefinitionBlock</code></a>,
+<p>As I point out in <a href=\"http://www.upstate.edu/web-services/api/asset-classes/data-definition-block.php\"><code>DataDefinitionBlock</code></a>,
 even though we are dealing with two sub-types of pages or blocks, it does not make sense
 to split this class, or the <code>DataDefinitionBlock</code> class, into two. One class is
 enough to deal with these sub-types.</p>
@@ -85,6 +93,8 @@ page
   createdBy
   siteId
   siteName
+  reviewOnSchedule (8.5)
+  reviewEvery (8.5)
   metadata
     author
     displayName
@@ -163,16 +173,17 @@ page
       publishable
   maintainAbsoluteLinks
   
-JSON:
+REST:
 page
   contentTypeId
   contentTypePath
   structuredData
-    structuredDataNodes (array)
-      stdClass
-        type
-        identifier
-        structuredDataNodes (array)
+    definitionId
+    definitionPath
+    structuredDataNodes (stdClass or array of stdClass)
+      type
+      identifier
+      structuredDataNodes (stdClass or array of stdClass)
         text
         assetType
         blockId
@@ -184,8 +195,7 @@ page
         symlinkId
         symlinkPath
         recycled
-  pageConfigurations (array)
-    stdClass
+  pageConfigurations (array of stdClass)
       name
       defaultConfiguration
       templateId
@@ -193,26 +203,25 @@ page
       formatId
       formatPath
       formatRecycled
-      pageRegions (array)
-        stdClass
-          name
-          blockId
-          blockPath
-          blockRecycled
-          noBlock
-          formatId
-          formatPath
-          formatRecycled
-          noFormat
-          id
+      pageRegions (array of stdClass)
+        name
+        blockId
+        blockPath
+        blockRecycled
+        noBlock
+        formatId
+        formatPath
+        formatRecycled
+        noFormat
+        id
+      outputExtension
+      serializationType
       includeXMLDeclaration
       publishable
       id
   maintainAbsoluteLinks
   shouldBePublished
   shouldBeIndexed
-  lastPublishedDate
-  lastPublishedBy
   expirationFolderId
   expirationFolderPath
   expirationFolderRecycled
@@ -227,12 +236,12 @@ page
     summary
     teaser
     title
-    dynamicFields (array)
-      stdClass
-        name
-        fieldValues (array)
-          stdClass
-            value
+    dynamicFields (array of stdClass)
+      name
+      fieldValues (array of stdClass)
+        value
+  reviewOnSchedule (8.5)
+  reviewEvery (8.5)
   parentFolderId
   parentFolderPath
   lastModifiedDate
@@ -243,8 +252,24 @@ page
   siteId
   siteName
   name
-  id   
+  id
+  xhtml
 </pre>
+<h2>WSDL</h2>";
+$doc_string .=
+    $service->getXMLFragments( array(
+        array( "getComplexTypeXMLByName" => "page" ),
+        array( "getComplexTypeXMLByName" => "structured-data" ),
+        array( "getComplexTypeXMLByName" => "structured-data-nodes" ),
+        array( "getComplexTypeXMLByName" => "structured-data-node" ),
+        array( "getSimpleTypeXMLByName"  => "structured-data-type" ),
+        array( "getSimpleTypeXMLByName"  => "structured-data-asset-type" ),
+        array( "getComplexTypeXMLByName" => "pageConfigurations" ),
+        array( "getComplexTypeXMLByName" => "page-configurations" ),
+        array( "getComplexTypeXMLByName" => "pageConfiguration" ),
+    ) );
+return $doc_string;
+?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page.php">page.php</a></li>
 <li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/page2.php">page2.php</a></li>
@@ -252,56 +277,204 @@ page
 
 </ul>
 <h2>JSON Dump</h2>
-<pre>
-{ "asset":{
-    "page":{
-      "contentTypeId":"c45a3de47f0000014d7031655feac983",
-      "contentTypePath":"suny-upstate/RWD",
-      "structuredData":{
-        "structuredDataNodes":[ {
-          "type":"text",
-          "identifier":"h1",
-          "text":"Wonderful!",
-          "recycled":false } ] },
-      "pageConfigurations":[ {
-        "name":"RWD",
+<pre>http://mydomain.edu:1234/api/v1/read/page/9e19b89f8b7ffe8353cc17e9c1ab52bb
+
+{
+  "asset":
+  {
+    "page":
+    {
+      "contentTypeId":"61885ed98b7ffe8377b637e8eabc34b0",
+      "contentTypePath":"_brisk:Page",
+      "structuredData":
+      {
+        "structuredDataNodes":[
+        {
+          "type":"group",
+          "identifier":"pre-main-group",
+          "structuredDataNodes":[
+          {
+            "type":"asset",
+            "identifier":"mul-pre-main-chooser",
+            "assetType":"block",
+            "recycled":false
+          } ],
+          "recycled":false
+        },
+        {
+          "type":"group",
+          "identifier":"main-group",
+          "structuredDataNodes":[
+          {
+            "type":"asset",
+            "identifier":"mul-pre-h1-chooser",
+            "assetType":"block",
+            "recycled":false
+          },
+          {
+            "type":"text",
+            "identifier":"h1",
+            "text":"Formats",
+            "recycled":false
+          },
+          {
+            "type":"asset",
+            "identifier":"mul-post-h1-chooser",
+            "assetType":"block",
+            "recycled":false
+          },
+          {
+            "type":"text",
+            "identifier":"float-pre-content-blocks-around-wysiwyg-content",
+            "text":"::CONTENT-XML-CHECKBOX::",
+            "recycled":false
+          },
+          {
+            "type":"text",
+            "identifier":"wysiwyg",
+            "text":"\u003cp\u003eFormats, especially Velocity formats, play a central role in the Standard Model. The architecture of the multiple-design master site relies heavily on formats. Here I want to document the processes of building and using library code. I also provide tutorials and documentation on various Java packages.\u003c/p\u003e",
+            "recycled":false
+          },
+          {
+            "type":"asset",
+            "identifier":"mul-post-wysiwyg-chooser",
+            "assetType":"block",
+            "recycled":false
+          } ],
+          "recycled":false
+        },
+        {
+          "type":"group",
+          "identifier":"post-main-group",
+          "structuredDataNodes":[
+          {
+            "type":"asset",
+            "identifier":"mul-post-main-chooser",
+            "assetType":"block",
+            "recycled":false
+          } ],
+          "recycled":false
+        },
+        {
+          "type":"group",
+          "identifier":"top-group",
+          "structuredDataNodes":[
+          {
+            "type":"asset",
+            "identifier":"mul-top-group-chooser",
+            "assetType":"block",
+            "recycled":false
+          } ],
+          "recycled":false
+        },
+        {
+          "type":"group",
+          "identifier":"bottom-group",
+          "structuredDataNodes":[
+          {
+            "type":"asset",
+            "identifier":"mul-bottom-group-chooser",
+            "assetType":"block",
+            "recycled":false
+          } ],
+          "recycled":false
+        },
+        {
+          "type":"group",
+          "identifier":"admin-group",
+          "structuredDataNodes":[
+          {
+            "type":"asset",
+            "identifier":"master-level-override",
+            "assetType":"block",
+            "recycled":false
+          },
+          {
+            "type":"asset",
+            "identifier":"page-level-override",
+            "blockId":"be0493ed8b7ffe833b19adb83da1d76f",
+        "blockPath":"_brisk:app/components/blocks/script/include-no-content-script",
+            "assetType":"block",
+            "recycled":false
+          } ],
+          "recycled":false
+        } ]
+      },
+      "pageConfigurations":[
+      {
+        "name":"Page",
         "defaultConfiguration":true,
-        "templateId":"c44a60887f0000014d7031654a242191",
-        "templatePath":"suny-upstate/templates/RWD",
+        "templateId":"618863fc8b7ffe8377b637e865012e5d",
+        "templatePath":"_brisk:core/xml",
+        "formatId":"618878dd8b7ffe8377b637e88e2153e9",
+        "formatPath":"_brisk:core/page_template",
         "formatRecycled":false,
-        "pageRegions":[ {
+        "pageRegions":[
+        {
           "name":"DEFAULT",
+          "blockId":"61885d428b7ffe8377b637e8d0cc3dbe",
+          "blockPath":"_brisk:core/calling-page",
           "blockRecycled":false,
           "noBlock":false,
+          "formatId":"61886d138b7ffe8377b637e8b81d2135",
+          "formatPath":"_brisk:core/startup",
           "formatRecycled":false,
           "noFormat":false,
-          "id":"c44a60887f0000014d703165451aa818" } ],
+          "id":"618862fe8b7ffe8377b637e8b8644e1f"
+        } ],
         "includeXMLDeclaration":false,
         "publishable":false,
-        "id":"c44dbf5c7f0000014d703165b91a4add" } ],
+        "id":"9e19b8a08b7ffe8353cc17e92bd3d070"
+      } ],
       "maintainAbsoluteLinks":false,
       "shouldBePublished":true,
       "shouldBeIndexed":true,
       "expirationFolderRecycled":false,
-      "metadata":{
-        "displayName":"",
-        "title":"",
-        "summary":"",
-        "teaser":"",
-        "keywords":"",
-        "metaDescription":"",
-        "author":"" },
-      "parentFolderId":"a226b81c7f0000011d450d2ac664948d",
-      "parentFolderPath":"suny-upstate",
-      "lastModifiedDate":"May 18, 2016 11:35:25 AM",
+      "metadata":
+      {
+        "displayName":"Formats",
+        "title":"Formats",
+        "reviewDate":"Dec 28, 2017 8:51:00 AM",
+        "dynamicFields":[
+        {
+          "name":"exclude-from-menu",
+          "fieldValues":[]
+        },
+        {
+          "name":"exclude-from-left-folder-nav",
+          "fieldValues":[]
+        },
+        {
+          "name":"exclude-from-mobile-menu",
+          "fieldValues":[]
+        },
+        {
+          "name":"tree-picker",
+          "fieldValues":[
+          {
+            "value":"inherited"
+          } ]
+        } ]
+      },
+      "reviewOnSchedule":false,
+      "reviewEvery":0,
+      "parentFolderId":"c12d8d0d8b7ffe83129ed6d86dd9f853",
+      "parentFolderPath":"/",
+      "lastModifiedDate":"Jan 24, 2018 9:10:13 AM",
       "lastModifiedBy":"wing",
-      "createdDate":"May 18, 2016 11:35:25 AM",
+      "createdDate":"Dec 28, 2017 12:09:33 PM",
       "createdBy":"wing",
-      "path":"suny-upstate/my-first-page",
-      "siteId":"9c8883d07f00000140b4daea7170b336",
-      "siteName":"POPs","name":"my-first-page",
-      "id":"c4b8cb807f0000014d703165d37b79a7" } },
-  "success":true
+      "path":"test2",
+      "siteId":"c12d8c498b7ffe83129ed6d81ea4076a",
+      "siteName":"formats",
+      "name":"test2",
+      "id":"9e19b89f8b7ffe8353cc17e9c1ab52bb"
+    }
+  },
+  "authentication":{
+    "username":"user",
+    "password":"secret"
+  }
 }
 </pre>
 </postscript>
@@ -331,8 +504,6 @@ page configurations and structured data.</p></description>
                 ContentType::TYPE, 
                 $this->getProperty()->contentTypeId ) );
         $this->page_configuration_set = $this->content_type->getPageConfigurationSet();
-        $this->metadata_set = $this->content_type->getMetadataSet();
-            
         parent::setPageContentType( $this->content_type );
             
         if( isset( $this->getProperty()->structuredData ) )
@@ -341,13 +512,18 @@ page configurations and structured data.</p></description>
             $this->data_definition    = $this->content_type->getDataDefinition();
 
             // structuredDataNode could be empty for xml pages
-            if( isset( $this->getProperty()->structuredData ) &&
-                isset( $this->getProperty()->structuredData->structuredDataNodes ) &&
-                isset( $this->getProperty()->
-                    structuredData->structuredDataNodes->structuredDataNode )
-            )
+            if( isset( $this->getProperty()->structuredData ) )
             {
-                $this->processStructuredDataPhantom( $this->data_definition_id );
+                if( $this->getService()->isSoap() &&
+                    isset( $this->getProperty()->
+                    structuredData->structuredDataNodes->structuredDataNode ) )
+                {
+                    $this->processStructuredData( $this->data_definition_id );
+                }
+                elseif( $this->getService()->isRest() )
+                {
+                    $this->processStructuredData( $this->data_definition_id );
+                }
             }
         }
         elseif( isset( $this->getProperty()->xhtml ) )
@@ -355,7 +531,12 @@ page configurations and structured data.</p></description>
             $this->xhtml = $this->getProperty()->xhtml;
         }
         
-        $this->processPageConfigurations( $this->getProperty()->pageConfigurations->pageConfiguration );
+        if( $this->getService()->isSoap() )
+            $this->processPageConfigurations(
+                $this->getProperty()->pageConfigurations->pageConfiguration );
+        elseif( $this->getService()->isRest() )
+            $this->processPageConfigurations(
+                $this->getProperty()->pageConfigurations );
     }
 
 /**
@@ -399,7 +580,7 @@ nodes are needed.</p></description>
         if( !$number > 0 )
         {
             throw new e\UnacceptableValueException( 
-                S_SPAN . "The value $number is not a number." . E_SPAN );
+                S_SPAN . "The value $number is not a positive integer." . E_SPAN );
         }
         
         if( !$this->hasNode( $identifier ) )
@@ -512,11 +693,17 @@ successfully, it no longer exists and there will be no structured data to proces
                 $page->xhtml = $this->xhtml;
         }
         
-        $page->pageConfigurations->pageConfiguration = array();
+        if( $this->getService()->isSoap() )
+            $page->pageConfigurations->pageConfiguration = array();
+        elseif( $this->getService()->isRest() )
+            $page->pageConfigurations = array();
         
         foreach( $this->page_configurations as $config )
         {
-            $page->pageConfigurations->pageConfiguration[] = $config->toStdClass();
+            if( $this->getService()->isSoap() )
+                $page->pageConfigurations->pageConfiguration[] = $config->toStdClass();
+            elseif( $this->getService()->isRest() )
+                $page->pageConfigurations[] = $config->toStdClass();
         }
         
         if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $page->pageConfigurations ); }
@@ -541,6 +728,8 @@ successfully, it no longer exists and there will be no structured data to proces
             
             $asset->workflowConfiguration    = $wf_config;
         }
+        
+        //u\DebugUtility::dump( $page );
         
         $asset->{ $p = $this->getPropertyName() } = $page;
         
@@ -578,6 +767,19 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
         return $this->structured_data->getAssetNodeType( $identifier );
     }
     
+/**
+<documentation><description><p>Returns block attached to the node or <code>null</code>.</p></description>
+<example></example>
+<return-type>mixed</return-type>
+<exception>WrongBlockTypeException</exception>
+</documentation>
+*/
+    public function getBlock( string $identifier )
+    {
+        $this->checkStructuredData();
+        return $this->structured_data->getBlock( $identifier );
+    }
+   
 /**
 <documentation><description><p>Returns an array storing information about blocks and
 formats attached to regions of the named configuration at the page level.</p></description>
@@ -977,6 +1179,18 @@ a symlink; therefore, the path can be the <code>filePath</code>, <code>pagePath<
     }
     
 /**
+<documentation><description><p>Returns the associated <code>MetadataSet</code> object.</p></description>
+<example>$page->getMetadataSet()->dump();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getMetadataSet() : Asset
+    {
+        return $this->content_type->getMetadataSet();
+    }
+
+/**
 <documentation><description><p>Returns <code>maintainAbsoluteLinks</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $p->getMaintainAbsoluteLinks() ), BR;</example>
 <return-type>bool</return-type>
@@ -986,49 +1200,6 @@ a symlink; therefore, the path can be the <code>filePath</code>, <code>pagePath<
     public function getMaintainAbsoluteLinks() : bool
     {
         return $this->getProperty()->maintainAbsoluteLinks;
-    }
-    
-/**
-<documentation><description><p>Returns the <code>MetadataSet</code> object.</p></description>
-<example>$p->getMetadataSet()->display();</example>
-<return-type></return-type>
-<exception></exception>
-</documentation>
-*/
-
-    public function getMetadataSet() : Asset
-    {
-        return $this->metadata_set;
-    }
-  
-/**
-<documentation><description><p>Returns the ID of the metadata set. This method overrides
-the parent method because a page does not store the ID of the metadata set. The
-information must be retrieved through the associated content type object.</p></description>
-<example>echo $p->getMetadataSetId(), BR;</example>
-<return-type>string</return-type>
-<exception></exception>
-</documentation>
-*/
-
-    public function getMetadataSetId() : string
-    {
-        return $this->metadata_set->getId();
-    }
-   
-/**
-<documentation><description><p>Returns the path of the metadata set. This method overrides
-the parent method because a page does not store the path of the metadata set. The
-information must be retrieved through the associated content type object.</p></description>
-<example>echo $p->getMetadataSetPath(), BR;</example>
-<return-type>string</return-type>
-<exception></exception>
-</documentation>
-*/
-
-    public function getMetadataSetPath() : string
-    {
-        return $this->metadata_set->getPath();
     }
 
 /**
@@ -1302,18 +1473,6 @@ ignores all other page configurations and is used mainly by <code>Page::setConte
     {
         $this->checkStructuredData();
         return $this->structured_data;
-    }
-    
-/**
-<documentation><description><p>Returns the <a href="http://www.upstate.edu/web-services/api/property-classes/structured-data.php"><code>p\StructuredData</code></a> object.</p></description>
-<example>u\DebugUtility::dump( $p->getStructuredData()->toStdClass() );</example>
-<return-type>StructuredData</return-type>
-<exception>WrongPageTypeException</exception>
-</documentation>
-*/
-    public function getStructuredDataPhantom() : p\StructuredDataPhantom
-    {
-        return $this->getStructuredData();
     }
     
 /**
@@ -2243,7 +2402,7 @@ should be called as well.</p></description>
 */
     public function setContentType( ContentType $c, bool $exception=true ) : Asset
     {
-           // nothing to do if already set
+        // nothing to do if already set
         if( $c->getId() == $this->getContentType()->getId() )
         {
             echo "Nothing to do" . BR;
@@ -2300,7 +2459,8 @@ should be called as well.</p></description>
         if( !$service->isSuccessful() )
         {
             throw new e\EditingFailureException( 
-                S_SPAN . c\M::EDIT_ASSET_FAILURE . E_SPAN . $service->getMessage() );
+                S_SPAN . c\M::EDIT_ASSET_FAILURE . E_SPAN . ": " . 
+                $this->getName() . " " . $service->getMessage() );
         }
         
         if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $this->getProperty()->pageConfigurations ); }
@@ -2785,6 +2945,5 @@ object.</p></description>
     private $data_definition_id;
     private $content_type;
     private $page_configuration_set;
-    private $metadata_set;
     private $data_definition;
 }
