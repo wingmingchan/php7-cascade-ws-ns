@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  *  2/2/2018 Add NULL_CASCADE.
   *  9/28/2017 Added cloud transport-related constants.
   *  9/27/2017 Added cloud transport-related constants.
   *  9/18/2017 Added constants for 8.6.
@@ -243,6 +244,7 @@ class M // messages for exceptions
     const NULL_ASSET                     = "The asset cannot be NULL. ";
     const NULL_BLOCK                     = "The block cannot be NULL. ";
     const NULL_CACHE                     = "The cache cannot be NULL. ";
+    const NULL_CASCADE                   = "The cascade object cannot be NULL. ";
     const NULL_CONTAINER                 = "The container cannot be NULL. ";
     const NULL_CONTENT_TYPE              = "The content type cannot be NULL. ";
     const NULL_FOLDER                    = "The folder cannot be NULL. ";
