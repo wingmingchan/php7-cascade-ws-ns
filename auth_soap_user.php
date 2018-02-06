@@ -30,6 +30,7 @@ try
         $type, $url, $username, $password /*, $context */ );
     $cascade = new a\Cascade( $service );
     $report  = new a\Report( $cascade );
+    $admin   = new a\Administration( $cascade );
 }
 catch( e\ServerException $e )
 {
