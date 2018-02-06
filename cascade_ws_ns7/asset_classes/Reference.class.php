@@ -51,6 +51,7 @@ return $doc_string;
 ?>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/reference.php">reference.php</a></li></ul>
+<h2>JSON Dump</h2>
 <pre>http://mydomain.edu:1234/api/v1/read/reference/28c750538b7ffe8343b94c28494a5cf8
 
 {
