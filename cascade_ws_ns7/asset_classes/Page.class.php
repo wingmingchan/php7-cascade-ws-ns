@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/5/2018 Added removePhantomValues.
   * 1/24/2018 Updated documentation.
   * 12/28/2017 Added REST code and updated documentation.
   * 8/1/2017 Added getBlock.
@@ -2201,9 +2202,15 @@ chooser node, allowing users to choose a page.</p></description>
 */
     public function mapData() : Asset
     {
-        $this->checkStructuredData();
-        $new_sd = $this->structured_data->mapData();
-        return $this->setStructuredData( $new_sd );
+        if( $this->getService()->isSoap() )
+        {
+            $this->checkStructuredData();
+            $new_sd = $this->structured_data->mapData();
+            
+            return $this->setStructuredData( $new_sd );
+        }
+        u\DebugUtility::out( "Soap is required for this to work" );
+        return $this;
     }
     
 /**
@@ -2252,6 +2259,54 @@ qualified identifier of the first node of the set.</p></description>
         $this->checkStructuredData();
         $this->structured_data->removeLastSibling( $identifier );
         $this->edit();
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Removes phantom nodes of type B in the page.</p></description>
+<example>$page->removePhantomNodes();</example>
+<return-type>Asset</return-type>
+<exception>WrongBlockTypeException</exception>
+</documentation>
+*/
+    public function removePhantomNodes( array &$results=NULL ) : Asset
+    {
+        $this->checkStructuredData();
+        // type B
+        if( $this->structured_data->hasPhantomNodes() )
+        {
+            $this->mapData();
+            
+            if( isset( $results ) )
+            {
+            	$results[ self::TYPE ][ "B" ][] = $this->getPath();
+            }
+        }
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Removes phantom values in the page.</p></description>
+<example>$page->removePhantomValues();</example>
+<return-type>Asset</return-type>
+<exception>WrongPageTypeException</exception>
+</documentation>
+*/
+    public function removePhantomValues( array &$results=NULL ) : Asset
+    {
+        $this->checkStructuredData();
+        
+        if( $this->structured_data->hasPhantomValues() )
+        {
+            $this->structured_data->removePhantomValues();
+            
+            if( isset( $results ) )
+            {
+            	$results[ self::TYPE ][] = $this->getPath();
+            }
+            
+            return $this->edit();
+        }
         return $this;
     }
     
