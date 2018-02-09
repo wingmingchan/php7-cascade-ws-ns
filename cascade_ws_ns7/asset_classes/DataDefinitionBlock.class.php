@@ -1420,8 +1420,6 @@ qualified identifier of the first node of the set.</p></description>
         // type B
         if( $this->structured_data->hasPhantomNodes() )
         {
-        	u\DebugUtility::out( "calling mapData" );
-        	
             $this->mapData();
             
             if( isset( $results ) )
