@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/9/2018 Fixed a bug in toStdClass.
   * 12/22/2017 Changed toStdClass so that it works with REST.
   * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -575,9 +576,12 @@ $cascade->setAccessRights( $ari, true );</example>
         
         $entry_array = array();
         
-        foreach( $this->acl_entries as $entry )
+        if( isset( $this->acl_entries ) )
         {
-            $entry_array[] = $entry->toStdClass();
+            foreach( $this->acl_entries as $entry )
+            {
+                $entry_array[] = $entry->toStdClass();
+            }
         }
         
         $obj->aclEntries           = new \stdClass();
