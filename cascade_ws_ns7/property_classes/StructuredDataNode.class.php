@@ -1267,25 +1267,11 @@ class StructuredDataNode extends Property
                             str_replace(
                                 structuredDataNode::CHECKBOX_PREFIX,
                                 "",
-                                $this->getText( $id )
+                                $this->getText()
                             )
                         )
                     );
-/*
-            $actual_values   =
-                explode(
-                    a\DataDefinition::DELIMITER,
-                    str_replace(
-                        StructuredDataNode::SELECTOR_PREFIX,
-                        "",
-                        str_replace(
-                            structuredDataNode::CHECKBOX_PREFIX,
-                            "",
-                            $this->getText()
-                        )
-                    )
-                );
-*/    
+
             $dd_id = u\StringUtility::getFullyQualifiedIdentifierWithoutPositions(
                 $this->identifier );
         
