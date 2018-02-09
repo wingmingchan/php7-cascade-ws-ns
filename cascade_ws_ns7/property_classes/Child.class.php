@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/7/2018 Changed return type of a few methods to mixed.
   * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 9/17/2016 Added initialization of recycled.
@@ -127,11 +128,11 @@ class Child extends Property
 /**
 <documentation><description><p>Returns <code>id</code>.</p></description>
 <example>echo $child->getId(), BR;</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getId() : string
+    public function getId()
     {
         return $this->id;
     }
@@ -139,11 +140,11 @@ class Child extends Property
 /**
 <documentation><description><p>Returns <code>path</code> (a <a href="http://www.upstate.edu/web-services/api/property-classes/path.php"><code>Path</code></a> object).</p></description>
 <example>u\DebugUtility::dump( $child->getPath()->toStdClass() );</example>
-<return-type>Property</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPath() : Property
+    public function getPath()
     {
         return $this->path;
     }
@@ -152,26 +153,29 @@ class Child extends Property
 <documentation><description><p>Returns the <code>path</code> string of <code>path</code>.
 Note that for a <code>a\Site</code> object, this method returns the site name.</p></description>
 <example>echo $child->getPathPath(), BR;</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPathPath() : string
+    public function getPathPath()
     {
         if( isset( $this->path ) )
             return $this->path->getPath();
+        return NULL;
     }
     
 /**
 <documentation><description><p>Returns <code>siteId</code> of <code>path</code>.</p></description>
 <example>echo $child->getPathSiteId(), BR;</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPathSiteId() : string
+    public function getPathSiteId()
     {
-        return $this->path->getSiteId();
+    	if( isset( $this->path ) )
+        	return $this->path->getSiteId();
+        return NULL;
     }
     
 /**
@@ -186,6 +190,7 @@ Note that for a <code>a\Site</code> object, this method returns <code>NULL</code
     {
         if( isset( $this->path ) )
             return $this->path->getSiteName();
+        return NULL;
     }
     
 /**
