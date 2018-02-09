@@ -518,11 +518,11 @@ page configurations and structured data.</p></description>
                     isset( $this->getProperty()->
                     structuredData->structuredDataNodes->structuredDataNode ) )
                 {
-                    $this->processStructuredData( $this->data_definition_id );
+                    $this->processStructuredDataPhantom( $this->data_definition_id );
                 }
                 elseif( $this->getService()->isRest() )
                 {
-                    $this->processStructuredData( $this->data_definition_id );
+                    $this->processStructuredDataPhantom( $this->data_definition_id );
                 }
             }
         }
@@ -1469,7 +1469,7 @@ ignores all other page configurations and is used mainly by <code>Page::setConte
 <exception>WrongPageTypeException</exception>
 </documentation>
 */
-    public function getStructuredData() : p\StructuredDataPhantom
+    public function getStructuredDataPhantom() : p\StructuredDataPhantom
     {
         $this->checkStructuredData();
         return $this->structured_data;
@@ -2807,7 +2807,7 @@ and returns the calling object.</p></description>
         
         $this->edit();
         $dd_id = $this->getDataDefinition()->getId();
-        $this->processStructuredDataPhantom( $dd_id );
+        //$this->processStructuredDataPhantom( $dd_id );
         return $this;
     }
 
