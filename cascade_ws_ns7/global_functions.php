@@ -123,6 +123,14 @@ function assetTreeRemovePhantomNodes(
             $asset->removePhantomNodes( $results );
         }
     }
+    catch( e\WrongBlockTypeException $e )
+    {
+    	// do nothing
+    }
+    catch( e\WrongPageTypeException $e )
+    {
+    	// do nothing
+    }
     // type A
     catch( e\NoSuchFieldException $e )
     {
@@ -130,13 +138,11 @@ function assetTreeRemovePhantomNodes(
         {
             case a\DataDefinitionBlock::TYPE:
                 $asset = new a\DataDefinitionBlockPhantom(
-                    $service, $service->createId(
-                        a\DataDefinitionBlockPhantom::TYPE, $child->getId() ) );
+                    $service, $child->toStdClass() );
                 break;
             case a\Page::TYPE:
                 $asset = new a\PagePhantom(
-                    $service, $service->createId(
-                        a\PagePhantom::TYPE, $child->getId() ) );
+                    $service, $child->toStdClass() );
                 break;
         }
         $dd           = $asset->getDataDefinition();
@@ -144,7 +150,6 @@ function assetTreeRemovePhantomNodes(
             $dd->getStructuredData(), $service, $dd->getId() );
         $phantom_sd   = $asset->getStructuredDataPhantom();
         $healthy_sd   = $healthy_sd->removePhantomNodes( $phantom_sd );
-    
         $asset->setStructuredData( $healthy_sd );
         
         if( isset( $results ) )
@@ -175,7 +180,18 @@ function assetTreeRemovePhantomValues(
         return;
     }
     
-    $child->getAsset( $service )->removePhantomValues( $results );
+    try
+    {
+    	$child->getAsset( $service )->removePhantomValues( $results );
+	}
+	catch( e\WrongBlockTypeException $e )
+    {
+    	// do nothing
+    }
+    catch( e\WrongPageTypeException $e )
+    {
+    	// do nothing
+    }
 }
 
 function assetTreeReportAssetFactoryGroupAssignment( 
@@ -361,6 +377,16 @@ function assetTreeReportPhantomNodes(
             $results[ $type ][ "B" ][] = $child->getPathPath();
         }
     }
+    // XHTML block
+    catch( e\WrongBlockTypeException $e )
+    {
+    	// do nothing
+    }
+    // XHTML page
+    catch( e\WrongPageTypeException $e )
+    {
+    	// do nothing
+    }
     catch( e\NoSuchFieldException $e )
     {
         $results[ $type ][ "A" ][] = $child->getPathPath();
@@ -397,6 +423,16 @@ function assetTreeReportPhantomValues(
     	{
         	$results[ $type ][] = $child->getPathPath();
     	}
+    }
+    // XHTML block
+    catch( e\WrongBlockTypeException $e )
+    {
+    	// do nothing
+    }
+    // XHTML page
+    catch( e\WrongPageTypeException $e )
+    {
+    	// do nothing
     }
     // type A only
     catch( e\NoSuchFieldException $e )
