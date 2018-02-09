@@ -1591,7 +1591,6 @@ chooser node, allowing users to choose a page.</p></description>
             }
             catch( e\NodeException $e )
             {
-                echo $id, BR;
                 continue; // skip phantom nodes
             }
         }
@@ -1605,6 +1604,10 @@ chooser node, allowing users to choose a page.</p></description>
             catch( e\NodeException $e )
             {
                 continue; // skip phantom nodes
+            }
+            catch( e\NoSuchFieldException $e )
+            {
+            	continue; // skip phantom nodes
             }
         }
         return $new_sd;
