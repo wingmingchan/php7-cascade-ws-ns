@@ -27,6 +27,19 @@ An object named <code>$admin</code> should be initialized in an authentication f
 $admin = new a\Administration( $cascade );
 </pre>
 </description>
+<todo>
+clearPermissions
+grantSiteReadAccessToUserGroup
+grantSiteWriteAccessToUserGroup
+grantFolderReadAccessToUserGroup
+grantFolderWriteAccessToUserGroup
+grantSiteReadAccessToAll
+grantFolderReadAccessToAll
+grantSiteWriteAccessToAll
+grantFolderWriteAccessToAll
+grantSiteNoAccessToAll
+grantFolderNoAccessToAll
+</todo>
 <postscript></postscript>
 </documentation>
 */
@@ -51,7 +64,14 @@ class Administration
         $this->cascade = $cascade;
         $this->service = $cascade->getService();
     }
-    
+/*/
+	public function clearPermissions(
+		string $site_name, string $folder_path=NULL,
+		bool $applied_to_children=true ) : Administration
+	{
+		$this
+	}
+/*/
 /**
 <documentation><description><p>Associates types of assets with the corresponding metadata set.
 An entry in the param array should be a string (asset type) as the key and an array as its value.
@@ -137,25 +157,26 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
 <exception></exception>
 </documentation>
 */
-    public function publishAll(
-        string $site_name, string $folder_path=NULL, 
-        string $type, string ...$more_types ) : Administration
+    public function applyToAssets(
+        string $site_name, string $folder_path=NULL,
+        $global_function_names, // string or array of strings
+        array &$params=NULL,
+        array &$results=NULL,
+        string $type, string ...$more_types
+    ) : Administration
     {
-        if( !is_null( $folder_path ) )
-        {
-            $folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
-        }
-        else
-        {
-            $folder = $this->cascade->getSite( $site_name )->getBaseFolder();
-        }
-        
+    	if( !is_array( $global_function_names ) )
+    	{
+    		$global_function_names = array( $global_function_names );
+    	}
+    
         foreach( array_merge( array( $type ), $more_types ) as $v )
         {
-            $type_array[ $v ] = array( "assetTreePublish" );
+            $type_array[ $v ] = $global_function_names;
         }
         
-        $folder->getAssetTree()->traverse( $type_array );
+        $this->getFolder( $site_name, $folder_path )->getAssetTree()->
+        	traverse( $type_array, $params, $results );
     
         return $this;
     }
@@ -173,7 +194,8 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
     public function publishAllFiles(
         string $site_name, string $folder_path=NULL ) : Administration
     {
-        return $this->publishAll( $site_name, $folder_path, File::TYPE );
+        return $this->applyToAssets(
+        	$site_name, $folder_path, "assetTreePublish", $null, $null, File::TYPE );
     }
     
 /**
@@ -187,7 +209,9 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
     public function publishAllFilesPages(
         string $site_name, string $folder_path=NULL ) : Administration
     {
-        return $this->publishAll( $site_name, $folder_path, File::TYPE, Page::TYPE );
+        return $this->applyToAssets(
+        	$site_name, $folder_path, "assetTreePublish", 
+        	$null, $null, File::TYPE, Page::TYPE );
     }
     
 /**
@@ -201,7 +225,8 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
     public function publishAllPages(
         string $site_name, string $folder_path=NULL ) : Administration
     {
-        return $this->publishAll( $site_name, $folder_path, Page::TYPE );
+        return $this->applyToAssets(
+        	$site_name, $folder_path, "assetTreePublish", $null, $null, Page::TYPE );
     }
     
 /**
@@ -216,25 +241,9 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
         string $site_name, string $folder_path=NULL,
         array &$results=NULL ) : Administration
     {
-        if( !is_null( $folder_path ) )
-        {
-            $folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
-        }
-        else
-        {
-            $folder = $this->cascade->getSite( $site_name )->getBaseFolder();
-        }
-    
-        $folder->getAssetTree()->traverse(
-            array(
-                Page::TYPE => array( "assetTreeRemovePhantomNodes" ),
-                DataDefinitionBlock::TYPE => array( "assetTreeRemovePhantomNodes" ),
-            ),
-            NULL,
-            $results
-        );
-    
-        return $this;
+        return $this->applyToAssets(
+        	$site_name, $folder_path, "assetTreeRemovePhantomNodes", 
+        	$null, $results, DataDefinitionBlock::TYPE, Page::TYPE );
     }
     
 /**
@@ -249,25 +258,9 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
         string $site_name, string $folder_path=NULL,
         array &$results=NULL ) : Administration
     {
-        if( !is_null( $folder_path ) )
-        {
-            $folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
-        }
-        else
-        {
-            $folder = $this->cascade->getSite( $site_name )->getBaseFolder();
-        }
-    
-        $folder->getAssetTree()->traverse(
-            array(
-                Page::TYPE => array( "assetTreeRemovePhantomValues" ),
-                DataDefinitionBlock::TYPE => array( "assetTreeRemovePhantomValues" ),
-            ),
-            NULL,
-            $results
-        );
-    
-        return $this;
+        return $this->applyToAssets(
+        	$site_name, $folder_path, "assetTreeRemovePhantomValues", 
+        	$null, $results, DataDefinitionBlock::TYPE, Page::TYPE );
     }
     
 /**
@@ -282,25 +275,9 @@ $admin->reportPhantomNodes( "about" );
     public function reportPhantomNodes(
         string $site_name, string $folder_path=NULL, array &$results ) : Administration
     {
-        if( !is_null( $folder_path ) )
-        {
-            $folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
-        }
-        else
-        {
-            $folder = $this->cascade->getSite( $site_name )->getBaseFolder();
-        }
-    
-        $folder->getAssetTree()->traverse(
-            array(
-                Page::TYPE => array( "assetTreeReportPhantomNodes" ),
-                DataDefinitionBlock::TYPE => array( "assetTreeReportPhantomNodes" ),
-            ),
-            NULL,
-            $results
-        );
-    
-        return $this;
+    	return $this->applyToAssets(
+        	$site_name, $folder_path, "assetTreeReportPhantomNodes", 
+        	$null, $results, DataDefinitionBlock::TYPE, Page::TYPE );
     }
     
 /**
@@ -315,25 +292,9 @@ $admin->reportPhantomNodes( "about" );
     public function reportPhantomValues(
         string $site_name, string $folder_path=NULL, array &$results  ) : array
     {
-        if( !is_null( $folder_path ) )
-        {
-            $folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
-        }
-        else
-        {
-            $folder = $this->cascade->getSite( $site_name )->getBaseFolder();
-        }
-    
-        $folder->getAssetTree()->traverse(
-            array(
-                Page::TYPE => array( "assetTreeReportPhantomValues" ),
-                DataDefinitionBlock::TYPE => array( "assetTreeReportPhantomValues" ),
-            ),
-            NULL,
-            $results
-        );
-    
-        return $results;
+    	return $this->applyToAssets(
+        	$site_name, $folder_path, "assetTreeReportPhantomValues", 
+        	$null, $results, DataDefinitionBlock::TYPE, Page::TYPE );
     }
     
     private function getAssetWithParam( string $type, $param ) : Asset
@@ -360,6 +321,19 @@ $admin->reportPhantomNodes( "about" );
             throw new e\NullAssetException( "No $type is supplied." );
         }
         return $asset;
+    }
+    
+    private function getFolder( string $site_name, string $folder_path=NULL ) : Folder
+    {
+    	if( !is_null( $folder_path ) )
+        {
+            $folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
+        }
+        else
+        {
+            $folder = $this->cascade->getSite( $site_name )->getBaseFolder();
+        }
+        return $folder;
     }
     
     private $cascade;
