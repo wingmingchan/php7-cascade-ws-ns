@@ -2005,12 +2005,14 @@ class StructuredDataNodePhantom extends Property
             if( $parent_id != '' )
             {
                 $n = new StructuredDataNodePhantom( 
-                    $node_std[$i], NULL, $data_definition, $cur_index, $parent_id );
+                    $node_std[$i], $data_definition->getService(),
+                    $data_definition, $cur_index, $parent_id );
             }
             else
             {
                 $n = new StructuredDataNodePhantom( 
-                    $node_std[$i], $service, $data_definition, $cur_index );
+                    $node_std[$i], $data_definition->getService(),
+                    $data_definition, $cur_index );
             }
             
             $n->parent_id = $parent_id;
@@ -2060,5 +2062,6 @@ class StructuredDataNodePhantom extends Property
     private $data_definition;
     private $node_map;
     private static $phantoms = array();
+    private $service;
 }
 ?>
