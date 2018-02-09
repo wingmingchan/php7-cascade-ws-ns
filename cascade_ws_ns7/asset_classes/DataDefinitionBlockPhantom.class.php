@@ -1618,7 +1618,7 @@ passed in, and returns the calling object.</p></description>
         $this->checkStructuredData();
         $this->structured_data = $structured_data;
         $this->edit();
-        $this->processStructuredDataPhantom();
+        //$this->processStructuredDataPhantom();
         return $this;
     }
 
