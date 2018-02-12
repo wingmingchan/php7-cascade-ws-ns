@@ -5,6 +5,7 @@
   *                    German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/12/2018 Added access-related methods.
   * 2/6/2018 Added publishAll.
   * 2/2/2018 Class created.
  */
@@ -28,17 +29,6 @@ $admin = new a\Administration( $cascade );
 </pre>
 </description>
 <todo>
-clearPermissions
-grantSiteReadAccessToUserGroup
-grantSiteWriteAccessToUserGroup
-grantFolderReadAccessToUserGroup
-grantFolderWriteAccessToUserGroup
-grantSiteReadAccessToAll
-grantFolderReadAccessToAll
-grantSiteWriteAccessToAll
-grantFolderWriteAccessToAll
-grantSiteNoAccessToAll
-grantFolderNoAccessToAll
 </todo>
 <postscript></postscript>
 </documentation>
@@ -64,34 +54,26 @@ class Administration
         $this->cascade = $cascade;
         $this->service = $cascade->getService();
     }
-/*/
-	public function clearPermissions(
-		string $site_name, string $folder_path=NULL,
-		bool $applied_to_children=true ) : Administration
-	{
-		$this
-	}
-/*/
+    
 /**
-<documentation><description><p>Associates types of assets with the corresponding metadata set.
+<documentation><description><p>Associates types of assets with the corresponding metadata set and returns the calling object.
 An entry in the param array should be a string (asset type) as the key and an array as its value.
 The inner array should contain information about the folder containing assets of the desired type and information about the metadata set.
 Information can be <code>Asset</code> objects, or a single ID string, or an array of two strings (the site name and the folder path).</p></description>
-<example>
-    $admin->associateAssetsWithMetadataSets( array(
-        // the type of assets to be associated with the metadata set
-        a\Folder::TYPE => array(
-            // the folder containing the assets
-            a\Folder::TYPE      => array( "_cascade/blocks", $site_name ),
-            // the metadata set
-            a\MetadataSet::TYPE => $cascade->getAsset(
-                a\MetadataSet::TYPE, "6188622e8b7ffe8377b637e84e639b54" )
-        ),
-        a\XmlBlock::TYPE => array(
-            a\Folder::TYPE      => "48a581eb8b7ffe834bd90c8f2ef6b1bb",
-            a\MetadataSet::TYPE => "618861da8b7ffe8377b637e8ad3dd499"
-        )
-    ) );
+<example>   $admin->associateAssetsWithMetadataSets( array(
+    // the type of assets to be associated with the metadata set
+    a\Folder::TYPE => array(
+        // the folder containing the assets
+        a\Folder::TYPE      => array( "_cascade/blocks", $site_name ),
+        // the metadata set
+        a\MetadataSet::TYPE => $cascade->getAsset(
+            a\MetadataSet::TYPE, "6188622e8b7ffe8377b637e84e639b54" )
+    ),
+    a\XmlBlock::TYPE => array(
+        a\Folder::TYPE      => "48a581eb8b7ffe834bd90c8f2ef6b1bb",
+        a\MetadataSet::TYPE => "618861da8b7ffe8377b637e8ad3dd499"
+    )
+) );
 </example>
 <return-type>Administration</return-type>
 <exception>NoSuchTypeException</exception>
@@ -148,10 +130,15 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
     }
     
 /**
-<documentation><description><p>Publishes all publishable assets by issuing a publish command on each asset. If <code>$folder_path</code> is provided, then only assets in the corresponding folder will be published. There should be at least one type string supplied.</p></description>
-<example>$admin->publishAllFiles( "about" ); // all files in the site
-
-$admin->publishAllFiles( "about", "images" ); // all files in the images folder
+<documentation><description><p>Applies the named global function(s) to all assets of the specified types and returns the calling object. If <code>$folder_path</code> is provided, then only assets in the corresponding folder will be affected. The third parameter, name(s) of global function(s), can a single string or an array of strings. The fourth parameter, when present, can store paramters to be passed into the global function(s). The fifth parameter, when present, should be array used to stored returned values. The last parameters should be type strings. There should be at least one type string supplied.</p></description>
+<example>$admin->applyToAssets(
+    $site_name,          // the site name
+    $folder_path,        // the folder to be traversed, can be NULL
+    "assetTreePublish",  // global function name
+    $null,               // $params to be passed into global functions
+    $null,               // the $results array to store return values
+    File::TYPE           // types of assets
+);
 </example>
 <return-type>Administration</return-type>
 <exception></exception>
@@ -165,10 +152,10 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
         string $type, string ...$more_types
     ) : Administration
     {
-    	if( !is_array( $global_function_names ) )
-    	{
-    		$global_function_names = array( $global_function_names );
-    	}
+        if( !is_array( $global_function_names ) )
+        {
+            $global_function_names = array( $global_function_names );
+        }
     
         foreach( array_merge( array( $type ), $more_types ) as $v )
         {
@@ -176,13 +163,202 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
         }
         
         $this->getFolder( $site_name, $folder_path )->getAssetTree()->
-        	traverse( $type_array, $params, $results );
+            traverse( $type_array, $params, $results );
     
         return $this;
     }
     
 /**
-<documentation><description><p>Publishes all files by issuing a publish command on each individual file. If <code>$folder_path</code> is provided, then only files in the corresponding folder will be published.</p></description>
+<documentation><description><p>Clears group, user, and all access from the folder and returns the calling object.</p></description>
+<example>$admin->clearFolderAccess(
+    $site_name, "xslt/building-library/java-extension", true );
+</example>
+<exception></exception>
+</documentation>
+*/
+    public function clearFolderAccess(
+        string $site_name, string $folder_path, 
+        bool $applied_to_children=true ) : Administration
+    {
+        $this->cascade->clearPermissions(
+            Folder::TYPE, $folder_path, $site_name, $applied_to_children );
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Grants access to a user or group. <code>$a</code> must be either a <code>User</code> or <code>Group</code> object.</p></description>
+<example>$admin->grantAccess( $ug, Folder::TYPE, $folder_path, $site_name,
+    $applied_to_children, c\T::READ );
+</example>
+<exception>WrongAssetTypeException</exception>
+</documentation>
+*/
+    public function grantAccess( Asset $a, string $type, string $path, 
+        string $site_name, bool $applied_to_children=true, 
+        string $level=c\T::READ ) : Administration
+    {
+        $this->cascade->grantAccess( $a, $type, $path, $site_name,
+            $applied_to_children, $level );
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Grants folder no access (none) to all.</p></description>
+<example>$admin->grantFolderNoneAccessToAll( $site_name, $folder_path, true );
+</example>
+<exception></exception>
+</documentation>
+*/
+    public function grantFolderNoneAccessToAll( string $site_name, $folder_path,
+        bool $applied_to_children=true ) : Administration
+    {
+        $this->setAllLevel(
+            Folder::TYPE, $site_name, $folder_path, c\T::NONE, $applied_to_children );
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Grants folder read access to all.</p></description>
+<example>$admin->grantFolderReadAccessToAll( $site_name, $folder_path, true );
+</example>
+<exception></exception>
+</documentation>
+*/
+    public function grantFolderReadAccessToAll( string $site_name, $folder_path,
+        bool $applied_to_children=true ) : Administration
+    {
+        $this->setAllLevel(
+            Folder::TYPE, $site_name, $folder_path, c\T::READ, $applied_to_children );
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Grants folder read access to a user or group. <code>$ug</code> must be either a <code>User</code> or <code>Group</code> object.</p></description>
+<example>$admin->grantFolderReadAccessToUserGroup( $site_name, $folder_path, true, $group );
+</example>
+<exception>WrongAssetTypeException</exception>
+</documentation>
+*/
+    public function grantFolderReadAccessToUserGroup(
+        string $site_name, string $folder_path, 
+        bool $applied_to_children=true, Asset $ug ) : Administration
+    {
+        $this->cascade->grantAccess( $ug, Folder::TYPE, $folder_path, $site_name,
+            $applied_to_children, c\T::READ );
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Grants folder write access to all.</p></description>
+<example>$admin->grantFolderWriteAccessToAll( $site_name, $folder_path, true );
+</example>
+<exception></exception>
+</documentation>
+*/
+    public function grantFolderWriteAccessToAll( string $site_name, $folder_path,
+        bool $applied_to_children=true ) : Administration
+    {
+        $this->setAllLevel(
+            Folder::TYPE, $site_name, $folder_path, c\T::WRITE, $applied_to_children );
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Grants folder write access to a user or group. <code>$ug</code> must be either a <code>User</code> or <code>Group</code> object.</p></description>
+<example>$admin->grantFolderWriteAccessToUserGroup(
+    $site_name, $folder_path, true, $group );
+</example>
+<exception>WrongAssetTypeException</exception>
+</documentation>
+*/
+    public function grantFolderWriteAccessToUserGroup(
+        string $site_name, string $folder_path, 
+        bool $applied_to_children=true, Asset $ug ) : Administration
+    {
+        $this->cascade->grantAccess( $ug, Folder::TYPE, $folder_path, $site_name,
+            $applied_to_children, c\T::WRITE );
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Grants site no access (none) to all.</p></description>
+<example>$admin->grantSiteNoneAccessToAll( $site_name, true );
+</example>
+<exception></exception>
+</documentation>
+*/
+    public function grantSiteNoneAccessToAll( string $site_name, 
+        bool $applied_to_children=true ) : Administration
+    {
+        $this->setAllLevel(
+            Folder::TYPE, $site_name, "/", c\T::NONE, $applied_to_children );
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Grants site read access to all.</p></description>
+<example>$admin->grantSiteReadAccessToAll( $site_name, true );
+</example>
+<exception></exception>
+</documentation>
+*/
+    public function grantSiteReadAccessToAll( string $site_name, 
+        bool $applied_to_children=true ) : Administration
+    {
+        $this->setAllLevel(
+            Folder::TYPE, $site_name, "/", c\T::READ, $applied_to_children );
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Grants site read access to a user or group. <code>$ug</code> must be either a <code>User</code> or <code>Group</code> object.</p></description>
+<example>$admin->grantSiteReadAccessToUserGroup( $site_name, true, $group );
+</example>
+<exception>WrongAssetTypeException</exception>
+</documentation>
+*/
+    public function grantSiteReadAccessToUserGroup(
+        string $site_name, 
+        bool $applied_to_children=true, Asset $ug ) : Administration
+    {
+        $this->cascade->grantAccess( $ug, Folder::TYPE, "/", $site_name,
+            $applied_to_children, c\T::READ );
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Grants site write access to all.</p></description>
+<example>$admin->grantSiteWriteAccessToAll( $site_name, true );
+</example>
+<exception></exception>
+</documentation>
+*/
+    public function grantSiteWriteAccessToAll( string $site_name, 
+        bool $applied_to_children=true ) : Administration
+    {
+        $this->setAllLevel(
+            Folder::TYPE, $site_name, "/", c\T::WRITE, $applied_to_children );
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Grants site write access to a user or group. <code>$ug</code> must be either a <code>User</code> or <code>Group</code> object.</p></description>
+<example>$admin->grantSiteWriteAccessToUserGroup( $site_name, true, $group );
+</example>
+<exception>WrongAssetTypeException</exception>
+</documentation>
+*/
+    public function grantSiteWriteAccessToUserGroup(
+        string $site_name, 
+        bool $applied_to_children=true, Asset $ug ) : Administration
+    {
+        $this->cascade->grantAccess( $ug, Folder::TYPE, "/", $site_name,
+            $applied_to_children, c\T::WRITE );
+        return $this;
+    }
+
+/**
+<documentation><description><p>Publishes all files by issuing a publish command on each individual file and returns the calling object. If <code>$folder_path</code> is provided, then only files in the corresponding folder will be published.</p></description>
 <example>$admin->publishAllFiles( "about" ); // all files in the site
 
 $admin->publishAllFiles( "about", "images" ); // all files in the images folder
@@ -195,11 +371,11 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
         string $site_name, string $folder_path=NULL ) : Administration
     {
         return $this->applyToAssets(
-        	$site_name, $folder_path, "assetTreePublish", $null, $null, File::TYPE );
+            $site_name, $folder_path, "assetTreePublish", $null, $null, File::TYPE );
     }
     
 /**
-<documentation><description><p>Publishes all files and pages by issuing a publish command on each individual file/page. If <code>$folder_path</code> is provided, then only files/pages in the corresponding folder will be published.</p></description>
+<documentation><description><p>Publishes all files and pages by issuing a publish command on each individual file/page and returns the calling object. If <code>$folder_path</code> is provided, then only files/pages in the corresponding folder will be published.</p></description>
 <example>$admin->publishAllFilesPages( "about" ); // all files in the site
 </example>
 <return-type>Administration</return-type>
@@ -210,12 +386,12 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
         string $site_name, string $folder_path=NULL ) : Administration
     {
         return $this->applyToAssets(
-        	$site_name, $folder_path, "assetTreePublish", 
-        	$null, $null, File::TYPE, Page::TYPE );
+            $site_name, $folder_path, "assetTreePublish", 
+            $null, $null, File::TYPE, Page::TYPE );
     }
     
 /**
-<documentation><description><p>Publishes all pages by issuing a publish command on each individual page. If <code>$folder_path</code> is provided, then only pages in the corresponding folder will be published.</p></description>
+<documentation><description><p>Publishes all pages by issuing a publish command on each individual page and returns the calling object. If <code>$folder_path</code> is provided, then only pages in the corresponding folder will be published.</p></description>
 <example>$admin->publishAllPages( "about" ); // all files in the site
 </example>
 <return-type>Administration</return-type>
@@ -226,11 +402,11 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
         string $site_name, string $folder_path=NULL ) : Administration
     {
         return $this->applyToAssets(
-        	$site_name, $folder_path, "assetTreePublish", $null, $null, Page::TYPE );
+            $site_name, $folder_path, "assetTreePublish", $null, $null, Page::TYPE );
     }
     
 /**
-<documentation><description><p>Removes phantom nodes of both type A and B from pages and data definition blocks. If <code>$folder_path</code> is provided, then only pages/blocks in the corresponding folder will be affected. If an array is also supplied, then the array will store paths of all pages/blocks that are modified.</p></description>
+<documentation><description><p>Removes phantom nodes of both type A and B from pages and data definition blocks and returns the calling object. If <code>$folder_path</code> is provided, then only pages/blocks in the corresponding folder will be affected. If an array is also supplied, then the array will store paths of all pages/blocks that are modified.</p></description>
 <example>$admin->removePhantomNodes( "about" );
 </example>
 <return-type>Administration</return-type>
@@ -242,12 +418,12 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
         array &$results=NULL ) : Administration
     {
         return $this->applyToAssets(
-        	$site_name, $folder_path, "assetTreeRemovePhantomNodes", 
-        	$null, $results, DataDefinitionBlock::TYPE, Page::TYPE );
+            $site_name, $folder_path, "assetTreeRemovePhantomNodes", 
+            $null, $results, DataDefinitionBlock::TYPE, Page::TYPE );
     }
     
 /**
-<documentation><description><p>Removes phantom values from pages and data definition blocks. If <code>$folder_path</code> is provided, then only pages/blocks in the corresponding folder will be affected. If an array is also supplied, then the array will store paths of all pages/blocks that are modified.</p></description>
+<documentation><description><p>Removes phantom values from pages and data definition blocks and returns the calling object. If <code>$folder_path</code> is provided, then only pages/blocks in the corresponding folder will be affected. If an array is also supplied, then the array will store paths of all pages/blocks that are modified.</p></description>
 <example>$admin->removePhantomValues( "about" );
 </example>
 <return-type>Administration</return-type>
@@ -259,15 +435,13 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
         array &$results=NULL ) : Administration
     {
         return $this->applyToAssets(
-        	$site_name, $folder_path, "assetTreeRemovePhantomValues", 
-        	$null, $results, DataDefinitionBlock::TYPE, Page::TYPE );
+            $site_name, $folder_path, "assetTreeRemovePhantomValues", 
+            $null, $results, DataDefinitionBlock::TYPE, Page::TYPE );
     }
     
 /**
-<documentation><description><p>Reports phantom nodes in pages and data definition blocks. If <code>$folder_path</code> is provided, then only pages/blocks in the corresponding folder will be examined. The array for storing the report must be supplied.</p></description>
-<example>
-$admin->reportPhantomNodes( "about" );
-</example>
+<documentation><description><p>Reports phantom nodes in pages and data definition blocks and returns the calling object. If <code>$folder_path</code> is provided, then only pages/blocks in the corresponding folder will be examined. The array for storing the report must be supplied.</p></description>
+<example>$admin->reportPhantomNodes( "about" );</example>
 <return-type>Administration</return-type>
 <exception></exception>
 </documentation>
@@ -275,16 +449,14 @@ $admin->reportPhantomNodes( "about" );
     public function reportPhantomNodes(
         string $site_name, string $folder_path=NULL, array &$results ) : Administration
     {
-    	return $this->applyToAssets(
-        	$site_name, $folder_path, "assetTreeReportPhantomNodes", 
-        	$null, $results, DataDefinitionBlock::TYPE, Page::TYPE );
+        return $this->applyToAssets(
+            $site_name, $folder_path, "assetTreeReportPhantomNodes", 
+            $null, $results, DataDefinitionBlock::TYPE, Page::TYPE );
     }
     
 /**
-<documentation><description><p>Reports phantom values in pages and data definition blocks. If <code>$folder_path</code> is provided, then only pages/blocks in the corresponding folder will be examined. The array for storing the report must be supplied.</p></description>
-<example>
-$admin->reportPhantomNodes( "about" );
-</example>
+<documentation><description><p>Reports phantom values in pages and data definition blocks and returns the calling object. If <code>$folder_path</code> is provided, then only pages/blocks in the corresponding folder will be examined. The array for storing the report must be supplied.</p></description>
+<example>$admin->reportPhantomNodes( "about" );</example>
 <return-type>Administration</return-type>
 <exception></exception>
 </documentation>
@@ -292,9 +464,26 @@ $admin->reportPhantomNodes( "about" );
     public function reportPhantomValues(
         string $site_name, string $folder_path=NULL, array &$results  ) : array
     {
-    	return $this->applyToAssets(
-        	$site_name, $folder_path, "assetTreeReportPhantomValues", 
-        	$null, $results, DataDefinitionBlock::TYPE, Page::TYPE );
+        return $this->applyToAssets(
+            $site_name, $folder_path, "assetTreeReportPhantomValues", 
+            $null, $results, DataDefinitionBlock::TYPE, Page::TYPE );
+    }
+    
+/**
+<documentation><description><p>Sets the access for all to an asset. <code>$type</code> is the asset type.</p></description>
+<example>$admin->setAllLevel( Folder::TYPE, $site_name, $folder_path, c\T::READ, true );
+</example>
+<exception></exception>
+</documentation>
+*/
+    public function setAllLevel( 
+        string $type, string $site_name, string $path, 
+        string $level=c\T::NONE, bool $applied_to_children=true ) : Administration
+    {
+        $ari = $this->cascade->getAccessRights( $type, $path, $site_name );
+        $ari->setAllLevel( $level );
+        $this->cascade->setAccessRights( $ari, $applied_to_children );
+        return $this;
     }
     
     private function getAssetWithParam( string $type, $param ) : Asset
@@ -325,7 +514,7 @@ $admin->reportPhantomNodes( "about" );
     
     private function getFolder( string $site_name, string $folder_path=NULL ) : Folder
     {
-    	if( !is_null( $folder_path ) )
+        if( !is_null( $folder_path ) )
         {
             $folder = $this->cascade->getAsset( Folder::TYPE, $folder_path, $site_name );
         }
