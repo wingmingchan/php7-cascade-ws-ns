@@ -5,6 +5,7 @@
   *                    German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/13/2018 Added __call.
   * 2/12/2018 Added access-related methods.
   * 2/6/2018 Added publishAll.
   * 2/2/2018 Class created.
@@ -38,7 +39,7 @@ class Administration
     const DEBUG      = false;
     const DUMP       = false;
     const NAME_SPACE = "cascade_ws_asset";
-    
+
 /**
 <documentation><description><p>The constructor. Note that the <code>$cascade</code> object is passed into the constructor.</p></description>
 <exception>NullServiceException</exception>
@@ -54,7 +55,19 @@ class Administration
         $this->cascade = $cascade;
         $this->service = $cascade->getService();
     }
-    
+
+/**
+<documentation><description><p>This single method generates all methods defined in the <code>Cascade</code> class. That is to say, any method call of the form <code>$obj = $cascade->method( $params )</code> can now be called using <code>$obj = $admin->method( $params )</code>.</p></description>
+<example>$dd = $admin->getDataDefinition( $dd_id );</example>
+<return-type>mixed</return-type>
+<exception>NoSuchMethodException</exception>
+</documentation>
+*/
+    function __call( string $func, array $params )
+    {
+        return call_user_func_array( [ $this->cascade, $func ], $params );
+    }
+
 /**
 <documentation><description><p>Associates types of assets with the corresponding metadata set and returns the calling object.
 An entry in the param array should be a string (asset type) as the key and an array as its value.
@@ -66,7 +79,7 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
         // the folder containing the assets
         a\Folder::TYPE      => array( "_cascade/blocks", $site_name ),
         // the metadata set
-        a\MetadataSet::TYPE => $cascade->getAsset(
+        a\MetadataSet::TYPE => $admin->getAsset(
             a\MetadataSet::TYPE, "6188622e8b7ffe8377b637e84e639b54" )
     ),
     a\XmlBlock::TYPE => array(
@@ -128,7 +141,7 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
         
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Applies the named global function(s) to all assets of the specified types and returns the calling object. If <code>$folder_path</code> is provided, then only assets in the corresponding folder will be affected. The third parameter, name(s) of global function(s), can a single string or an array of strings. The fourth parameter, when present, can store paramters to be passed into the global function(s). The fifth parameter, when present, should be array used to stored returned values. The last parameters should be type strings. There should be at least one type string supplied.</p></description>
 <example>$admin->applyToAssets(
@@ -156,7 +169,7 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
         {
             $global_function_names = array( $global_function_names );
         }
-    
+
         foreach( array_merge( array( $type ), $more_types ) as $v )
         {
             $type_array[ $v ] = $global_function_names;
@@ -164,10 +177,10 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
         
         $this->getFolder( $site_name, $folder_path )->getAssetTree()->
             traverse( $type_array, $params, $results );
-    
+
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Clears group, user, and all access from the folder and returns the calling object.</p></description>
 <example>$admin->clearFolderAccess(
@@ -184,7 +197,7 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
             Folder::TYPE, $folder_path, $site_name, $applied_to_children );
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Grants access to a user or group. <code>$a</code> must be either a <code>User</code> or <code>Group</code> object.</p></description>
 <example>$admin->grantAccess( $ug, Folder::TYPE, $folder_path, $site_name,
@@ -201,7 +214,7 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
             $applied_to_children, $level );
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Grants folder no access (none) to all.</p></description>
 <example>$admin->grantFolderNoneAccessToAll( $site_name, $folder_path, true );
@@ -216,7 +229,7 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
             Folder::TYPE, $site_name, $folder_path, c\T::NONE, $applied_to_children );
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Grants folder read access to all.</p></description>
 <example>$admin->grantFolderReadAccessToAll( $site_name, $folder_path, true );
@@ -231,7 +244,7 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
             Folder::TYPE, $site_name, $folder_path, c\T::READ, $applied_to_children );
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Grants folder read access to a user or group. <code>$ug</code> must be either a <code>User</code> or <code>Group</code> object.</p></description>
 <example>$admin->grantFolderReadAccessToUserGroup( $site_name, $folder_path, true, $group );
@@ -247,7 +260,7 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
             $applied_to_children, c\T::READ );
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Grants folder write access to all.</p></description>
 <example>$admin->grantFolderWriteAccessToAll( $site_name, $folder_path, true );
@@ -262,7 +275,7 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
             Folder::TYPE, $site_name, $folder_path, c\T::WRITE, $applied_to_children );
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Grants folder write access to a user or group. <code>$ug</code> must be either a <code>User</code> or <code>Group</code> object.</p></description>
 <example>$admin->grantFolderWriteAccessToUserGroup(
@@ -279,7 +292,7 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
             $applied_to_children, c\T::WRITE );
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Grants site no access (none) to all.</p></description>
 <example>$admin->grantSiteNoneAccessToAll( $site_name, true );
@@ -294,7 +307,7 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
             Folder::TYPE, $site_name, "/", c\T::NONE, $applied_to_children );
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Grants site read access to all.</p></description>
 <example>$admin->grantSiteReadAccessToAll( $site_name, true );
@@ -309,7 +322,7 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
             Folder::TYPE, $site_name, "/", c\T::READ, $applied_to_children );
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Grants site read access to a user or group. <code>$ug</code> must be either a <code>User</code> or <code>Group</code> object.</p></description>
 <example>$admin->grantSiteReadAccessToUserGroup( $site_name, true, $group );
@@ -325,7 +338,7 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
             $applied_to_children, c\T::READ );
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Grants site write access to all.</p></description>
 <example>$admin->grantSiteWriteAccessToAll( $site_name, true );
@@ -340,7 +353,7 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
             Folder::TYPE, $site_name, "/", c\T::WRITE, $applied_to_children );
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Grants site write access to a user or group. <code>$ug</code> must be either a <code>User</code> or <code>Group</code> object.</p></description>
 <example>$admin->grantSiteWriteAccessToUserGroup( $site_name, true, $group );
@@ -373,7 +386,7 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
         return $this->applyToAssets(
             $site_name, $folder_path, "assetTreePublish", $null, $null, File::TYPE );
     }
-    
+
 /**
 <documentation><description><p>Publishes all files and pages by issuing a publish command on each individual file/page and returns the calling object. If <code>$folder_path</code> is provided, then only files/pages in the corresponding folder will be published.</p></description>
 <example>$admin->publishAllFilesPages( "about" ); // all files in the site
@@ -389,7 +402,7 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
             $site_name, $folder_path, "assetTreePublish", 
             $null, $null, File::TYPE, Page::TYPE );
     }
-    
+
 /**
 <documentation><description><p>Publishes all pages by issuing a publish command on each individual page and returns the calling object. If <code>$folder_path</code> is provided, then only pages in the corresponding folder will be published.</p></description>
 <example>$admin->publishAllPages( "about" ); // all files in the site
@@ -404,7 +417,7 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
         return $this->applyToAssets(
             $site_name, $folder_path, "assetTreePublish", $null, $null, Page::TYPE );
     }
-    
+
 /**
 <documentation><description><p>Removes phantom nodes of both type A and B from pages and data definition blocks and returns the calling object. If <code>$folder_path</code> is provided, then only pages/blocks in the corresponding folder will be affected. If an array is also supplied, then the array will store paths of all pages/blocks that are modified.</p></description>
 <example>$admin->removePhantomNodes( "about" );
@@ -421,7 +434,7 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
             $site_name, $folder_path, "assetTreeRemovePhantomNodes", 
             $null, $results, DataDefinitionBlock::TYPE, Page::TYPE );
     }
-    
+
 /**
 <documentation><description><p>Removes phantom values from pages and data definition blocks and returns the calling object. If <code>$folder_path</code> is provided, then only pages/blocks in the corresponding folder will be affected. If an array is also supplied, then the array will store paths of all pages/blocks that are modified.</p></description>
 <example>$admin->removePhantomValues( "about" );
@@ -438,7 +451,7 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
             $site_name, $folder_path, "assetTreeRemovePhantomValues", 
             $null, $results, DataDefinitionBlock::TYPE, Page::TYPE );
     }
-    
+
 /**
 <documentation><description><p>Reports phantom nodes in pages and data definition blocks and returns the calling object. If <code>$folder_path</code> is provided, then only pages/blocks in the corresponding folder will be examined. The array for storing the report must be supplied.</p></description>
 <example>$admin->reportPhantomNodes( "about" );</example>
@@ -453,7 +466,7 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
             $site_name, $folder_path, "assetTreeReportPhantomNodes", 
             $null, $results, DataDefinitionBlock::TYPE, Page::TYPE );
     }
-    
+
 /**
 <documentation><description><p>Reports phantom values in pages and data definition blocks and returns the calling object. If <code>$folder_path</code> is provided, then only pages/blocks in the corresponding folder will be examined. The array for storing the report must be supplied.</p></description>
 <example>$admin->reportPhantomNodes( "about" );</example>
@@ -468,7 +481,7 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
             $site_name, $folder_path, "assetTreeReportPhantomValues", 
             $null, $results, DataDefinitionBlock::TYPE, Page::TYPE );
     }
-    
+
 /**
 <documentation><description><p>Sets the access for all to an asset. <code>$type</code> is the asset type.</p></description>
 <example>$admin->setAllLevel( Folder::TYPE, $site_name, $folder_path, c\T::READ, true );
@@ -485,7 +498,7 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
         $this->cascade->setAccessRights( $ari, $applied_to_children );
         return $this;
     }
-    
+
     private function getAssetWithParam( string $type, $param ) : Asset
     {
         if( is_string( $param ) && $this->service->isHexString( $param ) )
@@ -511,7 +524,7 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
         }
         return $asset;
     }
-    
+
     private function getFolder( string $site_name, string $folder_path=NULL ) : Folder
     {
         if( !is_null( $folder_path ) )
@@ -524,7 +537,7 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
         }
         return $folder;
     }
-    
+
     private $cascade;
     private $service;
 }
