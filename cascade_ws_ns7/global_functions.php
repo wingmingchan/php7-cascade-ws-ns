@@ -149,8 +149,12 @@ function assetTreeRemovePhantomNodes(
         $healthy_sd   = new p\StructuredData(
             $dd->getStructuredData(), $service, $dd->getId() );
         $phantom_sd   = $asset->getStructuredDataPhantom();
+        //u\DebugUtility::dump( $phantom_sd->getIdentifiers() );
+        
         $healthy_sd   = $healthy_sd->removePhantomNodes( $phantom_sd );
-        $asset->setStructuredData( $healthy_sd );
+        //u\DebugUtility::dump( $healthy_sd->getIdentifiers() );
+        u\DebugUtility::dump( $healthy_sd->toStdClass() );
+        //$asset->setStructuredData( $healthy_sd );
         
         if( isset( $results ) )
         {
