@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/14/2018 Fixed a bug in removePhantomNodes.
   * 2/5/2018 Added phantom value-related code.
   * 12/21/2017 Added the $service object to constructor and pass it into processStructuredDataNodes so that isSoap and isRest can be called. Changed toStdClass so that it works with REST.
   * 12/19/2017 Added throwException with asset id and path information in messages,
@@ -1581,8 +1582,8 @@ chooser node, allowing users to choose a page.</p></description>
             {
                 if( $this->isIdentifierOfFirstNode( $id ) )
                 {
-                    $num_of_instances = $this->getNumberOfSiblings( $id );
-                
+                    $num_of_instances = $sdp->getNumberOfSiblings( $id );
+                    
                     if( $num_of_instances > 1 )
                     {
                         $new_sd->createNInstancesForMultipleField( $num_of_instances, $id );
