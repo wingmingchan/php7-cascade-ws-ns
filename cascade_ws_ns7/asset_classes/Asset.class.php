@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 3/10/2018 Added getXml.
   * 12/29/2017 Updated getSubscribers.
   * 12/26/2017 Added REST code to edit.
   * 12/21/2017 Added dumpJSON.
@@ -130,6 +131,27 @@ abstract class Asset
         $this->type          = $identifier->type;
         $this->property_name = c\T::$type_property_name_map[ $this->type ];
         $this->property      = $property;
+        
+        if( $service->isSoap() )
+        {
+        	$response = $service->getLastResponse();
+    		$doc = new \DOMDocument();
+    		$doc->loadXML( $response );
+    		// get the asset element
+    		$asset = $doc->getElementsByTagName( 
+    			c\T::$type_property_name_map[ $identifier->type ] )->
+        		item( 0 );
+    		$xml_string = $asset->ownerDocument->saveXML( $asset );
+    		// clean up attributes with namespace
+    		$xml_string = str_replace(
+    			' xsi:nil="true"', "", $xml_string );
+    		$this->xml = $xml_string;
+    		$this->json = "";
+    	}
+    	elseif( $service->isRest() )
+    	{
+    		$this->json = "";
+    	}
         
         if( isset( $property->id ) )
         {
@@ -615,6 +637,11 @@ echo "There are " . count( $subscribers ) . " subscribers.", BR;</example>
         return $this->type;
     }
     
+    public function getXml() : string
+    {
+        return $this->xml;
+    }
+    
 /**
 <documentation><description><p>Publishes all publishable subscribers to the supplied destination, or to all destinations if none supplied, and returns the calling object.</p></description>
 <example>$page->publishSubscribers( 
@@ -724,5 +751,7 @@ echo "There are " . count( $subscribers ) . " subscribers.", BR;</example>
     private $site_id;
     /** @var string The site name */
     private $site_name;
+    private $xml;
+    private $json;
 }
 ?>
