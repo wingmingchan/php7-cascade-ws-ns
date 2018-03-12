@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 3/12/2018 Added getJson.
   * 3/10/2018 Added getXml.
   * 12/29/2017 Updated getSubscribers.
   * 12/26/2017 Added REST code to edit.
@@ -131,6 +132,7 @@ abstract class Asset
         $this->type          = $identifier->type;
         $this->property_name = c\T::$type_property_name_map[ $this->type ];
         $this->property      = $property;
+        $this->json          = json_encode( $this->property );
         
         if( $service->isSoap() )
         {
@@ -145,12 +147,7 @@ abstract class Asset
     		// clean up attributes with namespace
     		$xml_string = str_replace(
     			' xsi:nil="true"', "", $xml_string );
-    		$this->xml = $xml_string;
-    		$this->json = "";
-    	}
-    	elseif( $service->isRest() )
-    	{
-    		$this->json = "";
+    		$this->xml  = $xml_string;
     	}
         
         if( isset( $property->id ) )
@@ -516,6 +513,18 @@ abstract class Asset
     }
     
 /**
+<documentation><description><p>Returns a JSON string representing the asset.</p></description>
+<example>echo $page->getXml();</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getJson() : string
+    {
+        return json_encode( $this->property );
+    }
+    
+/**
 <documentation><description><p>Returns <code>name</code>.</p></description>
 <example>echo $page->getName(), BR;</example>
 <return-type>string</return-type>
@@ -637,6 +646,13 @@ echo "There are " . count( $subscribers ) . " subscribers.", BR;</example>
         return $this->type;
     }
     
+/**
+<documentation><description><p>Returns an XML string representing the asset. The name of the root element is the property name of the asset like <code>textBlock</code> or <code>dataDefinition</code>.</p></description>
+<example>echo $page->getXml();</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getXml() : string
     {
         return $this->xml;
