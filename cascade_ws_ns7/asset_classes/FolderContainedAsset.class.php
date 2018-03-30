@@ -95,6 +95,18 @@ abstract class FolderContainedAsset extends ContainedAsset
     }
     
 /**
+<documentation><description><p>Returns <code>tags</code> (an <code>stdClass</code> object).</p></description>
+<example>u\DebugUtility::dump( $page->getTags() );</example>
+<return-type>stdClass</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getTags() : \stdClass
+    {
+        return $this->getProperty()->tags;
+    }
+    
+/**
 <documentation><description><p>An alias of <code>isDescendantOf</code>.</p></description>
 <example>if( $page->isInContainer( $test2 ) )
     $page->move( $test1, false );</example>
