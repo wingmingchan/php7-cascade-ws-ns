@@ -5,6 +5,7 @@
   *                    German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 3/30/2018 Added copyGroup, copyGroupWriteAccess, copyAFGroupAccess.
   * 2/13/2018 Added __call.
   * 2/12/2018 Added access-related methods.
   * 2/6/2018 Added publishAll.
@@ -195,6 +196,102 @@ Information can be <code>Asset</code> objects, or a single ID string, or an arra
     {
         $this->cascade->clearPermissions(
             Folder::TYPE, $folder_path, $site_name, $applied_to_children );
+        return $this;
+    }
+
+/**
+<documentation><description><p>Copies the access of asset factory containers and
+asset factories from the old group to the new group by traversing a site,
+and returns the calling object.</p></description>
+<example>$admin->copyAFGroupAccess( $old_group, $new_group, "cancer" );
+</example>
+<exception></exception>
+</documentation>
+*/
+    public function copyAFGroupAccess(
+        Group $old_group, Group $new_group, string $site_name ) : Administration
+    {
+        $params = array(
+            "old-group" => $old_group,
+            "new-group" => $new_group
+        );
+        
+        $this->getSite( $site_name )->
+            getRootAssetFactoryContainerAssetTree( $site_name )->traverse(
+            array(
+                AssetFactoryContainer::TYPE => array( "assetTreeCopyAFGroupAccess" ),
+                AssetFactory::TYPE =>          array( "assetTreeCopyAFGroupAccess" )
+            ), 
+            $params );
+
+        return $this;
+    }
+
+/**
+<documentation><description><p>Creates a new group bearing the new name,
+copies all settings of the existing group to the new group, and returns the calling object.</p></description>
+<example>$admin->copyGroup( $old_group, $new_group_name );
+</example>
+<exception>EmptyNameException</exception>
+</documentation>
+*/
+    public function copyGroup(
+        Group $current_group, string $new_group_name ) : Administration
+    {
+        if( trim( $new_group_name ) == "" )
+        {
+            throw new e\EmptyNameException( c\M::EMPTY_GROUP_NAME );
+        }
+        
+        $group = $this->cascade->getGroup( $new_group_name );
+        
+        if( !is_null( $group ) )
+        {
+            echo "The group $new_group_name already exists", BR;
+        }
+        else
+        {
+            $current_group->copyGroup( $new_group_name );
+        }
+        
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Copies the read access of assets from the old group to the
+new group by traversing a site (or a subfolder of the site), and returns the calling object. Ten types of assets are affected by this method: DataDefinitionBlock,
+FeedBlock, IndexBlock, TextBlock, XmlBlock, File, Folder, Page, Reference, and Symlink.</p></description>
+<example>$admin->copyGroupReadAccess( $old_group, $new_group, "cancer" );
+</example>
+<exception></exception>
+</documentation>
+*/
+    public function copyGroupReadAccess(
+        Group $old_group, Group $new_group,
+        string $site_name, string $folder_path=NULL ) : Administration
+    {
+        $this->copyGroupAccess( $old_group, $new_group,
+            $site_name, $folder_path, c\T::READ );
+    
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Copies the write access of assets from the old group to the
+new group by traversing a site (or a subfolder of the site), and returns the calling object. Ten types of assets are affected by this method: DataDefinitionBlock,
+FeedBlock, IndexBlock, TextBlock, XmlBlock, File, Folder, Page, Reference, and Symlink.</p></description>
+<example>$admin->copyGroupWriteAccess( $old_group, $new_group, "cancer" );
+</example>
+<exception></exception>
+</documentation>
+*/
+    public function copyGroupWriteAccess(
+        Group $old_group, Group $new_group,
+        string $site_name, string $folder_path=NULL ) : Administration
+    {
+        $this->copyGroupAccess( $old_group, $new_group,
+            $site_name, $folder_path, c\T::WRITE );
+            
         return $this;
     }
 
@@ -499,6 +596,42 @@ $admin->publishAllFiles( "about", "images" ); // all files in the images folder
         return $this;
     }
 
+    private function copyGroupAccess(
+        Group $old_group, Group $new_group,
+        string $site_name, string $folder_path=NULL,
+        string $level
+    )
+    {
+        // read by default
+        $global_function_name = "assetTreeCopyGroupReadAccess";
+        
+        if( $level == c\T::WRITE )
+        {
+            $global_function_name = "assetTreeCopyGroupWriteAccess";
+        }
+        
+        $params = array(
+            "cascade"   => $this->cascade,
+            "old-group" => $old_group,
+            "new-group" => $new_group
+        );
+        return $this->applyToAssets(
+            $site_name, $folder_path,
+            $global_function_name, 
+            $params, $null, 
+            DataDefinitionBlock::TYPE, 
+            FeedBlock::TYPE, 
+            IndexBlock::TYPE, 
+            TextBlock::TYPE, 
+            XmlBlock::TYPE, 
+            File::TYPE,
+            Folder::TYPE,
+            Page::TYPE,
+            Reference::TYPE,
+            Symlink::TYPE
+        );
+    }
+    
     private function getAssetWithParam( string $type, $param ) : Asset
     {
         if( is_string( $param ) && $this->service->isHexString( $param ) )
