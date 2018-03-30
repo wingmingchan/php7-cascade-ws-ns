@@ -31,7 +31,7 @@ use cascade_ws_constants as c;
 <documentation><description><h2>Introduction</h2>
 <p>This class can be used to expose class and method information of any class, using reflection.
 All methods provided in this class are static. For practical purposes, use only those <code>show</code> methods. The <code>get</code>
-methods are used to generate documentation pages in the cascade-admin site.
+methods are used to generate documentation pages in the web-services site.
 The value of the <code>$obj</code> variable in these methods can be an object of any class,
 or a string (the full name of a class to be inspected).</p>
 </description>
@@ -787,10 +787,15 @@ method signatures.</p></description>
                     
                     // added 6/14/2017
                     if( strpos( $str, '<?php' ) !== false )
+                    {
+                    	echo $str;
                         $str = eval( ' ?>' . $str . '<?php ' );
-                    
+                    }
+                        
                     if( is_null( $str ) )
                         $str = "";
+                        
+                    
                         
                     return $str;
                 }
