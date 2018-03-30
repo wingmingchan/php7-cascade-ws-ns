@@ -1,7 +1,8 @@
 # php7-cascade-ws-ns
 <p>The Upstate Cascade web service library, using namespaces, written in PHP 7 for Cascade 8.8, by German Drulyk and me.</p>
+<p>I have tried to add new features introduced in Cascade 8.9. But due to bugs in this latest version, I will wait until they are fixed.</p>
 
-<p>Last modified: 2/6/2018, 12:30 PM</p>
+<p>Last modified: 3/30/2018, 12:30 PM</p>
 
 <p>Since the current working version is 8.8, I will not update any previous versions. I am also branching the library off so that the newest version works with both SOAP and REST. After the branching, I will not update the version titled cascade_ws_ns7_8.8 any more. Instead, I will focus on cascade_ws_ns7 only. The new class Administration, for example, will be missing from cascade_ws_ns7_8.8.</p>
 
