@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 3/30/2018 Added group-related functions.
   * 2/6/2018 Added global functions used by $admin
   * 1/27/2017 Added assetTreeSearchForNeedleInHaystack.
  */
@@ -31,6 +32,112 @@ function assetTreeAssociateWithMetadataSet(
     $ms = $params[ $type ][ a\MetadataSet::TYPE ];
     // associate metadata set with asset
     $child->getAsset( $service )->setMetadataSet( $ms );        
+}
+
+function assetTreeCopyAFGroupAccess(
+    aohs\AssetOperationHandlerService $service, 
+    p\Child $child, $params=NULL, &$results=NULL )
+{
+    if( !isset( $params[ 'old-group' ] ) )
+        throw new \Exception( "The old group is not included" );
+    if( !isset( $params[ 'new-group' ] ) )
+        throw new \Exception( "The new group is not included" );
+    
+    $old_group = $params[ 'old-group' ];
+    $new_group = $params[ 'new-group' ];
+    
+    $type = $child->getType();
+    
+    if( $type != a\AssetFactoryContainer::TYPE && 
+        $type != a\AssetFactory::TYPE )
+        return;
+        
+    $asset = $child->getAsset( $service );
+        
+    if( $asset->isApplicableToGroup( $old_group ) )
+    {
+        $asset->addGroup( $new_group )->edit();
+    }
+}
+
+function assetTreeCopyGroupReadAccess(
+    aohs\AssetOperationHandlerService $service, 
+    p\Child $child, $params=NULL, &$results=NULL )
+{
+    if( !isset( $params[ 'cascade' ] ) )
+        throw new \Exception( "The Cascade object is not included" );
+    if( !isset( $params[ 'old-group' ] ) )
+        throw new \Exception( "The old group is not included" );
+    if( !isset( $params[ 'new-group' ] ) )
+        throw new \Exception( "The new group is not included" );
+    
+    $cascade   = $params[ 'cascade' ];
+    $old_group = $params[ 'old-group' ];
+    $new_group = $params[ 'new-group' ];
+    
+    $type = $child->getType();
+    
+    if( $type != a\DataBlock::TYPE && 
+        $type != a\FeedBlock::TYPE &&
+        $type != a\TextBlock::TYPE &&
+        $type != a\IndexBlock::TYPE &&
+        $type != a\XmlBlock::TYPE &&
+        $type != a\File::TYPE &&
+        $type != a\Folder::TYPE &&
+        $type != a\Reference::TYPE &&
+        $type != a\Symlink::TYPE &&
+        $type != a\Page::TYPE )
+        return;
+        
+    $id = $child->getId();
+    $ari = $cascade->getAccessRights( $type, $id );
+    
+    if( $ari->hasGroup( $old_group ) &&
+        $ari->getGroupLevel( $old_group ) == c\T::READ )
+    {
+        $ari->addGroupWriteAccess( $new_group );
+        $cascade->setAccessRights( $ari, false );
+    }
+}
+
+function assetTreeCopyGroupWriteAccess(
+    aohs\AssetOperationHandlerService $service, 
+    p\Child $child, $params=NULL, &$results=NULL )
+{
+    if( !isset( $params[ 'cascade' ] ) )
+        throw new \Exception( "The Cascade object is not included" );
+    if( !isset( $params[ 'old-group' ] ) )
+        throw new \Exception( "The old group is not included" );
+    if( !isset( $params[ 'new-group' ] ) )
+        throw new \Exception( "The new group is not included" );
+    
+    $cascade   = $params[ 'cascade' ];
+    $old_group = $params[ 'old-group' ];
+    $new_group = $params[ 'new-group' ];
+    
+    $type = $child->getType();
+    
+    if( $type != a\DataBlock::TYPE && 
+        $type != a\FeedBlock::TYPE &&
+        $type != a\TextBlock::TYPE &&
+        $type != a\IndexBlock::TYPE &&
+        $type != a\XmlBlock::TYPE &&
+        $type != a\File::TYPE &&
+        $type != a\Folder::TYPE &&
+        $type != a\Reference::TYPE &&
+        $type != a\Symlink::TYPE &&
+        $type != a\Page::TYPE )
+        return;
+        
+    $id = $child->getId();
+    $ari = $cascade->getAccessRights( $type, $id );
+    
+    if( $ari->hasGroup( $old_group ) && 
+        $ari->getGroupLevel( $old_group ) == c\T::WRITE )
+    {
+        $ari->addGroupWriteAccess( $new_group );
+        $cascade->setAccessRights( $ari, false );
+    }
 }
 
 function assetTreeCount(
@@ -125,11 +232,11 @@ function assetTreeRemovePhantomNodes(
     }
     catch( e\WrongBlockTypeException $e )
     {
-    	// do nothing
+        // do nothing
     }
     catch( e\WrongPageTypeException $e )
     {
-    	// do nothing
+        // do nothing
     }
     // type A
     catch( e\NoSuchFieldException $e )
@@ -149,16 +256,12 @@ function assetTreeRemovePhantomNodes(
         $healthy_sd   = new p\StructuredData(
             $dd->getStructuredData(), $service, $dd->getId() );
         $phantom_sd   = $asset->getStructuredDataPhantom();
-        //u\DebugUtility::dump( $phantom_sd->getIdentifiers() );
-        
         $healthy_sd   = $healthy_sd->removePhantomNodes( $phantom_sd );
-        //u\DebugUtility::dump( $healthy_sd->getIdentifiers() );
-        u\DebugUtility::dump( $healthy_sd->toStdClass() );
-        //$asset->setStructuredData( $healthy_sd );
+        $asset->setStructuredData( $healthy_sd );
         
         if( isset( $results ) )
         {
-        	$results[ $type ][ "A" ][] = $child->getPathPath();
+            $results[ $type ][ "A" ][] = $child->getPathPath();
         }
     }
 }
@@ -186,15 +289,15 @@ function assetTreeRemovePhantomValues(
     
     try
     {
-    	$child->getAsset( $service )->removePhantomValues( $results );
-	}
-	catch( e\WrongBlockTypeException $e )
+        $child->getAsset( $service )->removePhantomValues( $results );
+    }
+    catch( e\WrongBlockTypeException $e )
     {
-    	// do nothing
+        // do nothing
     }
     catch( e\WrongPageTypeException $e )
     {
-    	// do nothing
+        // do nothing
     }
 }
 
@@ -384,12 +487,12 @@ function assetTreeReportPhantomNodes(
     // XHTML block
     catch( e\WrongBlockTypeException $e )
     {
-    	// do nothing
+        // do nothing
     }
     // XHTML page
     catch( e\WrongPageTypeException $e )
     {
-    	// do nothing
+        // do nothing
     }
     catch( e\NoSuchFieldException $e )
     {
@@ -413,7 +516,7 @@ function assetTreeReportPhantomValues(
     
     if( !isset( $results[ "phantom" ] ) )
     {
-    	$results[ "phantom" ] = array();
+        $results[ "phantom" ] = array();
     }
 
     if( $type != a\Page::TYPE && $type != a\DataDefinitionBlock::TYPE )
@@ -423,27 +526,27 @@ function assetTreeReportPhantomValues(
     
     try
     {
-    	if( $child->getAsset( $service )->getStructuredData()->hasPhantomValues() )
-    	{
-        	$results[ $type ][] = $child->getPathPath();
-    	}
+        if( $child->getAsset( $service )->getStructuredData()->hasPhantomValues() )
+        {
+            $results[ $type ][] = $child->getPathPath();
+        }
     }
     // XHTML block
     catch( e\WrongBlockTypeException $e )
     {
-    	// do nothing
+        // do nothing
     }
     // XHTML page
     catch( e\WrongPageTypeException $e )
     {
-    	// do nothing
+        // do nothing
     }
     // type A only
     catch( e\NoSuchFieldException $e )
     {
-    	// skip the asset
-    	$results[ "phantom" ][] = $child->getPathPath();
-    	return;	
+        // skip the asset
+        $results[ "phantom" ][] = $child->getPathPath();
+        return;    
     }
 }
 
