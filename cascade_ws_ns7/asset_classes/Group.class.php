@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 3/30/2018 Added copyGroup.
   * 1/24/2018 Updated documentation.
   * 1/5/2018 Updated documentation.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -141,6 +142,43 @@ class Group extends Asset
             $this->getProperty()->users = implode( self::DELIMITER, $users );
         }
         return $this;
+    }
+
+    public function copyGroup( string $new_name )
+    {
+        if( $this->getName() == $new_name )
+        {
+            return $this;
+        }
+        
+        try
+        {
+            $group = $this->getService()->getAsset( self::TYPE, $new_name );
+            return $group;
+            // what to do?
+        }
+        catch( e\NullAssetException $e )
+        {
+            $asset                   = AssetTemplate::getGroup();
+            $asset->group->groupName = $new_name;
+        
+            if( $this->getService()->isSoap() )
+            {
+                $asset->group->role  = $this->getRole();
+                $asset->group->users = $this->getUsers();
+            }
+            // patch for 8.7.1
+            elseif( $this->getService()->isRest() )
+            {
+                unset( $asset->group->role );
+                $asset->group->roles = $this->getRole();
+                $asset->group->users = $this->getUsers();
+            }
+            
+            $this->getService()->create( $asset );
+        }
+        
+        return $this->getService()->getAsset( self::TYPE, $new_name );
     }
 
 /**
