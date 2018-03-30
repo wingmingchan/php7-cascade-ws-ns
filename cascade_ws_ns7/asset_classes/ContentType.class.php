@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 3/29/2018 Added getPublishSetId, getPublishSetPath, and setPublishSet.
   * 1/24/2018 Updated documentation.
   * 1/23/2018 Added REST code to edit.
   * 1/3/2018 Added code to test for NULL.
@@ -49,6 +50,8 @@ contentType
   dataDefinitionPath
   editorConfigurationId (8.4)
   editorConfigurationPath (8.4)
+  publishSetId (8.9)
+  publishSetPath (8.9)
   contentTypePageConfigurations
     contentTypePageConfiguration (NULL, stdClass or array of stdClass)
       pageConfigurationId
@@ -685,6 +688,20 @@ overriding the parent method to display the configuration set as well.</p></desc
         }
     }
     
+    public function getPublishSetId()
+    {
+        if( isset( $this->getProperty()->publishSetId ) )
+            return $this->getProperty()->publishSetId;
+        return NULL;
+    }
+    
+    public function getPublishSetPath()
+    {
+        if( isset( $this->getProperty()->publishSetPath ) )
+            return $this->getProperty()->publishSetPath;
+        return NULL;
+    }
+    
 /**
 <documentation><description><p>Returns a bool, indicating whether the group path, when all slashes replaced by semi-colons, exists in the corresponding data definition as a fully qualified field identifier.</p></description>
 <example></example>
@@ -873,6 +890,22 @@ data definition fields.</p></description>
             }
         }
         
+        return $this;
+    }
+    
+    public function setPublishSet( PublishSet $ps=NULL ) : Asset
+    {
+        if( isset( $ps ) )
+        {
+            $this->getProperty()->publishSetId   = $ps->getId();
+            $this->getProperty()->publishSetPath = $ps->getPath();
+        }
+        else
+        {
+            $this->getProperty()->publishSetId   = NULL;
+            $this->getProperty()->publishSetPath = NULL;
+        }
+
         return $this;
     }
     
