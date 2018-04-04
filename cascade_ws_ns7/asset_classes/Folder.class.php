@@ -301,6 +301,18 @@ and returns the calling object. Note that this method does not called <code>edit
             $folder->includeInStaleContent = $this->include_in_stale_content;
         }
         
+        // patch for 8.9
+        if( isset( $folder->reviewEvery ) )
+        {
+            $review_every = (int)$folder->reviewEvery;
+        
+            if( $review_every != 0 && $review_every != 30 && $review_every != 00 && 
+                $review_every != 180 && $review_every != 365 )
+            {
+                $folder->reviewEvery = 0;
+            }
+        }
+
         if( $folder->path == "/" )
         {
             $folder->parentFolderId = 'some dummy string';

@@ -101,10 +101,25 @@ abstract class FolderContainedAsset extends ContainedAsset
 <exception></exception>
 </documentation>
 */
-    public function getTags() : \stdClass
+    public function getTags()
     {
         return $this->getProperty()->tags;
     }
+    
+    public function AddTag( string $t )
+    {
+    	$std = new \stdClass();
+    	$std->name = $t;
+    	
+    	if( !in_array( $std, $this->getProperty()->tags ) )
+    	{
+    		$this->getProperty()->tags[] = $std;
+    	}
+    	
+        return $this;
+    }
+    
+    
     
 /**
 <documentation><description><p>An alias of <code>isDescendantOf</code>.</p></description>

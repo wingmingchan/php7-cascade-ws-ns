@@ -441,6 +441,18 @@ method to edit the <code>structuredData</code> property.</p></description>
         $asset = new \stdClass();
         $block = $this->getProperty();
         
+        // patch for 8.9
+        if( isset( $block->reviewEvery ) )
+        {
+            $review_every = (int)$block->reviewEvery;
+        
+            if( $review_every != 0 && $review_every != 30 && $review_every != 00 && 
+                $review_every != 180 && $review_every != 365 )
+            {
+                $block->reviewEvery = 0;
+            }
+        }
+        
         $block->metadata = $this->getMetadata()->toStdClass();
         
         if( isset( $this->structured_data ) )

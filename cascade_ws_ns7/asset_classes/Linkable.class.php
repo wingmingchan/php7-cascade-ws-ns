@@ -76,6 +76,19 @@ abstract class Linkable extends DublinAwareAsset
     {
         $asset                          = new \stdClass();
         $this->getProperty()->metadata  = $this->metadata->toStdClass();
+        
+        // patch for 8.9
+        if( isset( $this->getProperty()->reviewEvery ) )
+        {
+            $review_every = (int)$this->getProperty()->reviewEvery;
+        
+            if( $review_every != 0 && $review_every != 30 && $review_every != 00 && 
+                $review_every != 180 && $review_every != 365 )
+            {
+                $this->getProperty()->reviewEvery = 0;
+            }
+        }
+        
         $asset->{ $p = $this->getPropertyName() } = $this->getProperty();
         // edit asset
         $service = $this->getService();

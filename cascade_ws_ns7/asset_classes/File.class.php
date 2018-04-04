@@ -234,6 +234,18 @@ object will be created inside <code>edit</code>. If the <code>p\Workflow</code> 
             $asset->workflowConfiguration    = $wf_config;
         }
 
+        // patch for 8.9
+        if( isset( $this->getProperty()->reviewEvery ) )
+        {
+            $review_every = (int)$this->getProperty()->reviewEvery;
+        
+            if( $review_every != 0 && $review_every != 30 && $review_every != 00 && 
+                $review_every != 180 && $review_every != 365 )
+            {
+                $this->getProperty()->reviewEvery = 0;
+            }
+        }
+
         $this->getProperty()->metadata  = $this->getMetadata()->toStdClass();
         $asset->{ $p = $this->getPropertyName() } = $this->getProperty();
         // edit asset

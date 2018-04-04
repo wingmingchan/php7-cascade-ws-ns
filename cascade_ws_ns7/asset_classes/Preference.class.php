@@ -27,7 +27,7 @@ $doc_string = "<h2>Introduction</h2>
 <p>A <code>Preference</code> object encapsulates system preferences. This class can be used to work with system preferences, including both reading and editing them. This class is an independent class that does not extend another class.</p>
 <p>As of Cascade 8.6, there are 57 entries in sytem preferences. Each entry is a key-value pair. To access an entry, we need to supply the key. To edit an entry, we need to supply a key-value pair.</p>
 <p>Note that neither the keys nor the possible values are defined in the WSDL. Therefore, when editing an entry, any value can be attached to an existing key, and Cascade will accept the value. How a meaningless value is treated in the Cascade back-end depends on default values assigned to these keys. When a meaningless value is assigned, Cascade falls back to the default.</p>
-<p>When this class is implemented, I only check the keys. That is to say, when reading or editing an entry, the input key must exist. But I do not check the values for editing. Garbage in, garbage out.</p>";
+<p>When this class is implemented, I only check the keys. That is to say, when reading or editing an entry, the input key must exist. But I do not check the values for editing. Garbage in, garbage out.</p><p>In Cascade 8.9, the value for <code>system_pref_system_url</code> is validated.";
 $doc_string .= "<h2>Preference Entries (8.4.1)</h2>";
 $doc_string .= $cascade->getPreference()->getNameList();
 $doc_string .= "<h2>WSDL</h2>";

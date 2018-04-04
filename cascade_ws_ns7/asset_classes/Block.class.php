@@ -88,6 +88,18 @@ metadata.</p></description>
         $asset->{ $p = $this->getPropertyName() }           = $this->getProperty();
         $asset->{ $p = $this->getPropertyName() }->metadata =
             $this->metadata->toStdClass();
+            
+        // patch for 8.9
+        if( isset( $asset->reviewEvery ) )
+        {
+            $review_every = (int)$asset->reviewEvery;
+        
+            if( $review_every != 0 && $review_every != 30 && $review_every != 00 && 
+                $review_every != 180 && $review_every != 365 )
+            {
+                $asset->reviewEvery = 0;
+            }
+        }
 
         if( self::DEBUG ){ u\DebugUtility::dump( $asset ); }
 

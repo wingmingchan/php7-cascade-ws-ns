@@ -139,7 +139,7 @@ information must be retrieved through the associated content type object.</p></d
 <exception></exception>
 </documentation>
 */
-    public function setReviewEvery( int $days=30 ) : Asset
+    public function setReviewEvery( int $days=0 ) : Asset
     {
         if( $days != 0 && $days != 30 && $days != 90 && $days != 180 && $days != 365 )
             throw new e\UnacceptableValueException( 

@@ -676,6 +676,18 @@ successfully, it no longer exists and there will be no structured data to proces
         $asset = new \stdClass();
         $page  = $this->getProperty();
         
+        // patch for 8.9
+        if( isset( $page->reviewEvery ) )
+        {
+            $review_every = (int)$page->reviewEvery;
+        
+            if( $review_every != 0 && $review_every != 30 && $review_every != 00 && 
+                $review_every != 180 && $review_every != 365 )
+            {
+                $page->reviewEvery = 0;
+            }
+        }
+        
         if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $page->pageConfigurations ); }
 
         $page->metadata = $this->getMetadata()->toStdClass();
@@ -2279,7 +2291,7 @@ qualified identifier of the first node of the set.</p></description>
             
             if( isset( $results ) )
             {
-            	$results[ self::TYPE ][ "B" ][] = $this->getPath();
+                $results[ self::TYPE ][ "B" ][] = $this->getPath();
             }
         }
         return $this;
@@ -2302,7 +2314,7 @@ qualified identifier of the first node of the set.</p></description>
             
             if( isset( $results ) )
             {
-            	$results[ self::TYPE ][] = $this->getPath();
+                $results[ self::TYPE ][] = $this->getPath();
             }
             
             return $this->edit();
