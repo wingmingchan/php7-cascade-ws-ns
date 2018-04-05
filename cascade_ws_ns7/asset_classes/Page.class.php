@@ -681,7 +681,7 @@ successfully, it no longer exists and there will be no structured data to proces
         {
             $review_every = (int)$page->reviewEvery;
         
-            if( $review_every != 0 && $review_every != 30 && $review_every != 00 && 
+            if( $review_every != 0 && $review_every != 30 && $review_every != 90 && 
                 $review_every != 180 && $review_every != 365 )
             {
                 $page->reviewEvery = 0;

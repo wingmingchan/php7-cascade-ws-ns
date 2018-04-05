@@ -94,7 +94,7 @@ metadata.</p></description>
         {
             $review_every = (int)$asset->reviewEvery;
         
-            if( $review_every != 0 && $review_every != 30 && $review_every != 00 && 
+            if( $review_every != 0 && $review_every != 30 && $review_every != 90 && 
                 $review_every != 180 && $review_every != 365 )
             {
                 $asset->reviewEvery = 0;
