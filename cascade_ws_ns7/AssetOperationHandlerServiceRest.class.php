@@ -5,6 +5,7 @@
                        German Drulyk <drulykg@upstate.edu>
   MIT Licensed
   Modification history:
+  4/12/2018 Added exception throwing to apiOperation.
   1/19/2018 Added authInContent and related code.
   1/18/2018 Added documentation.
   1/18/2018 Fixed a bug in readAudits.
@@ -237,12 +238,23 @@ u\DebugUtility::dump( $reply );
         
         //$entry[ "http-content" ] = $input_params[ 'http' ][ 'content' ];
         $this->commands[] = $entry;
+        
+        $operation_result = @file_get_contents(
+            $command,
+            false,
+            stream_context_create( $input_params ) );
+            
+        if( $operation_result === false )
+        {
+            $error = error_get_last();
+            $message = trim( $error[ "message" ] ) . " in " . 
+                trim( $error[ "file" ] ) . " on line " .
+                $error[ "line" ];
+            
+            throw new \Exception( $message );
+        }
 
-        return json_decode(
-            file_get_contents(
-                $command,
-                false,
-                stream_context_create( $input_params ) ) );
+        return json_decode( $operation_result );
     }
 
 /*    
@@ -686,7 +698,15 @@ $service->edit( $asset );
         }
         
         $asset = array( 'asset' => $asset );
-        $this->reply = $this->apiOperation( $command, $asset );
+        try
+        {
+            $this->reply = $this->apiOperation( $command, $asset );
+        }
+        catch( \Exception $e )
+        {
+            throw new e\EditingFailureException( $e );
+        }
+            
         $this->success = $this->reply->success;
         return $this->reply;
     }

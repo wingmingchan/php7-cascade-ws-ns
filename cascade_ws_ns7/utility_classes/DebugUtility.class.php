@@ -151,12 +151,20 @@ The new message includes asset information.</p></description>
 <exception>Exceptions of all kinds</exception>
 </documentation>
 */
-    public static function throwException( a\Asset $a, $e )
+    public static function throwException( a\Asset $a=NULL, $e )
     {
-        $msg = "Asset ID: " .   $a->getId() . "; " .
+        if( !is_null( $a ) )
+        {
+        	$msg = "Asset ID: " .   $a->getId() . "; " .
                "site name: " .  $a->getSiteName() . "; " .
-               "asset path: " . $a->getPath() . BR .
-            $e->getMessage();
+               "asset path: " . $a->getPath() . BR;
+        }
+        else
+        {
+        	$msg = "";
+        }
+            
+        $msg .= $e->getMessage();
         
         if( $e instanceof e\EmptyValueException )
             throw new e\EmptyValueException( $msg );

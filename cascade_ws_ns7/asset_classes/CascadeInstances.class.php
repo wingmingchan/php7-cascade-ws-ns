@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 4/12/2018 Added code to catch EditingFailureException.
   * 9/26/2017 Added reportMissingAssetsWithTypeArrayIn.
   * 9/8/2017 Changed getPageLevelBlockFormat to static.
   * 2/3/2017 Added documentation.
@@ -648,7 +649,8 @@ See <code>updateBlock</code> for more information.</p></description>
 <exception>CascadeInstancesErrorException</exception>
 </documentation>
 */
-    public function updateFormat( Folder $f=NULL ) : CascadeInstances
+    public function updateFormat(
+        Folder $f=NULL, bool $exception_thrown=true ) : CascadeInstances
     {
         $this->checkSourceTargetSite();
             
@@ -669,8 +671,9 @@ See <code>updateBlock</code> for more information.</p></description>
             ),
             // params array    
             array(
-                'target-cascade' => $this->target_cascade,
-                'target-site'    => $this->target_site
+                'target-cascade'   => $this->target_cascade,
+                'target-site'      => $this->target_site,
+                'exception-thrown' => $exception_thrown
             )
         );
         return $this;
@@ -1629,7 +1632,14 @@ See <code>updateBlock</code> for more information.</p></description>
                 }
                 catch( \Exception $e )
                 {
-                    if( self::DEBUG ) { u\DebugUtility::out( $child->getPathPath() ); }
+                    if( $exception_thrown )
+                    {
+                        throw new e\CascadeInstancesErrorException( $e );
+                    }
+                    else
+                    {
+                        echo "Fail to update " . $source_block_dd->getPath() . "<br />";
+                    }
                 }
             }
         }
@@ -1817,7 +1827,21 @@ See <code>updateBlock</code> for more information.</p></description>
         // update url
         if( $source_content != $target_block->getFeedUrl() )
         {
-            $target_block->setFeedUrl( $source_content )->edit();
+            try
+            {
+                $target_block->setFeedUrl( $source_content )->edit();
+            }
+            catch( e\EditingFailureException $e )
+            {
+                if( $exception_thrown )
+                {
+                    throw new e\CascadeInstancesErrorException( $e );
+                }
+                else
+                {
+                    echo "Fail to update " . $source_block->getPath() . "<br />";
+                }
+            }
         }
         // metadata        
         self::setMetadataSet( 
@@ -1884,14 +1908,28 @@ See <code>updateBlock</code> for more information.</p></description>
         self::setMetadataSet( 
             $target_cascade, $source_site, $target_site, $source_f, $target_f, $exception_thrown );
 
-        $target_f->
-            // other flags
-            setShouldBeIndexed( $source_f->getShouldBeIndexed() )->
-            setShouldBePublished( $source_f->getShouldBePublished() )->
-            // data and text
-            setData( $source_f_data )->
-            setText( $source_f_text )->
-            edit();
+        try
+        {
+            $target_f->
+                // other flags
+                setShouldBeIndexed( $source_f->getShouldBeIndexed() )->
+                setShouldBePublished( $source_f->getShouldBePublished() )->
+                // data and text
+                setData( $source_f_data )->
+                setText( $source_f_text )->
+                edit();
+        }
+        catch( e\EditingFailureException $e )
+        {
+            if( $exception_thrown )
+            {
+                throw new e\CascadeInstancesErrorException( $e );
+            }
+            else
+            {
+                echo "Fail to update " . $source_f->getPath() . "<br />";
+            }
+        }
     }
 
 /**
@@ -1967,8 +2005,22 @@ See <code>updateBlock</code> for more information.</p></description>
             $target_cascade, $source_site, $target_site, $source_f, $target_f, $exception_thrown );
 
         // other flags
-        $target_f->setShouldBeIndexed( $source_f->getShouldBeIndexed() );
-        $target_f->setShouldBePublished( $source_f->getShouldBePublished() )->edit();
+        try
+        {
+            $target_f->setShouldBeIndexed( $source_f->getShouldBeIndexed() );
+            $target_f->setShouldBePublished( $source_f->getShouldBePublished() )->edit();
+        }
+        catch( e\EditingFailureException $e )
+        {
+            if( $exception_thrown )
+            {
+                throw new e\CascadeInstancesErrorException( $e );
+            }
+            else
+            {
+                echo "Fail to update " . $source_f->getPath() . "<br />";
+            }
+        }
     }
 
 /**
@@ -1998,6 +2050,14 @@ See <code>updateBlock</code> for more information.</p></description>
             return;
         }
         
+        if( isset( $params[ 'exception-thrown' ] ) )
+            $exception_thrown = $params[ 'exception-thrown' ];
+        else
+        {
+            echo c\M::EXCEPTION_THROWN_NOT_SET . BR;
+            return;
+        }
+        
         $type = $child->getType();
     
         $source_format         = $child->getAsset( $service );
@@ -2021,15 +2081,31 @@ See <code>updateBlock</code> for more information.</p></description>
             $target_parent, $source_format_path, $type, $source_content, $source_content );
             
         // update format
-        if( $type == ScriptFormat::TYPE )
-            $target_format->setScript( $source_content )->edit();
-        else
+        try
         {
-            if( !u\XMLUtility::isXmlIdentical( 
-                new \SimpleXMLElement( $source_content ), 
-                new \SimpleXMLElement( $target_format->getXml() ) ) )
+            if( $type == ScriptFormat::TYPE )
             {
-                $target_format->setXml( $source_content )->edit();
+                $target_format->setScript( $source_content )->edit();
+            }
+            else
+            {
+                if( !u\XMLUtility::isXmlIdentical( 
+                    new \SimpleXMLElement( $source_content ), 
+                    new \SimpleXMLElement( $target_format->getXml() ) ) )
+                {
+                    $target_format->setXml( $source_content )->edit();
+                }
+            }
+        }
+        catch( e\EditingFailureException $e )
+        {
+            if( $exception_thrown )
+            {
+                throw new e\CascadeInstancesErrorException( $e );
+            }
+            else
+            {
+                echo "Fail to update " . $source_format->getPath() . "<br />";
             }
         }
     }
@@ -2191,24 +2267,39 @@ See <code>updateBlock</code> for more information.</p></description>
         }
         
         // update settings
-        $target_block->
-            setAppendCallingPageData( $source_block->getAppendCallingPageData() )->
-            setIndexAccessRights( $source_block->getIndexAccessRights() )->
-            setIndexBlocks( $source_block->getIndexBlocks() )->
-            setIndexedFolderRecycled( $source_block->getIndexedFolderRecycled() )->
-            setIndexLinks( $source_block->getIndexLinks() )->
-            setIndexFiles( $source_block->getIndexFiles() )->
-            setIndexPages( $source_block->getIndexPages() )->
-            setIndexRegularContent( $source_block->getIndexRegularContent() )->
-            setIndexSystemMetadata( $source_block->getIndexSystemMetadata() )->
-            setIndexUserInfo( $source_block->getIndexUserInfo() )->
-            setIndexUserMetadata( $source_block->getIndexUserMetadata() )->
-            setIndexWorkflowInfo( $source_block->getIndexWorkflowInfo() )->
-            setPageXML( $source_block->getPageXML() )->
-            setRenderingBehavior( $source_block->getRenderingBehavior() )->
-            setSortMethod( $source_block->getSortMethod() )->
-            setSortOrder( $source_block->getSortOrder() )->
-            edit();
+        try
+        {
+            $target_block->
+                setAppendCallingPageData( $source_block->getAppendCallingPageData() )->
+                setIndexAccessRights( $source_block->getIndexAccessRights() )->
+                setIndexBlocks( $source_block->getIndexBlocks() )->
+                setIndexedFolderRecycled( $source_block->getIndexedFolderRecycled() )->
+                setIndexLinks( $source_block->getIndexLinks() )->
+                setIndexFiles( $source_block->getIndexFiles() )->
+                setIndexPages( $source_block->getIndexPages() )->
+                setIndexRegularContent( $source_block->getIndexRegularContent() )->
+                setIndexSystemMetadata( $source_block->getIndexSystemMetadata() )->
+                setIndexUserInfo( $source_block->getIndexUserInfo() )->
+                setIndexUserMetadata( $source_block->getIndexUserMetadata() )->
+                setIndexWorkflowInfo( $source_block->getIndexWorkflowInfo() )->
+                setPageXML( $source_block->getPageXML() )->
+                setRenderingBehavior( $source_block->getRenderingBehavior() )->
+                setSortMethod( $source_block->getSortMethod() )->
+                setSortOrder( $source_block->getSortOrder() )->
+                edit();
+        }
+        catch( e\EditingFailureException $e )
+        {
+            if( $exception_thrown )
+            {
+                throw new e\CascadeInstancesErrorException( $e );
+            }
+            else
+            {
+                echo "Fail to update " . $source_block->getPath() . "<br />";
+            }
+        }
+        
         self::setMetadataSet( 
             $target_cascade, $source_site, $target_site, $source_block, $target_block, $exception_thrown );
     }
@@ -2689,10 +2780,26 @@ See <code>updateBlock</code> for more information.</p></description>
                 }
             }
         }
-        $target_page->setMaintainAbsoluteLinks( $source_page->getMaintainAbsoluteLinks() )->
-            setShouldBeIndexed( $source_page->getShouldBeIndexed() )->
-            setShouldBePublished( $source_page->getShouldBePublished() )->
-            edit(); // commit everything before metadata
+        
+        try
+        {
+            $target_page->setMaintainAbsoluteLinks(
+                $source_page->getMaintainAbsoluteLinks() )->
+                setShouldBeIndexed( $source_page->getShouldBeIndexed() )->
+                setShouldBePublished( $source_page->getShouldBePublished() )->
+                edit(); // commit everything before metadata
+        }
+        catch( e\EditingFailureException $e )
+        {
+            if( $exception_thrown )
+            {
+                throw new e\CascadeInstancesErrorException( $e );
+            }
+            else
+            {
+                echo "Fail to update " . $source_page->getPath() . "<br />";
+            }
+        }
         
         // metadata
         if( $update_metadata )
@@ -2928,7 +3035,21 @@ See <code>updateBlock</code> for more information.</p></description>
                     }
                 }
             
-                $target_pcs->edit();
+                try
+                {
+                    $target_pcs->edit();
+                }
+                catch( e\EditingFailureException $e )
+                {
+                    if( $exception_thrown )
+                    {
+                        throw new e\CascadeInstancesErrorException( $e );
+                    }
+                    else
+                    {
+                        echo "Fail to update " . $source_pcs->getPath() . "<br />";
+                    }
+                }
             }
         }
         catch( \Exception $e )
@@ -3133,7 +3254,21 @@ See <code>updateBlock</code> for more information.</p></description>
         // if asset already exists containing different url, update url
         if( $source_symlink_url != $target_symlink->getLinkURL() )
         {
-            $target_symlink->setLinkURL( $source_symlink_url )->edit();
+            try
+            {
+                $target_symlink->setLinkURL( $source_symlink_url )->edit();
+            }
+            catch( e\EditingFailureException $e )
+            {
+                if( $exception_thrown )
+                {
+                    throw new e\CascadeInstancesErrorException( $e );
+                }
+                else
+                {
+                    echo "Fail to update " . $source_symlink->getPath() . "<br />";
+                }
+            }
         }
         // metadata        
         self::setMetadataSet( 
@@ -3362,12 +3497,42 @@ See <code>updateBlock</code> for more information.</p></description>
             $target_parent, $source_block_path, $source_content );
             
         // update text
-        $target_block->setText( $source_content )->edit();
+        try
+        {
+            $target_block->setText( $source_content )->edit();
+        }
+        catch( e\EditingFailureException $e )
+        {
+            if( $exception_thrown )
+            {
+                throw new e\CascadeInstancesErrorException( $e );
+            }
+            else
+            {
+                echo "Fail to update " . $source_block->getPath() . "<br />";
+                return;
+            }
+        }
+        
         
         // if asset already exists containing different text, update text
         if( $source_content != $target_block->getText() )
         {
-            $target_block->setText( $source_content )->edit();
+            try
+            {
+                $target_block->setText( $source_content )->edit();
+            }
+            catch( e\EditingFailureException $e )
+            {
+                if( $exception_thrown )
+                {
+                    throw new e\CascadeInstancesErrorException( $e );
+                }
+                else
+                {
+                    echo "Fail to update " . $source_block->getPath() . "<br />";
+                }
+            }
         }
         // metadata
         self::setMetadataSet( 
@@ -3585,8 +3750,26 @@ See <code>updateBlock</code> for more information.</p></description>
         else
         {
             $ms = $target_cascade->getMetadataSet( $source_ms_path, $target_ms_site );
+            
             if( isset( $ms ) )
-                $target_asset->setMetadataSet( $ms );
+            {
+                try
+                {
+                    $target_asset->setMetadataSet( $ms );
+                }
+                catch( \Exception $e )
+                {
+                    if( $exception_thrown )
+                    {
+                        throw new e\CascadeInstancesErrorException( $e );
+                    }
+                    else
+                    {
+                        echo "Fail to update " . $source_asset->getPath() . "<br />";
+                        return;
+                    }
+                }
+            }
         }
         
         // set metadata
@@ -3625,9 +3808,17 @@ See <code>updateBlock</code> for more information.</p></description>
             }
             catch( \Exception $e )
             {
-                throw new e\CascadeInstancesErrorException(
-                    $e . BR . S_SPAN . "Path: " . 
-                    $source_asset->getPath() . E_SPAN );
+                if( $exception_thrown )
+                {
+                    throw new e\CascadeInstancesErrorException(
+                        $e . BR . S_SPAN . "Path: " . 
+                        $source_asset->getPath() . E_SPAN );
+                }
+                else
+                {
+                    echo "Fail to update " . $source_asset->getPath() . "<br />";
+                    return;
+                }
             }
         }
     }

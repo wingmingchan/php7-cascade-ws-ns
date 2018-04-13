@@ -5,6 +5,7 @@
                      German Drulyk <drulykg@upstate.edu>
   MIT Licensed
   Modification history:
+   4/12/2018 Added exception throwing to edit.
    1/18/2018 Moved REST dump to AssetOperationHandlerServiceRest.
    1/17/2018 Moved the private arrays to the parent.
    1/8/2018 Added a while loop in siteCopy.
@@ -171,7 +172,8 @@ $service  = new aohs\AssetOperationHandlerServiceSoap( $type, $url, $auth );</ex
             if( is_array( $context ) )
                 $this->soapClient = new \SoapClient( $this->url, $context );
             else
-                $this->soapClient = new \SoapClient( $this->url, array( 'trace' => 1 ) );
+                $this->soapClient = new \SoapClient( $this->url, array( 'trace' => true,
+                    'keep_alive' => false ) );
         }
         catch( \Exception $e )
         {
@@ -621,6 +623,7 @@ return $doc_string;
 $asset->xhtmlDataDefinitionBlock = $block;
 $service->edit( $asset );
 </example>
+<exception>EditingFailureException</exception>
 <return-type>stdClass</return-type>
 </documentation>
 */
@@ -630,7 +633,15 @@ $service->edit( $asset );
         $edit_params->authentication = $this->auth;
         $edit_params->asset          = $asset;
         
-        $this->reply = $this->soapClient->edit( $edit_params );
+        try
+        {
+        	$this->reply = $this->soapClient->edit( $edit_params );
+        }
+        catch ( \SoapFault $sf )
+        {
+    		throw new e\EditingFailureException( $sf->getMessage() );
+    	}
+        
         $this->storeResults( $this->reply->editReturn );
         return $this->reply;
     }

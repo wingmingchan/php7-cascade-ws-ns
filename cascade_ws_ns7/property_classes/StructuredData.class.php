@@ -410,11 +410,11 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
 /**
 <documentation><description><p>Returns the host asset.</p></description>
 <example>$sd->getHostAsset()->dump();</example>
-<return-type>Asset</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getHostAsset() : a\Asset
+    public function getHostAsset()
     {
         return $this->host_asset;
     }
@@ -2339,9 +2339,16 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
         }
     }
     
-    private function throwException( $e )
+    private function throwException( \Exception $e )
     {
-        u\DebugUtility::throwException( $this->getHostAsset(), $e );
+    	if( !is_null( $this->getHostAsset() ) )
+    	{
+        	u\DebugUtility::throwException( $this->getHostAsset(), $e );
+        }
+        else
+        {
+        	u\DebugUtility::throwException( NULL, $e );
+        }
     }
 
     private $definition_id;
