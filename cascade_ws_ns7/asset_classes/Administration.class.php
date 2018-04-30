@@ -5,6 +5,7 @@
   *                    German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 4/30/2018 Used the splat operator to replace call_user_func_array.
   * 3/30/2018 Added copyGroup, copyGroupWriteAccess, copyAFGroupAccess.
   * 2/13/2018 Added __call.
   * 2/12/2018 Added access-related methods.
@@ -66,7 +67,7 @@ class Administration
 */
     function __call( string $func, array $params )
     {
-        return call_user_func_array( [ $this->cascade, $func ], $params );
+        return $this->cascade->$func( ...$params );
     }
 
 /**
