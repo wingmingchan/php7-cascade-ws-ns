@@ -120,22 +120,9 @@ information must be retrieved through the associated content type object.</p></d
     }
     
 /**
-<documentation><description><p>Returns <code>reviewOnSchedule</code>.</p></description>
-<example>echo u\StringUtility::boolToString( $page->getReviewOnSchedule() ), BR;</example>
-<return-type>bool</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function setReviewOnSchedule( bool $bool ) : Asset
-    {
-        $this->getProperty()->reviewOnSchedule = $bool;
-        return $this;
-    }
-    
-/**
-<documentation><description><p>Returns <code>reviewEvery</code>.</p></description>
-<example>echo $page->getReviewEvery(), BR;</example>
-<return-type>int</return-type>
+<documentation><description><p>Sets <code>reviewEvery</code> and returns the calling object.</p></description>
+<example>$page->setReviewEvery( 90 )->edit();</example>
+<return-type>Asset</return-type>
 <exception></exception>
 </documentation>
 */
@@ -148,6 +135,19 @@ information must be retrieved through the associated content type object.</p></d
         if( $days != 0 )
             $this->getProperty()->reviewOnSchedule = true;
         $this->getProperty()->reviewEvery = $days;
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Sets <code>reviewOnSchedule</code> and returns the calling object.</p></description>
+<example>$page->setReviewOnSchedule( true )->edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setReviewOnSchedule( bool $bool ) : Asset
+    {
+        $this->getProperty()->reviewOnSchedule = $bool;
         return $this;
     }
     

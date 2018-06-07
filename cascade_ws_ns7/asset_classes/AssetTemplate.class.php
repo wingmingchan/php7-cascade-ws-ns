@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 5/22/2018 Added getEditorConfiguration.
   * 1/10/2017 Modified various objects for REST.
   * 9/28/2017 Added getCloudTransport.
   * 1/5/2017 Added getSearchInformation.
@@ -171,6 +172,21 @@ class AssetTemplate
 
         $asset                                 = new \stdClass ();
         $asset->dynamicMetadataFieldDefinition = $dmfd;
+        return $asset;
+    }
+    
+    public static function getEditorConfiguration() : \stdClass
+    {
+        $ec                  = new \stdClass ();
+        $ec->name            = "";
+        $ec->id              = "";
+        $ec->siteId          = "";
+        $ec->siteName        = "";
+        $ec->cssFileRecycled = false;
+        $ec->configuration   = new \stdClass ();
+
+        $asset                      = new \stdClass ();
+        $asset->editorConfiguration = $ec;
         return $asset;
     }
     

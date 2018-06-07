@@ -100,10 +100,23 @@ array(1) {
   [0]=>
   array(1) {
     [\"command\"]=>
-    string(143) \"http://mydomain.edu:1234/api/v1/read/block/formats/_cascade/blocks/data/latin-wysiwyg?u=wing&p=password\"
+    string(143) \"http://mydomain.edu:1234/api/v1/read/block/formats/_cascade/blocks/data/latin-wysiwyg?u=wing&amp;p=password\"
   }
 }
-</pre><p>Note that when a command, like <code>read</code>, does not require parameters, the URL can be copied and pasted into the URL field of a browser and the result will be displayed in the browser.</p>";
+</pre><p>Note that when a command, like <code>read</code>, does not require parameters, the URL can be copied and pasted into the URL field of a browser and the result will be displayed in the browser.</p><h2>About Identifiers</h2><p>REST requires identifiers of a certain structure. This is normally encapsulated in methods like <code>createId</code>. But if raw code is to be sent to Cascade, we need to know the exact structure. For example, when a path and a site name are supplied:</p><pre>
+    {
+        \"path\":{
+            \"path\":\"velocity\/api-documentation\/java-lang\",
+            \"siteName\":\"formats\"
+        },
+        \"type\":\"folder\",
+    }
+</pre><p>On the other hand, when an ID string is supplie:</p><pre>
+    {
+        \"id\":\"945455f48b7ffe8347b1526ee30fc62e\",
+        \"type\":\"page\"
+    }
+</pre>";
 return $doc_string; ?></description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/tree/master/working-with-AssetOperationHandlerService">working-with-AssetOperationHandlerService</a></li></ul></postscript>
 <advanced>
@@ -167,7 +180,7 @@ $service  = new aohs\AssetOperationHandlerServiceRest( $type, $url, $auth );</ex
 /**
 <documentation><description><p>Sends out the command and returns the reply. When <code>$params</code> is not <code>NULL</code>, it can be either an <code>stdClass</code> object or a JSON string.</p></description>
 <example>// using an stdClass as $params
-$url = "http://mydomain.edu:1234/api/v1/search?u=wing&amp;p=password";
+$url = "http://mydomain.edu:1234/api/v1/search?u=wing&amp;amp;p=password";
 $params = new \stdClass();
 $params->searchInformation = new \stdClass();
 $params->searchInformation->searchTerms = "group";
@@ -177,7 +190,7 @@ $reply = $service->apiOperation( $url, $params );
 u\DebugUtility::dump( $reply );
 
 // using a string as $params
-$url = "http://mydomain.edu:1234/api/v1/search?u=wing&amp;p=password";
+$url = "http://mydomain.edu:1234/api/v1/search?u=wing&amp;amp;p=password";
 $params = '{"searchInformation":{"searchTerms":"group","siteId":"61885ac08b7ffe8377b637e83a86cca5","searchTypes":["format"]}}';
 $reply = $service->apiOperation( $url, $params );
 u\DebugUtility::dump( $reply );
@@ -281,11 +294,11 @@ $doc_string .= "</pre>";
 $doc_string .= "<p>REST command dump:</p><pre>";
 $doc_string .= "array(2) {
   [0]=>
-  string(135) \"https://mydomain.edu:1234/api/v1/checkIn/page/c12eb9978b7ffe83129ed6d80132aa29?u=wing&p=password\"
+  string(135) \"https://mydomain.edu:1234/api/v1/checkIn/page/c12eb9978b7ffe83129ed6d80132aa29?u=wing&amp;p=password\"
   [1]=>
   array(2) {
     [\"command\"]=>
-    string(135) \"https://mydomain.edu:1234/api/v1/checkIn/page/c12eb9978b7ffe83129ed6d80132aa29?u=wing&p=password\"
+    string(135) \"https://mydomain.edu:1234/api/v1/checkIn/page/c12eb9978b7ffe83129ed6d80132aa29?u=wing&amp;p=password\"
     [\"params\"]=>
     string(22) \"{\"comments\":\"testing\"}\"
   }
@@ -342,7 +355,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(136) \"https://mydomain.edu:1234/api/v1/checkOut/page/c12eb9978b7ffe83129ed6d80132aa29?u=wing&p=password\"
+    string(136) \"https://mydomain.edu:1234/api/v1/checkOut/page/c12eb9978b7ffe83129ed6d80132aa29?u=wing&amp;p=password\"
   }
 }";
 $doc_string .= "</pre>";
@@ -389,7 +402,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(133) \"https://mydomain.edu:1234/api/v1/copy/block/089c28d98b7ffe83785cac8a79fe2145?u=wing&p=password\"
+    string(133) \"https://mydomain.edu:1234/api/v1/copy/block/089c28d98b7ffe83785cac8a79fe2145?u=wing&amp;p=password\"
     [\"params\"]=>
     string(152) \"{\"copyParameters\":{\"destinationContainerIdentifier\":{\"id\":\"c12dcef18b7ffe83129ed6d85960d93d\",\"type\":\"folder\"},\"newName\":\"new-hello\",\"doWorkflow\":false}}\"
   }
@@ -453,7 +466,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(96) \"https://mydomain.edu:1234/api/v1/create?u=wing&p=password\"
+    string(96) \"https://mydomain.edu:1234/api/v1/create?u=wing&amp;p=password\"
     [\"params\"]=>
     string(239) \"{\"asset\":{\"textBlock\":{\"text\":\"My new text block content\",\"metadataSetId\":\"618861da8b7ffe8377b637e8ad3dd499\",\"metadataSetPath\":\"_brisk:Block\",\"name\":\"new-text-block-again\",\"parentFolderPath\":\"_cascade\/blocks\/code\",\"siteName\":\"formats\"}}}\"
   }
@@ -602,7 +615,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(135) \"https://mydomain.edu:1234/api/v1/delete/block/0959f8158b7ffe83785cac8a915f92fa?u=wing&p=password\"
+    string(135) \"https://mydomain.edu:1234/api/v1/delete/block/0959f8158b7ffe83785cac8a915f92fa?u=wing&amp;p=password\"
   }
 }";
 $doc_string .= "</pre>";return $doc_string;
@@ -632,7 +645,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(144) \"https://mydomain.edu:1234/api/v1/deleteMessage/message/5dafb4228b7ffe833b19adb81c850f47?u=wing&p=password\"
+    string(144) \"https://mydomain.edu:1234/api/v1/deleteMessage/message/5dafb4228b7ffe833b19adb81c850f47?u=wing&amp;p=password\"
   }
 }";
 $doc_string .= "</pre>";
@@ -664,17 +677,17 @@ $doc_string .= "array(2) {
   [0]=>
   array(1) {
     [\"command\"]=>
-    string(133) \"https://mydomain.edu:1234/api/v1/read/block/c12da9c78b7ffe83129ed6d8411290fe?u=wing&p=password\"
+    string(133) \"https://mydomain.edu:1234/api/v1/read/block/c12da9c78b7ffe83129ed6d8411290fe?u=wing&amp;p=password\"
   }
   [1]=>
   array(2) {
     [\"command\"]=>
-    string(94) \"https://mydomain.edu:1234/api/v1/edit?u=wing&p=password\"
+    string(94) \"https://mydomain.edu:1234/api/v1/edit?u=wing&amp;p=password\"
     [\"params\"]=>
-    string(2019) \"{\"asset\":{\"xhtmlDataDefinitionBlock\":{\"structuredData\":{\"definitionId\":\"618863658b7ffe8377b637e8ee4f3e42\",\"definitionPath\":\"_brisk:Wysiwyg\",\"structuredDataNodes\":[{\"type\":\"text\",\"identifier\":\"display\",\"text\":\"yes\",\"recycled\":false},{\"type\":\"group\",\"identifier\":\"wysiwyg-group\",\"structuredDataNodes\":[{\"type\":\"text\",\"identifier\":\"wysiwyg-content\",\"text\":\"<p>Content
-.<\/p>
-<p>
-Text appended.<\/p>\",\"recycled\":false},{\"type\":\"text\",\"identifier\":\"admin-options\",\"text\":\"::CONTENT-XML-CHECKBOX::\",\"recycled\":false}],\"recycled\":false}]},\"expirationFolderRecycled\":false,\"metadataSetId\":\"618861da8b7ffe8377b637e8ad3dd499\",\"metadataSetPath\":\"_brisk:Block\",\"metadata\":{\"dynamicFields\":[{\"name\":\"macro\",\"fieldValues\":[{\"value\":\"processWysiwygMacro\"}]}]},\"reviewOnSchedule\":false,\"reviewEvery\":0,\"parentFolderId\":\"c12dceb28b7ffe83129ed6d8535fb721\",\"parentFolderPath\":\"_cascade\/blocks\/data\",\"lastModifiedDate\":\"Nov 29, 2017 8:19:41 AM\",\"lastModifiedBy\":\"wing\",\"createdDate\":\"Nov 15, 2017 2:35:16 PM\",\"createdBy\":\"wing\",\"path\":\"_cascade\/blocks\/data\/latin-wysiwyg\",\"siteId\":\"c12d8c498b7ffe83129ed6d81ea4076a\",\"siteName\":\"formats\",\"name\":\"latin-wysiwyg\",\"id\":\"c12da9c78b7ffe83129ed6d8411290fe\"}}}\"
+    string(2019) \"{\"asset\":{\"xhtmlDataDefinitionBlock\":{\"structuredData\":{\"definitionId\":\"618863658b7ffe8377b637e8ee4f3e42\",\"definitionPath\":\"_brisk:Wysiwyg\",\"structuredDataNodes\":[{\"type\":\"text\",\"identifier\":\"display\",\"text\":\"yes\",\"recycled\":false},{\"type\":\"group\",\"identifier\":\"wysiwyg-group\",\"structuredDataNodes\":[{\"type\":\"text\",\"identifier\":\"wysiwyg-content\",\"text\":\"&lt;p>Content
+.&lt;\/p>
+&lt;p>
+Text appended.&lt;\/p>\",\"recycled\":false},{\"type\":\"text\",\"identifier\":\"admin-options\",\"text\":\"::CONTENT-XML-CHECKBOX<span></span>::\",\"recycled\":false}],\"recycled\":false}]},\"expirationFolderRecycled\":false,\"metadataSetId\":\"618861da8b7ffe8377b637e8ad3dd499\",\"metadataSetPath\":\"_brisk:Block\",\"metadata\":{\"dynamicFields\":[{\"name\":\"macro\",\"fieldValues\":[{\"value\":\"processWysiwygMacro\"}]}]},\"reviewOnSchedule\":false,\"reviewEvery\":0,\"parentFolderId\":\"c12dceb28b7ffe83129ed6d8535fb721\",\"parentFolderPath\":\"_cascade\/blocks\/data\",\"lastModifiedDate\":\"Nov 29, 2017 8:19:41 AM\",\"lastModifiedBy\":\"wing\",\"createdDate\":\"Nov 15, 2017 2:35:16 PM\",\"createdBy\":\"wing\",\"path\":\"_cascade\/blocks\/data\/latin-wysiwyg\",\"siteId\":\"c12d8c498b7ffe83129ed6d81ea4076a\",\"siteName\":\"formats\",\"name\":\"latin-wysiwyg\",\"id\":\"c12da9c78b7ffe83129ed6d8411290fe\"}}}\"
   }
 }";
 $doc_string .= "</pre>";
@@ -726,12 +739,12 @@ $doc_string .= "array(2) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(146) \"https://mydomain.edu:1234/api/v1/readAccessRights/folder/c12d8d0d8b7ffe83129ed6d86dd9f853?u=wing&p=password\"
+    string(146) \"https://mydomain.edu:1234/api/v1/readAccessRights/folder/c12d8d0d8b7ffe83129ed6d86dd9f853?u=wing&amp;p=password\"
   }
   [1]=>
   array(2) {
     [\"command\"]=>
-    string(146) \"https://mydomain.edu:1234/api/v1/editAccessRights/folder/c12d8d0d8b7ffe83129ed6d86dd9f853?u=wing&p=password\"
+    string(146) \"https://mydomain.edu:1234/api/v1/editAccessRights/folder/c12d8d0d8b7ffe83129ed6d86dd9f853?u=wing&amp;p=password\"
     [\"params\"]=>
     string(415) \"{\"accessRightsInformation\":{\"identifier\":{\"id\":\"c12d8d0d8b7ffe83129ed6d86dd9f853\",\"path\":{\"path\":\"\/\",\"siteId\":\"c12d8c498b7ffe83129ed6d81ea4076a\",\"siteName\":\"formats\"},\"type\":\"folder\",\"recycled\":false},\"aclEntries\":[{\"level\":\"read\",\"type\":\"group\",\"name\":\"CWT-Designers\"},{\"level\":\"write\",\"type\":\"user\",\"name\":\"wing\"},{\"level\":\"read\",\"type\":\"group\",\"name\":\"CWT-Designers\"}],\"allLevel\":\"none\"},\"applyToChildren\":true}\"
   }
@@ -782,7 +795,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(104) \"https://mydomain.edu:1234/api/v1/editPreference?u=wing&p=password\"
+    string(104) \"https://mydomain.edu:1234/api/v1/editPreference?u=wing&amp;p=password\"
     [\"params\"]=>
     string(93) \"{\"preference\":{\"name\":\"system_pref_global_area_external_link_check_on_publish\",\"value\":\"on\"}}\"
   }
@@ -828,12 +841,12 @@ $doc_string .= "array(2) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(150) \"https://mydomain.edu:1234/api/v1/readWorkflowSettings/folder/c12dcf268b7ffe83129ed6d81d964c24?u=wing&p=password\"
+    string(150) \"https://mydomain.edu:1234/api/v1/readWorkflowSettings/folder/c12dcf268b7ffe83129ed6d81d964c24?u=wing&amp;p=password\"
   }
   [1]=>
   array(2) {
     [\"command\"]=>
-    string(150) \"https://mydomain.edu:1234/api/v1/editWorkflowSettings/folder/c12dcf268b7ffe83129ed6d81d964c24?u=wing&p=password\"
+    string(150) \"https://mydomain.edu:1234/api/v1/editWorkflowSettings/folder/c12dcf268b7ffe83129ed6d81d964c24?u=wing&amp;p=password\"
     [\"params\"]=>
     string(418) \"{\"workflowSettings\":{\"workflowDefinitions\":[{\"id\":\"3bdf56e78b7f085600a5bfd5770fe30e\",\"path\":{\"path\":\"Automatic News Publish Create Edit Copy\",\"siteId\":\"fd27691f8b7f08560159f3f02754e61d\",\"siteName\":\"_common\"},\"type\":\"workflowdefinition\",\"recycled\":false}],\"inheritedWorkflowDefinitions\":[],\"inheritWorkflows\":false,\"requireWorkflow\":false},\"applyInheritWorkflowsToChildren\":false,\"applyRequireWorkflowToChildren\":false}\"
   }
@@ -999,7 +1012,17 @@ return $doc_string;
     {
         return $this->reply;
     }
-    
+
+/**
+<documentation><description><p>Returns <code>matches</code>.</p></description>
+<example>$reply = $service->getReply();</example>
+<return-type>stdClass</return-type></documentation>
+*/
+    public function getSearchMatches() : array
+    {
+        return $this->reply->matches;
+    }
+
 /**
 <documentation><description><p>Returns true if an operation is successful.</p></description>
 <example>$service->readPreferences();
@@ -1032,7 +1055,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(152) \"https://mydomain.edu:1234/api/v1/listEditorConfigurations/site/c12d8c498b7ffe83129ed6d81ea4076a?u=wing&p=password\"
+    string(152) \"https://mydomain.edu:1234/api/v1/listEditorConfigurations/site/c12d8c498b7ffe83129ed6d81ea4076a?u=wing&amp;p=password\"
   }
 }";
 $doc_string .= "</pre>";return $doc_string;
@@ -1062,7 +1085,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(1) {
     [\"command\"]=>
-    string(102) \"https://mydomain.edu:1234/api/v1/listMessages?u=wing&p=password\"
+    string(102) \"https://mydomain.edu:1234/api/v1/listMessages?u=wing&amp;p=password\"
   }
 }";
 $doc_string .= "</pre>";
@@ -1093,7 +1116,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(1) {
     [\"command\"]=>
-    string(99) \"https://mydomain.edu:1234/api/v1/listSites?u=wing&p=password\"
+    string(99) \"https://mydomain.edu:1234/api/v1/listSites?u=wing&amp;p=password\"
   }
 }";
 $doc_string .= "</pre>";
@@ -1126,7 +1149,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(144) \"https://mydomain.edu:1234/api/v1/listSubscribers/block/c12d9e7b8b7ffe83129ed6d851168bbf?u=wing&p=password\"
+    string(144) \"https://mydomain.edu:1234/api/v1/listSubscribers/block/c12d9e7b8b7ffe83129ed6d851168bbf?u=wing&amp;p=password\"
     [\"params\"]=>
     string(56) \"{\"id\":\"c12d9e7b8b7ffe83129ed6d851168bbf\",\"type\":\"block\"}\"
   }
@@ -1158,7 +1181,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(142) \"https://mydomain.edu:1234/api/v1/markMessage/message/6e8c72538b7ffe833b19adb8d79fa0bc?u=wing&p=password\"
+    string(142) \"https://mydomain.edu:1234/api/v1/markMessage/message/6e8c72538b7ffe833b19adb8d79fa0bc?u=wing&amp;p=password\"
     [\"params\"]=>
     string(21) \"{\"markType\":\"unread\"}\"
   }
@@ -1209,7 +1232,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(133) \"https://mydomain.edu:1234/api/v1/move/block/089c28d98b7ffe83785cac8a79fe2145?u=wing&p=password\"
+    string(133) \"https://mydomain.edu:1234/api/v1/move/block/089c28d98b7ffe83785cac8a79fe2145?u=wing&amp;p=password\"
     [\"params\"]=>
     string(130) \"{\"moveParameters\":{\"destinationContainerIdentifier\":{\"id\":\"c12dce3c8b7ffe83129ed6d8f4f9b820\",\"type\":\"folder\"},\"doWorkflow\":false}}\"
   }
@@ -1222,7 +1245,7 @@ return $doc_string;
 <return-type>stdClass</return-type>
 </documentation>
 */
-    public function move( \stdClass $identifier, \stdClass $newIdentifier=NULL,
+    public function move( \stdClass $identifier, \stdClass $parentId=NULL,
         string $newName="", bool $doWorkflow=false ) : \stdClass
     {
         $id_string = $this->createIdString( $identifier );
@@ -1235,8 +1258,8 @@ return $doc_string;
         
         $params = new \stdClass();
         
-        if( !is_null( $newIdentifier ) )
-            $params->destinationContainerIdentifier = $newIdentifier;
+        if( !is_null( $parentId ) )
+            $params->destinationContainerIdentifier = $parentId;
         if( !is_null( $newName ) && $newName != "" )
             $params->newName = $newName;
         if( !is_null( $doWorkflow ) )
@@ -1261,7 +1284,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(115) \"https://mydomain.edu:1234/api/v1/performWorkflowTransition?u=wing&p=password\"
+    string(115) \"https://mydomain.edu:1234/api/v1/performWorkflowTransition?u=wing&amp;p=password\"
     [\"params\"]=>
     string(146) \"{\"workflowTransitionInformation\":{\"workflowId\":\"1238fd1e8b7ffe83785cac8aa6c35877\",\"actionIdentifier\":\"finished\",\"transitionComment\":\"No comment\"}}\"
   }
@@ -1312,7 +1335,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(135) \"https://mydomain.edu:1234/api/v1/publish/page/9a1416488b7f08ee5d439b31921d08b6?u=wing&p=password\"
+    string(135) \"https://mydomain.edu:1234/api/v1/publish/page/9a1416488b7f08ee5d439b31921d08b6?u=wing&amp;p=password\"
     [\"params\"]=>
     string(185) \"{\"publishInformation\":{\"destinations\":[{\"id\":\"c34b58ca8b7f08ee4fe76bb83ba1613b\",\"type\":\"destination\"},{\"id\":\"c34d2a868b7f08ee4fe76bb87c352c01\",\"type\":\"destination\"}],\"unpublish\":false}}\"
   }
@@ -1382,12 +1405,12 @@ $doc_string .= "</pre>";
 $doc_string .= "<p>REST command dump:</p><pre>";
 $doc_string .= "array(1) {
   [\"command\"]=>
-  string(133) \"https://mydomain.edu:1234/api/v1/read/block/c12da9c78b7ffe83129ed6d8411290fe?u=wing&p=password\"
+  string(133) \"https://mydomain.edu:1234/api/v1/read/block/c12da9c78b7ffe83129ed6d8411290fe?u=wing&amp;p=password\"
 }
 
 array(1) {
   [\"command\"]=>
-  string(116) \"https://mydomain.edu:1234/api/v1/read/page/about/index?u=wing&p=password\"
+  string(116) \"https://mydomain.edu:1234/api/v1/read/page/about/index?u=wing&amp;p=password\"
 }";
 $doc_string .= "</pre>";
 return $doc_string;
@@ -1431,12 +1454,12 @@ $doc_string .= "array(2) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(146) \"https://mydomain.edu:1234/api/v1/readAccessRights/folder/c12d8d0d8b7ffe83129ed6d86dd9f853?u=wing&p=password\"
+    string(146) \"https://mydomain.edu:1234/api/v1/readAccessRights/folder/c12d8d0d8b7ffe83129ed6d86dd9f853?u=wing&amp;p=password\"
   }
   [1]=>
   array(2) {
     [\"command\"]=>
-    string(146) \"https://mydomain.edu:1234/api/v1/editAccessRights/folder/c12d8d0d8b7ffe83129ed6d86dd9f853?u=wing&p=password\"
+    string(146) \"https://mydomain.edu:1234/api/v1/editAccessRights/folder/c12d8d0d8b7ffe83129ed6d86dd9f853?u=wing&amp;p=password\"
     [\"params\"]=>
     string(415) \"{\"accessRightsInformation\":{\"identifier\":{\"id\":\"c12d8d0d8b7ffe83129ed6d86dd9f853\",\"path\":{\"path\":\"\/\",\"siteId\":\"c12d8c498b7ffe83129ed6d81ea4076a\",\"siteName\":\"formats\"},\"type\":\"folder\",\"recycled\":false},\"aclEntries\":[{\"level\":\"read\",\"type\":\"group\",\"name\":\"CWT-Designers\"},{\"level\":\"write\",\"type\":\"user\",\"name\":\"wing\"},{\"level\":\"read\",\"type\":\"group\",\"name\":\"CWT-Designers\"}],\"allLevel\":\"none\"},\"applyToChildren\":true}\"
   }
@@ -1473,7 +1496,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(101) \"https://mydomain.edu:1234/api/v1/readAudits/?u=wing&p=password\"
+    string(101) \"https://mydomain.edu:1234/api/v1/readAudits/?u=wing&amp;p=password\"
     [\"params\"]=>
     string(40) \"{\"auditParameters\":{\"auditType\":\"copy\"}}\"
   }
@@ -1540,7 +1563,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(1) {
     [\"command\"]=>
-    string(105) \"https://mydomain.edu:1234/api/v1/readPreferences?u=wing&p=password\"
+    string(105) \"https://mydomain.edu:1234/api/v1/readPreferences?u=wing&amp;p=password\"
   }
 }";
 $doc_string .= "</pre>";
@@ -1571,7 +1594,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(151) \"https://mydomain.edu:1234/api/v1/readWorkflowInformation/page/c12deeb18b7ffe83129ed6d85a5d3d95?u=wing&p=password\"
+    string(151) \"https://mydomain.edu:1234/api/v1/readWorkflowInformation/page/c12deeb18b7ffe83129ed6d85a5d3d95?u=wing&amp;p=password\"
   }
 }";
 $doc_string .= "</pre>";
@@ -1606,7 +1629,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(150) \"https://mydomain.edu:1234/api/v1/readWorkflowSettings/folder/b70a87c38b7ffe8353cc17e9fe08ff77?u=wing&p=password\"
+    string(150) \"https://mydomain.edu:1234/api/v1/readWorkflowSettings/folder/b70a87c38b7ffe8353cc17e9fe08ff77?u=wing&amp;p=password\"
   }
 }";
 $doc_string .= "</pre>";
@@ -1668,7 +1691,7 @@ $doc_string .= "array(1) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(96) \"https://mydomain.edu:1234/api/v1/search?u=wing&p=password\"
+    string(96) \"https://mydomain.edu:1234/api/v1/search?u=wing&amp;p=password\"
     [\"params\"]=>
     string(114) \"{\"searchInformation\":{\"searchTerms\":\"group\",\"siteId\":\"61885ac08b7ffe8377b637e83a86cca5\",\"searchTypes\":[\"format\"]}}\"
   }
@@ -1748,14 +1771,14 @@ $doc_string .= "array(2) {
   [0]=>
   array(2) {
     [\"command\"]=>
-    string(98) \"https://mydomain.edu:1234/api/v1/siteCopy?u=wing&p=password\"
+    string(98) \"https://mydomain.edu:1234/api/v1/siteCopy?u=wing&amp;p=password\"
     [\"params\"]=>
     string(115) \"{\"originalSiteId\":\"6a8d58418b7ffe83164c9314aed51787\",\"originalSiteName\":\"_rwd_seed\",\"newSiteName\":\"_rwd_seed_copy\"}\"
   }
   [1]=>
   array(1) {
     [\"command\"]=>
-    string(136) \"https://mydomain.edu:1234/api/v1/read/metadatasetcontainer/_rwd_seed_copy/%252f?u=wing&p=password\"
+    string(136) \"https://mydomain.edu:1234/api/v1/read/metadatasetcontainer/_rwd_seed_copy/%252f?u=wing&amp;p=password\"
   }
 }";
 $doc_string .= "</pre>";

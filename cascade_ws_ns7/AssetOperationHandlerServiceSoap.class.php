@@ -635,12 +635,12 @@ $service->edit( $asset );
         
         try
         {
-        	$this->reply = $this->soapClient->edit( $edit_params );
+            $this->reply = $this->soapClient->edit( $edit_params );
         }
         catch ( \SoapFault $sf )
         {
-    		throw new e\EditingFailureException( $sf->getMessage() );
-    	}
+            throw new e\EditingFailureException( $sf->getMessage() );
+        }
         
         $this->storeResults( $this->reply->editReturn );
         return $this->reply;
@@ -1181,10 +1181,11 @@ return $doc_string;
 
         if( $this->isSuccessful() )
         {
+             u\DebugUtility::dump( $this->reply );
             $this->listed_editor_configurations =
                 $this->reply->listEditorConfigurationsReturn->editorConfigurations;
         }
-        return $this->reply;
+        return $this->reply->listEditorConfigurationsReturn->editorConfigurations;
     }
 
 /**
@@ -1324,14 +1325,14 @@ return $doc_string;
 <return-type>stdClass</return-type>
 </documentation>
 */
-    function move( \stdClass $identifier, \stdClass $newIdentifier=NULL, 
+    function move( \stdClass $identifier, \stdClass $parentId=NULL, 
         string $newName="", bool $doWorkflow=false ) : \stdClass
     {
         $move_params                 = new \stdClass();
         $move_params->authentication = $this->auth;
         $move_params->identifier     = $identifier;
         $move_params->moveParameters = new \stdClass();
-        $move_params->moveParameters->destinationContainerIdentifier = $newIdentifier;
+        $move_params->moveParameters->destinationContainerIdentifier = $parentId;
         $move_params->moveParameters->newName                        = $newName;
         $move_params->moveParameters->doWorkflow                     = $doWorkflow;
         

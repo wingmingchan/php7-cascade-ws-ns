@@ -133,23 +133,23 @@ abstract class Asset
         $this->property_name = c\T::$type_property_name_map[ $this->type ];
         $this->property      = $property;
         $this->json          = json_encode( [
-        	c\T::$type_property_name_map[ $this->type ] => $this->property ] ); 
+            c\T::$type_property_name_map[ $this->type ] => $this->property ] ); 
         
         if( $service->isSoap() )
         {
-        	$response = $service->getLastResponse();
-    		$doc = new \DOMDocument();
-    		$doc->loadXML( $response );
-    		// get the asset element
-    		$asset = $doc->getElementsByTagName( 
-    			c\T::$type_property_name_map[ $identifier->type ] )->
-        		item( 0 );
-    		$xml_string = $asset->ownerDocument->saveXML( $asset );
-    		// clean up attributes with namespace
-    		$xml_string = str_replace(
-    			' xsi:nil="true"', "", $xml_string );
-    		$this->xml  = $xml_string;
-    	}
+            $response = $service->getLastResponse();
+            $doc = new \DOMDocument();
+            $doc->loadXML( $response );
+            // get the asset element
+            $asset = $doc->getElementsByTagName( 
+                c\T::$type_property_name_map[ $identifier->type ] )->
+                item( 0 );
+            $xml_string = $asset->ownerDocument->saveXML( $asset );
+            // clean up attributes with namespace
+            $xml_string = str_replace(
+                ' xsi:nil="true"', "", $xml_string );
+            $this->xml  = $xml_string;
+        }
         
         if( isset( $property->id ) )
         {
@@ -596,111 +596,24 @@ echo "There are " . count( $subscribers ) . " subscribers.", BR;</example>
 */
     public function getSubscribers() : array
     {
-        $results = array();
-        
-        if( $this->getService()->isSoap() )
-            $this->service->listSubscribers( $this->identifier );
-        elseif( $this->getService()->isRest() )
-        {
-            $subscribers = $this->service->
-                listSubscribers( $this->identifier )->subscribers;
-        }
-            
-        if( $this->service->isSuccessful() )
-        {
-            if( self::DEBUG ) { u\DebugUtility::out( "Successfully listing subscribers" ); }
-            
-            // there are subscribers
-            if( $this->getService()->isSoap() )
-            {
-                if( isset( $this->service->getReply()->
-                    listSubscribersReturn->subscribers->assetIdentifier ) )
-            	{
-                	$subscribers = 
-                    	$this->service->getReply()->listSubscribersReturn->
-                        	subscribers->assetIdentifier;
-            	}
-            	else
-            	{
-            		$subscribers = array();
-            	}
-            }
-            
-            
-            if( !is_array( $subscribers ) )
-                $subscribers = array( $subscribers );
-            
-            foreach( $subscribers as $subscriber )
-            {
-                $identifier = new p\Identifier( $subscriber );
-                $results[] = $identifier;
-            }
-        }
-        else
-        {
-            echo $this->service->getMessage();
-        }
-        
+        $results = $this->getSubscribersArray( "subscribers" );
         return $results;
     }
     
+/**
+<documentation><description><p>Returns an array of manual subscribers (<a href="http://www.upstate.edu/web-services/api/property-classes/identifier.php"><code>Identifier</code></a> objects).</p></description>
+<example>$subscribers = $page->getManualSubscribers(); // array of Identifier objects
+echo "There are " . count( $subscribers ) . " manual subscribers.", BR;</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getManualSubscribers() : array
     {
-    	
-        $results = array();
-        
-        if( $this->getService()->isSoap() )
-            $this->service->listSubscribers( $this->identifier );
-        elseif( $this->getService()->isRest() )
-        {
-            $subscribers = $this->service->
-                listSubscribers( $this->identifier )->manualSubscribers;
-        }
-            
-        if( $this->service->isSuccessful() )
-        {
-            if( self::DEBUG ) { u\DebugUtility::out( "Successfully listing subscribers" ); }
-            
-            // there are subscribers
-            if( $this->getService()->isSoap() )
-            {
-                if( isset( $this->service->getReply()->
-                    listSubscribersReturn->manualSubscribers->manualSubscribers ) )
-            	{
-            		echo "Subscribers found", BR;
-            		
-                	$subscribers = 
-                    	$this->service->getReply()->listSubscribersReturn->
-                        	manualSubscribers->manualSubscribers;
-            	}
-            	else
-            	{
-            		echo "No subscribers found", BR;
-            		
-            		u\DebugUtility::dump( $this->service->getReply()->listSubscribersReturn );
-            		echo $this->service->getLastResponse();
-            		$subscribers = array();
-            	}
-            }
-            
-            
-            if( !is_array( $subscribers ) )
-                $subscribers = array( $subscribers );
-            
-            foreach( $subscribers as $subscriber )
-            {
-                $identifier = new p\Identifier( $subscriber );
-                $results[] = $identifier;
-            }
-        }
-        else
-        {
-            echo $this->service->getMessage();
-        }
-        
+        $results = $this->getSubscribersArray( "manualSubscribers" );
         return $results;
     }
-    
+
 /**
 <documentation><description><p>Returns the type string.</p></description>
 <example>echo $page->getType(), BR;</example>
@@ -812,6 +725,59 @@ echo "There are " . count( $subscribers ) . " subscribers.", BR;</example>
             if( self::DEBUG ) { u\DebugUtility::out( $e->getMessage() ); }
             throw $e;
         }
+    }
+    
+    private function getSubscribersArray( $type ) : array
+    {
+        $results = array();
+        
+        if( $this->getService()->isSoap() )
+        {
+            $this->service->listSubscribers( $this->identifier );
+        }
+        elseif( $this->getService()->isRest() )
+        {
+            $subscribers = $this->service->
+                listSubscribers( $this->identifier )->$type;
+        }
+            
+        if( $this->service->isSuccessful() )
+        {
+            if( self::DEBUG ) { u\DebugUtility::out( "Successfully listing subscribers" ); }
+            
+            if( $this->getService()->isSoap() )
+            {
+                // there are subscribers
+                if( isset( $this->service->getReply()->
+                    listSubscribersReturn->$type->assetIdentifier ) )
+                {
+                    $subscribers = 
+                        $this->service->getReply()->listSubscribersReturn->
+                            $type->assetIdentifier;
+                }
+                else
+                {
+                    $subscribers = array();
+                }
+            }
+            
+            if( !is_array( $subscribers ) )
+            {
+                $subscribers = array( $subscribers );
+            }
+            
+            foreach( $subscribers as $subscriber )
+            {
+                $identifier = new p\Identifier( $subscriber );
+                $results[] = $identifier;
+            }
+        }
+        else
+        {
+            echo $this->service->getMessage();
+        }
+        
+        return $results;
     }
     
     /** @var AssetOperationHandlerService The service object */

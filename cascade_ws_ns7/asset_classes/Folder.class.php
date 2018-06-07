@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 5/22/2018 Fixed getIncludeInStaleContent and setIncludeInStaleContent.
   * 1/24/2018 Updated documentation.
   * 1/2/2018 Added REST code to editWorkflowSettings.
   * 7/31/2017 Added getIncludeInStaleContent and setIncludeInStaleContent. Still a bug in 8.5.
@@ -84,7 +85,7 @@ folder
       path
       type
       recycled
-  includeInStaleContent (8.5) ## bug!
+  includeInStaleContent
   
 REST:
 folder
@@ -96,6 +97,7 @@ folder
       siteName
     type
     recycled
+  includeInStaleContent
   shouldBePublished
   shouldBeIndexed
   lastPublishedDate
@@ -871,6 +873,7 @@ and returns the calling object. Note that this method does not called <code>edit
     public function setIncludeInStaleContent( bool $include_in_stale_content=false ) : Asset
     {
         $this->include_in_stale_content = $include_in_stale_content;
+        $this->getProperty()->includeInStaleContent = $include_in_stale_content;
         return $this;
     }
 

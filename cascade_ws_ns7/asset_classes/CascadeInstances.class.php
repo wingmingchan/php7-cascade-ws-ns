@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/4/2018 Added $to_exclude to updateFormat.
   * 4/12/2018 Added code to catch EditingFailureException.
   * 9/26/2017 Added reportMissingAssetsWithTypeArrayIn.
   * 9/8/2017 Changed getPageLevelBlockFormat to static.
@@ -650,7 +651,8 @@ See <code>updateBlock</code> for more information.</p></description>
 </documentation>
 */
     public function updateFormat(
-        Folder $f=NULL, bool $exception_thrown=true ) : CascadeInstances
+        Folder $f=NULL, bool $exception_thrown=true, 
+        array $to_exclude=[] ) : CascadeInstances
     {
         $this->checkSourceTargetSite();
             
@@ -673,7 +675,8 @@ See <code>updateBlock</code> for more information.</p></description>
             array(
                 'target-cascade'   => $this->target_cascade,
                 'target-site'      => $this->target_site,
-                'exception-thrown' => $exception_thrown
+                'exception-thrown' => $exception_thrown,
+                'to-exclude'       => $to_exclude
             )
         );
         return $this;
@@ -2046,7 +2049,6 @@ See <code>updateBlock</code> for more information.</p></description>
             $target_site = $params[ 'target-site' ];
         else
         {
-            echo c\M::TARGET_SITE_NOT_SET . BR;
             return;
         }
         
@@ -2058,7 +2060,20 @@ See <code>updateBlock</code> for more information.</p></description>
             return;
         }
         
+        $to_exclude = array();
+        
+        if( isset( $params[ 'to-exclude' ] ) && is_array( $params[ 'to-exclude' ] ) )
+        {
+        	$to_exclude = $params[ 'to-exclude' ];
+        }
+        
         $type = $child->getType();
+        $path = $child->getPathPath();
+        
+        if( in_array( $path, $to_exclude ) )
+        {
+        	return;
+        }
     
         $source_format         = $child->getAsset( $service );
         

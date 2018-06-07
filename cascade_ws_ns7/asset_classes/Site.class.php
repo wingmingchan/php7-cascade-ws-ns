@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 5/22/2018 Added listEditorConfigurations. However, there is a bug in SOAP, as of 8.9.1.
   * 1/24/2018 Updated documentation.
   * 1/12/2018 Added REST code to processRoleAssignments.
   * 1/11/2018 Added getSiteImproveUrl and setSiteImproveUrl.
@@ -1443,6 +1444,35 @@ representing the root asset factory container.</p></description>
             }
         }
         return false;
+    }
+
+    public function listEditorConfigurations() : array
+    {
+    	$service = $this->getService();
+    	$configs = $service->listEditorConfigurations( $this->getIdentifier() );
+    	    
+    	if( $service->isSuccessful() )
+    	{
+    		if( $service->isSoap() )
+    		{
+    			u\DebugUtility::dump( $configs );
+
+    			if( !is_array( $configs ) && isset( $configs->siteId ) )
+    			{
+    				$configs = [ $configs ];
+    			}
+    			else
+    			{
+    				$configs = [];
+    			}
+    		}
+    		elseif( $service->isRest() )
+    		{
+    			$configs = $configs->editorConfigurations;
+    		}
+    	}
+    	    
+    	return $configs;
     }
 
 /**

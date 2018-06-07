@@ -5,6 +5,7 @@
                        German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 5/21/2018 Changed search so that it can take NULL and arrays as parameters.
   * 1/10/2018 Added REST code to createPageConfigurationSet.
   * 1/8/2018 Added REST code to getSites. Added more info to Exception thrown in deleteAsset.
   * 1/5/2018 Added a patch to createGroup and createUser (using roles instead of role).
@@ -3464,7 +3465,7 @@ $cascade->moveAsset( $page,
     }   
 
 /**
-<documentation><description><p>Searches for assets and returns an array of identifiers (<a href="http://www.upstate.edu/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects) or an empty array. Note that since there are too many parameters involved in this method, there is no easy to check all parameter values. Therefore, all values passed in will be sent to Cascade directly without data checking. Garbage in, garbage out.</p></description>
+<documentation><description><p>Searches for assets and returns an array of identifiers (<a href="http://www.upstate.edu/web-services/api/property-classes/identifier.php"><code>p\Identifier</code></a> objects) or an empty array. Note that since there are too many parameters involved in this method, there is no easy way to check all parameter values. Therefore, all values passed in will be sent to Cascade directly without data checking. Garbage in, garbage out.</p></description>
 <example>$assets = $cascade->search(
     "cascade", "", "_common_assets", "name", a\ScriptFormat::TYPE );
 u\DebugUtility::dump( $assets );
@@ -3481,41 +3482,110 @@ u\DebugUtility::dump( $assets );
 // the exact phrase search: search for the phrase "standard model", ignoring case
 $assets = $cascade->search(
     '"standard model"', "", "cascade-admin", "displayName", a\Page::TYPE );
-u\DebugUtility::dump( $assets );</example>
+u\DebugUtility::dump( $assets );
+
+$assets = $cascade->search(
+    // "Therefore" );                                       // 245
+    // "Therefore", NULL, "formats" );                      // 24
+    // "Velocity", NULL, "formats", "displayName" );        // 13
+    // "Velocity", NULL, NULL, [ "displayName", "name" ] ); // 103
+    // "Velocity", NULL, NULL, [ "displayName", "name" ], 
+    //    [ a\DataBlock::TYPE, a\ScriptFormat::TYPE ] );    // 15
+    "Therefor", NULL, NULL, NULL, [ a\DataBlock::TYPE, a\ScriptFormat::TYPE ] ); // 14
+u\DebugUtility::dump( $assets );
+</example>
 <return-type>array</return-type>
 <exception></exception>
 </documentation>
 */
     public function search(
         string $search_terms="",
-        string $site_id="",
-        string $site_name="",
-        string $search_fields="",
-        string $search_types=""
+        $site_id=NULL,
+        $site_name=NULL,
+        $search_fields=NULL,
+        $search_types=NULL
     ) : array
     {
         $asset_ids               = array();
-        
-        $search_for = AssetTemplate::getSearchInformation();
+        $search_for              = AssetTemplate::getSearchInformation();
         $search_for->searchTerms = $search_terms;
         $search_for->siteId      = $site_id;
         $search_for->siteName    = $site_name;
-        $search_for->searchFields->searchField = $search_fields;
-        $search_for->searchTypes->searchType   = $search_types;
+        
+        if( is_array( $search_fields ) )
+        {
+            $search_for->searchFields = $search_fields;
+        }
+        else
+        {
+            if( $this->service->isSoap() )
+            {
+                $search_for->searchFields->searchField = $search_fields;
+            }
+            elseif( $this->service->isRest() )
+            {
+                if( is_null( $search_fields ) )
+                {
+                    $search_for->searchFields = [];
+                }
+                else
+                {
+                    $search_for->searchFields = [ $search_fields ];
+                }
+            }
+        }
 
+        if( is_array( $search_types ) )
+        {
+            $search_for->searchTypes = $search_types;
+        }
+        else
+        {
+            if( $this->service->isSoap() )
+            {
+                $search_for->searchTypes->searchType = $search_types;
+            }
+            elseif( $this->service->isRest() )
+            {
+                if( is_null( $search_types ) )
+                {
+                    $search_for->searchTypes = [];
+                }
+                else
+                {
+                    $search_for->searchTypes = [ $search_types ];
+                }
+            }
+        }
+        
         $this->service->search( $search_for );
         
         if ( $this->service->isSuccessful() )
         {
-            if( isset( $this->service->getSearchMatches()->match ) )
+            u\DebugUtility::dump( $this->service->getReply() );
+            
+            if( $this->service->isSoap() )
             {
-                $assets = $this->service->getSearchMatches()->match;
+                if( isset( $this->service->getSearchMatches()->match ) )
+                {
+                    $assets = $this->service->getSearchMatches()->match;
         
-                if( count( $assets ) == 1 )
-                    $asset_ids[] = new p\Identifier( $assets );
-                else
-                    foreach( $assets as $asset )
+                    if( count( $assets ) == 1 )
+                        $asset_ids[] = new p\Identifier( $assets );
+                    else
+                        foreach( $assets as $asset )
+                            $asset_ids[] = new p\Identifier( $asset );
+                }
+            }
+            elseif( $this->service->isRest() )
+            {
+                if( count( $this->service->getSearchMatches() ) > 0 )
+                {
+                    $assets = $this->service->getSearchMatches();
+        
+                    foreach( $assets as $assets )
                         $asset_ids[] = new p\Identifier( $asset );
+                }
             }
         }
         return $asset_ids;

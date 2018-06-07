@@ -788,7 +788,7 @@ method signatures.</p></description>
                     // added 6/14/2017
                     if( strpos( $str, '<?php' ) !== false )
                     {
-                    	echo $str;
+                    	//echo $str;
                         $str = eval( ' ?>' . $str . '<?php ' );
                     }
                         
