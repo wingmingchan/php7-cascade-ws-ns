@@ -5,6 +5,7 @@
                        German Drulyk <drulykg@upstate.edu>
   MIT Licensed
   Modification history:
+  7/20/2018 Fixed a bug in readAudits.
   4/12/2018 Added exception throwing to apiOperation.
   1/19/2018 Added authInContent and related code.
   1/18/2018 Added documentation.
@@ -32,7 +33,7 @@ use cascade_ws_exception as e;
 <description><?php global $eval, $service;
 $doc_string = "
 <h2>Introduction</h2>
-<p>This class is a child class of <code>AssetOperationHandlerService</code>. It encapsulates the REST URL, and provides services of almost all operations defined in the WSDL. There are 28 operations defined in the WSDL, and this class supports 26 of them (except <code>batch</code> and <code>sendMessage</code>):</p>
+<p>This class is a child class of <code>AssetOperationHandlerService</code>. It encapsulates the REST URL, and provides services of almost all operations defined in the WSDL. There are 28 operations defined in the WSDL, and as of Cascade 8.9, this class supports 26 of them (except <code>batch</code> and <code>sendMessage</code>):</p>
 <ul>
 <li>checkIn</li>
 <li>checkOut</li>
@@ -270,7 +271,7 @@ u\DebugUtility::dump( $reply );
         return json_decode( $operation_result );
     }
 
-/*    
+/*/  
     function batch( array $operations ) : \stdClass
     {
         $command = $this->url . __function__ . $this->auth;
@@ -280,7 +281,7 @@ u\DebugUtility::dump( $reply );
         $this->success = $this->reply->success;
         return $this->reply;
     }
-*/
+/*/
 /**
 <documentation><description>
 <?php global $eval, $service;
@@ -307,7 +308,7 @@ $doc_string .= "</pre>";
 return $doc_string;
 ?>
 </description>
-<example>$path = "/files/AssetOperationHandlerService.class.php.zip";
+<example>$path = "/files/global-editor.css";
 $id = $service->createId( a\File::TYPE, $path, "cascade-admin" );
 $service->checkIn( $id, 'Testing the checkIn method.' );
 </example>
@@ -1517,10 +1518,12 @@ $service->readAudits( $audit_params );
     public function readAudits(
         \stdClass $identifier, \stdClass $auditParams=NULL ) : \stdClass
     {
-        u\DebugUtility::dump( $identifier );
-    
-        if( isset( $identifier->id ) )
-            $id_string = $this->createIdString( $identifier );
+    	$id_string = "";
+    	
+        if( isset( $identifier->identifier->id ) )
+        {
+            $id_string = $this->createIdString( $identifier->identifier );
+        }
         // properties like username and roleid are created in Asset::getAudits
         elseif( isset( $identifier->username ) )
             $id_string = "user" . "/" . $identifier->username;
@@ -1825,7 +1828,9 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
             
         $start = microtime( true );
         $site_copied_within_time_limit = false;
-            
+
+		u\DebugUtility::dump( $this->reply->success );
+
         if( $this->reply->success === true )
         {
             $command = $this->url .
@@ -1855,9 +1860,8 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
         }
         else
         {
-            
             throw new e\SiteCreationFailureException(
-                S_SPAN . $this->reply->message . E_SPAN );
+                S_SPAN . "Failed to create the new site." . E_SPAN );
         }
         
         if( !$site_copied_within_time_limit )
