@@ -5,6 +5,7 @@
                      German Drulyk <drulykg@upstate.edu>
   MIT Licensed
   Modification history:
+   7/19/2018 Moved WSDL-related constants and methods to the parent class.
    4/12/2018 Added exception throwing to edit.
    1/18/2018 Moved REST dump to AssetOperationHandlerServiceRest.
    1/17/2018 Moved the private arrays to the parent.
@@ -124,16 +125,6 @@ class AssetOperationHandlerServiceSoap extends AssetOperationHandlerService
     const DEBUG        = false;
     const DUMP         = false;
     
-    // these constants are used to retrieve parts of the WSDL
-    const BINDING_PATH = "//wsdl:definitions/wsdl:binding";
-    const COMPLEX_TYPE_PATH =
-        "//wsdl:definitions/wsdl:types/schema:schema/schema:complexType";
-    const ELEMENT_PATH     = "//wsdl:definitions/wsdl:types/schema:schema/schema:element";
-    const MESSAGE_PATH     = "//wsdl:definitions/wsdl:message";
-    const PORT_TYPE_PATH   = "//wsdl:definitions/wsdl:portType";
-    const SIMPLE_TYPE_PATH =
-        "//wsdl:definitions/wsdl:types/schema:schema/schema:simpleType";
-    
 /**
 <documentation><description><p>The constructor.</p></description>
 <example>$type     = aohs\AssetOperationHandlerService::SOAP_STRING;
@@ -183,15 +174,6 @@ $service  = new aohs\AssetOperationHandlerServiceSoap( $type, $url, $auth );</ex
         {
             throw new e\ServerException( S_SPAN . $er->getMessage() . E_SPAN );
         }
-        
-        $wsdl     = file_get_contents( $url );
-        $domDoc   = new \DOMDocument();
-        $domDoc->loadXML( $wsdl );
-        
-        $this->dom_xpath = new \DOMXpath( $domDoc );
-        $this->dom_xpath->registerNamespace( 'wsdl', 'http://schemas.xmlsoap.org/wsdl/' );
-        $this->dom_xpath->registerNamespace(
-            'schema', 'http://www.w3.org/2001/XMLSchema' );
     }
    
 /**
@@ -223,7 +205,8 @@ $service  = new aohs\AssetOperationHandlerServiceSoap( $type, $url, $auth );</ex
                   isset( $this->reply->readReturn->asset->$property ) )
             {
                 // store the property
-                $this->read_assets[ $property ] = $this->reply->readReturn->asset->$property; 
+                $this->read_assets[ $property ] =
+                    $this->reply->readReturn->asset->$property; 
             }
    
             $this->storeResults( $this->reply->readReturn );
@@ -791,36 +774,6 @@ return $doc_string;
     }
 
 /**
-<documentation><description><p>Returns the XML of <code>wsdl:binding</code>.</p></description>
-<example>echo $eval->replaceBrackets( $service->getBinding() );</example>
-<return-type>string</return-type></documentation>
-*/
-    public function getBinding() : string
-    {
-        return $this->getXMLByPath( self::BINDING_PATH );
-    }
-    
-/**
-<documentation><description><p>Returns a list of complex type names.</p></description>
-<example>echo $service->getComplexTypeNameList();</example>
-<return-type>string</return-type></documentation>
-*/
-    public function getComplexTypeNameList() : string
-    {
-        return $this->getNameList( self::COMPLEX_TYPE_PATH );
-    }
-    
-/**
-<documentation><description><p>Returns the XML of the named complex type.</p></description>
-<example>echo $eval->replaceBrackets( $service->getComplexTypeXMLByName( "copyParameters" ) );</example>
-<return-type>string</return-type></documentation>
-*/
-    public function getComplexTypeXMLByName( string $name ) : string
-    {
-        return $this->getXMLByName( self::COMPLEX_TYPE_PATH, $name );
-    }
-    
-/**
 <documentation><description><p>Gets the ID of an asset newly created.</p></description>
 <example>echo $service->getCreatedAssetId();</example>
 <return-type>string</return-type></documentation>
@@ -830,36 +783,6 @@ return $doc_string;
         return $this->createdAssetId;
     }
 
-/**
-<documentation><description><p>Returns the <code>DOMXpath</code> object storing the WSDL.</p></description>
-<example></example>
-<return-type>DOMXpath</return-type></documentation>
-*/
-    public function getDOMXpath() : \DOMXpath
-    {
-        return $this->dom_xpath;
-    }
-
-/**
-<documentation><description><p>Returns a list of element names.</p></description>
-<example>echo $eval->replaceBrackets( $service->getComplexTypeXMLByName( "copyParameters" ) );</example>
-<return-type>string</return-type></documentation>
-*/
-    public function getElementNameList() : string
-    {
-        return $this->getNameList( self::ELEMENT_PATH );
-    }
-    
-/**
-<documentation><description><p>Returns the XML of the named element.</p></description>
-<example>echo $eval->replaceBrackets( $service->getElementXMLByName( "deleteMessage" ) );</example>
-<return-type>string</return-type></documentation>
-*/
-    public function getElementXMLByName( string $name ) : string
-    {
-        return $this->getXMLByName( self::ELEMENT_PATH, $name );
-    }
-    
 /**
 <documentation><description><p>Gets the last request XML.</p></description>
 <example>echo u\XMLUtility::replaceBrackets( $service->getLastRequest() );</example>
@@ -913,26 +836,6 @@ u\DebugUtility::dump( $service->getListedMessages() );
         return $this->message;
     }
 
-/**
-<documentation><description><p>Returns the XML of <code>wsdl:message</code>.</p></description>
-<example>echo $eval->replaceBrackets( $service->getMessages() );</example>
-<return-type>string</return-type></documentation>
-*/
-    public function getMessages() : string
-    {
-        return $this->getXMLByPath( self::MESSAGE_PATH );
-    }
-
-/**
-<documentation><description><p>Returns the XML of <code>wsdl:portType</code>.</p></description>
-<example>echo $eval->replaceBrackets( $service->getPortType() );</example>
-<return-type>string</return-type></documentation>
-*/
-    public function getPortType() : string
-    {
-        return $this->getXMLByPath( self::PORT_TYPE_PATH );
-    }
-    
 /**
 <documentation><description><p>Gets the preferences after the call of readPreferences().</p></description>
 <example>$service->readPreferences();
@@ -1024,26 +927,6 @@ if( is_null( $service->getSearchMatches()->match ) )
     }
 
 /**
-<documentation><description><p>Returns a list of simple type names.</p></description>
-<example>echo $service->getSimpleTypeNameList();</example>
-<return-type>string</return-type></documentation>
-*/
-    public function getSimpleTypeNameList() : string
-    {
-        return $this->getNameList( self::SIMPLE_TYPE_PATH );
-    }
-
-/**
-<documentation><description><p>Returns the XML of the named complex type.</p></description>
-<example>echo $eval->replaceBrackets( $service->getSimpleTypeXMLByName( "message-mark-type" ) );</example>
-<return-type>string</return-type></documentation>
-*/
-    public function getSimpleTypeXMLByName( string $name ) : string
-    {
-        return $this->getXMLByName( self::SIMPLE_TYPE_PATH, $name );
-    }
-
-/**
 <documentation><description><p>Returns a bool after an operation indicating whether the search is successful.</p></description>
 <example>if ( $service->getSuccess() )</example>
 <return-type>bool</return-type></documentation>
@@ -1103,36 +986,6 @@ echo $service->getType( $id ), BR;
     public function getUrl() : string
     {
         return $this->url;
-    }
-
-/**
-<documentation><description><p>Returns the concatenated XML fragments, based on the
-supplied list of method names and element names.</p></description>
-<example>$doc_string .=
-    $service->getXMLFragments( array(
-        array( "getComplexTypeXMLByName" => "entity-type" ),
-        array( "getSimpleTypeXMLByName"  => "entityTypeString" ),
-    ) );
-return $doc_string;
-</example>
-<return-type>string</return-type></documentation>
-*/
-    public function getXMLFragments( array $array ) : string
-    {
-        $doc_string = S_PRE;
-        $str_array  = array();
-        
-        foreach( $array as $sub_array )
-        {
-            foreach( $sub_array as $key => $value )
-            {
-                $str_array[] = u\XMLUtility::replaceBrackets( $this->$key( $value ) );
-            }
-        }
-        
-        $doc_string .= trim( implode( "\r", $str_array ), "\r" );
-        $doc_string .= E_PRE;
-        return $doc_string;
     }
 
 /**
@@ -1810,6 +1663,8 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
         }
         else
         {
+        	u\DebugUtility::dump( $site_copy->siteCopyReturn );
+        
             throw new e\SiteCreationFailureException(
                 S_SPAN . $site_copy->siteCopyReturn->message . E_SPAN );
         }
@@ -1849,66 +1704,7 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
         $this->storeResults( $this->reply->publishReturn );
         return $this->reply;
     }
-    
-    // helper functions
-    private function getNameList( string $path ) : string
-    {
-        $nodes = $this->dom_xpath->evaluate( $path );
-        $list  = "<ul>";
-        $names = array();
-        
-        if( sizeof( $nodes ) > 0 )
-        {
-            for( $i = 0; $i < $nodes->length; $i++ )
-            {
-                $names[] = $nodes->item( $i )->getAttribute( "name" );
-            }
-            
-            asort( $names );
-            
-            //u\DebugUtility::dump( $names );
-            
-            foreach( $names as $name )
-            {
-                $list .= "<li>$name</li>";
-            }
-        }
-        
-        $list .= "</ul>";
-        return $list;
-    }
-    
-    private function getXMLByName( string $path, string $name ) : string
-    {
-        $xpath_str = $path . "[@name='$name']";
-        $nodes     = $this->dom_xpath->evaluate( $xpath_str );
-        $xml_str   = "";
-        
-        if( $nodes->length > 0 )
-        {
-            $xml_str = $nodes[ 0 ]->ownerDocument->saveXML( $nodes[ 0 ] );
-        }
-        else
-        {
-            // not found
-        }
-
-        return $xml_str;
-    }
-
-    private function getXMLByPath( string $path_str ) : string
-    {
-        $elements  = $this->dom_xpath->evaluate( $path_str );
-        $xml_str   = "";
-        
-        if( sizeof( $elements ) > 0 )
-        {
-            foreach( $elements as $element )
-                $xml_str .= $element->ownerDocument->saveXML( $element );
-        }
-        return $xml_str;
-    }
-    
+  
     private function storeResults( $return=NULL )
     {
         if( isset( $return ) )
@@ -1959,6 +1755,6 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
     /*@var array The array to store property stdClass objects */
     private $read_assets  = array();
     /*@var DOMXpath The DOMXpath object to store the WSDL */
-    private $dom_xpath;
+    //private $dom_xpath;
 }
 ?>
