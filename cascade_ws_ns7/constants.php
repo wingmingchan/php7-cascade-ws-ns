@@ -933,7 +933,7 @@ class T // types
 */
 class AuditTypes
 {
-    const NAME_SPACE                  = 'cascade_ws_constants';
+    const NAME_SPACE = 'cascade_ws_constants';
     
     public static $types = array( 
         T::LOGIN, T::LOGIN_FAILED, T::LOGOUT, T::START_WORKFLOW, T::ADVANCE_WORKFLOW,
