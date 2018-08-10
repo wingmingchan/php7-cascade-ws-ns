@@ -354,7 +354,9 @@ abstract class Asset
     }
     
 /**
-<documentation><description><p>Returns an array of <a href="http://www.upstate.edu/web-services/api/audit.php"><code>Audit</code></a> objects. This method has not been successfully tested with <code>$type</code> equals to <code>group</code> or <code>role</code>. <code>$start_time</code> and <code>$end_time</code>, when not <code>NULL</code>, are used to filter the output.</p></description>
+<documentation><description><p>Returns an array of <a href="http://www.upstate.edu/web-services/api/audit.php"><code>Audit</code></a> objects. This method has not been successfully tested with <code>$type</code> equals to <code>group</code> or <code>role</code>. <code>$start_time</code> and <code>$end_time</code>, when not <code>NULL</code>, are used to filter the output.</p>
+<p>When there is no <code>$type</code> passed in, the default value is set to <code>edit</code>. Note that this type value must be provided, and it must be one of those predefined values.</p>
+</description>
 <example>$audits = $page->getAudits();</example>
 <return-type>array</return-type>
 <exception>NoSuchTypeException, Exception</exception>
@@ -408,7 +410,7 @@ abstract class Asset
         }
         
         if( $type != "" )
-            $a_std->auditType  = $type;
+            $a_std->auditType = $type;
             
         $service = $this->getService();
         
