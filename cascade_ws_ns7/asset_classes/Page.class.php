@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 7/6/2018 Added code to setContentType for REST.
   * 2/5/2018 Added removePhantomValues.
   * 1/24/2018 Updated documentation.
   * 12/28/2017 Added REST code and updated documentation.
@@ -326,7 +327,7 @@ return $doc_string;
           {
             "type":"text",
             "identifier":"float-pre-content-blocks-around-wysiwyg-content",
-            "text":"::CONTENT-XML-CHECKBOX::",
+            "text":"<span>::</span>CONTENT-XML-CHECKBOX<span>::</span>",
             "recycled":false
           },
           {
@@ -2512,7 +2513,14 @@ should be called as well.</p></description>
             $configuration_array[] = $new_configuration->toStdClass();
         }
         
-        $page->pageConfigurations->pageConfiguration = $configuration_array;
+        if( $this->getService()->isSoap() )
+        {
+            $page->pageConfigurations->pageConfiguration = $configuration_array;
+        }
+        elseif( $this->getService()->isRest() )
+        {
+            $page->pageConfigurations = $configuration_array;
+        }
         
         if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $page->pageConfigurations ); }
         
@@ -2532,27 +2540,46 @@ should be called as well.</p></description>
         if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $this->getProperty()->pageConfigurations ); }
         
         $this->reloadProperty();
-        $this->processPageConfigurations( 
-            $this->getProperty()->pageConfigurations->pageConfiguration );
+        
+        if( $this->getService()->isSoap() )
+        {
+            $this->processPageConfigurations( 
+                $this->getProperty()->pageConfigurations->pageConfiguration );
+        }
+        elseif( $this->getService()->isRest() )
+        {
+            $this->processPageConfigurations( 
+                $this->getProperty()->pageConfigurations );
+        }
         
         $this->content_type = $c;
         parent::setPageContentType( $this->content_type );
-        
             
         if( isset( $this->getProperty()->structuredData ) )
         {
             $this->data_definition_id = $this->content_type->getDataDefinitionId();
             
-
-            // structuredDataNode could be empty for xml pages
-            if( isset( $this->getProperty()->structuredData )  &&
-                isset( $this->getProperty()->structuredData->structuredDataNodes ) &&
-                isset( $this->getProperty()->structuredData->structuredDataNodes->
-                    structuredDataNode ) 
-            )
+            if( $this->getService()->isSoap() )
             {
-                if( $exception ) // defaulted to true
-                    $this->processStructuredData( $this->data_definition_id );
+                // structuredDataNode could be empty for xml pages
+                if( isset( $this->getProperty()->structuredData )  &&
+                    isset( $this->getProperty()->structuredData->structuredDataNodes ) &&
+                    isset( $this->getProperty()->structuredData->structuredDataNodes->
+                        structuredDataNode ) 
+                )
+                {
+                    if( $exception ) // defaulted to true
+                        $this->processStructuredData( $this->data_definition_id );
+                }
+            }
+            elseif( $this->getService()->isRest() )
+            {
+                if( isset( $this->getProperty()->structuredData )  &&
+                    isset( $this->getProperty()->structuredData->structuredDataNodes ) )
+                {
+                    if( $exception ) // defaulted to true
+                        $this->processStructuredData( $this->data_definition_id );
+                }
             }
         }
         else
