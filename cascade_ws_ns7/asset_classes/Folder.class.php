@@ -361,7 +361,7 @@ of a folder is a separate object.</p></description>
     
         $service = $this->getService();
         
-        u\DebugUtility::dump( $this->workflow_settings->toStdClass() );
+        //u\DebugUtility::dump( $this->workflow_settings->toStdClass() );
 
         if( $service->isSoap() )
             $service->editWorkflowSettings( $this->workflow_settings->toStdClass(),
