@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 10/10/2018 Bug fixes in static methods.
   * 11/28/2017 Changed parent class to FolderContainedAsset.
   * 5/28/2015 Added namespaces.
  */
@@ -126,7 +127,7 @@ abstract class Format extends FolderContainedAsset
         aohs\AssetOperationHandlerService $service,
         string $id_string )
     {
-        if( $this->getService()->isSoap() )
+        if( $service->isSoap() )
             return self::getAsset( $service, 
                 self::getFormatType( $service, $id_string ), $id_string );
         return NULL;
@@ -143,7 +144,7 @@ abstract class Format extends FolderContainedAsset
         aohs\AssetOperationHandlerService $service,
         string $id_string ) : string
     {
-        if( $this->getService()->isSoap() )
+        if( $service->isSoap() )
         {
             $types      
                 = array( ScriptFormat::TYPE, XsltFormat::TYPE );
