@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 10/12/2018 Fixed bugs in addTag, isInTags and removeTag.
   * 5/18/2018 Added addTag, isInTags, hasTag and removeTag.
   * 1/3/2018 Added code to test for NULL.
   * 12/15/2017 Updated documentation.
@@ -66,13 +67,15 @@ abstract class FolderContainedAsset extends ContainedAsset
                 $this->getProperty()->tags->tag = $std;
             }
             // one other tag
-            elseif( !is_array( $this->getProperty()->tags->tag ) &&
-                $this->getProperty()->tags->tag->name != $t )
+            elseif( !is_array( $this->getProperty()->tags->tag ) )
             {
-                $cur_tag = $this->getProperty()->tags->tag;
-                $this->getProperty()->tags->tag = array();
-                $this->getProperty()->tags->tag[] = $cur_tag;
-                $this->getProperty()->tags->tag[] = $std;
+                if( $this->getProperty()->tags->tag->name != $t )
+                {
+                	$cur_tag = $this->getProperty()->tags->tag;
+                	$this->getProperty()->tags->tag = array();
+                	$this->getProperty()->tags->tag[] = $cur_tag;
+                	$this->getProperty()->tags->tag[] = $std;
+                }
             }
             // tag not in array
             elseif( !in_array( $std, $this->getProperty()->tags->tag ) )
@@ -99,10 +102,12 @@ abstract class FolderContainedAsset extends ContainedAsset
     		{
     			return false;
     		}
-    		elseif( !is_array( $this->getProperty()->tags->tag ) &&
-                $this->getProperty()->tags->tag->name != $t )
+    		elseif( !is_array( $this->getProperty()->tags->tag ) )
             {
-            	return false;
+            	if( $this->getProperty()->tags->tag->name != $t )
+            		return false;
+            	else
+            		return true;
             }
             else
             {
@@ -134,7 +139,7 @@ abstract class FolderContainedAsset extends ContainedAsset
     	return $this->isInTags( $t );
     }
     
-    public function removeTag( string $t ) : bool
+    public function removeTag( string $t ) : Asset
     {
     	if( $this->isInTags( $t ) )
     	{
