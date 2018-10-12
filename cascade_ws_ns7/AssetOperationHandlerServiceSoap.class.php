@@ -5,6 +5,7 @@
                      German Drulyk <drulykg@upstate.edu>
   MIT Licensed
   Modification history:
+   9/27/2018 Fixed code related to $context.
    7/19/2018 Moved WSDL-related constants and methods to the parent class.
    4/12/2018 Added exception throwing to edit.
    1/18/2018 Moved REST dump to AssetOperationHandlerServiceRest.
@@ -161,10 +162,12 @@ $service  = new aohs\AssetOperationHandlerServiceSoap( $type, $url, $auth );</ex
         try
         {
             if( is_array( $context ) )
-                $this->soapClient = new \SoapClient( $this->url, $context );
+                $this->soapClient = new \SoapClient(
+                    $this->url, array(
+                        'context' => $context, 'trace' => true, 'keep_alive' => false ) );
             else
-                $this->soapClient = new \SoapClient( $this->url, array( 'trace' => true,
-                    'keep_alive' => false ) );
+                $this->soapClient = new \SoapClient(
+                    $this->url, array( 'trace' => true, 'keep_alive' => false ) );
         }
         catch( \Exception $e )
         {
@@ -1663,7 +1666,7 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
         }
         else
         {
-        	u\DebugUtility::dump( $site_copy->siteCopyReturn );
+            u\DebugUtility::dump( $site_copy->siteCopyReturn );
         
             throw new e\SiteCreationFailureException(
                 S_SPAN . $site_copy->siteCopyReturn->message . E_SPAN );
