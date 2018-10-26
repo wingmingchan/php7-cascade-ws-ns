@@ -141,7 +141,7 @@ class AssetTemplate
         $page->siteName              = "";
         $page->parentFolderPath      = "";
         $page->xhtml                 = NULL;
-        $page->contentTypePath       = "";
+        $page->contentTypeId         = "";
 
         $asset       = new \stdClass ();
         $asset->page = $page;
