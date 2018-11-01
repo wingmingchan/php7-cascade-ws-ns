@@ -1,10 +1,10 @@
 # php7-cascade-ws-ns
-<p>The Upstate Cascade web service library, using namespaces, written in PHP 7 for Cascade 8.8, by German Drulyk and Wing Ming Chan.</p>
-<p>We have tried to add new features introduced in Cascade 8.9.1. But due to bugs in this latest version, we will wait until they are fixed.</p>
+<p>Although I am still updating the library code for Cascade 8.11, I will not share the new code here. Sooner or later, someone has to pick up the maintenance task from me. That is to say, the latest code works for 8.9 and is now frozen. After 8.9, I will let the library code break and fall apart, until someone else picks it up again.</p>
 
-<p>Last modified: 10/10/2018, 08:30 AM</p>
+<p>The Upstate Cascade web service library, using namespaces, written in PHP 7 for Cascade 8.9, by German Drulyk and Wing Ming Chan.</p>
+<p>We have tried to add new features introduced in Cascade 8.9.1. But due to bugs in this version, we will wait until they are fixed.</p>
 
-<p>Since the current working version is 8.8, we will not update any previous versions. We are also branching the library off so that the newest version works with both SOAP and REST. After the branching, we will not update the version titled cascade_ws_ns7_8.8 any more. Instead, we will focus on cascade_ws_ns7 only. The new class Administration, for example, will be missing from cascade_ws_ns7_8.8.</p>
+<p>Last modified: 11/1/2018, 08:30 AM</p>
 
 <p>Note that new code related to namingRuleAssets does not work for SOAP due to a bug.</p>
 
