@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/25/2019 Removed a warning.
   * 1/24/2018 Updated documentation.
   * 1/3/2018 Added code to test for NULL.
   * 12/29/2017 Added REST code.
@@ -305,7 +306,7 @@ class AssetFactory extends ContainedAsset
         elseif( $this->getService()->isRest() )
             $this->getProperty()->plugins = array();
         
-        if( count( $this->plugins ) > 0 )
+        if( is_array( $this->plugins ) && count( $this->plugins ) > 0 )
         {
             foreach( $this->plugins as $plugin )
             {

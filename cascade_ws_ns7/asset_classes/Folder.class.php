@@ -970,7 +970,7 @@ calling object.</p></description>
     public function update( array $params )
     {
     	DublinAwareAsset::staticUpdateMetadata( $this, $params, false );
-    	DublinAwareAsset::staticUpdateData( $this, $params );
+    	self::staticUpdateData( $this, $params );
     	return $this;
     }
     

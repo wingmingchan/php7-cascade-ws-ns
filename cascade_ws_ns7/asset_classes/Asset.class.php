@@ -80,6 +80,45 @@ abstract class Asset
     const DUMP       = false;
     const NAME_SPACE = "cascade_ws_asset";
     
+    // properties string constants
+    // FeedBlock
+    const FEED_URL                 = "feedURL";
+    // IndexBlock
+    const APPEND_CALLING_PAGE_DATA = "appendCallingPageData";
+    const CONTENT_TYPE             = "contentType";
+    const DEPTH_OF_INDEX           = "depthOfIndex";
+    const FOLDER                   = "folder";
+    const INDEX_ACCESS_RIGHTS      = "indexAccessRights";
+    const INDEX_BLOCKS             = "indexBlocks";
+    const INDEX_FILES              = "indexFiles";
+    const INDEXED_FOLDER_RECYCLED  = "indexedFolderRecycled";
+    const INDEX_LINKS              = "indexLinks";
+    const INDEX_PAGES              = "indexPages";
+    const INDEX_REGULAR_CONTENT    = "indexRegularContent";
+    const INDEX_SYSTEM_METADATA    = "indexSystemMetadata";
+    const INDEX_USER_INFO          = "indexUserInfo";
+    const INDEX_USER_METADATA      = "indexUserMetadata";
+    const INDEX_WORKFLOW_INFO      = "indexWorkflowInfo";
+    const MAX_RENDERED_ASSETS      = "maxRenderedAssets";
+    const PAGE_XML                 = "pageXML";
+    const RENDERING_BEHAVIOR       = "renderingBehavior";
+    const SORT_METHOD              = "sortMethod";
+    const SORT_ORDER               = "sortOrder";
+    // TextBlock
+    const TEXT                     = "text";
+    // XmlBlock
+    const XML                      = "XML";
+    // File
+    const DATA                     = "data";
+    const MAINTAIN_ABSOLUTE_LINKS  = "maintainAbsoluteLinks";
+    const REWRITE_LINKS            = "rewriteLinks";
+    const SHOULD_BE_INDEXED        = "shouldBeIndexed";
+    const SHOULD_BE_PUBLISHED      = "shouldBePublished";
+    const LINK_URL                 = "linkURL";
+    // Folder
+    const EXPIRATION_FOLDER        = "expirationFolder";
+    const INCLUDE_IN_STALE_CONTENT = "includeInStaleContent";
+    
 /**
 <documentation><description><p>The constructor. Since <code>Asset</code> is an abstract class, the constructor cannot be called.</p></description>
 <exception>NullServiceException, NullIdentifierException, NullAssetException</exception>
@@ -698,6 +737,47 @@ echo "There are " . count( $subscribers ) . " manual subscribers.", BR;</example
     }
     
 /**
+<documentation><description><p>Updates the data by calling <code>staticUpdateData</code>,
+and returns the calling object. The array passed in should contain entries,
+whose the keys are either property names (and turned into method names) or fully
+qualified identifiers of pages and data definition blocks.</p>
+</description>
+<example>    $page->update(
+        array(
+            "main-group;h1"                      => "New H1",
+            "main-group;mul-pre-h1-chooser;0"    => $admin->getAsset(
+                           a\DataBlock::TYPE, "4b7064cd8b7f08ee72410d245689237a" )
+    );</example>
+<return-type>Asset</return-type>
+<exception>RequiredFieldException, NoSuchValueException</exception>
+</documentation>
+*/
+    public function update( array $params )
+    {
+    	self::staticUpdateData( $this, $params );
+    	return $this;
+    }
+
+/**
+<documentation><description><p>An alias of <code>update</code>.</p>
+</description>
+<example>    $page->updateData(
+        array(
+            "main-group;h1"                      => "New H1",
+            "main-group;mul-pre-h1-chooser;0"    => $admin->getAsset(
+                           a\DataBlock::TYPE, "4b7064cd8b7f08ee72410d245689237a" )
+    );</example>
+<return-type>Asset</return-type>
+<exception>RequiredFieldException, NoSuchValueException</exception>
+</documentation>
+*/
+    public function updateData( array $params )
+    {
+    	self::staticUpdateData( $this, $params );
+    	return $this;
+    }
+
+/**
 <documentation><description><p>Returns a new object of the named type bearing the supplied identity information. The <code>$id_path</code> parameter can be an id string like <code>d7b47ebb8b7f085600a0fcdc2149931f</code> or a path string. When it is a path string, the site name must also be supplied. Note that all asset classes inherit this static method.</p></description>
 <example>$page = a\Asset::getAsset( 
     $service, a\Page::TYPE, $page_id );</example>
@@ -729,6 +809,74 @@ echo "There are " . count( $subscribers ) . " manual subscribers.", BR;</example
         }
     }
     
+/**
+<documentation><description><p>Updates the data of the asset <code>$a</code>, and
+returns the asset object. This <code>static</code> method is provided for child classes
+to implement the <code>update</code> method.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception>NullAssetException, NoSuchTypeException, Exception</exception>
+</documentation>
+*/
+    public static function staticUpdateData( Asset $a, array $params ) : Asset
+    {
+        foreach( $params as $key => $value )
+        {
+            if( $key == "metadata" )
+                continue;
+            
+            $method_name = "set" . ucwords( $key );
+            
+            if( method_exists( $a, $method_name ) )
+            {
+                $a->$method_name( $value );
+            }
+            // if not a method name, then must be FQI
+            elseif( get_class( $a ) != "cascade_ws_asset\Page" &&
+                    get_class( $a ) != "cascade_ws_asset\DataDefinitionBlock"
+            )
+            {
+                throw new Exception( "Illegal key" );
+            }
+            // page or data block, only deal with choosers
+            else
+            {
+                if( $a->isBlockChooser( $key ) )
+                {
+                    $a->setBlock( $key, $value );
+                }
+                elseif( $a->isFileChooser( $key ) )
+                {
+                    $a->setFile( $key, $value );
+                }
+                elseif( $a->isLinkableChooser( $key ) )
+                {
+                    $a->setLinkable( $key, $value );
+                }
+                elseif( $a->isPageChooser( $key ) )
+                {
+                    $a->setPage( $key, $value );
+                }
+                elseif( $a->isSymlinkChooser( $key ) )
+                {
+                    $a->setSymlink( $key, $value );
+                }
+                // skip groups
+                elseif( $a->isGroupNode( $key ) )
+                {
+                    // no code needed
+                }
+                // text
+                else
+                {
+                    $a->setText( $key, $value );
+                }
+            }
+        }
+        
+        return $a->edit();
+    }
+
     private function getSubscribersArray( $type ) : array
     {
         $results = array();

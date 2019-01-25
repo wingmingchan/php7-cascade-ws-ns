@@ -4,7 +4,8 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
-  * 1/23/2019 Added updateMetadata, updateData, and update.
+  * 1/25/2019 Moved staticUpdateData to Asset.
+  * 1/23/2019 Added updateMetadata, updateData, update, and related static methods.
   * 12/15/2017 Updated documentation.
   * 11/28/2017 Class created.
  */
@@ -49,45 +50,6 @@ abstract class DublinAwareAsset extends FolderContainedAsset
     const TITLE            = "title";
     const DEBUG            = false;
 
-    // properties of
-    // FeedBlock
-    const FEED_URL                 = "feedURL";
-    // IndexBlock
-    const APPEND_CALLING_PAGE_DATA = "appendCallingPageData";
-    const CONTENT_TYPE             = "contentType";
-    const DEPTH_OF_INDEX           = "depthOfIndex";
-    const FOLDER                   = "folder";
-    const INDEX_ACCESS_RIGHTS      = "indexAccessRights";
-    const INDEX_BLOCKS             = "indexBlocks";
-    const INDEX_FILES              = "indexFiles";
-    const INDEXED_FOLDER_RECYCLED  = "indexedFolderRecycled";
-    const INDEX_LINKS              = "indexLinks";
-    const INDEX_PAGES              = "indexPages";
-    const INDEX_REGULAR_CONTENT    = "indexRegularContent";
-    const INDEX_SYSTEM_METADATA    = "indexSystemMetadata";
-    const INDEX_USER_INFO          = "indexUserInfo";
-    const INDEX_USER_METADATA      = "indexUserMetadata";
-    const INDEX_WORKFLOW_INFO      = "indexWorkflowInfo";
-    const MAX_RENDERED_ASSETS      = "maxRenderedAssets";
-    const PAGE_XML                 = "pageXML";
-    const RENDERING_BEHAVIOR       = "renderingBehavior";
-    const SORT_METHOD              = "sortMethod";
-    const SORT_ORDER               = "sortOrder";
-    // TextBlock
-    const TEXT                     = "text";
-    // XmlBlock
-    const XML                      = "XML";
-    // File
-    const DATA                     = "data";
-    const MAINTAIN_ABSOLUTE_LINKS  = "maintainAbsoluteLinks";
-    const REWRITE_LINKS            = "rewriteLinks";
-    const SHOULD_BE_INDEXED        = "shouldBeIndexed";
-    const SHOULD_BE_PUBLISHED      = "shouldBePublished";
-    const LINK_URL                 = "linkURL";
-    // Folder
-    const EXPIRATION_FOLDER        = "expirationFolder";
-    const INCLUDE_IN_STALE_CONTENT = "includeInStaleContent";
- 
 /**
 <documentation><description><p>The constructor.</p></description>
 </documentation>
@@ -247,28 +209,6 @@ object.</p>
     }
 
 /**
-<documentation><description><p>Updates the data by calling <code>staticUpdateData</code>,
-and returns the calling object. The array passed in should contain entries,
-whose the keys are either property names (and turned into method names) or fully
-qualified identifiers of pages and data definition blocks.</p>
-</description>
-<example>    $page->updateData(
-        array(
-            "main-group;h1"                      => "New H1",
-            "main-group;mul-pre-h1-chooser;0"    => $admin->getAsset(
-                           a\DataBlock::TYPE, "4b7064cd8b7f08ee72410d245689237a" )
-    );</example>
-<return-type>Asset</return-type>
-<exception>RequiredFieldException, NoSuchValueException</exception>
-</documentation>
-*/
-    public function updateData( array $params )
-    {
-    	self::staticUpdateData( $this, $params );
-    	return $this;
-    }
-
-/**
 <documentation><description><p>Updates the metadata by calling <code>staticUpdateMetadata</code>,
 and returns the calling object.
 The array passed in should contain a key whose value is <code>metadata</code>,
@@ -307,65 +247,14 @@ can be passed into so that no extra <code>edit</code> is called.</p>
     	return $this;
     }
 
-    public static function staticUpdateData( Asset $a, array $params ) : Asset
-    {
-        foreach( $params as $key => $value )
-        {
-            if( $key == "metadata" )
-                continue;
-            
-            $method_name = "set" . ucwords( $key );
-            
-            if( method_exists( $a, $method_name ) )
-            {
-                $a->$method_name( $value );
-            }
-            // if not a method name, then must be FQI
-            elseif( get_class( $a ) != "cascade_ws_asset\Page" &&
-                    get_class( $a ) != "cascade_ws_asset\DataDefinitionBlock"
-            )
-            {
-                throw new Exception( "Illegal key" );
-            }
-            // page or data block, only deal with choosers
-            else
-            {
-                if( $a->isBlockChooser( $key ) )
-                {
-                    $a->setBlock( $key, $value );
-                }
-                elseif( $a->isFileChooser( $key ) )
-                {
-                    $a->setFile( $key, $value );
-                }
-                elseif( $a->isLinkableChooser( $key ) )
-                {
-                    $a->setLinkable( $key, $value );
-                }
-                elseif( $a->isPageChooser( $key ) )
-                {
-                    $a->setPage( $key, $value );
-                }
-                elseif( $a->isSymlinkChooser( $key ) )
-                {
-                    $a->setSymlink( $key, $value );
-                }
-                // skip groups
-                elseif( $a->isGroupNode( $key ) )
-                {
-                    // no code needed
-                }
-                // text
-                else
-                {
-                    $a->setText( $key, $value );
-                }
-            }
-        }
-        
-        return $a->edit();
-    }
-
+/**
+<documentation><description><p>Updates the metadata. This <code>static</code> method
+is used by the instance <code>update</code> method.</p></description>
+<example></example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public static function staticUpdateMetadata(
         Asset $a, array $params, bool $commit=true ) : Asset
     {
