@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>, German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/25/2019 Added update, updateData, staticUpdateData, and related constants.
   * 3/12/2018 Added getJson.
   * 3/10/2018 Added getXml.
   * 12/29/2017 Updated getSubscribers.
