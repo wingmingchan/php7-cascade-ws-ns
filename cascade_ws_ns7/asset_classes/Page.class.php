@@ -1695,8 +1695,12 @@ three being associated with <code>NULL</code>), or a text field of type
 /**
 <documentation><description><p>Returns a bool, indicating whether the named node is an
 asset node, allowing users to choose an asset.</p></description>
-<example>if( $p->hasIdentifier( $id ) &amp;&amp; $p->isAssetNode( $id ) )
-    echo $p->getAssetNodeType( $id ), BR;</example>
+<example>if( $p->hasIdentifier( $id )
+{
+    if( $p->isAssetNode( $id ) )
+        echo $p->getAssetNodeType( $id ), BR;
+}
+</example>
 <return-type>bool</return-type>
 <exception>WrongPageTypeException</exception>
 </documentation>
