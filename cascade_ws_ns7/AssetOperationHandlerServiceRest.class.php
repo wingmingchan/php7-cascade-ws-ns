@@ -5,6 +5,7 @@
                        German Drulyk <drulykg@upstate.edu>
   MIT Licensed
   Modification history:
+  2/21/2019 Moved getAsset to parent.
   7/20/2018 Fixed a bug in readAudits.
   4/12/2018 Added exception throwing to apiOperation.
   1/19/2018 Added authInContent and related code.
@@ -33,7 +34,9 @@ use cascade_ws_exception as e;
 <description><?php global $eval, $service;
 $doc_string = "
 <h2>Introduction</h2>
-<p>This class is a child class of <code>AssetOperationHandlerService</code>. It encapsulates the REST URL, and provides services of almost all operations defined in the WSDL. There are 28 operations defined in the WSDL, and as of Cascade 8.9, this class supports 26 of them (except <code>batch</code> and <code>sendMessage</code>):</p>
+<p>This class is a child class of <code>AssetOperationHandlerService</code>. It encapsulates the REST URL,
+and provides services of almost all operations defined in the WSDL. There are 28 operations defined in the WSDL,
+and as of Cascade 8.9, this class supports 27 of them (except <code>batch</code>):</p>
 <ul>
 <li>checkIn</li>
 <li>checkOut</li>
@@ -60,6 +63,7 @@ $doc_string = "
 <li>readWorkflowInformation</li>
 <li>readWorkflowSettings</li>
 <li>search</li>
+<li>sendMessage</li>
 <li>siteCopy</li>
 </ul><p>The general format of a method encapsulating an operation is the following:</p>
 <ol>
@@ -177,7 +181,7 @@ $service  = new aohs\AssetOperationHandlerServiceRest( $type, $url, $auth );</ex
             throw new e\ServerException( S_SPAN . $e->getMessage() . E_SPAN );
         }
         
-        u\DebugUtility::dump( $this->auth );
+        //u\DebugUtility::dump( $this->auth );
     }
 
 /**
@@ -203,6 +207,7 @@ u\DebugUtility::dump( $reply );
 */
     public function apiOperation( string $command, $params=NULL )// : \stdClass
     {
+        // create the array required by stream_context_create
         $input_params = array(
             'http' => array(
                 'header'  => "Authorization: Basic " . $this->getAuthString() . "\r\n" .
@@ -210,10 +215,13 @@ u\DebugUtility::dump( $reply );
                 'method'  => 'POST'
             ) );
         
+        // store the command
         $entry = array( "command" => $command );
         
+        // if there is a params array passed in
         if( !is_null( $params ) )
         {
+            // just a STRING_TO_INT
             if( is_string( $params ) )
             {
                 if( trim( $params ) != "" )
@@ -221,14 +229,18 @@ u\DebugUtility::dump( $reply );
                     $input_params[ 'http' ][ 'content' ] = trim( $params );
                 }
             }
+            // an array
             else
             {
+                // no authentication in the content
                 if( $this->auth_in_content === false )
                 {
                     $input_params[ 'http' ][ 'content' ] = json_encode( $params );
                 }
+                // wrap authentication in content
                 else
                 {
+                    // wrap up the authentication
                     $input_params[ 'http' ][ 'content' ] = 
                         json_encode( array_merge( ( array )$params, 
                             [ 'authentication' =>
@@ -243,6 +255,7 @@ u\DebugUtility::dump( $reply );
                 $entry[ "params" ] = json_encode( $params );
             }
         }
+        // only the authentication
         elseif( $this->auth_in_content === true )
         {
             $input_params[ 'http' ][ 'content' ] =
@@ -252,9 +265,9 @@ u\DebugUtility::dump( $reply );
                           'password' => $this->auth->p ] ] );
         }
         
-        //$entry[ "http-content" ] = $input_params[ 'http' ][ 'content' ];
         $this->commands[] = $entry;
         
+        // send the operation request
         $operation_result = @file_get_contents(
             $command,
             false,
@@ -270,6 +283,7 @@ u\DebugUtility::dump( $reply );
             throw new \Exception( $message );
         }
 
+        // convert the response into an stdClass object and return it
         return json_decode( $operation_result );
     }
 
@@ -714,6 +728,7 @@ $service->edit( $asset );
         }
         
         $asset = array( 'asset' => $asset );
+        
         try
         {
             $this->reply = $this->apiOperation( $command, $asset );
@@ -928,35 +943,6 @@ return $doc_string;
         return $this->reply;
     }
     
-/**
-<documentation><description><p>Creates an asset object, bridging this class and the Asset classes.</p></description>
-<example>$page = $service->getAsset( a\Page::TYPE, $page_id )</example>
-<exception>NoSuchTypeException</exception>
-<return-type>Asset</return-type></documentation>
-*/
-    public function getAsset(
-        string $type, string $id_path, string $site_name=NULL ) : a\Asset
-    {
-        if( !in_array( $type, c\T::getTypeArray() ) )
-            throw new e\NoSuchTypeException( 
-                S_SPAN . "The type $type does not exist." . E_SPAN );
-            
-        $class_name = c\T::$type_class_name_map[ $type ]; // get class name
-        $class_name = a\Asset::NAME_SPACE . "\\" . $class_name;
-        
-        try
-        {
-            return new $class_name( // call constructor
-                $this, 
-                $this->createId( $type, $id_path, $site_name ) );
-        }
-        catch( \Exception $e )
-        {
-            if( self::DEBUG && self::DUMP ) { u\DebugUtility::out( $e->getMessage() ); }
-            throw $e;
-        }        
-    }
-
 /**
 <documentation><description><p>Gets the audits object after the call of readAudits().</p></description>
 <example>u\DebugUtility::dump( $service->getAudits() );</example>
