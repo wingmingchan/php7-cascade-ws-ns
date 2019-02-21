@@ -142,6 +142,8 @@ abstract class AssetOperationHandlerService
     const PORT_TYPE_PATH   = "//wsdl:definitions/wsdl:portType";
     const SIMPLE_TYPE_PATH =
         "//wsdl:definitions/wsdl:types/schema:schema/schema:simpleType";
+
+    const DEBUG = false;
     
 /**
 <documentation><description><p>The constructor. Do not call this constructor directly. Instead, use the <code>ServiceFactory::getService</code> method to get the instance of one of the child classes.</p>
