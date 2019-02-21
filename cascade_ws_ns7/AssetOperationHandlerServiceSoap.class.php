@@ -5,6 +5,7 @@
                      German Drulyk <drulykg@upstate.edu>
   MIT Licensed
   Modification history:
+   2/21/2019 Moved getAsset to parent.
    9/27/2018 Fixed code related to $context.
    7/19/2018 Moved WSDL-related constants and methods to the parent class.
    4/12/2018 Added exception throwing to edit.
@@ -60,7 +61,9 @@ use cascade_ws_exception as e;
 <description><?php global $eval, $service;
 $doc_string = "
 <h2>Introduction</h2>
-<p>This class is a child class of <code>AssetOperationHandlerService</code>. It encapsulates the WSDL URL, the authentication object, the SoapClient object, and provides services of all operations defined in the WSDL. There are 28 operations defined in the WSDL:</p>
+<p>This class is a child class of <code>AssetOperationHandlerService</code>. It encapsulates the WSDL URL,
+the authentication object, the SoapClient object, and provides services of all operations defined in the WSDL.
+There are 28 operations defined in the WSDL:</p>
 <ul>
 <li>batch</li>
 <li>checkIn</li>
@@ -90,7 +93,8 @@ $doc_string = "
 <li>search</li>
 <li>sendMessage (deprecated)</li>
 <li>siteCopy</li>
-</ul><p>All 28 operations have been encapsulated in this class. The general format of a method encapsulating an operation is the following:</p>
+</ul><p>All 28 operations have been encapsulated in this class. The general format of a method
+encapsulating an operation is the following:</p>
 <ol>
 <li>Create the parameters for the operation</li>
 <li>Call the corresponding operation through the SOAP client</li>
@@ -116,7 +120,7 @@ $doc_string = "
 <li>Other minor methods</li>
 </ul>";
 return $doc_string; ?></description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/tree/master/working-with-AssetOperationHandlerService">working-with-AssetOperationHandlerService</a></li></ul></postscript>
+<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/tree/master/tutorials/advanced/02AssetOperationHandlerService">02AssetOperationHandlerService</a></li></ul></postscript>
 <advanced>
 </advanced>
 </documentation>
@@ -738,34 +742,6 @@ return $doc_string;
         return $this->reply;
     }
 
-/**
-<documentation><description><p>Creates an asset object, bridging this class and the Asset classes.</p></description>
-<example>$page = $service->getAsset( a\Page::TYPE, $page_id )</example>
-<exception>NoSuchTypeException</exception>
-<return-type>Asset</return-type></documentation>
-*/
-    public function getAsset( string $type, string $id_path, string $site_name=NULL ) : a\Asset
-    {
-        if( !in_array( $type, c\T::getTypeArray() ) )
-            throw new e\NoSuchTypeException( 
-                S_SPAN . "The type $type does not exist." . E_SPAN );
-            
-        $class_name = c\T::$type_class_name_map[ $type ]; // get class name
-        $class_name = a\Asset::NAME_SPACE . "\\" . $class_name;
-        
-        try
-        {
-            return new $class_name( // call constructor
-                $this, 
-                $this->createId( $type, $id_path, $site_name ) );
-        }
-        catch( \Exception $e )
-        {
-            if( self::DEBUG && self::DUMP ) { u\DebugUtility::out( $e->getMessage() ); }
-            throw $e;
-        }        
-    }
-    
 /**
 <documentation><description><p>Gets the audits object after the call of readAudits().</p></description>
 <example>u\DebugUtility::dump( $service->getAudits() );</example>
