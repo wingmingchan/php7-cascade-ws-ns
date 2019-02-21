@@ -6,6 +6,7 @@
   MIT Licensed
   Modification history:
   2/21/2019 Moved getAsset to parent.
+  2/20/2019 Added try to apiOperation.
   7/20/2018 Fixed a bug in readAudits.
   4/12/2018 Added exception throwing to apiOperation.
   1/19/2018 Added authInContent and related code.
@@ -267,30 +268,53 @@ u\DebugUtility::dump( $reply );
         
         $this->commands[] = $entry;
         
-        // send the operation request
-        $operation_result = @file_get_contents(
-            $command,
-            false,
-            stream_context_create( $input_params ) );
-            
-        if( $operation_result === false )
+        try
         {
-            $error = error_get_last();
-            $message = trim( $error[ "message" ] ) . " in " . 
-                trim( $error[ "file" ] ) . " on line " .
-                $error[ "line" ];
+            // send the operation request
+            $operation_result = @file_get_contents(
+                $command,
+                false,
+                stream_context_create( $input_params ) );
             
-            throw new \Exception( $message );
-        }
+            if( $operation_result === false )
+            {
+                $error = error_get_last();
+                $message = trim( $error[ "message" ] ) . " in " . 
+                    trim( $error[ "file" ] ) . " on line " .
+                    $error[ "line" ];
+            
+                throw new \Exception( $message );
+            }
 
-        // convert the response into an stdClass object and return it
-        return json_decode( $operation_result );
+            // convert the response into an stdClass object and return it
+            return json_decode( $operation_result );
+        }
+        catch( \Exception $e )
+        {
+            $message = $e->getMessage();
+            
+            if( strpos( $message, "HTTP/1.1 501" ) !== false )
+            {
+                throw new e\OperationNotImplementedException(
+                    S_SPAN . "The operation $command is not implemented." . E_SPAN );
+            }
+            else
+            {
+                throw $e;
+            }
+        }
     }
 
 /*/  
     function batch( array $operations ) : \stdClass
     {
-        $command = $this->url . __function__ . $this->auth;
+        $command = $this->url . __function__;
+        
+        if( $this->auth_in_content === false )
+        {
+        	$command .= $this->auth;
+        }
+
         $params            = new \stdClass();
         $params = array( 'operation' => $operations );
         $this->reply = $this->apiOperation( $command, $params );
@@ -1506,8 +1530,8 @@ $service->readAudits( $audit_params );
     public function readAudits(
         \stdClass $identifier, \stdClass $auditParams=NULL ) : \stdClass
     {
-    	$id_string = "";
-    	
+        $id_string = "";
+        
         if( isset( $identifier->identifier->id ) )
         {
             $id_string = $this->createIdString( $identifier->identifier );
@@ -1817,7 +1841,7 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
         $start = microtime( true );
         $site_copied_within_time_limit = false;
 
-		u\DebugUtility::dump( $this->reply->success );
+        u\DebugUtility::dump( $this->reply->success );
 
         if( $this->reply->success === true )
         {
