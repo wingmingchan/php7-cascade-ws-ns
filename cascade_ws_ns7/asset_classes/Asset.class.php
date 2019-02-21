@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>, German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/28/2019 Added the id_path string to the exception thrown by getAsset.
   * 1/25/2019 Added update, updateData, staticUpdateData, and related constants.
   * 3/12/2018 Added getJson.
   * 3/10/2018 Added getXml.
@@ -802,6 +803,13 @@ qualified identifiers of pages and data definition blocks.</p>
             return new $class_name( // call constructor
                 $service, 
                 $service->createId( $type, $id_path, $site_name ) );
+        }
+        catch( e\NullAssetException $e )
+        {
+            // wrap more info
+        	throw new e\NullAssetException( $e->getMessage() .
+        		BR . "The id_path string: $id_path" . BR
+        	);
         }
         catch( \Exception $e )
         {
