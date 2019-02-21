@@ -184,6 +184,35 @@ abstract class AssetOperationHandlerService
     }
 
 /**
+<documentation><description><p>Creates an asset object, bridging this class and the Asset classes.</p></description>
+<example>$page = $service->getAsset( a\Page::TYPE, $page_id )</example>
+<exception>NoSuchTypeException</exception>
+<return-type>Asset</return-type></documentation>
+*/
+    public function getAsset(
+        string $type, string $id_path, string $site_name=NULL ) : a\Asset
+    {
+        if( !in_array( $type, c\T::getTypeArray() ) )
+            throw new e\NoSuchTypeException( 
+                S_SPAN . "The type $type does not exist." . E_SPAN );
+            
+        $class_name = c\T::$type_class_name_map[ $type ]; // get class name
+        $class_name = a\Asset::NAME_SPACE . "\\" . $class_name;
+        
+        try
+        {
+            return new $class_name( // call constructor
+                $this, 
+                $this->createId( $type, $id_path, $site_name ) );
+        }
+        catch( \Exception $e )
+        {
+            if( self::DEBUG && self::DUMP ) { u\DebugUtility::out( $e->getMessage() ); }
+            throw $e;
+        }        
+    }
+    
+/**
 <documentation><description><p>Returns the XML of <code>wsdl:binding</code>.</p></description>
 <example>echo $eval->replaceBrackets( $service->getBinding() );</example>
 <return-type>string</return-type></documentation>
