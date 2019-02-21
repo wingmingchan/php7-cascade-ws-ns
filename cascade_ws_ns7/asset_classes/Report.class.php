@@ -1684,7 +1684,12 @@ assets that contain relatie links. Three types of assets are searched: data defi
         
         return $this->results;
     }
-
+/*/
+	public function reportSitePhantomBlocksPages()
+	{
+		
+	}
+/*/
 /**
 <documentation><description><p>Returns an array of path information of the type of assets specified. An asset must have the <code>startDate</code> field set, and the <code>startDate</code> is equal to or after the date <code>$dt</code>. See <code>reportDate</code> for more details.</p></description>
 <example></example>
@@ -2449,7 +2454,7 @@ assets that contain relatie links. Three types of assets are searched: data defi
             }
         }
     }    
-   
+
 /**
 <documentation><description><p></p></description>
 <example></example>
@@ -2678,6 +2683,33 @@ assets that contain relatie links. Three types of assets are searched: data defi
         }
     }
     
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function assetTreeReportSitePhantomBlocksPages(
+        aohs\AssetOperationHandlerService $service,
+        p\Child $child, array $params=NULL, array &$results=NULL )
+    {
+        // skip irrelevant children
+        $type  = $child->getType();
+        
+        if( $type != Page::TYPE && $type != DataDefinitionBlock::TYPE )
+            return;
+
+        try
+        {
+            $child->getAsset( $service );
+        }
+        catch( e\NoSuchFieldException $e )
+        {
+            $results[] = $child->getPathPath();
+        }
+    }
+   
     private function checkRootFolder()
     {
         if( !isset( $this->root ) )
