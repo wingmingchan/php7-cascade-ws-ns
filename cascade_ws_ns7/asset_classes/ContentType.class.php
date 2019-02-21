@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 1/28/2019 Added code to remove warnings from edit.
   * 3/29/2018 Added getPublishSetId, getPublishSetPath, and setPublishSet.
   * 1/24/2018 Updated documentation.
   * 1/23/2018 Added REST code to edit.
@@ -412,7 +413,12 @@ overriding the parent method to display the configuration set as well.</p></desc
             }
         }
 
-        $editable_count = count( $this->inline_editable_fields );
+        $editable_count = 0;
+        
+        if( is_array( $this->inline_editable_fields ) )
+        {
+            $editable_count = count( $this->inline_editable_fields );
+        }
         
         if( $this->getService()->isSoap() )
         {
@@ -766,8 +772,8 @@ overriding the parent method to display the configuration set as well.</p></desc
     
 /**
 <documentation><description><p>Removes the field bearing the fully qualified identifier, 
-and returns the calling object. Due to a bug in Cascade, do not use this method to remove
-data definition fields.</p></description>
+and returns the calling object. Due to a bug in Cascade, all fields of the data definition
+will be removed. Therefore, do not use this method to remove data definition fields.</p></description>
 <example>$ct->removeInlineEditableField( $field_name )->edit();</example>
 <return-type>Asset</return-type>
 <exception>NoSuchFieldException</exception>
@@ -808,7 +814,9 @@ data definition fields.</p></description>
     }
 
 /**
-<documentation><description><p>Sets <code>dataDefinitionId</code> and <code>dataDefinitionPath</code>, and returns the calling object.</p></description>
+<documentation><description><p>Sets <code>dataDefinitionId</code> and <code>dataDefinitionPath</code>,
+and returns the calling object. Note that for this method call to be possible, all inline
+editable fields associated with the original data definition must be removed first.</p></description>
 <example>$ct->setDataDefinition( $dd )->edit();</example>
 <return-type>Asset</return-type>
 <exception></exception>
