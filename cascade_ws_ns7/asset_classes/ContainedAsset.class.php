@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/22/2019 Moved copy here from Asset.
   * 1/3/2018 Added code to test for NULL.
   * 11/28/2017 Added getSiteId and getSiteName.
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -59,6 +60,74 @@ abstract class ContainedAsset extends Asset
         aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
         parent::__construct( $service, $identifier );
+    }
+
+/**
+<documentation><description><p>Copies the calling object and creates a new asset of the same
+type in the supplied parent container, and returns an object representing the newly created asset.</p></description>
+<example>$page->copy(
+    $cascade->getAsset( 
+        a\Folder::TYPE, "3890a3f88b7ffe83164c931457a2709c" ), // the target folder
+    "test-asset" // new name
+);
+</example>
+<return-type>Asset</return-type>
+<exception>EmptyNameException, CopyErrorException</exception>
+</documentation>
+*/
+    public function copy( Container $parent, string $new_name ) : Asset
+    {
+        if( $new_name == "" )
+        {
+            throw new e\EmptyNameException( c\M::EMPTY_NAME );
+        }
+        
+        $service         = $this->getService();
+        $self_identifier = $service->createId( $this->getType(), $this->getId() );
+        
+        $service->copy( $self_identifier, $parent->getIdentifier(), $new_name, false );
+        
+        if( $service->isSuccessful() )
+        {
+            // get info of new child
+            $parent->reloadProperty(); 
+            $parent = $parent->getProperty();
+            
+            if( $this->getService()->isSoap() )
+                $children = $parent->children->child;
+            elseif( $this->getService()->isRest() )
+                $children = $parent->children;
+            
+            $child_count = count( $children );
+            
+            if( $child_count == 1 && !is_array( $children ) )
+            {
+                $children = array( $children );
+            }
+            
+            // look for the new child
+            foreach( $children as $child )
+            {
+                $child_path = $child->path->path;
+                $child_path_array = explode( '/', $child_path );
+                
+                if( in_array( $new_name, $child_path_array ) )
+                {
+                    $child_found = $child;
+                    break;
+                }
+            }
+            // get the digital id of child
+            $child_id = $child_found->id;
+            
+            // return new block object
+            return Asset::getAsset( $service, $this->getType(), $child_id );
+        }
+        else
+        {
+            throw new e\CopyErrorException(
+                c\M::COPY_ASSET_FAILURE . $service->getMessage() );
+        }
     }
 
 /**
@@ -227,7 +296,7 @@ abstract class ContainedAsset extends Asset
     {
         return $this->isDescendantOf( $container );
     }
-    
+
 /**
 <documentation><description><p>Moves the asset to the destination container, calls <code>reloadProperty</code>, and returns the calling object.</p></description>
 <example>if( $page->isInContainer( $test2 ) )
