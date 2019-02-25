@@ -376,7 +376,8 @@ $service->copy( $block_id, $parent_id, $new_name, $do_workflow );
 <return-type>stdClass</return-type>
 </documentation>
 */
-    public function copy( \stdClass $identifier, \stdClass $newIdentifier, string $newName, bool $doWorkflow ) : \stdClass
+    public function copy(
+        \stdClass $identifier, \stdClass $newIdentifier, string $newName, bool $doWorkflow ) : \stdClass
     {
         $copy_params                 = new \stdClass();
         $copy_params->authentication = $this->auth;
