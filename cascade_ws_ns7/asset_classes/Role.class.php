@@ -25,19 +25,31 @@ use cascade_ws_property  as p;
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
 <p>A <code>Role</code> object represents a role asset.</p>
-<p>There are two types of roles in Cascade: global and site. In a <code>role</code> property, there are two sub-properties: <code>globalAbilities</code> and <code>siteAbilities</code>. For a global role, the <code>siteAbilities</code> property stores a <code>NULL</code> value. For a site role, the <code>globalAbilities</code> property stores a <code>NULL</code> value. Corresponding to these two properties, there are two classes: <a href=\"http://www.upstate.edu/web-services/api/property-classes/global-abilities.php\"><code>p\GlobalAbilities</code></a> and <a href=\"http://www.upstate.edu/web-services/api/property-classes/site-abilities.php\"><code>p\SiteAbilities</code></a>. A <code>Role</code> object has a <code>p\GlobalAbilities</code> object and a <code>p\SiteAbilities</code> object.</p>
+<p>There are two types of roles in Cascade: global and site. In a <code>role</code> property,
+there are two sub-properties: <code>globalAbilities</code> and <code>siteAbilities</code>.
+For a global role, the <code>siteAbilities</code> property stores a <code>NULL</code> value.
+For a site role, the <code>globalAbilities</code> property stores a <code>NULL</code> value.
+Corresponding to these two properties, there are two classes:
+<a href=\"http://www.upstate.edu/web-services/api/property-classes/global-abilities.php\"><code>p\GlobalAbilities</code></a>
+and <a href=\"http://www.upstate.edu/web-services/api/property-classes/site-abilities.php\"><code>p\SiteAbilities</code></a>.
+A <code>Role</code> object has a <code>p\GlobalAbilities</code> object and a <code>p\SiteAbilities</code> object.</p>
 <h2>Structure of <code>role</code></h2>
 <pre>role
   id
   name
   roleType
   globalAbilities
-    (37 properties, v.8.8)
+    (37 properties, v.8.9)
   siteAbilities
-    (52 properties, v.8.8)
+    (52 properties, v.8.9)
 </pre>
 <h2>Design Issues</h2>
-<p>Since there are too many methods (84 <code>get</code> and 84 <code>set</code> methods) involved here, I decide not to repeat these methods in various classes. Instead, I provide two <code>get</code> methods, i.e., <code>getGlobalAbilities()</code> and <code>getSiteAbilities()</code> in this class, returning a <code>GlobalAbilities</code> object and a <code>SiteAbilities</code> object respectively, allowing us to manipulate these two objects directly. Therefore, there are no <code>set</code> methods in this class.</p>
+<p>Since there are too many methods (89 <code>get</code> and 89 <code>set</code> methods)
+involved here, I decide not to repeat these methods in various classes. Instead, I provide
+two <code>get</code> methods, i.e., <code>getGlobalAbilities()</code> and <code>getSiteAbilities()</code>
+in this class, returning a <code>GlobalAbilities</code> object and a <code>SiteAbilities</code> object
+respectively, allowing us to manipulate these two objects directly. Therefore, there are no
+<code>set</code> methods in this class.</p>
 <h2>WSDL</h2>";
 $doc_string .=
     $service->getXMLFragments( array(
