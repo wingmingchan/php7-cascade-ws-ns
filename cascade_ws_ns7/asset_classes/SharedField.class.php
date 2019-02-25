@@ -83,7 +83,7 @@ process the definition XML.</p></description>
         aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
         parent::__construct( $service, $identifier );
-        $this->xml             = $this->getProperty()->xml;
+        $this->xml = $this->getProperty()->xml;
     }
     
 /**
