@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>, German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/22/2019 Moved copy to ContainedAsset.
   * 1/28/2019 Added the id_path string to the exception thrown by getAsset.
   * 1/25/2019 Added update, updateData, staticUpdateData, and related constants.
   * 3/12/2018 Added getJson.
@@ -82,7 +83,7 @@ abstract class Asset
     const DUMP       = false;
     const NAME_SPACE = "cascade_ws_asset";
     
-    // properties string constants
+    // properties string constants, defined for update
     // FeedBlock
     const FEED_URL                 = "feedURL";
     // IndexBlock
@@ -138,9 +139,9 @@ abstract class Asset
         if( self::DEBUG && self::DUMP ) { u\DebugUtility::dump( $identifier ); }
         
         // get the property
-        $property = $service->retrieve( 
-            $identifier, c\T::$type_property_name_map[ $identifier->type ] );
-            
+        $property = $service->retrieve( $identifier );
+        
+        // if the property is NULL, then the asset does not exist
         if( $property == NULL )
         {
             if( isset( $identifier->id ) )
@@ -176,6 +177,7 @@ abstract class Asset
         $this->json          = json_encode( [
             c\T::$type_property_name_map[ $this->type ] => $this->property ] ); 
         
+        // store the asset xml
         if( $service->isSoap() )
         {
             $response = $service->getLastResponse();
@@ -187,33 +189,33 @@ abstract class Asset
                 item( 0 );
             $xml_string = $asset->ownerDocument->saveXML( $asset );
             // clean up attributes with namespace
-            $xml_string = str_replace(
-                ' xsi:nil="true"', "", $xml_string );
+            $xml_string = str_replace( ' xsi:nil="true"', "", $xml_string );
             $this->xml  = $xml_string;
         }
         
+        // store the parts for getters
         if( isset( $property->id ) )
         {
-            $this->id            = $property->id;
+            $this->id = $property->id;
             
             if( !isset( $this->identifier->id ) )
                 $this->identifier->id = $this->id;
         }
         
         if( isset( $property->name ) )
-            $this->name          = $property->name;
+            $this->name = $property->name;
             
         if( isset( $property->path ) )
         {
-            $this->path          = $property->path;
+            $this->path = $property->path;
             
         }
         elseif( isset( $property->parentContainerPath ) )
         {
             if( $property->parentContainerPath == "/" )
-                $this->path    = $this->getName();
+                $this->path = $this->getName();
             else
-                $this->path    = $property->parentContainerPath . '/' . $this->getName();
+                $this->path = $property->parentContainerPath . '/' . $this->getName();
         }
         
         if( !isset( $this->identifier->path ) )
@@ -224,7 +226,7 @@ abstract class Asset
         
         if( isset( $property->siteId ) )
         {
-            $this->site_id       = $property->siteId;
+            $this->site_id = $property->siteId;
             
             if( !isset( $this->identifier->path ) )
                 $this->identifier->path = new \stdClass();
@@ -234,7 +236,7 @@ abstract class Asset
         
         if( isset( $property->siteName ) )
         {
-            $this->site_name     = $property->siteName;
+            $this->site_name = $property->siteName;
             
             if( !isset( $this->identifier->path ) )
                 $this->identifier->path = new \stdClass();
@@ -252,73 +254,7 @@ abstract class Asset
             $this->review_every = $property->reviewEvery;
         }
     }
-    
-/**
-<documentation><description><p>Copies the calling object and creates a new asset of the same type in the supplied parent container, and returns an object representing the newly created asset.</p></description>
-<example>$page->copy(
-    $cascade->getAsset( 
-        a\Folder::TYPE, "3890a3f88b7ffe83164c931457a2709c" ), // the target folder
-    "test-asset" // new name
-);
-</example>
-<return-type>Asset</return-type>
-<exception>EmptyNameException, CopyErrorException</exception>
-</documentation>
-*/
-    public function copy( Container $parent, string $new_name ) : Asset
-    {
-        if( $new_name == "" )
-        {
-            throw new e\EmptyNameException( c\M::EMPTY_NAME );
-        }
-        
-        $service         = $this->getService();
-        $self_identifier = $service->createId( $this->getType(), $this->getId() );
-        
-        $service->copy( $self_identifier, $parent->getIdentifier(), $new_name, false );
-        
-        if( $service->isSuccessful() )
-        {
-            $parent->reloadProperty(); // get info of new child
-            $parent      = $parent->getProperty();
-            
-            if( $this->getService()->isSoap() )
-                $children = $parent->children->child;
-            elseif( $this->getService()->isRest() )
-                $children = $parent->children;
-            
-            $child_count = count( $children );
-            
-            if( $child_count == 1 && !is_array( $children ) )
-            {
-                $children = array( $children );
-            }
-            
-            // look for the new child
-            foreach( $children as $child )
-            {
-                $child_path = $child->path->path;
-                $child_path_array = explode( '/', $child_path );
-                
-                if( in_array( $new_name, $child_path_array ) )
-                {
-                    $child_found = $child;
-                    break;
-                }
-            }
-            // get the digital id of child
-            $child_id = $child_found->id;
-            
-            // return new block object
-            return Asset::getAsset( $service, $this->getType(), $child_id );
-        }
-        else
-        {
-            throw new e\CopyErrorException(
-                c\M::COPY_ASSET_FAILURE . $service->getMessage() );
-        }
-    }
-    
+
 /**
 <documentation><description><p>Displays some basic information of the calling object and returns it.</p></description>
 <example>$page->display();</example>
@@ -358,7 +294,7 @@ abstract class Asset
         
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Dumps the property of the calling object in JSON format and returns the object.</p></description>
 <example>$page->dumpJSON();</example>
@@ -366,7 +302,7 @@ abstract class Asset
 <exception></exception>
 </documentation>
 */
-    public function dumpJSON() : Asset
+    public function dumpJson() : Asset
     {
         echo S_PRE;
         var_dump( json_encode( $this->property ) );
@@ -376,7 +312,9 @@ abstract class Asset
     }
     
 /**
-<documentation><description><p>Calls <code>reloadProperty</code> and returns the calling object. This method is normally overridden by descendant classes for editable assets. The various parameters are required by classes like <code>Page</code> and <code>DataDefinitionBlock</code>.</p></description>
+<documentation><description><p>Calls <code>reloadProperty</code> and returns the calling object.
+This method is normally overridden by descendant classes for editable assets.
+The various parameters are required by classes like <code>Page</code> and <code>DataDefinitionBlock</code>.</p></description>
 <example>$page->setText( "main-content-content", "Test content" )->
     edit();</example>
 <return-type>Asset</return-type>
@@ -670,7 +608,8 @@ echo "There are " . count( $subscribers ) . " manual subscribers.", BR;</example
     }
     
 /**
-<documentation><description><p>Returns an XML string representing the asset. The name of the root element is the property name of the asset like <code>textBlock</code> or <code>dataDefinition</code>.</p></description>
+<documentation><description><p>Returns an XML string representing the asset.
+The name of the root element is the property name of the asset like <code>textBlock</code> or <code>dataDefinition</code>.</p></description>
 <example>echo $page->getXml();</example>
 <return-type>string</return-type>
 <exception></exception>
@@ -682,7 +621,8 @@ echo "There are " . count( $subscribers ) . " manual subscribers.", BR;</example
     }
     
 /**
-<documentation><description><p>Publishes all publishable subscribers to the supplied destination, or to all destinations if none supplied, and returns the calling object.</p></description>
+<documentation><description><p>Publishes all publishable subscribers to the supplied destination,
+or to all destinations if none supplied, and returns the calling object.</p></description>
 <example>$page->publishSubscribers( 
     $cascade->getAsset( a\Destination::TYPE, "388fd57b8b7ffe83164c9314b3e7eef4" ) 
 );</example>
@@ -756,8 +696,8 @@ qualified identifiers of pages and data definition blocks.</p>
 */
     public function update( array $params )
     {
-    	self::staticUpdateData( $this, $params );
-    	return $this;
+        self::staticUpdateData( $this, $params );
+        return $this;
     }
 
 /**
@@ -775,8 +715,8 @@ qualified identifiers of pages and data definition blocks.</p>
 */
     public function updateData( array $params )
     {
-    	self::staticUpdateData( $this, $params );
-    	return $this;
+        self::staticUpdateData( $this, $params );
+        return $this;
     }
 
 /**
@@ -807,9 +747,9 @@ qualified identifiers of pages and data definition blocks.</p>
         catch( e\NullAssetException $e )
         {
             // wrap more info
-        	throw new e\NullAssetException( $e->getMessage() .
-        		BR . "The id_path string: $id_path" . BR
-        	);
+            throw new e\NullAssetException( $e->getMessage() .
+                BR . "The id_path string: $id_path" . BR
+            );
         }
         catch( \Exception $e )
         {
@@ -831,6 +771,7 @@ to implement the <code>update</code> method.</p></description>
     {
         foreach( $params as $key => $value )
         {
+            // skip metadata
             if( $key == "metadata" )
                 continue;
             
@@ -845,11 +786,11 @@ to implement the <code>update</code> method.</p></description>
                     get_class( $a ) != "cascade_ws_asset\DataDefinitionBlock"
             )
             {
-                throw new Exception( "Illegal key" );
+                throw new \Exception( "Illegal key" );
             }
-            // page or data block, only deal with choosers
             else
             {
+                // chooser, or asset node
                 if( $a->isBlockChooser( $key ) )
                 {
                     $a->setBlock( $key, $value );
