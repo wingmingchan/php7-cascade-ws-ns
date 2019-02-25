@@ -216,15 +216,15 @@ process the definition XML.</p></description>
         parent::__construct( $service, $identifier );
         $this->sharedFields    = array();
         $this->code            = $this->getProperty()->xml;
-        $this->resolveSharedFields();
         $this->attributes      = array();
         $this->structured_data = new \stdClass();
         
+        // replace shared-field elements with real code
+        $this->resolveSharedFields();
         // process the xml
         $this->processSimpleXMLElement( $this->simpleXMLElement );
         // fully qualified identifiers
         $this->identifiers = array_keys( $this->attributes );
-        
         // create the structured data
         $this->createStructuredData( $this->simpleXMLElement );
     }
@@ -399,6 +399,13 @@ the original <code>xml</code>.</p></description>
         return $this->xml;
     }
 
+/**
+<documentation><description><p>Returns an array of <code>SharedField</code> objects.</p></description>
+<example>$sf = $dd->getSharedFields();</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getSharedFields() : array
     {
         return $this->sharedFields;
@@ -416,7 +423,6 @@ structured data associated with the data definition.</p></description>
     {
         return $this->structured_data;
     }
-
 
 /**
 <documentation><description><p>Returns the <code>StructuredData</code> object.</p></description>
@@ -536,72 +542,187 @@ $dd->setXML( $xml )->edit();</example>
         return $this;
     }
     
-    private function resolveSharedFields()
+
+    private function createChildStd(
+        \SimpleXMLElement $child, string $child_type, string $child_identifier )
     {
-        $pattern = "/<shared-field.+?\/>/";
-        preg_match( $pattern, $this->code, $matches );
+        $child_std = $this->getStructuredDataNode( 
+            $child, $child_type, $child_identifier );
         
-        // a simple string lookup
-        // no shared fields
-        if( is_null( $matches ) )
+        $grandchild = $child->children();
+        
+        if( isset( $grandchild ) )
         {
-            $this->xml = $this->code;
-            $this->simpleXMLElement = new \SimpleXMLElement( $this->code );
+            $grandchild_type = $grandchild->getName();
             
-            echo "We should not be here", "<br />";
+            if( $grandchild_type == c\T::CHECKBOXITEM )
+            {
+                $child_std->text = p\StructuredDataNode::CHECKBOX_PREFIX;
+            }
+            else if( $grandchild_type == c\T::SELECTORITEM )
+            {
+                $child_std->text = p\StructuredDataNode::SELECTOR_PREFIX;
+            }
         }
-        // with shared fields
+        
+        $child_attributes = $child->attributes();
+        
+        if( $child_type == c\T::ASSET )
+        {
+            //$child_attributes     = $child->attributes();
+            $asset_type           = $child_attributes[ c\T::TYPE ]->__toString();
+            $child_std->assetType = $asset_type;
+        }
+        
+        if( isset( $child_attributes[ 'default' ] ) )
+        {
+            $child_std->text = $child_attributes[ 'default' ]->__toString();
+        }
+
+        return $child_std;
+    }
+    
+    private function createStructuredData( \SimpleXMLElement $xml_element )
+    {
+        $this->structured_data->definitionId   = $this->getId();
+        $this->structured_data->definitionPath = $this->getPath();
+        
+        $count = count( $xml_element->children() );
+        
+        if( $count > 1 )
+        {
+            if( $this->getService()->isSoap() )
+            {
+                $this->structured_data->structuredDataNodes = new \stdClass();
+                $this->structured_data->structuredDataNodes->structuredDataNode = array();
+            }
+            elseif( $this->getService()->isRest() )
+                $this->structured_data->structuredDataNodes = array();
+            
+            foreach( $xml_element->children() as $child )
+            {
+                $child_type = $child->getName();
+                
+                if( isset( $child[ c\T::IDENTIFIER ] ) )
+                {
+                    $child_identifier = $child[ c\T::IDENTIFIER ]->__toString();
+                    $child_std = $this->createChildStd(
+                        $child, $child_type, $child_identifier );
+                    if( $this->getService()->isSoap() )
+                        $this->structured_data->structuredDataNodes->
+                            structuredDataNode[] = $child_std;
+                    elseif( $this->getService()->isRest() )
+                        $this->structured_data->structuredDataNodes[] = $child_std;
+                }
+            }
+        }
         else
         {
-            $simpleXML    = simplexml_load_string( $this->code );
-            $sharedFields = $simpleXML->xpath( '//shared-field' );
+            $child      = $xml_element->children();
+            $child_type = $child->getName();
+            $attributes = $child->attributes();
             
-            // replace all <shared-field> with real code
-            foreach( $sharedFields as $sharedField )
+            if( isset( $attributes[ c\T::IDENTIFIER ] ) )
             {
-                $domToChange = dom_import_simplexml( $sharedField );
-                $identifier  = $sharedField->xpath( '@identifier' )[ 0 ]->__toString();
-                $path        = $sharedField->xpath( '@path' )[ 0 ]->__toString();
-    
-                if( strpos( $path, "site://" ) !== false )
-                {
-                    $fullPath  = substr( $path, 7 );
-                    $pathArray = explode( "/", $fullPath );
-                    $site      = $pathArray[ 0 ];
-                    $path      = implode( "/", array_slice( $pathArray, 1 ) );
-                }
-                else
-                {
-                    $site = $this->getSiteName();
-                }
+                $child_identifier = $attributes[ c\T::IDENTIFIER ]->__toString();
                 
-                $sf          = $this->getAsset(
-                    $this->getService(), SharedField::TYPE, $path, $site );
-                array_push( $this->sharedFields, $sf );
-                $sharedCode  = $sf->getXml();
-                $sharedField = simplexml_load_string( $sharedCode );
-            
-                // get rid of the root <system-data-structure>
-                $sharedField = $sharedField->children()[ 0 ];
-                // replace shared-field with the real xml
-                $domReplace = dom_import_simplexml( $sharedField );
-                // replace the identifier
-                $domReplace->setAttribute( "identifier", $identifier );
-                $nodeImport = $domToChange->ownerDocument->importNode(
-                    $domReplace, true );
-                $domToChange->parentNode->replaceChild( $nodeImport, $domToChange );
+                if( $this->getService()->isSoap() )
+                {
+                    $this->structured_data->structuredDataNodes                     =
+                        new \stdClass();
+                    $this->structured_data->structuredDataNodes->structuredDataNode =
+                        new \stdClass();
+                    $this->structured_data->structuredDataNodes->structuredDataNode = 
+                        $this->createChildStd( $child, $child_type, $child_identifier );
+                }
+                elseif( $this->getService()->isRest() )
+                {
+                    $this->structured_data->structuredDataNodes = array(
+                        $this->createChildStd( $child, $child_type, $child_identifier )
+                    );
+                }
             }
-
-            $this->xml              = $simpleXML->asXML();
-            $this->simpleXMLElement = new \SimpleXMLElement( $this->xml );
         }
     }
 
+    private function getStructuredDataNode( 
+        \SimpleXMLElement $xml_element, string $type, string $identifier )
+    {
+        if( self::DEBUG ) { u\DebugUtility::out( "$type, $identifier" ); }
+        
+        $obj = AssetTemplate::getStructuredDataNode();
+        
+        if( $type == c\T::GROUP )
+        {
+            $obj->type       = $type;
+            $obj->identifier = $identifier;
+            
+            if( $this->getService()->isSoap() )
+                $obj->structuredDataNodes = new \stdClass();
+            elseif( $this->getService()->isRest() )
+                $obj->structuredDataNodes = array();
+                
+            $child_count = count( $xml_element->children() );
+            $more_than_one = ( $child_count > 1 ? true : false );
+            
+            if( $more_than_one )
+            {
+                if( $this->getService()->isSoap() )
+                    $obj->structuredDataNodes->structuredDataNode = array();
+                
+                foreach( $xml_element->children() as $child )
+                {
+                    $child_type = $child->getName();
+                    
+                    if( self::DEBUG ) { u\DebugUtility::out( "Child type in group: $child_type" ); }
+                    
+                    if( isset( $child[ c\T::IDENTIFIER ] ) )
+                    {
+                        $child_identifier = $child[ c\T::IDENTIFIER ]->__toString();
+                        
+                        $child_std = $this->createChildStd(
+                            $child, $child_type, $child_identifier );
+                    
+                        if( $this->getService()->isSoap() )
+                            $obj->structuredDataNodes->structuredDataNode[] = $child_std;
+                        elseif( $this->getService()->isRest() )
+                            $obj->structuredDataNodes[] = $child_std;
+                    }
+                }
+            }
+            else
+            {
+                $xml_array  = $xml_element->children();
+                $child      = $xml_array[ 0 ];
+                $child_type = $child->getName();
+                
+                if( self::DEBUG ) { u\DebugUtility::out( "Child type in group: $child_type" ); }
+                
+                $child_identifier = $child[ c\T::IDENTIFIER ]->__toString();
+                $child_std = $this->createChildStd(
+                    $child, $child_type, $child_identifier );
+                
+                if( $this->getService()->isSoap() )
+                    $obj->structuredDataNodes->structuredDataNode = $child_std;
+                elseif( $this->getService()->isRest() )
+                    $obj->structuredDataNodes = array( $child_std );
+            }
+        }
+        else
+        {
+            $obj->type       = $type;
+            $obj->identifier = $identifier;
+        }
+        
+        return $obj;
+    }
+  
     private function processSimpleXMLElement( 
         \SimpleXMLElement $xml_element, string $group_names='' )
     {
         foreach( $xml_element->children() as $child )
         {
+            // get the attributes of an element
             $type       = trim( $child->attributes()->{ $a = c\T::TYPE } );
             $name       = $child->getName();
             $identifier = $child[ c\T::IDENTIFIER ]->__toString();
@@ -748,181 +869,70 @@ $dd->setXML( $xml )->edit();</example>
             }
         }
     }
-    
-    private function getStructuredDataNode( 
-        \SimpleXMLElement $xml_element, string $type, string $identifier )
-    {
-        if( self::DEBUG ) { u\DebugUtility::out( "$type, $identifier" ); }
-        
-        $obj = AssetTemplate::getStructuredDataNode();
-        
-        if( $type == c\T::GROUP )
-        {
-            $obj->type       = $type;
-            $obj->identifier = $identifier;
-            
-            if( $this->getService()->isSoap() )
-                $obj->structuredDataNodes = new \stdClass();
-            elseif( $this->getService()->isRest() )
-                $obj->structuredDataNodes = array();
-                
-            $child_count = count( $xml_element->children() );
-            $more_than_one = ( $child_count > 1 ? true : false );
-            
-            if( $more_than_one )
-            {
-                if( $this->getService()->isSoap() )
-                    $obj->structuredDataNodes->structuredDataNode = array();
-                
-                foreach( $xml_element->children() as $child )
-                {
-                    $child_type = $child->getName();
-                    
-                    if( self::DEBUG ) { u\DebugUtility::out( "Child type in group: $child_type" ); }
-                    
-                    if( isset( $child[ c\T::IDENTIFIER ] ) )
-                    {
-                        $child_identifier = $child[ c\T::IDENTIFIER ]->__toString();
-                        
-                        $child_std = $this->createChildStd(
-                            $child, $child_type, $child_identifier );
-                    
-                        if( $this->getService()->isSoap() )
-                            $obj->structuredDataNodes->structuredDataNode[] = $child_std;
-                        elseif( $this->getService()->isRest() )
-                            $obj->structuredDataNodes[] = $child_std;
-                    }
-                }
-            }
-            else
-            {
-                $xml_array  = $xml_element->children();
-                $child      = $xml_array[ 0 ];
-                $child_type = $child->getName();
-                
-                if( self::DEBUG ) { u\DebugUtility::out( "Child type in group: $child_type" ); }
-                
-                $child_identifier = $child[ c\T::IDENTIFIER ]->__toString();
-                $child_std = $this->createChildStd(
-                    $child, $child_type, $child_identifier );
-                
-                if( $this->getService()->isSoap() )
-                    $obj->structuredDataNodes->structuredDataNode = $child_std;
-                elseif( $this->getService()->isRest() )
-                    $obj->structuredDataNodes = array( $child_std );
-            }
-        }
-        else
-        {
-            $obj->type       = $type;
-            $obj->identifier = $identifier;
-        }
-        
-        return $obj;
-    }
-    
-    private function createStructuredData( \SimpleXMLElement $xml_element )
-    {
-        $this->structured_data->definitionId   = $this->getId();
-        $this->structured_data->definitionPath = $this->getPath();
-        
-        $count = count( $xml_element->children() );
-        
-        if( $count > 1 )
-        {
-            if( $this->getService()->isSoap() )
-            {
-                $this->structured_data->structuredDataNodes = new \stdClass();
-                $this->structured_data->structuredDataNodes->structuredDataNode = array();
-            }
-            elseif( $this->getService()->isRest() )
-                $this->structured_data->structuredDataNodes = array();
-            
-            foreach( $xml_element->children() as $child )
-            {
-                $child_type = $child->getName();
-                
-                if( isset( $child[ c\T::IDENTIFIER ] ) )
-                {
-                    $child_identifier = $child[ c\T::IDENTIFIER ]->__toString();
-                    $child_std = $this->createChildStd(
-                        $child, $child_type, $child_identifier );
-                    if( $this->getService()->isSoap() )
-                        $this->structured_data->structuredDataNodes->
-                            structuredDataNode[] = $child_std;
-                    elseif( $this->getService()->isRest() )
-                        $this->structured_data->structuredDataNodes[] = $child_std;
-                }
-            }
-        }
-        else
-        {
-            $child      = $xml_element->children();
-            $child_type = $child->getName();
-            $attributes = $child->attributes();
-            
-            if( isset( $attributes[ c\T::IDENTIFIER ] ) )
-            {
-                $child_identifier = $attributes[ c\T::IDENTIFIER ]->__toString();
-                
-                if( $this->getService()->isSoap() )
-                {
-                    $this->structured_data->structuredDataNodes                     =
-                        new \stdClass();
-                    $this->structured_data->structuredDataNodes->structuredDataNode =
-                        new \stdClass();
-                    $this->structured_data->structuredDataNodes->structuredDataNode = 
-                        $this->createChildStd( $child, $child_type, $child_identifier );
-                }
-                elseif( $this->getService()->isRest() )
-                {
-                    $this->structured_data->structuredDataNodes = array(
-                        $this->createChildStd( $child, $child_type, $child_identifier )
-                    );
-                }
-            }
-        }
-    }
-    
-    private function createChildStd(
-        \SimpleXMLElement $child, string $child_type, string $child_identifier )
-    {
-        $child_std = $this->getStructuredDataNode( 
-            $child, $child_type, $child_identifier );
-        
-        $grandchild = $child->children();
-        
-        if( isset( $grandchild ) )
-        {
-            $grandchild_type = $grandchild->getName();
-            
-            if( $grandchild_type == c\T::CHECKBOXITEM )
-            {
-                $child_std->text = p\StructuredDataNode::CHECKBOX_PREFIX;
-            }
-            else if( $grandchild_type == c\T::SELECTORITEM )
-            {
-                $child_std->text = p\StructuredDataNode::SELECTOR_PREFIX;
-            }
-        }
-        
-        $child_attributes = $child->attributes();
-        
-        if( $child_type == c\T::ASSET )
-        {
-            //$child_attributes     = $child->attributes();
-            $asset_type           = $child_attributes[ c\T::TYPE ]->__toString();
-            $child_std->assetType = $asset_type;
-        }
-        
-        if( isset( $child_attributes[ 'default' ] ) )
-        {
-            $child_std->text = $child_attributes[ 'default' ]->__toString();
-        }
 
-        return $child_std;
-    }
+    private function resolveSharedFields()
+    {
+        $pattern = "/<shared-field.+?\/>/";
+        preg_match( $pattern, $this->code, $matches );
+        
+        // a simple string lookup
+        // no shared fields
+        if( is_null( $matches ) )
+        {
+            $this->xml = $this->code;
+            // turn the XML into an object
+            $this->simpleXMLElement = new \SimpleXMLElement( $this->code );
+        }
+        // with shared fields
+        else
+        {
+            $simpleXML    = simplexml_load_string( $this->code );
+            // get all shared-field elements
+            $sharedFields = $simpleXML->xpath( '//shared-field' );
+            
+            // replace all <shared-field> with real code
+            foreach( $sharedFields as $sharedField )
+            {
+                $domToChange = dom_import_simplexml( $sharedField );
+                $identifier  = $sharedField->xpath( '@identifier' )[ 0 ]->__toString();
+                $path        = $sharedField->xpath( '@path' )[ 0 ]->__toString();
     
+                if( strpos( $path, "site://" ) !== false )
+                {
+                    $fullPath  = substr( $path, 7 );
+                    $pathArray = explode( "/", $fullPath );
+                    $site      = $pathArray[ 0 ];
+                    $path      = implode( "/", array_slice( $pathArray, 1 ) );
+                }
+                else
+                {
+                    $site = $this->getSiteName();
+                }
+                
+                // store the SharedField object
+                $sf = $this->getAsset(
+                    $this->getService(), SharedField::TYPE, $path, $site );
+                array_push( $this->sharedFields, $sf );
+                $sharedCode  = $sf->getXml();
+                $sharedField = simplexml_load_string( $sharedCode );
+            
+                // get rid of the root <system-data-structure>
+                $sharedField = $sharedField->children()[ 0 ];
+                // replace shared-field with the real xml
+                $domReplace = dom_import_simplexml( $sharedField );
+                // replace the identifier
+                $domReplace->setAttribute( "identifier", $identifier );
+                $nodeImport = $domToChange->ownerDocument->importNode(
+                    $domReplace, true );
+                $domToChange->parentNode->replaceChild( $nodeImport, $domToChange );
+            }
+
+            // store the XML and the object
+            $this->xml              = $simpleXML->asXML();
+            $this->simpleXMLElement = new \SimpleXMLElement( $this->xml );
+        }
+    }
+
     private $attributes;      // all attributes of each field
     private $identifiers;     // all identifiers of fields
     private $code;            // possibly containing shared-field elements
