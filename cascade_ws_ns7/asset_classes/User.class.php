@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/25/2019 Removed getDefaultGroup, and setDefaultGroup.
   * 1/24/2018 Updated documentation.
   * 1/3/2018 Added code to test for NULL.
   * 9/14/2017 Added getLdapDN.
@@ -35,10 +36,10 @@ $doc_string = "<h2>Introduction</h2>
   password
   enabled
   groups
-  defaultGroup
   role
   defaultSiteId
   defaultSiteName
+  ldapDN
 </pre>
 <h2>WSDL</h2>";
 $doc_string .=
@@ -58,12 +59,16 @@ return $doc_string;
   "asset":{
     "user":{
       "username":"wing",
+      "fullName":null,
       "email":"wing",
       "authType":"normal",
       "password":"fk3*h\u0026_sd%^#^!ew",
       "enabled":true,
       "groups":"Administrators",
-      "roles":"Administrator"
+      "role":"Administrator"
+      "defaultSiteId":"3e15e3fe0a00016b00677c0a42ef3909",
+      "defaultSiteName":"wing",
+      "ldapDN":null
     }
   },
   "authentication":{
@@ -155,20 +160,6 @@ class User extends Asset
     public function getAuthType() : string
     {
         return $this->getProperty()->authType;
-    }
-    
-/**
-<documentation><description><p>Returns <code>defaultGroup</code>.</p></description>
-<example>echo u\StringUtility::getCoalescedString( $u->getDefaultGroup() ), BR;</example>
-<return-type>mixed</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getDefaultGroup()
-    {
-        if( isset( $this->getProperty()->defaultGroup ) )
-            return $this->getProperty()->defaultGroup;
-        return NULL;
     }
     
 /**
@@ -374,22 +365,6 @@ mixed this method call with other <code>User::set</code> methods.</p></descripti
         $g->removeUser( Asset::getAsset( $this->getService(),
             User::TYPE,
             $this->getProperty()->username ) )->edit();
-        return $this;
-    }
-    
-/**
-<documentation><description><p>Sets <code>defaultGroup</code> and returns the calling object.</p></description>
-<example>$u->setDefaultGroup( $cascade->getAsset( a\Group::TYPE, "cru" ) )->edit();</example>
-<return-type>Asset</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function setDefaultGroup( Group $group=NULL ) : Asset
-    {
-        if( isset( $group ) )
-        {
-            $this->getProperty()->defaultGroup   = $group->getName();
-        }
         return $this;
     }
     
