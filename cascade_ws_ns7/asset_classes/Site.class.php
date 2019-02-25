@@ -4,6 +4,7 @@
   * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/25/2019 Added missing getLinkCheckEnabled.
   * 11/2/2018 Added fields and get methods for 8.11. No setters yet.
   * 5/22/2018 Added listEditorConfigurations. However, there is a bug in SOAP, as of 8.9.1.
   * 1/24/2018 Updated documentation.
@@ -116,61 +117,75 @@ return $doc_string;
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/asset-class-test-code/site.php">site.php</a></li></ul>
 <h2>REST Dump</h2>
 <pre>
-object(stdClass)#10 (34) {
+object(stdClass)#17 (53) {
+  ["id"]=>
+  string(32) "3e15e3fe0a00016b00677c0a42ef3909"
+  ["name"]=>
+  string(14) "mysite"
+  ["url"]=>
+  string(34) "http://mydomain.edu/mysite"
+  ["siteImproveUrl"]=>
+  NULL
+  ["extensionsToStrip"]=>
+  NULL
   ["defaultMetadataSetId"]=>
-  string(32) "c12dd0738b7ffe83129ed6d86580d804"
+  string(32) "3e15e3fd0a00016b00677c0a58b50540"
   ["defaultMetadataSetPath"]=>
   string(7) "Default"
   ["siteAssetFactoryContainerId"]=>
-  string(32) "c12d932d8b7ffe83129ed6d8112a2203"
+  string(32) "3e15e4490a00016b00677c0a6fd3822d"
   ["siteAssetFactoryContainerPath"]=>
   string(7) "Default"
+  ["defaultEditorConfigurationId"]=>
+  NULL
+  ["defaultEditorConfigurationPath"]=>
+  NULL
+  ["siteStartingPageId"]=>
+  NULL
+  ["siteStartingPagePath"]=>
+  NULL
   ["siteStartingPageRecycled"]=>
   bool(false)
-  ["url"]=>
-  string(30) "http://www.upstate.edu/formats"
-  ["recycleBinExpiration"]=>
-  string(2) "15"
   ["roleAssignments"]=>
-  array(1) {
-    [0]=>
-    object(stdClass)#11 (2) {
+  object(stdClass)#18 (1) {
+    ["roleAssignment"]=>
+    object(stdClass)#19 (4) {
       ["roleId"]=>
-      string(1) "8"
+      string(2) "11"
       ["roleName"]=>
-      string(18) "Site-Administrator"
+      string(17) "Site Manager"
+      ["users"]=>
+      string(14) "wing"
+      ["groups"]=>
+      NULL
     }
   }
   ["usesScheduledPublishing"]=>
   bool(false)
+  ["scheduledPublishDestinationMode"]=>
+  NULL
+  ["scheduledPublishDestinations"]=>
+  NULL
+  ["timeToPublish"]=>
+  NULL
+  ["publishIntervalHours"]=>
+  NULL
+  ["publishDaysOfWeek"]=>
+  NULL
+  ["cronExpression"]=>
+  NULL
+  ["sendReportToUsers"]=>
+  NULL
+  ["sendReportToGroups"]=>
+  NULL
   ["sendReportOnErrorOnly"]=>
   bool(false)
-  ["rootFolderId"]=>
-  string(32) "c12d8d0d8b7ffe83129ed6d86dd9f853"
-  ["rootAssetFactoryContainerId"]=>
-  string(32) "c12d8dbe8b7ffe83129ed6d84cc7c0c7"
-  ["rootPageConfigurationSetContainerId"]=>
-  string(32) "c12d8e0c8b7ffe83129ed6d885ebd843"
-  ["rootContentTypeContainerId"]=>
-  string(32) "c12d90058b7ffe83129ed6d81395b93a"
-  ["rootDataDefinitionContainerId"]=>
-  string(32) "c12d90528b7ffe83129ed6d87f0a0643"
-  ["rootMetadataSetContainerId"]=>
-  string(32) "c12d909e8b7ffe83129ed6d849f35757"
-  ["rootPublishSetContainerId"]=>
-  string(32) "c12d90e58b7ffe83129ed6d884612ddf"
-  ["rootSiteDestinationContainerId"]=>
-  string(32) "c12d918b8b7ffe83129ed6d80a701fef"
-  ["rootTransportContainerId"]=>
-  string(32) "c12d91d58b7ffe83129ed6d8c3e45888"
-  ["rootWorkflowDefinitionContainerId"]=>
-  string(32) "c12d8cc78b7ffe83129ed6d8693cf2f7"
-  ["rootConnectorContainerId"]=>
-  string(32) "c12d913d8b7ffe83129ed6d8e9bb4cbf"
+  ["recycleBinExpiration"]=>
+  string(2) "15"
   ["unpublishOnExpiration"]=>
-  bool(false)
+  bool(true)
   ["linkCheckerEnabled"]=>
-  bool(false)
+  bool(true)
   ["externalLinkCheckOnPublish"]=>
   bool(false)
   ["inheritDataChecksEnabled"]=>
@@ -182,22 +197,45 @@ object(stdClass)#10 (34) {
   ["accessibilityCheckEnabled"]=>
   bool(true)
   ["inheritNamingRules"]=>
-  bool(false)
+  bool(true)
   ["namingRuleCase"]=>
-  string(5) "LOWER"
+  NULL
   ["namingRuleSpacing"]=>
-  string(6) "HYPHEN"
+  NULL
   ["namingRuleAssets"]=>
-  array(2) {
-    [0]=>
-    string(8) "template"
-    [1]=>
-    string(4) "file"
-  }
-  ["name"]=>
-  string(7) "formats"
-  ["id"]=>
-  string(32) "c12d8c498b7ffe83129ed6d81ea4076a"
+  NULL
+  ["accessibilityCheckerEnabled"]=>
+  bool(false)
+  ["widenDamIntegrationEnabled"]=>
+  bool(false)
+  ["widenDamIntegrationCategory"]=>
+  NULL
+  ["webdamDamIntegrationEnabled"]=>
+  bool(false)
+  ["rootFolderId"]=>
+  string(32) "3e15e4030a00016b00677c0a3c7a8a0e"
+  ["rootAssetFactoryContainerId"]=>
+  string(32) "3e15e42b0a00016b00677c0a96e61301"
+  ["rootPageConfigurationSetContainerId"]=>
+  string(32) "3e15e47a0a00016b00677c0a6e3af37e"
+  ["rootContentTypeContainerId"]=>
+  string(32) "3e15e4ae0a00016b00677c0abf4d9510"
+  ["rootConnectorContainerId"]=>
+  string(32) "3e15e4950a00016b00677c0a39e452e4"
+  ["rootDataDefinitionContainerId"]=>
+  string(32) "3e15e4c60a00016b00677c0a5a56fa62"
+  ["rootSharedFieldContainerId"]=>
+  string(32) "580ebf01ac1e001b1730aec68b1db3ae"
+  ["rootMetadataSetContainerId"]=>
+  string(32) "3e15e5420a00016b00677c0a97ab4d41"
+  ["rootPublishSetContainerId"]=>
+  string(32) "3e15e4df0a00016b00677c0ac505e906"
+  ["rootSiteDestinationContainerId"]=>
+  string(32) "3e15e5110a00016b00677c0a3bfeca78"
+  ["rootTransportContainerId"]=>
+  string(32) "3e15e4f80a00016b00677c0a8367f963"
+  ["rootWorkflowDefinitionContainerId"]=>
+  string(32) "3e15e52a0a00016b00677c0a70e2365b"
 }
 </pre>
 <h2>JSON Dump</h2>
@@ -670,6 +708,18 @@ class Site extends ScheduledPublishing
     public function getInheritNamingRules() : bool
     {
         return $this->getProperty()->inheritNamingRules;
+    }
+
+/**
+<documentation><description><p>Returns <code>linkCheckEnabled</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $s->getLinkCheckEnabled() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getLinkCheckEnabled() : bool
+    {
+        return $this->getProperty()->linkCheckEnabled;
     }
 
 /**
@@ -1471,18 +1521,6 @@ representing the root asset factory container.</p></description>
     }
 
 /**
-<documentation><description><p>Returns <code>widenDamIntegrationEnabled</code>.</p></description>
-<example>echo u\StringUtility::boolToString( $s->getWidenDamIntegrationEnabled() ), BR;</example>
-<return-type>bool</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getWidenDamIntegrationEnabled() : bool
-    {
-        return $this->getProperty()->widenDamIntegrationEnabled;
-    }
-
-/**
 <documentation><description><p>Returns <code>widenDamIntegrationCategory</code>.</p></description>
 <example>echo u\StringUtility::boolToString( $s->getWidenDamIntegrationCategory() ), BR;</example>
 <return-type>mixed</return-type>
@@ -1492,6 +1530,18 @@ representing the root asset factory container.</p></description>
     public function getWidenDamIntegrationCategory()
     {
         return $this->getProperty()->widenDamIntegrationCategory;
+    }
+
+/**
+<documentation><description><p>Returns <code>widenDamIntegrationEnabled</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $s->getWidenDamIntegrationEnabled() ), BR;</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getWidenDamIntegrationEnabled() : bool
+    {
+        return $this->getProperty()->widenDamIntegrationEnabled;
     }
 
 /**
