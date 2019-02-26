@@ -240,6 +240,7 @@ u\DebugUtility::dump( $results );
                     // recursive traversal
                     $child->traverse( $function_array, $params, $results );
                 }
+                // Child objects
                 else
                 {
                     $this->applyFunctionsToChild( 
