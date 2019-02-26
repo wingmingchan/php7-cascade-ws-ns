@@ -5,6 +5,7 @@
                        German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/26/2019 Fixed a bug in createFolder.
   * 5/21/2018 Changed search so that it can take NULL and arrays as parameters.
   * 1/10/2018 Added REST code to createPageConfigurationSet.
   * 1/8/2018 Added REST code to getSites. Added more info to Exception thrown in deleteAsset.
@@ -1136,7 +1137,7 @@ be non-empty, but the site name can be empty.</p></description>
     $base_folder, // parent folder
     $folder_name );</example>
 <return-type>Asset</return-type>
-<exception>CreationErrorException</exception>
+<exception>CreationErrorException, NoSuchSiteException</exception>
 </documentation>
 */
     public function createFolder(
@@ -1145,21 +1146,24 @@ be non-empty, but the site name can be empty.</p></description>
         if( trim( $name ) == "" )
             throw new e\CreationErrorException(
                 S_SPAN . c\M::EMPTY_FOLDER_NAME . E_SPAN );
-            
-        if( $parent == NULL && trim( $site_name ) == "" )
-            throw new e\CreationErrorException(
-                S_SPAN . c\M::EMPTY_SITE_NAME . E_SPAN );
-            
-        $asset                               = AssetTemplate::getFolder();
-        $asset->folder->name                 = $name;
         
-        if( isset( $parent ) )
+        // if no parent is supplied, then there must a valid site name
+        if( $parent == NULL )
         {
-            $asset->folder->parentFolderPath = $parent->getPath();
-            $site_name = $parent->getSiteName();
-        }            
-
-           $asset->folder->siteName = $site_name;
+			if( trim( $site_name ) == "" )
+				throw new e\CreationErrorException(
+					S_SPAN . c\M::EMPTY_SITE_NAME . E_SPAN );
+			
+			// get the base folder of the site
+			$parent = $this->getSite( $site_name )->getBaseFolder();
+        }
+        
+        // set the parameters
+        $asset               = AssetTemplate::getFolder();
+        $asset->folder->name = $name;
+        $asset->folder->parentFolderPath = $parent->getPath();
+        $site_name = $parent->getSiteName();
+        $asset->folder->siteName = $site_name;
         
         return $this->createAsset(
             $asset, Folder::TYPE, $this->getPath( $parent, $name ), $site_name );
@@ -3652,12 +3656,15 @@ u\DebugUtility::dump( $assets );
         // try retrieval first to avoid creating asset of the same name
         try
         {
+            // return an existing object
             if( $type == Role::TYPE )
             {
                 return $this->getRoleByName( $id_path );
             }
+
             return $this->getAsset( $type, $id_path, $site_name );
         }
+        // create only when the asset does not exist
         catch( \Exception $e )
         {
             $this->service->create( $std );
@@ -3674,11 +3681,13 @@ u\DebugUtility::dump( $assets );
             }
             //else echo "Successfully created the asset $type, $id_path, $site_name. " . BR;
         }
+
         // returns the object created
         if( $type == Role::TYPE )
         {
             return $this->getRoleByName( $id_path );
         }
+
         return $this->getAsset( $type, $id_path, $site_name );
     }
     
