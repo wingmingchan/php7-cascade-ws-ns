@@ -1,7 +1,7 @@
 <?php
 /**
   Author: Wing Ming Chan, German Drulyk
-  Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>, 
+  Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>, 
                      German Drulyk <drulykg@upstate.edu>
   MIT Licensed
   Modification history:
@@ -1734,7 +1734,5 @@ $service->siteCopy( $seed_site_id, $seed_site_name, $new_site_name );
     private $get_methods  = array();
     /*@var array The array to store property stdClass objects */
     private $read_assets  = array();
-    /*@var DOMXpath The DOMXpath object to store the WSDL */
-    //private $dom_xpath;
 }
 ?>

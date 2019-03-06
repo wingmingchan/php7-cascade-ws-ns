@@ -1,7 +1,7 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 2/7/2018 Changed return type of a few methods to mixed.

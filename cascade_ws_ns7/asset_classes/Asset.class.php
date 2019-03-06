@@ -1,7 +1,7 @@
 <?php
 /**
   * Author: Wing Ming Chan, German Drulyk
-  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>, German Drulyk <drulykg@upstate.edu>
+  * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>, German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 2/22/2019 Moved copy to ContainedAsset.

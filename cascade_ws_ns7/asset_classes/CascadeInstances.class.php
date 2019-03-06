@@ -1,7 +1,7 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 6/4/2018 Added $to_exclude to updateFormat.

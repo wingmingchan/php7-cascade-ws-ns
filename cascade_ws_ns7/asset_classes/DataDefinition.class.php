@@ -1,7 +1,7 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 1/10/2019 Add getSharedFields.
@@ -753,7 +753,7 @@ $dd->setXML( $xml )->edit();</example>
                 // create the attribute array
                 foreach( $attributes as $key => $value )
                 {
-                    $attribute_array[$key] = $value->__toString();
+                    $attribute_array[ $key ] = $value->__toString();
                 }
 
                 // store attributes

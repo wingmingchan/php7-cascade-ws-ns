@@ -1,10 +1,10 @@
 <?php
 /**
   Author: Wing Ming Chan, German Drulyk
-  Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>, 
+  Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>, 
                        German Drulyk <drulykg@upstate.edu>
   MIT Licensed
-  Modification history:
+  Modification history:<a href="AssetOperationHandlerService.class.php">No Title</a>
   2/21/2019 Moved getAsset to parent.
   2/20/2019 Added try to apiOperation.
   7/20/2018 Fixed a bug in readAudits.

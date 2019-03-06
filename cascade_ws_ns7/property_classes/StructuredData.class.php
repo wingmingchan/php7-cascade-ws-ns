@@ -1,7 +1,7 @@
 <?php
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2018 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
   * 2/14/2018 Fixed a bug in removePhantomNodes.
@@ -672,13 +672,13 @@ supplied identifier being the one of the first instance.</p></description>
         
         foreach( $this->getIdentifiers() as $fqi )
         {
-        	$node = $this->getStructuredDataNode( $fqi );
-        	
-        	if( $node->isGroupNode() )
-        	{
-        		continue;  // skip group nodes
-        	}
-        	
+            $node = $this->getStructuredDataNode( $fqi );
+            
+            if( $node->isGroupNode() )
+            {
+                continue;  // skip group nodes
+            }
+            
             $values[ $fqi ] = $node->getNodeValue();
         }
         
