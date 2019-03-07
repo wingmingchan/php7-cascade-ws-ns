@@ -4,7 +4,8 @@
   Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>, 
                        German Drulyk <drulykg@upstate.edu>
   MIT Licensed
-  Modification history:<a href="AssetOperationHandlerService.class.php">No Title</a>
+  Modification history:
+  3/7/2019 Added getReadAccessRightInformation and getAclEntries.
   2/21/2019 Moved getAsset to parent.
   2/20/2019 Added try to apiOperation.
   7/20/2018 Fixed a bug in readAudits.
@@ -968,6 +969,16 @@ return $doc_string;
     }
     
 /**
+<documentation><description><p>Gets the <code>aclEntries</code> after the call of <code>readAccessRights()</code>.</p></description>
+<example>u\DebugUtility::dump( $service->getAudits() );</example>
+<return-type>mixed</return-type></documentation>
+*/
+    public function getAclEntries()
+    {
+        return $this->getReadAccessRightInformation()->aclEntries;
+    }
+
+/**
 <documentation><description><p>Gets the audits object after the call of readAudits().</p></description>
 <example>u\DebugUtility::dump( $service->getAudits() );</example>
 <return-type>stdClass</return-type></documentation>
@@ -1001,6 +1012,16 @@ return $doc_string;
         return $this->message;
     }
     
+/**
+<documentation><description><p>Gets the accessRightInformation object after the call of readAccessRightInformation().</p></description>
+<example>$accessRightInfo = $service->getReadAccessRightInformation();</example>
+<return-type>stdClass</return-type></documentation>
+*/
+    public function getReadAccessRightInformation() : \stdClass
+    {
+        return $this->reply->accessRightsInformation;
+    }
+
 /**
 <documentation><description><p>Returns a URL string that can be used to read an asset.</p></description>
 <example>echo $service->getReadURL( a\Page::TYPE, "c12eb9978b7ffe83129ed6d80132aa29" );</example>
