@@ -5,6 +5,7 @@
                      German Drulyk <drulykg@upstate.edu>
   MIT Licensed
   Modification history:
+   3/7/2019 Added getAclEntries.
    2/21/2019 Moved getAsset to parent.
    9/27/2018 Fixed code related to $context.
    7/19/2018 Moved WSDL-related constants and methods to the parent class.
@@ -744,7 +745,17 @@ return $doc_string;
     }
 
 /**
-<documentation><description><p>Gets the audits object after the call of readAudits().</p></description>
+<documentation><description><p>Gets the <code>aclEntries</code> after the call of <code>readAccessRights()</code>.</p></description>
+<example>u\DebugUtility::dump( $service->getAudits() );</example>
+<return-type>mixed</return-type></documentation>
+*/
+    public function getAclEntries()
+    {
+        return $this->getReadAccessRightInformation()->aclEntries;
+    }
+
+/**
+<documentation><description><p>Gets the audits object after the call of <code>readAudits()</code>.</p></description>
 <example>u\DebugUtility::dump( $service->getAudits() );</example>
 <return-type>stdClass</return-type></documentation>
 */
