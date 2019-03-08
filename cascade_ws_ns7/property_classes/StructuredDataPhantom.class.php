@@ -4,6 +4,7 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 2/14/2018 Fixed a bug in removePhantomNodes.
   * 2/5/2018 Added phantom value-related code.
   * 12/21/2017 Added the $service object to constructor and pass it into processStructuredDataNodes so that isSoap and isRest can be called. Changed toStdClass so that it works with REST.
   * 12/19/2017 Added throwException with asset id and path information in messages,
@@ -396,11 +397,11 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
 /**
 <documentation><description><p>Returns the host asset.</p></description>
 <example>$sd->getHostAsset()->dump();</example>
-<return-type>Asset</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getHostAsset() : a\Asset
+    public function getHostAsset()
     {
         return $this->host_asset;
     }
@@ -2009,6 +2010,7 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
         {
             $this->getNode( $par_id )->addChildNode( $field_name );
         }
+        
         // add new identifier to identifiers
         $temp = $this->node_map;
         asort( $temp );
@@ -2154,9 +2156,16 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
         }
     }
     
-    private function throwException( $e )
+    private function throwException( \Exception $e )
     {
-        u\DebugUtility::throwException( $this->getHostAsset(), $e );
+        if( !is_null( $this->getHostAsset() ) )
+        {
+            u\DebugUtility::throwException( $this->getHostAsset(), $e );
+        }
+        else
+        {
+            u\DebugUtility::throwException( NULL, $e );
+        }
     }
 
     private $definition_id;

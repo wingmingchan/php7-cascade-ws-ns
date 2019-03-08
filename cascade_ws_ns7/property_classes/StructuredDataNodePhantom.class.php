@@ -100,7 +100,7 @@ class StructuredDataNodePhantom extends Property
 <exception>NullServiceException</exception>
 </documentation>
 */
-    public function __construct( 
+    public function __construct(
         \stdClass $node=NULL,
         aohs\AssetOperationHandlerService $service=NULL,
         $dd=NULL, 
@@ -141,7 +141,7 @@ class StructuredDataNodePhantom extends Property
                 $this->radio = ( $field[ c\T::TYPE ] == c\T::RADIOBUTTON );
             }
             
-            // store the items for radio, multi-selectors, and so on
+            // store the items (possible values) for radio, multi-selectors, and so on
             if( isset( $field[ c\T::ITEMS ] ) )
             {
                 $this->items = $field[ c\T::ITEMS ];
@@ -183,7 +183,7 @@ class StructuredDataNodePhantom extends Property
                 $this->wysiwyg = false;
             }
             
-            // add the index if this is a multiple field
+            // append the absolute position if this is a multiple field
             if( $this->multiple == true )
             {
                 $this->index       = $index;
@@ -246,12 +246,22 @@ class StructuredDataNodePhantom extends Property
                 $cur_identifier .= self::DELIMITER;
                 
                 // recursively process the data
-                self::processStructuredDataNodePhantom( 
-                    $cur_identifier, // the parent id
-                    $this->structured_data_nodes, // array to store children
-                    $node->structuredDataNodes->structuredDataNode, // stdClass
-                    $this->data_definition
-                );
+                if( $service->isSoap() )
+                    self::processStructuredDataNodePhantom( 
+                        $cur_identifier, // the parent id
+                        $this->structured_data_nodes, // array to store children
+                        $node->structuredDataNodes->structuredDataNode, // stdClass
+                        $this->data_definition,
+                        $this->service
+                    );
+                elseif( $service->isRest() )
+                    self::processStructuredDataPhantom( 
+                        $cur_identifier, // the parent id
+                        $this->structured_data_nodes, // array to store children
+                        $node->structuredDataNodes,   // array
+                        $this->data_definition,
+                        $this->service
+                    );
                 
                 // for easy look-up
                 $this->node_map[ $this->identifier ] = $this;
@@ -268,7 +278,11 @@ class StructuredDataNodePhantom extends Property
     }
     
 /**
-<documentation><description><p>Adds a node to a multiple field bearing the identifier and returns the calling object. Note that the identifier must be a fully qualified identifier in the data definition (without any <code>;digit</code> in it). This means that the field cannot have any ancestors of multiple type. This methods is used by the <code>StructuredData</code> class.</p></description>
+<documentation><description><p>Adds a node to a multiple field bearing the identifier and
+returns the calling object. Note that the identifier must be a fully qualified identifier
+in the data definition (without any <code>;digit</code> in it). This means that the field
+cannot have any ancestors of multiple type. This methods is used by the <code>StructuredData</code>
+class.</p></description>
 <example></example>
 <return-type>Property</return-type>
 <exception>NodeException</exception>
@@ -286,6 +300,7 @@ class StructuredDataNodePhantom extends Property
         
         // remove digits and semi-colons, turning node id to field id
         $field_id = self::getFieldIdentifier( $node_id );
+        
         if( self::DEBUG ) { u\DebugUtility::out( "Field ID: " . $field_id ); }
         
         if( !$this->data_definition->isMultiple( $field_id ) )
@@ -301,7 +316,6 @@ class StructuredDataNodePhantom extends Property
         $cloned_node = $this->structured_data_nodes[ $last_pos ]->cloneNode();
         if( self::DEBUG ) { u\DebugUtility::dump( $cloned_node->toStdClass() ); }
 
-
         $this->structured_data_nodes[] = $cloned_node;
         $this->node_map = array_merge( 
             $this->node_map, array( $cloned_node->getIdentifier() => $cloned_node ) );
@@ -310,7 +324,9 @@ class StructuredDataNodePhantom extends Property
     }
     
 /**
-<documentation><description><p>Returns a copy of the calling node. Since the identifier of the new node and all identifiers of the descendants of this new node must be recalculated, the node is created by the constructor, not by copying.</p></description>
+<documentation><description><p>Returns a copy of the calling node. Since the identifier of
+the new node and all identifiers of the descendants of this new node must be recalculated,
+the node is created by the constructor, not by copying.</p></description>
 <example>u\DebugUtility::dump( $node->cloneNode()->toStdClass() );</example>
 <return-type>Property</return-type>
 <exception></exception>
@@ -334,6 +350,7 @@ class StructuredDataNodePhantom extends Property
         $clone_identifier      = self::removeLastIndex( $this->identifier ) . 
                                  self::DELIMITER . $index;
         $clone_obj->identifier = $clone_identifier;
+        
         if( self::DEBUG ) { u\DebugUtility::out( $clone_identifier ); }
         
         return $clone_obj;
@@ -508,7 +525,9 @@ class StructuredDataNodePhantom extends Property
     }
     
 /**
-<documentation><description><p>For a node that can have items (like checkboxes, selectors, radio buttons, and dropdowns), the method returns all the items (possible values) concatenated as a string.</p></description>
+<documentation><description><p>For a node that can have items (like checkboxes, selectors,
+radio buttons, and dropdowns), the method returns all the items (possible values) concatenated
+as a string.</p></description>
 <example>u\DebugUtility::dump( $node->getItems() );</example>
 <return-type>mixed</return-type>
 <exception></exception>
@@ -520,7 +539,9 @@ class StructuredDataNodePhantom extends Property
     }
     
 /**
-<documentation><description><p>Returns the id of a <code>a\Linkable</code> node (a <code>a\Linkable</code> node is a chooser allowing users to choose either a page, a file, or a symlink; therefore, the id can be the <code>fileId</code>, <code>pageId</code>, or <code>symlinkId</code> of the node).</p></description>
+<documentation><description><p>Returns the id of a <code>a\Linkable</code> node (a <code>a\Linkable</code>
+node is a chooser allowing users to choose either a page, a file, or a symlink; therefore,
+the id can be the <code>fileId</code>, <code>pageId</code>, or <code>symlinkId</code> of the node).</p></description>
 <example>echo u\StringUtility::getCoalescedString( $node->getLinkableId() ), BR;</example>
 <return-type>mixed</return-type>
 <exception></exception>
@@ -615,6 +636,13 @@ class StructuredDataNodePhantom extends Property
         return $this->recycled;
     }
     
+/**
+<documentation><description><p>Returns <code>structuredDataNodes</code>, which could be NULL or an array of <code>StructuredDataNode</code> objects.</p></description>
+<example>u\DebugUtility::dump( $node->getStructuredDataNodes() );</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
     public function getStructuredDataNodePhantoms()
     {
         return $this->structured_data_nodes;
@@ -1202,6 +1230,7 @@ class StructuredDataNodePhantom extends Property
             "First position: " . $first_pos . BR . "Last position: " . $last_pos ); }
             
         $last_node_id = $this->structured_data_nodes[ $last_pos ]->getIdentifier();
+        
         if( self::DEBUG ) { u\DebugUtility::out( "Last node ID: " . $last_node_id ); }
             
         if( $first_pos == $last_pos ) // the only node
@@ -1469,7 +1498,7 @@ class StructuredDataNodePhantom extends Property
         {
             if( $this->text_type == self::TEXT_TYPE_DATETIME )
             {
-                if( !is_null( $text ) && $text != "" && !is_numeric( $text) )
+                if( !is_null( $text ) && $text != "" && !is_numeric( $text ) )
                     throw new e\UnacceptableValueException( 
                         S_SPAN . "$text is not an acceptable datetime value." . E_SPAN );
                     
@@ -1917,18 +1946,26 @@ class StructuredDataNodePhantom extends Property
         return $i;
     }
     
+/**
+<documentation><description><p>Processes the structured data nodes.</p></description>
+<example></example>
+<return-type>void</return-type>
+</documentation>
+*/
     public static function processStructuredDataNodePhantom( 
         string $parent_id, array &$node_array,
         $node_std, a\DataDefinition $data_definition=NULL )
     {
         if( self::DEBUG ) { u\DebugUtility::out( "Parent ID: " . $parent_id ); }
         
+        // turn a single node to an array
         if( !is_array( $node_std ) )
         {
             $node_std = array( $node_std );
         }
         
         $node_count  = count( $node_std );
+        
         if( self::DEBUG ) { u\DebugUtility::out( "Node count: " . $node_count ); }  
         
         // these are used to calculate the index
@@ -1937,8 +1974,11 @@ class StructuredDataNodePhantom extends Property
         $cur_index = 0;
         $processed_mul_ids = array();
         
-        // work out the id of the current node for the data definition
-        // no digits in the fully qualified identifiers
+        // Work out the fully qualified identifiers (FQI) of the field
+        // in the data definition corresponding to the current node
+        // so that the FQIs of the data definition
+        // can be used to access field definition.
+        // In FQIs of data definitions, no digits are used.
         for( $i = 0; $i < $node_count; $i++ )
         {
             if( isset( $node_std[ $i ]->identifier ) )
@@ -1961,9 +2001,8 @@ class StructuredDataNodePhantom extends Property
                 
                 $temp          = trim( $temp, self::DELIMITER );
                 $fq_identifier = 
-                    $temp . self::DELIMITER . $node_std[$i]->identifier;
+                    $temp . self::DELIMITER . $node_std[ $i ]->identifier;
             }
-        
             
             try
             {
@@ -1979,13 +2018,16 @@ class StructuredDataNodePhantom extends Property
                 $previous_identifier = $current_identifier;
             $current_identifier  = $node_std[$i]->identifier;
             
-            // a multiple text or group, work out fully qualified identifier
+            // if the field in the definition is a multiple field,
+            // the the FQI of the node will have a digital part
             if( $is_multiple )
             {
+                // the first node
                 if( !in_array( $fq_identifier, array_keys( $processed_mul_ids ) ) )
                 {
                     $processed_mul_ids[ $fq_identifier ] = 0;
                 }
+                // subsequent nodes
                 else
                 {
                     $processed_mul_ids[ $fq_identifier ] += 1;
@@ -2002,6 +2044,9 @@ class StructuredDataNodePhantom extends Property
                 $cur_index = 0;
             }
             
+            // the FQI of a node is the FQI of the parent, plus the identifier of the node,
+            // and if the node is an instance of a multiple field, a digital part
+            // for the absolute position of the node in the set of multiple instances
             if( $parent_id != '' )
             {
                 $n = new StructuredDataNodePhantom( 

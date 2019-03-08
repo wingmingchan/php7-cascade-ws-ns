@@ -573,20 +573,7 @@ the id can be the <code>fileId</code>, <code>pageId</code>, or <code>symlinkId</
         else // NULL or not
             return $this->symlink_path;
     }
-/*/
-    public function getNodeValue()
-    {
-        if( $this->isAsset() )
-        {
-            if( $this->isBlockChooser() )
-            {
-                return $this->getBlock();
-            }
-            elseif( $this->isFileChooser() )
-        }
-        
-    }
-/*/
+
 /**
 <documentation><description><p>Returns <code>pageId</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $node->getPageId() ), BR;</example>

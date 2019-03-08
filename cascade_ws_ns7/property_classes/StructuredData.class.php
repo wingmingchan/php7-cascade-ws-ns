@@ -665,26 +665,7 @@ supplied identifier being the one of the first instance.</p></description>
         
         return $this->node_map[ $identifier ];
     }
-/*/
-    public function getStructuredDataValues() : array
-    {
-        $values = array();
-        
-        foreach( $this->getIdentifiers() as $fqi )
-        {
-            $node = $this->getStructuredDataNode( $fqi );
-            
-            if( $node->isGroupNode() )
-            {
-                continue;  // skip group nodes
-            }
-            
-            $values[ $fqi ] = $node->getNodeValue();
-        }
-        
-        return $values;
-    }
-/*/
+
 /**
 <documentation><description><p>Returns the text of a node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getText( "group;calendar" ) ), BR;</example>
@@ -2163,7 +2144,6 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
     
     private function appendNodeToField( string $field_name ) : Property
     {
-        
         if( self::DEBUG ) { u\DebugUtility::out( $field_name ); }
 
         if( !$this->data_definition->hasIdentifier( $field_name ) )
@@ -2215,7 +2195,7 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
         $temp = $this->node_map;
         asort( $temp );
         $this->identifiers = array_keys( $temp );
-        
+
         return $this;
     }
     
