@@ -1172,26 +1172,6 @@ representing the root asset factory container.</p></description>
     }
 
 /**
-<documentation><description><p>Returns a <code>SiteDestinationContainer</code> object representing the root site destination container.</p></description>
-<example>$sdc = $s->getRootSiteDestinationContainer();</example>
-<return-type>Asset</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getRootSiteDestinationContainer() : Asset
-    {
-        if( is_null( $this->root_site_destination_container ) )
-        {
-            $this->root_site_destination_container = 
-                Asset::getAsset(
-                    $this->getService(),
-                    SiteDestinationContainer::TYPE, 
-                    $this->getProperty()->rootSiteDestinationContainerId );
-        }
-        return $this->root_site_destination_container;
-    }
-
-/**
 <documentation><description><p>Returns a <code>SharedFieldContainer</code> object representing the root shared field container.</p></description>
 <example>$sfc = $s->getRootSharedFieldContainer();</example>
 <return-type>Asset</return-type>
@@ -1209,6 +1189,61 @@ representing the root asset factory container.</p></description>
                     $this->getProperty()->rootSharedFieldContainerId );
         }
         return $this->root_shared_field_container;
+    }
+
+/**
+<documentation><description><p>Returns an <code>AssetTree</code> object rooted at the root
+shared field container.</p></description>
+<example>u\DebugUtility::dump( u\XMLUtility::replaceBrackets( 
+    $s->getRootSharedFieldContainerAssetTree()->
+    toXml() ) );</example>
+<return-type>AssetTree</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getRootSharedFieldContainerAssetTree() : AssetTree
+    {
+        if( is_null( $this->root_shared_field_container ) )
+        {
+            $this->root_shared_field_container = 
+                Asset::getAsset(
+                    $this->getService(),
+                    SharedFieldContainer::TYPE, 
+                    $this->getProperty()->rootSharedFieldContainerId );
+        }
+        return $this->getRootSharedFieldContainer()->getAssetTree();
+    }
+
+/**
+<documentation><description><p>Returns <code>rootSharedFieldContainerId</code>.</p></description>
+<example>echo $s->getRootSharedFieldContainerId(), BR;</example>
+<return-type>string</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getRootSharedFieldContainerId() : string
+    {
+        return $this->getProperty()->rootSharedFieldContainerId;
+    }
+
+/**
+<documentation><description><p>Returns a <code>SiteDestinationContainer</code> object representing the root site destination container.</p></description>
+<example>$sdc = $s->getRootSiteDestinationContainer();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getRootSiteDestinationContainer() : Asset
+    {
+        if( is_null( $this->root_site_destination_container ) )
+        {
+            $this->root_site_destination_container = 
+                Asset::getAsset(
+                    $this->getService(),
+                    SiteDestinationContainer::TYPE, 
+                    $this->getProperty()->rootSiteDestinationContainerId );
+        }
+        return $this->root_site_destination_container;
     }
 
 /**
