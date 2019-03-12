@@ -5,6 +5,7 @@
                        German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 3/12/2019 Added createSharedField and createSharedFieldContainer.
   * 2/26/2019 Fixed a bug in createFolder.
   * 5/21/2018 Changed search so that it can take NULL and arrays as parameters.
   * 1/10/2018 Added REST code to createPageConfigurationSet.
@@ -1690,6 +1691,69 @@ Currently, this method only produces an FTP transport of a certain type. After t
         
         return $this->createAsset(
             $asset, ScriptFormat::TYPE, $this->getPath( $parent, $name ),
+            $parent->getSiteName() );
+    }
+    
+/**
+<documentation><description><p>Returns a <code>SharedField</code> object,
+representing either an existing shared field, or a shared field newly created by the method.
+Note that the <code>$xml</code> string is sent to Cascade without data checking.</p></description>
+<example>$dd = $cascade->createSharedField(
+    $parent,
+    'Simple Shared Field',
+    $xml );</example>
+<return-type>Asset</return-type>
+<exception>CreationErrorException</exception>
+</documentation>
+*/
+    public function createSharedField(
+        SharedFieldContainer $parent, string $name, string $xml ) : Asset
+    {
+        if( trim( $name ) == "" )
+            throw new e\CreationErrorException( 
+                S_SPAN . c\M::EMPTY_SHARED_FIELD_NAME . E_SPAN );
+            
+        if( trim( $xml ) == "" )
+            throw new e\CreationErrorException( 
+                S_SPAN . c\M::EMPTY_XML . E_SPAN );
+
+        $asset                                   = AssetTemplate::getSharedField();
+        $asset->sharedField->name                = $name;
+        $asset->sharedField->parentContainerPath = $parent->getPath();
+        $asset->sharedField->siteName            = $parent->getSiteName();
+        $asset->sharedField->xml                 = $xml;
+        
+        return $this->createAsset(
+            $asset, SharedField::TYPE, $this->getPath( $parent, $name ), 
+            $parent->getSiteName() );
+    }
+
+/**
+<documentation><description><p>Returns a <code>SharedFieldContainer</code> object, representing either an existing shared field container, or a shared field container newly created by the method.</p></description>
+<example>$parent = $cascade->createSharedFieldContainer(
+    $cascade->getAsset( 
+    SharedFieldContainer::TYPE, '/', $site_name ),
+    'Test Shared Field Container'
+);</example>
+<return-type>Asset</return-type>
+<exception>CreationErrorException</exception>
+</documentation>
+*/
+    public function createSharedFieldContainer(
+        SharedFieldContainer $parent, string $name ) : Asset
+    {
+        if( trim( $name ) == "" )
+            throw new e\CreationErrorException( 
+                S_SPAN . c\M::EMPTY_SHARED_FIELD_CONTAINER_NAME . E_SPAN );
+            
+        $property =c\T::$type_property_name_map[ SharedFieldContainer::TYPE ];
+        $asset                                 = AssetTemplate::getContainer( $property );
+        $asset->$property->name                = $name;
+        $asset->$property->parentContainerPath = $parent->getPath();
+        $asset->$property->siteName            = $parent->getSiteName();
+        
+        return $this->createAsset(
+            $asset, SharedFieldContainer::TYPE, $this->getPath( $parent, $name ), 
             $parent->getSiteName() );
     }
     
