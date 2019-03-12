@@ -218,6 +218,8 @@ class M // messages for exceptions
     const EMPTY_SCRIPT                   = "The script cannot be empty. ";
     const EMPTY_SERVER_NAME              = "The server name cannot be empty. ";
     const EMPTY_SERVER_PORT              = "The server port cannot be empty. ";
+    const EMPTY_SHARED_FIELD_CONTAINER_NAME = "The shared field container name cannot be empty. ";
+    const EMPTY_SHARED_FIELD_NAME        = "The shared field name cannot be empty. ";
     const EMPTY_SITE_NAME                = "The site name cannot be empty. ";
     const EMPTY_SITE_DESTINATION_CONTAINER_NAME = "The site destination container name cannot be empty. ";
     const EMPTY_SYMLINK_NAME             = "The symlink name cannot be empty. ";
