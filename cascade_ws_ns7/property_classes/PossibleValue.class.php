@@ -4,6 +4,7 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 3/12/2019 Added getLabel and setLabel, and updated toStdClass.
   * 7/14/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
   * 9/8/2016 Added isDefaultValue.
@@ -43,6 +44,8 @@ inside a <a href=\"http://www.upstate.edu/web-services/api/asset-classes/metadat
             object(stdClass)#54 (2) {
               [\"value\"]=&gt;
               string(3) \"Yes\"
+              [\"label\"]=&gt;
+              NULL
               [\"selectedByDefault\"]=&gt;
               bool(false)
             }
@@ -50,6 +53,8 @@ inside a <a href=\"http://www.upstate.edu/web-services/api/asset-classes/metadat
             object(stdClass)#50 (2) {
               [\"value\"]=&gt;
               string(5) \"Maybe\"
+              [\"label\"]=&gt;
+              NULL
               [\"selectedByDefault\"]=&gt;
               bool(false)
             }
@@ -57,6 +62,8 @@ inside a <a href=\"http://www.upstate.edu/web-services/api/asset-classes/metadat
             object(stdClass)#52 (2) {
               [\"value\"]=&gt;
               string(2) \"No\"
+              [\"label\"]=&gt;
+              NULL
               [\"selectedByDefault\"]=&gt;
               bool(true)
             }
@@ -131,9 +138,21 @@ class PossibleValue extends Property
                     " must be a boolean." . E_SPAN );
             }
             
+            $this->label               = $v->label;
             $this->value               = $v->value;
             $this->selected_by_default = $v->selectedByDefault;
         }
+    }
+    
+/**
+<documentation><description><p>Returns <code>label</code>.</p></description>
+<example>echo $pv->getLabel(), BR;</example>
+<return-type>mixed</return-type>
+</documentation>
+*/
+    public function getLabel()
+    {
+        return $this->label; // could be NULL
     }
     
 /**
@@ -168,17 +187,39 @@ class PossibleValue extends Property
     {
         return $this->selected_by_default;
     }
-    
+
+/**
+<documentation><description><p>Sets <code>label</code> and returns the object.</p></description>
+<example>$dmfd = $ms->getDynamicMetadataFieldDefinition( "gender" );
+$dmfd->getPossibleValue( "Female" )->setLabel( "Female" );
+</example>
+<return-type>Property</return-type>
+</documentation>
+*/
+    public function setLabel( string $label=NULL ) : Property
+    {
+        // valid only if there is a value
+        if( isset( $this->value ) )
+        {
+            if( isset( $label ) && trim( $label ) == "" )
+                throw new e\UnacceptableValueException(
+                    S_SPAN . "The label cannot be empty." . E_SPAN );
+
+            $this->label = $label;
+        }
+        return $this;
+    }
+
 /**
 <documentation><description><p>Sets <code>selectedByDefault</code> and returns the object.</p></description>
 <example>$dmfd = $ms->getDynamicMetadataFieldDefinition( "gender" );
 $dmfd->getPossibleValue( "Female" )->setSelectedByDefault( false );
 $dmfd->getPossibleValue( "Male" )->setSelectedByDefault( true );
 </example>
-<return-type></return-type>
+<return-type>Property</return-type>
 </documentation>
 */
-    public function setSelectedByDefault( $bool )
+    public function setSelectedByDefault( $bool ) : Property
     {
         if( !c\BooleanValues::isBoolean( $bool ) )
             throw new e\UnacceptableValueException(
@@ -201,11 +242,13 @@ $dmfd->getPossibleValue( "Male" )->setSelectedByDefault( true );
                     S_SPAN . c\M::EMPTY_VALUE . E_SPAN );
             
         $obj                    = new \stdClass();
+        $obj->label             = $this->label;
         $obj->value             = $this->value;
         $obj->selectedByDefault = $this->selected_by_default;
         return $obj;
     }
 
+    private $label;
     private $selected_by_default;
     private $value;
 }
