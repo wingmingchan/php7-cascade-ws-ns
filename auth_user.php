@@ -13,7 +13,7 @@ $url  = "$server/api/v1/";
 
 if( $soap )
 {
-	$url = "$server/ws/services/AssetOperationService?wsdl";
+    $url = "$server/ws/services/AssetOperationService?wsdl";
 }
 
 $username = "admin";
@@ -21,13 +21,13 @@ $password = "admin";
 
 if( $sandbox )
 {
-	$username = "wing";
-	$password = "secret";
+    $username = "wing";
+    $password = "secret";
 }
 
 try
 {
-	$service = aohs\ServiceFactory::getService( $type, $url, $username, $password );
+    $service = aohs\ServiceFactory::getService( $type, $url, $username, $password );
     $cascade = new a\Cascade( $service );
     $report  = new a\Report( $cascade );
     $admin   = new a\Administration( $cascade );
@@ -43,6 +43,6 @@ catch( \Exception $e )
 }
 catch( \Error $er )
 {
-	echo S_PRE . $er . E_PRE; 
+    echo S_PRE . $er . E_PRE; 
 }
 ?>
