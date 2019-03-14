@@ -16,11 +16,13 @@ if( $soap )
     $url = "$server/ws/services/AssetOperationService?wsdl";
 }
 
+// Change these!!!
 $username = "admin";
 $password = "admin";
 
 if( $sandbox )
 {
+    // Change these!!!
     $username = "wing";
     $password = "secret";
 }
