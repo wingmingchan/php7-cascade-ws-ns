@@ -20,7 +20,7 @@ if( $soap )
 $username = "admin";
 $password = "admin";
 
-if( $sandbox )
+if( isset( $sandbox ) && $sandbox )
 {
     // Change these!!!
     $username = "wing";
