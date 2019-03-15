@@ -7,8 +7,8 @@ and between the two servers on the other.
 $soap   = true;  // SOAP
 //$soap   = false; // REST
 
-// Cascade instance
-//$sandbox = false; // production
+// Cascade instance, uncomment one of them when needed
+$sandbox = false; // production
 //$sandbox = true;  // sandbox
 
 $techName = "rest";
