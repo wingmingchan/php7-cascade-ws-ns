@@ -5,6 +5,7 @@
                        German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 3/15/2019 Added getAllAudits.
   * 3/12/2019 Added createSharedField and createSharedFieldContainer.
   * 2/26/2019 Fixed a bug in createFolder.
   * 5/21/2018 Changed search so that it can take NULL and arrays as parameters.
@@ -2518,6 +2519,25 @@ object.</p></description>
     }
     
 /**
+<documentation><description><p>Returns an array of <code>Audit</code> objects associated with an asset).</p></description>
+<example>$audits = $cascade->getAllAudits( $page );</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getAllAudits( Asset $a ) : array
+    {
+        $allAudits = array();
+        
+        foreach( c\AuditTypes::$types as $type )
+        {
+        	$allAudits = array_merge( $allAudits, $a->getAudits( $type ) );
+        }
+        
+        return $allAudits;
+    }
+
+/**
 <documentation><description><p>Returns the access rights information (an <a href="http://www.upstate.edu/web-services/api/property-classes/access-rights-information.php"><code>p\AccessRightsInformation</code></a> object).</p></description>
 <example>$ari = $cascade->getAccessRights(
     a\Folder::TYPE,
@@ -2611,7 +2631,7 @@ or <code>NULL</code> if there is no asset bearing that ID.</p></description>
         }
         return NULL;
     }
-    
+
 /**
 <documentation><description><p>Returns an array of <a href="http://www.upstate.edu/web-services/api/audit.php"><code>Audit</code></a> objects. The <code>$type</code> string can be empty, or one of the types defined for auditing. The two <code>DateTime</code> objects can be used to filter the returned objects. <code>$start_time</code> must be before or identical to <code>$end_time</code>.</p></description>
 <example>$audits = $page->getAudits();</example>

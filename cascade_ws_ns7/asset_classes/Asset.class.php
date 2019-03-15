@@ -345,6 +345,11 @@ The various parameters are required by classes like <code>Page</code> and <code>
         string $type=c\T::EDIT, \DateTime $start_time=NULL, 
         \DateTime $end_time=NULL ) : array
     {
+        if( $type == "" )
+        {
+            $type=c\T::EDIT;
+        }
+        
         if( !is_string( $type ) || !c\AuditTypes::isAuditType( $type ) )
         {
             if( self::DEBUG && !is_string( $type ) ) { u\DebugUtility::out( "Not a string" ); }
