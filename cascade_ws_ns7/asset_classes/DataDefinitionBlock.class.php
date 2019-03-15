@@ -75,6 +75,8 @@ xhtmlDataDefinitionBlock
             value
   metadataSetId
   metadataSetPath
+  reviewOnSchedule
+  reviewEvery
   expirationFolderId
   expirationFolderPath
   expirationFolderRecycled (bool)
