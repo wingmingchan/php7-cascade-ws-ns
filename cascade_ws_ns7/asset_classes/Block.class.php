@@ -114,7 +114,7 @@ metadata.</p></description>
         }
         return $this->reloadProperty();
     }
-    
+
 /**
 <documentation><description><p>Returns <code>createdBy</code>.</p></description>
 <example>echo $tb->getCreatedBy() . BR;</example>
@@ -126,7 +126,7 @@ metadata.</p></description>
     {
         return $this->getProperty()->createdBy;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>createdDate</code>.</p></description>
 <example>echo $tb->getCreatedDate() . BR;</example>
@@ -138,7 +138,7 @@ metadata.</p></description>
     {
         return $this->getProperty()->createdDate;
     }
-    
+
 /**
 <documentation><description><p>Returns the named
 <a href="http://www.upstate.edu/web-services/api/property-classes/dynamic-field.php"><code>p\DynamicField</code></a> object.</p></description>
@@ -154,7 +154,7 @@ metadata.</p></description>
     {
         return $this->metadata->getDynamicField( $name );
     }
-    
+
 /**
 <documentation><description><p>Returns an array of <code>p\DynamicField</code> objects
 or <code>NULL</code>.</p></description>
@@ -175,7 +175,7 @@ else
     {
         return $this->metadata->getDynamicFields();
     }
-    
+
 /**
 <documentation><description><p>Returns <code>expirationFolderId</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString(
@@ -190,7 +190,7 @@ else
             return $this->getProperty()->expirationFolderId;
         return NULL;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>expirationFolderPath</code>.</p></description>
 <example>echo u\StringUtility::getCoalescedString(
@@ -205,7 +205,7 @@ else
             return $this->getProperty()->expirationFolderPath;
         return NULL;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>expirationFolderRecycled</code>.</p></description>
 <example>echo u\StringUtility::boolToString(
@@ -230,7 +230,7 @@ else
     {
         return $this->getProperty()->lastModifiedBy;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>lastModifiedDate</code>.</p></description>
 <example>echo $tb->getLastModifiedDate() . BR;</example>
@@ -242,7 +242,7 @@ else
     {
         return $this->getProperty()->lastModifiedDate;
     }
-    
+
 /**
 <documentation><description><p>Returns the <a href="http://www.upstate.edu/web-services/api/property-classes/metadata.php"><code>p\Metadata</code></a> object.</p></description>
 <example>u\DebugUtility::dump( $tb->getMetadata()->toStdClass() );</example>
@@ -254,7 +254,7 @@ else
     {
         return $this->metadata;
     }
-    
+
 /**
 <documentation><description><p>Returns the <code>MetadataSet</code> object.</p></description>
 <example>$tb->getMetadataSet()->dump();</example>
@@ -271,7 +271,7 @@ else
             $service->createId( MetadataSet::TYPE, 
                 $this->getProperty()->metadataSetId ) );
     }
-    
+
 /**
 <documentation><description><p>Returns <code>metadataSetId</code>.</p></description>
 <example>echo $tb->getMetadataSetId(), BR;</example>
@@ -283,7 +283,7 @@ else
     {
         return $this->getProperty()->metadataSetId;
     }
-    
+
 /**
 <documentation><description><p>Returns <code>metadataSetPath</code>.</p></description>
 <example>echo $tb->getMetadataSetPath(), BR;</example>
@@ -295,7 +295,7 @@ else
     {
         return $this->getProperty()->metadataSetPath;
     }
-    
+
 /**
 <documentation><description><p>Returns the metadata as an <code>\stdClass</code> object.</p></description>
 <example>u\DebugUtility::dump( $tb->getMetadataStdClass() );</example>
@@ -307,7 +307,7 @@ else
     {
         return $this->metadata->toStdClass();
     }
-    
+
 /**
 <documentation><description><p>Returns a bool, indicating whether the named <code>p\DynamicField</code> exists.</p></description>
 <example>if( $tb->hasDynamicField( $field_name ) )
@@ -322,7 +322,7 @@ else
     {
         return $this->metadata->hasDynamicField( $name );
     }
-    
+
 /**
 <documentation><description><p>Returns a bool, indicating whether the named <code>p\DynamicField</code> exists.</p></description>
 <example>if( $tb->hasDynamicFields() )
@@ -337,7 +337,7 @@ else
     {
         return $this->metadata->hasDynamicFields();
     }
-    
+
 /**
 <documentation><description><p>Sets the <code>expirationFolderId</code> and <code>expirationFolderPath</code>, and returns the calling object.</p></description>
 <example>$tb->setExpirationFolder(
@@ -366,7 +366,7 @@ else
         }
         return $this;
     }
-        
+
 /**
 <documentation><description><p>Sets the metadata, calls <code>edit</code>, and returns the calling object.</p></description>
 <example>$tb->setMetadata( $new_m );</example>
@@ -381,7 +381,7 @@ else
         $this->processMetadata();
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Sets the metadata set, calls <code>edit</code>,
 and returns the calling object.</p></description>
@@ -400,7 +400,7 @@ and returns the calling object.</p></description>
             throw new e\NullAssetException(
                 S_SPAN . c\M::NULL_ASSET . E_SPAN );
         }
-    
+
         $this->getProperty()->metadataSetId   = $m->getId();
         $this->getProperty()->metadataSetPath = $m->getPath();
         $this->edit();
@@ -408,7 +408,7 @@ and returns the calling object.</p></description>
         
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Returns a <code>Block</code> object bearing the ID. The <code>$id_string</code> must be a 32-digit hex string of a block.</p></description>
 <example>$block = a\Block::getBlock( $service, $id )->dump();</example>
@@ -467,7 +467,7 @@ and returns the calling object.</p></description>
         
         return "The id does not match any asset type.";
     }
-    
+
     private function processMetadata()
     {
         $this->metadata = new p\Metadata( 
