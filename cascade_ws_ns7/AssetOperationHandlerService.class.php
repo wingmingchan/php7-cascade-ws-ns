@@ -355,7 +355,8 @@ return $doc_string;
             }
         }
         
-        $doc_string .= trim( implode( "\r", $str_array ), "\r" );
+        //$doc_string .= trim( implode( "\r", $str_array ), "\r" );
+        $doc_string .= trim( implode( "\n", $str_array ), "\n" );
         $doc_string .= E_PRE;
         return $doc_string;
     }
