@@ -3,7 +3,7 @@
 
 <p>The Upstate Cascade web service library, using namespaces, written in PHP 7 for Cascade 8.11, by German Drulyk and Wing Ming Chan.</p>
 
-<p>Last modified: 3/15/2019, 11:30 AM</p>
+<p>Last modified: 3/19/2019, 10:30 AM</p>
 
 <p>Note that new code related to namingRuleAssets does not work for SOAP due to a bug.</p>
 
