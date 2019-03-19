@@ -39,9 +39,16 @@ use cascade_ws_property  as p;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A <code>DataDefinitionBlock</code> object represents an asset of type <code>xhtmlDataDefinitionBlock</code>. This class is a sub-class of <a href=\"http://www.upstate.edu/web-services/api/asset-classes/block.php\"><code>Block</code></a>.</p>
-<p>This class can be used to manipulate both data definition blocks and xhtml blocks. The only test available to tell them apart is the <code>DataDefinitionBlock::hasStructuredData</code> method. When it returns true, the block is a data definition block; else it is an xhtml block. We cannot consider the <code>xhtml</code> property because it can be <code>NULL</code> for both block sub-types.</p>
-<p>I could have split this class into two: <code>DataDefinitionBlock</code> and <code>XhtmlBlock</code>. But this difference between with and without using a data definition also exists in a page, and I do not think I should split the <code>Page</code> class into two. Therefore, I use the same class to deal with these two types of <code>xhtmlDataDefinitionBlock</code>.</p>
+<p>A <code>DataDefinitionBlock</code> object represents an asset of type <code>xhtmlDataDefinitionBlock</code>.
+This class is a sub-class of <a href=\"http://www.upstate.edu/web-services/api/asset-classes/block.php\"><code>Block</code></a>.</p>
+<p>This class can be used to manipulate both data definition blocks and xhtml blocks.
+The only test available to tell them apart is the <code>DataDefinitionBlock::hasStructuredData</code> method.
+When it returns true, the block is a data definition block; else it is an xhtml block.
+We cannot consider the <code>xhtml</code> property because it can be <code>NULL</code> for both block sub-types.</p>
+<p>I could have split this class into two: <code>DataDefinitionBlock</code> and <code>XhtmlBlock</code>.
+But this difference between with and without using a data definition also exists in a page,
+and I do not think I should split the <code>Page</code> class into two. Therefore, I use
+the same class to deal with these two types of <code>xhtmlDataDefinitionBlock</code>.</p>
 <h2>Structure of <code>xhtmlDataDefinitionBlock</code></h2>
 <pre>SOAP:
 xhtmlDataDefinitionBlock
@@ -192,7 +199,7 @@ return $doc_string;
           {
             "type":"text",
             "identifier":"admin-options",
-            "text":"::CONTENT-XML-CHECKBOX::",
+            "text":"<span>::</span>CONTENT-XML-CHECKBOX::",
             "recycled":false
           } ],
           "recycled":false
