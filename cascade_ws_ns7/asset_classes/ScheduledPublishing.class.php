@@ -26,7 +26,8 @@ use cascade_ws_property  as p;
 <description>
 <?php global $service;
 $doc_string = "<h2>Introduction</h2>
-<p>A destination, a publish set, and a site share a common feature: all three can have scheduled publishing enabled. The properties related to scheduled publishing are the following:</p>
+<p>A destination, a publish set, and a site share a common feature: all three can have
+scheduled publishing enabled. The properties related to scheduled publishing are the following:</p>
 <ul>
 <li><code>usesScheduledPublishing</code></li>
 <li><code>timeToPublish</code></li>
@@ -37,10 +38,21 @@ $doc_string = "<h2>Introduction</h2>
 <li><code>sendReportToGroups</code></li>
 <li><code>sendReportOnErrorOnly</code></li>
 </ul>
-<p>To turn on scheduled publishing, one of the three temporal settings (<code>publishIntervalHours</code>, <code>publishDaysOfWeek</code>, or <code>cronExpression</code>) must be supplied. And there is one more requirement: when a temporal setting is supplied, the other two must be unset. Assigning <code>NULL</code> to them will not work.</p>
-<p>Since these eight properties and related methods are shared by <a href=\"http://www.upstate.edu/web-services/api/asset-classes/destination.php\"><code>Destination</code></a>, <a href=\"http://www.upstate.edu/web-services/api/asset-classes/publish-set.php\"><code>PublishSet</code></a> and <a href=\"http://www.upstate.edu/web-services/api/asset-classes/site.php\"><code>Site</code></a></code>, I decide to create an abstract class named <code>ScheduledPublishing</code>, which serves as the parent class of these three classes, and provides all the relevant methods in this class.</p>
+<p>To turn on scheduled publishing, one of the three temporal settings
+(<code>publishIntervalHours</code>, <code>publishDaysOfWeek</code>, or <code>cronExpression</code>)
+must be supplied. And there is one more requirement: when a temporal setting is supplied,
+the other two must be unset. Assigning <code>NULL</code> to them will not work.</p>
+<p>Since these eight properties and related methods are shared by
+<a href=\"http://www.upstate.edu/web-services/api/asset-classes/destination.php\"><code>Destination</code></a>,
+<a href=\"http://www.upstate.edu/web-services/api/asset-classes/publish-set.php\"><code>PublishSet</code></a>
+and <a href=\"http://www.upstate.edu/web-services/api/asset-classes/site.php\"><code>Site</code></a>,
+I decide to create an abstract class named <code>ScheduledPublishing</code>, which serves
+as the parent class of these three classes, and provides all the relevant methods in this class.</p>
 <h2>Design Issues</h2>
-<p>Due to a known <a href=\"https://hannonhill.jira.com/browse/CSI-861\">bug</a> when PHP is used, the <code>scheduledPublishDestinations</code> property cannot be set properly. Thereofore, the <code>setScheduledPublishing</code> method defined in this class always sets the <code>scheduledPublishDestinationMode</code> property to <code>all-destinations</code>.</p>
+<p>Due to a known <a href=\"https://hannonhill.jira.com/browse/CSI-861\">bug</a> when PHP
+is used, the <code>scheduledPublishDestinations</code> property cannot be set properly.
+Thereofore, the <code>setScheduledPublishing</code> method defined in this class always
+sets the <code>scheduledPublishDestinationMode</code> property to <code>all-destinations</code>.</p>
 <h2>WSDL</h2>";
 $doc_string .=
     $service->getXMLFragments( array(
