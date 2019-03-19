@@ -49,10 +49,9 @@ Returns a string, with all the angular brackets replaced by &amp;lt; and &amp;gt
 */
     public static function replaceBrackets( string $xml ) : string
     {
-        $xml = str_replace( '<', '&lt;', $xml );
-        $xml = str_replace( '>', '&gt;', $xml );
-        
-        return self::formatXML( self::removeWhitespace( $xml ) );
+        //$xml = str_replace( '<', '&lt;', $xml );
+        //$xml = str_replace( '>', '&gt;', $xml );
+        return self::formatXML( self::removeWhitespace( htmlentities( $xml, ENT_XML1 ) ) );
     }
     
     public static function removeWhitespace( string $str ) : string
