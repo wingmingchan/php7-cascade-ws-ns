@@ -445,7 +445,7 @@ an empty string must be passed in as the third argument if there is a fourth arg
 <example>$cascade->copySite(
     'seed_site',
     'test',
-    30 // For Cascade versions &lt; 8.7.1, the SOAP interface would just queue up the copy and immediately return a success so you can specify how long the library should manually check for the new site's existence; defaulted to 600 seconds.
+    30 // For Cascade versions earlier than 8.7.1, the SOAP interface would just queue up the copy and immediately return a success so you can specify how long the library should manually check for the new site's existence; defaulted to 600 seconds.
 );</example>
 <return-type>Asset</return-type>
 <exception></exception>
@@ -1730,7 +1730,8 @@ Note that the <code>$xml</code> string is sent to Cascade without data checking.
     }
 
 /**
-<documentation><description><p>Returns a <code>SharedFieldContainer</code> object, representing either an existing shared field container, or a shared field container newly created by the method.</p></description>
+<documentation><description><p>Returns a <code>SharedFieldContainer</code> object,
+representing either an existing shared field container, or a shared field container newly created by the method.</p></description>
 <example>$parent = $cascade->createSharedFieldContainer(
     $cascade->getAsset( 
     SharedFieldContainer::TYPE, '/', $site_name ),
@@ -2517,7 +2518,7 @@ object.</p></description>
         $this->setAccessRights( $ari, $applied_to_children );
         return $this;
     }
-    
+
 /**
 <documentation><description><p>Returns an array of <code>Audit</code> objects associated with an asset).</p></description>
 <example>$audits = $cascade->getAllAudits( $page );</example>
