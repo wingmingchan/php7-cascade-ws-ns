@@ -72,8 +72,11 @@ class information.</p></description>
                     $value = "false";
                 elseif( $value === true )
                     $value = "true";
+                    
+                $value = htmlspecialchars( $value );
+                $value = str_replace( "::CONTENT-XML", "<span>::</span>CONTENT-XML", $value );
 
-                $class_doc .= S_LI . S_CODE . $key . E_CODE . ": $value" . E_LI;
+                $class_doc .= S_LI . S_CODE . $key . E_CODE . ": " . $value . E_LI;
             }
             
             $class_doc .= E_UL;
