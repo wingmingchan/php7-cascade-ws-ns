@@ -1,9 +1,9 @@
 # php7-cascade-ws-ns
-<p>The current version of the Cascade WS library is written for Cascade 8.11. For older version, see those folders with version numbers. This current version has a new class named <code>SharedField</code>. Shared field objects can be found in data definitions. The library also includes the new <code>Asset::update</code> method.</p>
+<p>The current version of the Cascade WS library is written for Cascade 8.12. For older version, see those folders with version numbers. This current version has a new class named <code>SharedField</code>. Shared field objects can be found in data definitions. The library also includes the new <code>Asset::update</code> method.</p>
 
 <p>The Upstate Cascade web service library, using namespaces, written in PHP 7 for Cascade 8.11, by German Drulyk and Wing Ming Chan.</p>
 
-<p>Last modified: 3/19/2019, 10:30 AM</p>
+<p>Last modified: 4/2/2019, 9:00 AM</p>
 
 <p>Note that new code related to namingRuleAssets does not work for SOAP due to a bug.</p>
 
