@@ -4,6 +4,8 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 4/2/2019 Added assetTreeUpdateSharedField, assetTreeUpdateSharedFieldContainer, and
+    updateSharedFieldContainer.
   * 6/4/2018 Added $to_exclude to updateFormat.
   * 4/12/2018 Added code to catch EditingFailureException.
   * 9/26/2017 Added reportMissingAssetsWithTypeArrayIn.
@@ -825,6 +827,43 @@ See <code>updateBlock</code> for more information.</p></description>
                 'source-site'      => $this->source_site,
                 'target-cascade'   => $this->target_cascade,
                 'target-site'      => $this->target_site
+            )
+        );
+        return $this;
+    }
+
+/**
+<documentation><description><p>Synchs all shared field containers and shared fields,
+and returns the calling object. Note that if the source and the target shared fields contain
+the same XML, then no updates will be performed.</p></description>
+<example></example>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
+</documentation>
+*/
+    public function updateSharedFieldContainer() : CascadeInstances
+    {
+        $this->checkSourceTargetSite();
+            
+        $source_asset_tree = 
+            $this->source_site->getRootSharedFieldContainerAssetTree();
+        $source_asset_tree->traverse(
+            // function array
+            array( 
+                SharedFieldContainer::TYPE => 
+                    array( 
+                        "CascadeInstances::assetTreeUpdateSharedFieldContainer" 
+                    ),
+                SharedField::TYPE => 
+                    array( 
+                        "CascadeInstances::assetTreeUpdateSharedField" 
+                    ) 
+                ),
+            // params array    
+            array(
+                c\F::SKIP_ROOT_CONTAINER => true,
+                'target-cascade' => $this->target_cascade,
+                'target-site'    => $this->target_site
             )
         );
         return $this;
@@ -3169,7 +3208,97 @@ See <code>updateBlock</code> for more information.</p></description>
         );
         $target_reference->setAsset( $target_ref_asset );
     }
+
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function assetTreeUpdateSharedField( 
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
+    {
+        if( isset( $params[ 'target-cascade' ] ) )
+            $target_cascade = $params[ 'target-cascade' ];
+        else
+        {
+            echo c\M::TARGET_CASCADE_NOT_SET . BR;
+            return;
+        }
+
+        if( isset( $params[ 'target-site' ] ) )
+            $target_site = $params[ 'target-site' ];
+        else
+        {
+            echo c\M::TARGET_SITE_NOT_SET . BR;
+            return;
+        }
+        
+        $source_sf             = $child->getAsset( $service );
+        $source_sf_name        = $source_sf->getName();
+        $source_sf_parent_path = $source_sf->getParentContainerPath();
+        $source_sf_xml         = $source_sf->getXml();
+        
+        $target_site_name = $target_site->getName();
+        // parent must be there
+        $target_parent    = $target_cascade->getAsset( SharedFieldContainer::TYPE,
+            $source_sf_parent_path, $target_site_name );
+        $target_sf = $target_cascade->createSharedField( 
+            $target_parent, $source_sf_name, $source_sf_xml );
+        
+        // if asset already exists containing different xml, update xml
+        if( !u\XMLUtility::isXmlIdentical( 
+            new \SimpleXMLElement( $source_sf_xml ), 
+            new \SimpleXMLElement( $target_sf->getXml() ) ) )
+        {
+            $target_sf->setXml( $source_sf_xml )->edit();
+        }
+    }
+
+/**
+<documentation><description><p></p></description>
+<example></example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
+    public static function assetTreeUpdateSharedFieldContainer( 
+        aohs\AssetOperationHandlerService $service, 
+        p\Child $child, array $params=NULL, array &$results=NULL )
+    {
+        if( isset( $params[ 'target-cascade' ] ) )
+            $target_cascade = $params[ 'target-cascade' ];
+        else
+        {
+            echo c\M::TARGET_CASCADE_NOT_SET . BR;
+            return;
+        }
+
+        if( isset( $params[ 'target-site' ] ) )
+            $target_site = $params[ 'target-site' ];
+        else
+        {
+            echo c\M::TARGET_SITE_NOT_SET . BR;
+            return;
+        }
     
+        $source_sfc             = $child->getAsset( $service );
+        $source_sfc_path        = u\StringUtility::removeSiteNameFromPath( $source_sfc->getPath() );
+        $source_sfc_path_array  = u\StringUtility::getExplodedStringArray( "/", $source_sfc_path );
+        $source_sfc_path        = $source_sfc_path_array[ count( $source_sfc_path_array ) - 1 ];
+        $source_sfc_parent_path = $source_sfc->getParentContainerPath();
+        
+        // create container
+        $target_site_name = $target_site->getName();
+        // parent must be there
+        $target_parent    = $target_cascade->getAsset( SharedFieldContainer::TYPE,
+            $source_sfc_parent_path, $target_site_name );
+        $target_sfc       = $target_cascade->createSharedFieldContainer( 
+            $target_parent, $source_sfc_path );
+    }
+
 /**
 <documentation><description><p></p></description>
 <example></example>
