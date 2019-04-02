@@ -77,7 +77,7 @@ abstract class DublinAwareAsset extends FolderContainedAsset
     {
         return $this->metadata_set;
     }
-    
+
     public function testMethod( string $method_name ) : bool
     {
         if( method_exists( $this, $method_name ) )
