@@ -138,7 +138,12 @@ class PossibleValue extends Property
                     " must be a boolean." . E_SPAN );
             }
             
-            $this->label               = $v->label;
+            // 8.11
+            if( isset( $v->label ) )
+            {
+                $this->label = $v->label;
+            }
+            
             $this->value               = $v->value;
             $this->selected_by_default = $v->selectedByDefault;
         }
