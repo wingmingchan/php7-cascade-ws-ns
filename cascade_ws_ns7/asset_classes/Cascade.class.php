@@ -5,6 +5,8 @@
                        German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 4/11/2019 Fixed a typo in createDatabaseTransport.
+  * Various bug fixes.
   * 3/15/2019 Added getAllAudits.
   * 3/12/2019 Added createSharedField and createSharedFieldContainer.
   * 2/26/2019 Fixed a bug in createFolder.
@@ -744,7 +746,7 @@ representing either an existing database transport, or a database transport newl
         TransportContainer $parent, 
         string $name, 
         string $server, 
-        stirng $port, 
+        string $port, 
         string $username,
         string $database, 
         string $transport ) : Asset
@@ -1328,6 +1330,8 @@ Currently, this method only produces an FTP transport of a certain type. After t
         $param        = new \stdClass();
         $param->name  = "Google Analytics Profile Id";
         $param->value = $profile_id;
+        $asset->googleAnalyticsConnector->
+            connectorParameters = new \stdClass();
         $asset->googleAnalyticsConnector->
             connectorParameters->connectorParameter = array();
         $asset->googleAnalyticsConnector->
@@ -1996,12 +2000,13 @@ representing either an existing shared field container, or a shared field contai
         
         $ht_name = new \stdClass();
         $ht_name->name = "Hash Tag";
-        $ht_name->value = $pg_value;
+        $ht_name->value = $ht_value;
         
         $prefix = new \stdClass();
         $prefix->name = "Prefix";
         $prefix->value = $px_value;
         
+        $asset->twitterConnector->connectorParameters = new \stdClass();
         $asset->twitterConnector->connectorParameters->
             connectorParameter = array();
         $asset->twitterConnector->connectorParameters->
@@ -2009,6 +2014,8 @@ representing either an existing shared field container, or a shared field contai
         $asset->twitterConnector->connectorParameters->
             connectorParameter[] = $prefix;
         
+        $asset->twitterConnector->connectorContentTypeLinks = new \stdClass();
+        $asset->twitterConnector->connectorContentTypeLinks->connectorContentTypeLink = new \stdClass();
         $asset->twitterConnector->connectorContentTypeLinks->
             connectorContentTypeLink->contentTypeId = $ct->getId();
         
@@ -2109,6 +2116,8 @@ representing either an existing shared field container, or a shared field contai
         $asset->wordPressConnector->siteName            = $parent->getSiteName();
         $asset->wordPressConnector->url                 = trim( $url );
         
+        $asset->wordPressConnector->connectorContentTypeLinks = new \stdClass();
+        $asset->wordPressConnector->connectorContentTypeLinks->connectorContentTypeLink = new \stdClass();
         $asset->wordPressConnector->connectorContentTypeLinks->
             connectorContentTypeLink->contentTypeId = $ct->getId();
         
