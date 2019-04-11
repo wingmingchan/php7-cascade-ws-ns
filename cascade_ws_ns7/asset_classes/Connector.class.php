@@ -4,6 +4,7 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 4/11/2019 Various bug fixes.
   * 1/3/2018 Added REST code and code to test for NULL.
   * 6/19/2017 Replaced static WSDL code with call to getXMLFragments.
   * 6/13/2017 Added WSDL.
@@ -438,13 +439,16 @@ the calling object.</p></description>
             elseif( $this->getService()->isRest() )
                 $params = $this->getProperty()->connectorParameters;
             
-            if( !is_array( $params ) )
+            if( isset( $params ) && !is_array( $params ) )
             {
                 $params = array( $params );
             }
-            foreach( $params as $param )
+            if( isset( $params ) )
             {
-                $this->connector_parameters[] = new p\ConnectorParameter( $param );
+                foreach( $params as $param )
+                {
+                    $this->connector_parameters[] = new p\ConnectorParameter( $param );
+                }
             }
         }
         
@@ -453,20 +457,27 @@ the calling object.</p></description>
             if( $this->getService()->isSoap() &&
                 isset( $this->getProperty()->connectorContentTypeLinks->
                     connectorContentTypeLink ) )
+            {
                 $links = $this->getProperty()->connectorContentTypeLinks->
                     connectorContentTypeLink;
+            }
             elseif( $this->getService()->isRest() )
+            {
                 $links = $this->getProperty()->connectorContentTypeLinks;
+            }
             
-            if( !is_array( $links ) )
+            if( isset( $links ) && !is_array( $links ) )
             {
                 $links = array( $links );
             }
             
-            foreach( $links as $link )
+            if( isset( $links ) && !is_array( $links ) )
             {
-                $this->connector_content_type_links[] = 
-                    new p\ConnectorContentTypeLink( $link, $this->getService() );
+                foreach( $links as $link )
+                {
+                    $this->connector_content_type_links[] = 
+                        new p\ConnectorContentTypeLink( $link, $this->getService() );
+                }
             }
         }
     }
