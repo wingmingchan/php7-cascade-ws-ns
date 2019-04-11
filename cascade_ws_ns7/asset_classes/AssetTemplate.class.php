@@ -4,6 +4,8 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 4/11/2019 Added accessibilityCheckerEnabled to getSite.
+  * Fixed a bug in getSharedField.
   * 1/14/2019 Added helpText to getDynamicMetadataFieldDefinition.
   * 11/2/2018 Added getSharedField.
   * 5/22/2018 Added getEditorConfiguration.
@@ -302,6 +304,8 @@ class AssetTemplate
         $connector->name             = "";
         $connector->siteName         = "";
         $connector->parentFolderPath = "";
+        
+        
 
         $asset                           = new \stdClass ();
         $asset->googleAnalyticsConnector = $connector;
@@ -448,29 +452,33 @@ class AssetTemplate
 
     public static function getSharedField() : \stdClass
     {
-        $sharedField               = new \stdClass ();
-        $sharedField->name                = "";
-        $sharedField->siteName            = "";
-        $sharedField->parentContainerId   = "";
-        $sharedField->parentContainerPath = "";
-        $sharedField->xml                 = "";
-        return $sharedField;
+        $sf                      = new \stdClass ();
+        $sf->name                = "";
+        $sf->siteName            = "";
+        $sf->parentContainerId   = "";
+        $sf->parentContainerPath = "";
+        $sf->xml                 = "";
+
+        $asset              = new \stdClass ();
+        $asset->sharedField = $sf;
+        return $asset;
     }
 
     public static function getSite() : \stdClass
     {
-        $site                             = new \stdClass ();
-        $site->name                       = "";
-        $site->url                        = "";
-        $site->recycleBinExpiration       = c\T::NEVER;
-        $site->unpublishOnExpiration      = true;
-        $site->linkCheckerEnabled         = true;
-        $site->externalLinkCheckOnPublish = false;
-        $site->inheritDataChecksEnabled   = true;
-        $site->spellCheckEnabled          = true;
-        $site->linkCheckEnabled           = true;
-        $site->accessibilityCheckEnabled  = true;
-        $site->inheritNamingRules         = true;
+        $site                               = new \stdClass ();
+        $site->name                         = "";
+        $site->url                          = "";
+        $site->recycleBinExpiration         = c\T::NEVER;
+        $site->unpublishOnExpiration        = true;
+        $site->linkCheckerEnabled           = true;
+        $site->externalLinkCheckOnPublish   = false;
+        $site->inheritDataChecksEnabled     = true;
+        $site->spellCheckEnabled            = true;
+        $site->linkCheckEnabled             = true;
+        $site->accessibilityCheckEnabled    = true;
+        $site->accessibilityCheckerEnabled  = true;
+        $site->inheritNamingRules           = true;
 
         $asset       = new \stdClass ();
         $asset->site = $site;
