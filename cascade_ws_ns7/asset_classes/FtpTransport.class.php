@@ -4,6 +4,7 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 4/11/2019 Added setDoPASV.
   * 1/24/2018 Updated documentation.
   * 9/18/2017 Added setProtocolAuthentication and removed other related methods for 8.6.
   * 6/23/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -221,6 +222,19 @@ encrypted, the returned string is useless.</p></description>
     }
     
 /**
+<documentation><description><p>Sets the <code>doPASV</code> and returns the calling object.</p></description>
+<example>$t->setDoPASV( true );</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function setDoPASV( bool $b ) : Asset
+    {
+        $this->getProperty()->doPASV = $b;
+        return $this;
+    }
+
+/**
 <documentation><description><p>Sets the <code>hostName</code> and returns the calling object.</p></description>
 <example>$t->setHostName( 'www.upstate.edu' )->edit();</example>
 <return-type>Asset</return-type>
@@ -237,22 +251,6 @@ encrypted, the returned string is useless.</p></description>
     }
     
 /**
-<documentation><description><p>Sets the <code>port</code> and returns the calling object.</p></description>
-<example>$t->setPort( 50 )->edit();</example>
-<return-type>Asset</return-type>
-<exception>UnacceptableValueException</exception>
-</documentation>
-*/
-    public function setPort( string $p ) : Asset
-    {
-        if( !is_numeric( $p ) )
-            throw new e\UnacceptableValueException( 
-                S_SPAN . "The port must be numeric." . E_SPAN );
-        $this->getProperty()->port = $p;
-        return $this;
-    }
-    
-/**
 <documentation><description><p>Sets the <code>password</code> and returns the calling object.</p></description>
 <example>$t->setPassword( $pw )->edit();</example>
 <return-type>Asset</return-type>
@@ -265,6 +263,22 @@ encrypted, the returned string is useless.</p></description>
             throw new e\EmptyValueException( 
                 S_SPAN . c\M::EMPTY_PASSWORD . E_SPAN );
         $this->getProperty()->password = $pw;
+        return $this;
+    }
+    
+/**
+<documentation><description><p>Sets the <code>port</code> and returns the calling object.</p></description>
+<example>$t->setPort( 50 )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableValueException</exception>
+</documentation>
+*/
+    public function setPort( string $p ) : Asset
+    {
+        if( !is_numeric( $p ) )
+            throw new e\UnacceptableValueException( 
+                S_SPAN . "The port must be numeric." . E_SPAN );
+        $this->getProperty()->port = $p;
         return $this;
     }
     
