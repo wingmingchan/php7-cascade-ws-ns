@@ -98,7 +98,12 @@ type in the supplied parent container, and returns an object representing the ne
             elseif( $this->getService()->isRest() )
                 $children = $parent->children;
             
-            $child_count = count( $children );
+            $child_count = 0;
+
+            if( is_array( $children) )
+            {
+                $child_count = count( $children );
+            }
             
             if( $child_count == 1 && !is_array( $children ) )
             {
