@@ -4,6 +4,7 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 4/11/2019 Removed a warning from getEntry.
   * 2/9/2018 Fixed a bug in toStdClass.
   * 12/22/2017 Changed toStdClass so that it works with REST.
   * 7/11/2017 Replaced static WSDL code with call to getXMLFragments.
@@ -613,7 +614,7 @@ $cascade->setAccessRights( $ari, true );</example>
     
     private function getEntry( a\Asset $a )
     {
-        if( count( $this->acl_entries ) > 0 )
+        if( is_array( $this->acl_entries ) && count( $this->acl_entries ) > 0 )
         {
             foreach( $this->acl_entries as $entry )
             {
