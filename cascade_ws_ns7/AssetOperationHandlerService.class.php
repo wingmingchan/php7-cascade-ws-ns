@@ -5,6 +5,7 @@
                      German Drulyk <drulykg@upstate.edu>
   MIT Licensed
   Modification history:
+  4/12/2019 Added abstract methods.
   7/19/2018 Moved WSDL-related constants and methods from child class to here.
   1/17/2018 Moved $properties and $types from child classes to here.
   1/12/2018 Created the parent class.
@@ -121,7 +122,6 @@ $doc_string .= "</pre><h3>Binding</h3><pre>";
 $doc_string .= $eval->replaceBrackets($service->getBinding());
 $doc_string .= "</pre>";
 return $doc_string; ?></description>
-<postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/tree/master/working-with-AssetOperationHandlerService">working-with-AssetOperationHandlerService</a></li></ul></postscript>
 <advanced>
 </advanced>
 </documentation>
@@ -456,7 +456,50 @@ return $doc_string;
         }
         return $xml_str;
     }
+    
+    // abstract methods, added 4/12/2019
+    public abstract function checkIn( \stdClass $identifier, string $comments="" );
+    public abstract function checkOut( \stdClass $identifier );
+    public abstract function copy( \stdClass $identifier, \stdClass $newIdentifier,
+        string $newName="", bool $doWorkflow=false );
+    public abstract function create( \stdClass $asset );
+    public abstract function createId(
+        string $type, string $id_path, string $site_name = NULL ) : \stdClass;
+    public abstract function delete( \stdClass $identifier );
+    public abstract function deleteMessage( \stdClass $identifier );
+    public abstract function edit( \stdClass $asset );
+    public abstract function editAccessRights( \stdClass $afInfo, bool $applyToChildren=false );
+    public abstract function editPreference( string $name, string $value );
+    // skip editWorkflowSettings because the two subclasses have different signatures
+    public abstract function getAclEntries();
+    public abstract function getAudits();
+    public abstract function getMessage();
+    public abstract function getReadAccessRightInformation();
+    public abstract function getSearchMatches();
+    public abstract function isSuccessful();
+    public abstract function listEditorConfigurations( \stdClass $id );
+    public abstract function listMessages();
+    public abstract function listSites();
+    public abstract function listSubscribers( \stdClass $identifier );
+    public abstract function markMessage( \stdClass $identifier, string $markType="read" );
+    public abstract function move( \stdClass $identifier, \stdClass $parentId=NULL,
+        string $newName="", bool $doWorkflow=false );
+    public abstract function performWorkflowTransition(
+        string $workflowId, string $actionIdentifier, string $transitionComment='' );
+    public abstract function publish(
+        \stdClass $identifier, $destination=NULL, bool $unpublish=false );
+    public abstract function read( \stdClass $identifier );
+    public abstract function readAccessRights( \stdClass $identifier );
+    // skip readAudits because the two subclasses have different signatures
+    public abstract function readPreferences();
+    public abstract function readWorkflowInformation( \stdClass $identifier );
+    public abstract function readWorkflowSettings( \stdClass $identifier );
+    public abstract function search( \stdClass $searchInfo );
+    public abstract function sendMessage( \stdClass $message );
+    public abstract function siteCopy( string $original_id, string $original_name, 
+        string $new_name, int $max_wait_seconds=0 );
 
+    // private members
     private $service_type;
     private $dom_xpath;
     
