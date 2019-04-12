@@ -138,11 +138,14 @@ u\DebugUtility::outputDuration( $start_time );</example>
         int $time_limit=10000, string $space_limit="2048M" )
     {
         // to prevent time-out
-        set_time_limit ( 10000 );
+        if( $time_limit > 0 )
+        {
+            set_time_limit( $time_limit );
+        }
         // to prevent using up memory when traversing a large site
         ini_set( 'memory_limit', $space_limit );
     }
-    
+
 /**
 <documentation><description><p>Creates a new message from an exception and rethrows it. 
 The new message includes asset information.</p></description>
