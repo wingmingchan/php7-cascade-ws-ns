@@ -174,7 +174,7 @@ or <code>NULL</code> to set <code>fieldValues</code> and return the object. The 
 <return-type>stdClass</return-type>
 </documentation>
 */
-    public function toStdClass()
+    public function toStdClass() : \stdClass
     {
         if( !isset( $this->name ) )
             return NULL;
