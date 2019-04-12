@@ -366,9 +366,11 @@ of a folder is a separate object.</p></description>
         //u\DebugUtility::dump( $this->workflow_settings->toStdClass() );
 
         if( $service->isSoap() )
+        {
             $service->editWorkflowSettings( $this->workflow_settings->toStdClass(),
                 $apply_inherit_workflows_to_children,
                 $apply_require_workflow_to_children );
+		}
         elseif( $service->isRest() )
         {
             $settings_std = $this->workflow_settings->toStdClass();
