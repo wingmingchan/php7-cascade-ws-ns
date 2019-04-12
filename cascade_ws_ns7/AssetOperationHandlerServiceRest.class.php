@@ -562,7 +562,9 @@ object(stdClass)#22 (2) {
     }
     
 /**
-<documentation><description><p>Creates an id object for an asset. Note the when the asset is a site asset, only the 32-digit hex ID string works. To fix this problem, the site metadata set container is retrieved, and the site id is read from the result.</p></description>
+<documentation><description><p>Creates an id object for an asset. Note the when the asset is a site asset,
+only the 32-digit hex ID string works. To fix this problem, the site metadata set container
+is retrieved, and the site id is read from the result.</p></description>
 <example>$block_id = $service->createId( a\TextBlock::TYPE, "_cascade/blocks/code/text-block", "cascade-admin" );</example>
 <return-type>stdClass</return-type></documentation>
 */
@@ -573,7 +575,9 @@ object(stdClass)#22 (2) {
         $id = new \stdClass();
         
         if( $this->isHexString( $id_path ) )
+        {
             $id->id = $id_path;
+        }
         // patch for Cascade 8.7.1
         elseif( $type == c\T::SITE )
         {
@@ -582,7 +586,7 @@ object(stdClass)#22 (2) {
             $msc      = $this->read( $msc_id );
             
             if( isset( $msc->metadataSetContainer->siteId ) )
-                $id->id  = $msc->metadataSetContainer->siteId;
+                $id->id = $msc->metadataSetContainer->siteId;
         }
         elseif( $type == c\T::GROUP || $type == c\T::USER )
         {
@@ -804,8 +808,7 @@ $service->editAccessRights( $accessRightInfo, false );
 </documentation>
 */
     public function editAccessRights(
-        \stdClass $afInfo, 
-        bool $applyToChildren=false ) : \stdClass
+        \stdClass $afInfo, bool $applyToChildren=false ) : \stdClass
     {
         $id_string = $this->createIdString( $afInfo->identifier );
         $command   = $this->url . __function__ . '/' . $id_string;
@@ -983,7 +986,7 @@ return $doc_string;
 <example>u\DebugUtility::dump( $service->getAudits() );</example>
 <return-type>stdClass</return-type></documentation>
 */
-    public function getAudits()
+    public function getAudits() : \stdClass
     {
         return $this->audits;
     }
@@ -1049,7 +1052,7 @@ return $doc_string;
 
 /**
 <documentation><description><p>Returns <code>matches</code>.</p></description>
-<example>$reply = $service->getReply();</example>
+<example></example>
 <return-type>stdClass</return-type></documentation>
 */
     public function getSearchMatches() : array
@@ -1231,8 +1234,7 @@ return $doc_string;
 <return-type>stdClass</return-type>
 </documentation>
 */
-    public function markMessage( \stdClass $identifier, string $markType="read" ) :
-        \stdClass
+    public function markMessage( \stdClass $identifier, string $markType="read" ) : \stdClass
     {
         $id_string = $this->createIdString( $identifier );
         $command   = $this->url . __function__ . '/' . $id_string;
@@ -1393,7 +1395,7 @@ $service->publish( $p->getIdentifier(),
 </documentation>
 */
     public function publish(
-        \stdClass $identifier, $destination=NULL, $unpublish=false ) : \stdClass
+        \stdClass $identifier, $destination=NULL, bool $unpublish=false ) : \stdClass
     {
         $id_string = $this->createIdString( $identifier );
         $command   = $this->url . __function__ . '/' . $id_string;
