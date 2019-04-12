@@ -238,7 +238,7 @@ u\DebugUtility::dump( $id_child );</example>
 <return-type>stdClass</return-type>
 </documentation>
 */
-    public function toStdClass()
+    public function toStdClass() : \stdClass
     {
         $obj           = new \stdClass();
         
