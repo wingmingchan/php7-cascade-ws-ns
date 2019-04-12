@@ -213,9 +213,10 @@ u\DebugUtility::dump( $results );
         array $params=NULL, 
         array &$results=NULL ) : AssetTree
     {
+        // get the service object to be passed into a global function
         $service = $this->root->getService();
         
-        // skip root container
+        // skip root container if needed
         if( isset( $params ) && isset( $params[ c\F::SKIP_ROOT_CONTAINER ] ) && 
             $params[ c\F::SKIP_ROOT_CONTAINER ] == true )
         {
@@ -255,12 +256,14 @@ u\DebugUtility::dump( $results );
         aohs\AssetOperationHandlerService $service, 
         p\Child $child, // the child object is passed in from traverse
         array $function_array, 
-        array  $params=NULL, 
+        array $params=NULL, 
         array &$results=NULL )
     {
+        // get the type of Child object passed in
         $type = $child->getType();
         
         // match the type first
+        // if not matched, skip the asset
         if( isset( $function_array[ $type ] ) )
         {
             $functions  = $function_array[ $type ];
