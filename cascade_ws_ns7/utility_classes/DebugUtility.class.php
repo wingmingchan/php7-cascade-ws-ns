@@ -162,27 +162,37 @@ The new message includes asset information.</p></description>
     {
         if( !is_null( $a ) )
         {
-        	$msg = "Asset ID: " .   $a->getId() . "; " .
+            $msg = "Asset ID: " .   $a->getId() . "; " .
                "site name: " .  $a->getSiteName() . "; " .
                "asset path: " . $a->getPath() . BR;
         }
         else
         {
-        	$msg = "";
+            $msg = "";
         }
             
         $msg .= $e->getMessage();
         
         if( $e instanceof e\EmptyValueException )
+        {
             throw new e\EmptyValueException( $msg );
+		}
         elseif( $e instanceof e\NoSuchValueException )
+        {
             throw new e\NoSuchValueException( $msg );
+        }
         elseif( $e instanceof e\UnacceptableValueException )
+        {
             throw new e\UnacceptableValueException( $msg );
+        }
         elseif( $e instanceof e\NodeException )
+        {
             throw new e\NodeException( $msg );
+        }
         else
+        {
             throw $e;
+        }
     }
 
     private static function getCallingInfo( &$class, &$line ) 
