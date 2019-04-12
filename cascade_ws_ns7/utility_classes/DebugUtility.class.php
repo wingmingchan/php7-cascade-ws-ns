@@ -176,7 +176,7 @@ The new message includes asset information.</p></description>
         if( $e instanceof e\EmptyValueException )
         {
             throw new e\EmptyValueException( $msg );
-		}
+        }
         elseif( $e instanceof e\NoSuchValueException )
         {
             throw new e\NoSuchValueException( $msg );
