@@ -377,8 +377,8 @@ $service->copy( $block_id, $parent_id, $new_name, $do_workflow );
 <return-type>stdClass</return-type>
 </documentation>
 */
-    public function copy(
-        \stdClass $identifier, \stdClass $newIdentifier, string $newName, bool $doWorkflow ) : \stdClass
+    public function copy( \stdClass $identifier, \stdClass $newIdentifier,
+        string $newName="", bool $doWorkflow=false ) : \stdClass
     {
         $copy_params                 = new \stdClass();
         $copy_params->authentication = $this->auth;
@@ -659,7 +659,7 @@ $service->editAccessRights( $accessRightInfo, false );
 </documentation>
 */
     public function editAccessRights(
-        \stdClass $accessRightsInformation, bool $applyToChildren ) : \stdClass
+        \stdClass $accessRightsInformation, bool $applyToChildren=false ) : \stdClass
     {
         $edit_params                          = new \stdClass();
         $edit_params->authentication          = $this->auth;
@@ -1139,7 +1139,7 @@ return $doc_string;
 <return-type>stdClass</return-type>
 </documentation>
 */
-    public function markMessage( \stdClass $identifier, string $markType ) : \stdClass
+    public function markMessage( \stdClass $identifier, string $markType="read" ) : \stdClass
     {
         $mark_message_params                 = new \stdClass();
         $mark_message_params->authentication = $this->auth;
@@ -1267,7 +1267,8 @@ $service->publish( $p->getIdentifier(),
 <return-type>stdClass</return-type>
 </documentation>
 */
-    public function publish( \stdClass $identifier, $destination=NULL ) : \stdClass
+    public function publish(
+        \stdClass $identifier, $destination=NULL, bool $unpublish=false ) : \stdClass
     {
         $publish_param = new \stdClass();
         $publish_info  = new \stdClass();
@@ -1282,7 +1283,7 @@ $service->publish( $p->getIdentifier(),
                 $publish_info->destinations = array( $destination );
         }
         
-        $publish_info->unpublish           = false;
+        $publish_info->unpublish           = $unpublish;
         $publish_param->publishInformation = $publish_info;
         
         $this->reply = $this->soapClient->publish( $publish_param );
