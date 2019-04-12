@@ -89,7 +89,7 @@ class StructuredData extends Property
         $data2=NULL, 
         $data3=NULL )
     {
-        if( is_null( $service ) )
+        if( is_NULL( $service ) )
             throw new e\NullServiceException( c\M::NULL_SERVICE );
             
         $this->service = $service;
@@ -111,7 +111,9 @@ class StructuredData extends Property
             }
                 
             if( isset( $sd->definitionPath ) )
+		    {
                 $this->definition_path = $sd->definitionPath;
+            }
             // initialize the arrays
             $this->children        = array();
             $this->node_map        = array();
@@ -307,7 +309,7 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
     }
     
 /**
-<documentation><description><p>Returns the block attached to the named node or <code>null</code>.</p></description>
+<documentation><description><p>Returns the block attached to the named node or <code>NULL</code>.</p></description>
 <example></example>
 <return-type>mixed</return-type>
 <exception></exception>
@@ -316,33 +318,42 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
     public function getBlock( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
+        {
             return $this->node_map[ $node_name ]->getBlock( $this->service );
+        }
+        return NULL;
     }
     
 /**
 <documentation><description><p>Returns <code>blockId</code> of the named node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getBlockId( $id ) ), BR;</example>
 <return-type>mixed</return-type>
-<exception></exception>
+<exception>string</exception>
 </documentation>
 */
-    public function getBlockId( string $node_name )
+    public function getBlockId( string $node_name ) : string
     {
         if( isset( $this->node_map[ $node_name ] ) )
+        {
             return $this->node_map[ $node_name ]->getBlockId();
+        }
+        return "";
     }
     
 /**
 <documentation><description><p>Returns <code>blockPath</code> of the named node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getBlockPath( $id ) ), BR;</example>
 <return-type>mixed</return-type>
-<exception></exception>
+<exception>string</exception>
 </documentation>
 */
-    public function getBlockPath( string $node_name )
+    public function getBlockPath( string $node_name ) : string
     {
         if( isset( $this->node_map[ $node_name ] ) )
+        {
             return $this->node_map[ $node_name ]->getBlockPath();
+        }
+        return "";
     }
     
 /**
@@ -385,26 +396,32 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
 <documentation><description><p>Returns <code>fieldId</code> of the named node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getFileId( $id ) ), BR;</example>
 <return-type>mixed</return-type>
-<exception></exception>
+<exception>string</exception>
 </documentation>
 */
-    public function getFileId( string $node_name )
+    public function getFileId( string $node_name ) : string
     {
         if( isset( $this->node_map[ $node_name ] ) )
+        {
             return $this->node_map[ $node_name ]->getFileId();
+        }
+        return "";
     }
     
 /**
 <documentation><description><p>Returns <code>fieldPath</code> of the named node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getFilePath( $id ) ), BR;</example>
-<return-type>mixed</return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getFilePath( string $node_name )
+    public function getFilePath( string $node_name ) : string
     {
         if( isset( $this->node_map[ $node_name ] ) )
+        {
             return $this->node_map[ $node_name ]->getFilePath();
+        }
+        return "";
     }
     
 /**
@@ -455,14 +472,17 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
 a symlink; therefore, the id can be the <code>fileId</code>, <code>pageId</code>, or
 <code>symlinkId</code> of the node).</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getLinkableId( $id ) ), BR;</example>
-<return-type>mixed</return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getLinkableId( string $node_name )
+    public function getLinkableId( string $node_name ) : string
     {
         if( isset( $this->node_map[ $node_name ] ) )
+        {
             return $this->node_map[ $node_name ]->getLinkableId();
+        }
+        return "";
     }
     
 /**
@@ -471,14 +491,17 @@ a symlink; therefore, the id can be the <code>fileId</code>, <code>pageId</code>
 or a symlink; therefore, the path can be the <code>filePath</code>, <code>pagePath</code>,
 or <code>symlinkPath</code> of the node).</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getLinkablePath( $id ) ), BR;</example>
-<return-type>mixed</return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getLinkablePath( string $node_name )
+    public function getLinkablePath( string $node_name ) : string
     {
         if( isset( $this->node_map[ $node_name ] ) )
+        {
             return $this->node_map[ $node_name ]->getLinkablePath();
+        }
+        return "";
     }
     
 /**
@@ -574,27 +597,33 @@ supplied identifier being the one of the first instance.</p></description>
 /**
 <documentation><description><p>Returns <code>pageId</code> of the named node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getPageId( $id ) ), BR;</example>
-<return-type>mixed</return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPageId( string $node_name )
+    public function getPageId( string $node_name ) : string
     {
         if( isset( $this->node_map[ $node_name ] ) )
+        {
             return $this->node_map[ $node_name ]->getPageId();
+        }
+        return "";
     }
     
 /**
 <documentation><description><p>Returns <code>pagePath</code> of the named node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getPagePath( $id ) ), BR;</example>
-<return-type>mixed</return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPagePath( string $node_name )
+    public function getPagePath( string $node_name ) : string
     {
         if( isset( $this->node_map[ $node_name ] ) )
+        {
             return $this->node_map[ $node_name ]->getPagePath();
+        }
+        return "";
     }
     
 /**
@@ -607,7 +636,10 @@ supplied identifier being the one of the first instance.</p></description>
     public function getPossibleValues( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
+        {
             return $this->node_map[ $node_name ]->getPossibleValues();
+        }
+        return NULL;
     }
     
 /**
@@ -625,27 +657,33 @@ supplied identifier being the one of the first instance.</p></description>
 /**
 <documentation><description><p>Returns <code>symlinkId</code> of the named node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getSymlinkId( $id ) ), BR;</example>
-<return-type>mixed</return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSymlinkId( string $node_name )
+    public function getSymlinkId( string $node_name ) : string
     {
         if( isset( $this->node_map[ $node_name ] ) )
+        {
             return $this->node_map[ $node_name ]->getSymlinkId();
+        }
+        return "";
     }
     
 /**
 <documentation><description><p>Returns <code>symlinkPath</code> of the named node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getSymlinkPath( $id ) ), BR;</example>
-<return-type>mixed</return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSymlinkPath( string $node_name )
+    public function getSymlinkPath( string $node_name ) : string
     {
         if( isset( $this->node_map[ $node_name ] ) )
+        {
             return $this->node_map[ $node_name ]->getSymlinkPath();
+        }
+        return "";
     }
     
 /**
@@ -669,14 +707,17 @@ supplied identifier being the one of the first instance.</p></description>
 /**
 <documentation><description><p>Returns the text of a node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getText( "group;calendar" ) ), BR;</example>
-<return-type>mixed</return-type>
+<return-type>string</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getText( string $node_name )
+    public function getText( string $node_name ) : string
     {
         if( isset( $this->node_map[ $node_name ] ) )
+        {
             return $this->node_map[ $node_name ]->getText();
+        }
+        return "";
     }
     
 /**
@@ -818,14 +859,12 @@ in the structured data.</p></description>
                     {
                         if( !in_array( $value, $possible_values ) )
                         {
-                            //echo $identifier, BR;
                             return true;
                         }
                     }
                 }
                 elseif( !in_array( $actual_values, $possible_values ) )
                 {
-                    //echo $identifier, BR;
                     return true;
                 }
             }
@@ -1721,10 +1760,7 @@ $sd->replaceText( "Wonderful", "Amazing" )->getHostAsset()->edit();</example>
             {
                 $new_text = str_replace( $search, $replace, $current_text );
                 
-                $this->setText( 
-                    $identifier,
-                    $new_text
-                );
+                $this->setText( $identifier, $new_text );
             }
         }
         return $this;
@@ -1829,7 +1865,9 @@ qualified identifiers of nodes where the pattern is found. Inside the method <co
         try
         {
             if( isset( $this->node_map[ $node_name ] ) )
+            {
                 $this->node_map[ $node_name ]->setBlock( $block );
+            }
             return $this;
         }
         catch( \Exception $e )
@@ -1876,7 +1914,9 @@ qualified identifiers of nodes where the pattern is found. Inside the method <co
         try
         {
             if( isset( $this->node_map[ $node_name ] ) )
+            {
                 $this->node_map[ $node_name ]->setFile( $file );
+            }
             return $this;
         }
         catch( \Exception $e )
@@ -1907,7 +1947,9 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
         try
         {
             if( isset( $this->node_map[ $node_name ] ) )
+            {
                 $this->node_map[ $node_name ]->setLinkable( $linkable );
+            }
             return $this;
         }
         catch( \Exception $e )
@@ -1937,7 +1979,9 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
         try
         {
             if( isset( $this->node_map[ $node_name ] ) )
+            {
                 $this->node_map[ $node_name ]->setPage( $page );
+            }
             return $this;
         }
         catch( \Exception $e )
@@ -1967,7 +2011,9 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
         try
         {
             if( isset( $this->node_map[ $node_name ] ) )
+            {
                 $this->node_map[ $node_name ]->setSymlink( $symlink );
+            }
             return $this;
         }
         catch( \Exception $e )
@@ -1989,7 +2035,9 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
         try
         {
             if( isset( $this->node_map[ $node_name ] ) )
+            {
                 $this->node_map[ $node_name ]->setText( $text );
+            }
             return $this;
         }
         catch( \Exception $e )
@@ -2036,9 +2084,13 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
             BR . "Node 1: $node_name1" . BR . "Node 2: $node_name2" ); }
         
         if( $par_id != '' )
+        {
             $siblings = $this->node_map[ $par_id ]->getChildren();
+        }
         else
+        {
             $siblings = $this->children;
+        }
             
         $sibling_count = count( $siblings );
         
@@ -2114,29 +2166,40 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
             $obj->structuredDataNodes = new \stdClass();
             
             if( $this->service->isSoap() )
+            {
                 $obj->structuredDataNodes->structuredDataNode =
                     $this->children[0]->toStdClass();
+            }
             elseif( $this->service->isRest() )
+            {
                 $obj->structuredDataNodes =
                     array( $this->children[0]->toStdClass() );
+			}
         }
         else
         {
             $obj->structuredDataNodes = new \stdClass();
             
             if( $this->service->isSoap() )
+            {
                 $obj->structuredDataNodes->structuredDataNode = array();
+            }
             elseif( $this->service->isRest() )
+            {
                 $obj->structuredDataNodes = array();
+            }
             
             for( $i = 0; $i < $child_count; $i++ )
             {
                 if( $this->service->isSoap() )
+                {
                     $obj->structuredDataNodes->structuredDataNode[] =
                         $this->children[$i]->toStdClass();
+                }
                 elseif( $this->service->isRest() )
-                    $obj->structuredDataNodes[] =
-                        $this->children[$i]->toStdClass();
+                {
+                    $obj->structuredDataNodes[] = $this->children[$i]->toStdClass();
+                }
             }
         }
         return $obj;
@@ -2245,7 +2308,9 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
         }
         
         if( isset( $last_id ) && isset( $this->node_map[ $last_id ] ) )
+        {
             unset( $this->node_map[ $last_id ] );
+        }
         $this->identifiers = array_keys( $this->node_map );
 
         return $this;
@@ -2255,7 +2320,9 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
     {
         if( !$source instanceof StructuredData && 
             !$source instanceof StructuredDataPhantom )
+        {
             throw new \Exception( "Wrong source type" );
+        }
         
         if( $source->isTextNode( $id ) || $source->isWYSIWYG( $id ) )
         {
@@ -2264,7 +2331,9 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
                 $target->setText( $id, $source->getText( $id ) );
                 
                 if( $target->getText( $id ) == NULL )
+                {
                     $target->setText( $id, "" );
+                }
             }
             catch( e\NoSuchValueException $e )
             {
@@ -2340,7 +2409,7 @@ or <code>symlinkId</code> and <code>symlinkPath</code> properties, depending on 
     
     private function throwException( \Exception $e )
     {
-        if( !is_null( $this->getHostAsset() ) )
+        if( !is_NULL( $this->getHostAsset() ) )
         {
             u\DebugUtility::throwException( $this->getHostAsset(), $e );
         }
