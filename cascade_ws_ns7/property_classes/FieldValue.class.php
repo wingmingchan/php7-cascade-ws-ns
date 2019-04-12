@@ -167,9 +167,10 @@ to set the values and returns the calling object. The method must guarantee that
     }
     
 /**
-<documentation><description><p>Converts the object back to an <code>\stdClass</code> object.</p></description>
+<documentation><description><p>Converts the object back to an <code>\stdClass</code> object for SOAP,
+and an array for REST.</p></description>
 <example>u\DebugUtility::dump( $text_fv->toStdClass() );</example>
-<return-type>stdClass</return-type>
+<return-type>mixed</return-type>
 </documentation>
 */
     public function toStdClass()
