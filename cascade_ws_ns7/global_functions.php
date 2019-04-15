@@ -159,7 +159,7 @@ function assetTreeCount(
     else
     {
         $results[ c\F::COUNT ][ $type ] = $results[ c\F::COUNT ][ $type ] + 1;
-	}
+    }
 }
 
 function assetTreeDisplay( aohs\AssetOperationHandlerService $service, p\Child $child,
