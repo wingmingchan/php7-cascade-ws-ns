@@ -5,6 +5,7 @@
                        German Drulyk <drulykg@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 4/12/2019 Fixed a bug in createXhtmlPage.
   * 4/11/2019 Fixed a typo in createDatabaseTransport.
   * Various bug fixes.
   * 3/15/2019 Added getAllAudits.
@@ -2268,7 +2269,7 @@ representing either an existing shared field container, or a shared field contai
         $asset->page->name             = $name;
         $asset->page->parentFolderPath = $parent->getPath();
         $asset->page->siteName         = $parent->getSiteName();
-        $asset->page->contentTypePath  = $ct->getPath();
+        $asset->page->contentTypeId    = $ct->getId();
         
         if( trim( $xhtml ) != "" )
             $asset->page->xhtml = $xhtml;
@@ -3762,7 +3763,7 @@ u\DebugUtility::dump( $assets );
         catch( \Exception $e )
         {
             $this->service->create( $std );
-            //u\DebugUtility::dump( $std );
+            u\DebugUtility::dump( $std );
         
             if( !$this->service->isSuccessful() )
             {
