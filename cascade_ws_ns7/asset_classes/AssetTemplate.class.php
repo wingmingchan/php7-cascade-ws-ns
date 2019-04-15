@@ -633,6 +633,7 @@ class AssetTemplate
         $page->siteName              = "";
         $page->parentFolderPath      = "";
         $page->xhtml                 = "";
+        $page->contentTypeId         = "";
         $page->contentTypePath       = "";
 
         $asset       = new \stdClass ();
