@@ -144,20 +144,34 @@ function assetTreeCount(
     aohs\AssetOperationHandlerService $service, 
     p\Child $child, $params=NULL, &$results=NULL )
 {
+    // $results array should be supplied
+    if( !isset( $results ) )
+    {
+        throw new \Exception( "No \$results array is passed in" );
+    }
+
     $type = $child->getType();
     
     if( !isset( $results[ c\F::COUNT ][ $type ] ) )
+    {
         $results[ c\F::COUNT ][ $type ] = 1;
+    }
     else
+    {
         $results[ c\F::COUNT ][ $type ] = $results[ c\F::COUNT ][ $type ] + 1;
+	}
 }
 
-function assetTreeDisplay( aohs\AssetOperationHandlerService $service, p\Child $child )
+function assetTreeDisplay( aohs\AssetOperationHandlerService $service, p\Child $child,
+    $params=NULL, &$results=NULL )
 {
+    // no need to call getAsset to display the identifier
     $child->display();
 }
 
-function assetTreeGetAssets( aohs\AssetOperationHandlerService $service, p\Child $child, $params=NULL, &$results=NULL )
+function assetTreeGetAssets(
+    aohs\AssetOperationHandlerService $service,
+    p\Child $child, $params=NULL, &$results=NULL )
 {
     if( is_array( $results ) )
     {
