@@ -426,6 +426,7 @@ return $doc_string;
         $list .= "</ul>";
         return $list;
     }
+
     private function getXMLByName( string $path, string $name ) : string
     {
         $xpath_str = $path . "[@name='$name']";
@@ -535,6 +536,7 @@ return $doc_string;
         c\P::REFERENCE,
         c\P::ROLE,
         c\P::SCRIPTFORMAT,
+        c\P::SHAREDFIELD,
         c\P::SITE,
         c\P::SITEDESTINATIONCONTAINER,
         c\P::SYMLINK,
@@ -582,6 +584,7 @@ return $doc_string;
         c\T::REFERENCE,
         c\T::ROLE,
         c\T::SCRIPTFORMAT,
+        c\T::SHAREDFIELD,        
         c\T::SITE,
         c\T::SITEDESTINATIONCONTAINER,
         c\T::SYMLINK,
