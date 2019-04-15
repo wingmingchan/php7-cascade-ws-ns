@@ -5,6 +5,7 @@
                      German Drulyk <drulykg@upstate.edu>
   MIT Licensed
   Modification history:
+   4/15/2019 Simplified retrieve by calling read.
    3/7/2019 Added getAclEntries.
    2/21/2019 Moved getAsset to parent.
    9/27/2018 Fixed code related to $context.
@@ -1495,15 +1496,12 @@ $service->readWorkflowSettings(
             $property = c\T::$type_property_name_map[ $id->type ];
         }
         
-        $read_param                 = new \stdClass();
-        $read_param->authentication = $this->auth;
-        $read_param->identifier     = $id;
-
-        $this->reply = $this->soapClient->read( $read_param );
-        $this->storeResults( $this->reply->readReturn );
+        $this->read( $id );
 
         if( isset( $this->reply->readReturn->asset ) )
+        {
             return $this->reply->readReturn->asset->$property;
+        }
         return NULL;
     }
 
