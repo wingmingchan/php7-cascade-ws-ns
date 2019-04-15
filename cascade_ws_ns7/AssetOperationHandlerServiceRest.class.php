@@ -207,7 +207,7 @@ u\DebugUtility::dump( $reply );
 <return-type>stdClass</return-type>
 </documentation>
 */
-    public function apiOperation( string $command, $params=NULL )// : \stdClass
+    public function apiOperation( string $command, $params=NULL )
     {
         // create the array required by stream_context_create
         $input_params = array(
@@ -313,7 +313,7 @@ u\DebugUtility::dump( $reply );
         
         if( $this->auth_in_content === false )
         {
-        	$command .= $this->auth;
+            $command .= $this->auth;
         }
 
         $params            = new \stdClass();
