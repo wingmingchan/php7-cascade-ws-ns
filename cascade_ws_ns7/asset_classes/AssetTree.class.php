@@ -4,6 +4,7 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 4/25/2019 Added getContainerDescendants.
   * 1/31/2017 Added more inline comments.
   * 9/26/2016 Fixed a bug in toListString.
   * 8/26/2016 Added constant NAME_SPACE.
@@ -95,6 +96,39 @@ class AssetTree
                 }
             }
         }
+    }
+    
+/**
+<documentation><description><p>Returns an array of <code>p\Child</code> objects,
+each of which represents a descendant of the root container.</p></description>
+<example>u\DebugUtility::dump( $at->getContainerDescendants() );</example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getContainerDescendants( array &$results=NULL ) : array
+    {
+        if( is_null( $results ) )
+        {
+            $results = array();
+        }
+        
+        foreach( $this->root->getChildren() as $child )
+        {
+            if( !isset( $results[ $child->getType() ] ) )
+            {
+                $results[ $child->getType() ] = array();
+            }
+                
+            $results[ $child->getType() ][] = $child;
+                
+            if( $child->getType() == $this->root->getType() )
+            {
+                $child->getAsset( $this->root->getService() )->
+                    getAssetTree()->getContainerDescendants( $results );
+            }
+        }
+        return $results;
     }
     
 /**
