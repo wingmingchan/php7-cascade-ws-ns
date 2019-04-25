@@ -3763,7 +3763,6 @@ u\DebugUtility::dump( $assets );
         catch( \Exception $e )
         {
             $this->service->create( $std );
-            u\DebugUtility::dump( $std );
         
             if( !$this->service->isSuccessful() )
             {
