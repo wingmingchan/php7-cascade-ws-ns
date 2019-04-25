@@ -62,7 +62,8 @@ abstract class Format extends FolderContainedAsset
         
         if( !$service->isSuccessful() )
         {
-            throw new e\EditingFailureException( 
+            throw new e\EditingFailureException(
+                "Format ID: " . $this->getId() . "\n" .
                 S_SPAN . c\M::EDIT_ASSET_FAILURE . E_SPAN . $service->getMessage() );
         }
         return $this->reloadProperty();
