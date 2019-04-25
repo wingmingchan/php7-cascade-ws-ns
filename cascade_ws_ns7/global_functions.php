@@ -162,6 +162,32 @@ function assetTreeCount(
     }
 }
 
+function assetTreeFindDDBlockPageWithIntialId( 
+    aohs\AssetOperationHandlerService $service, 
+    p\Child $child, array $params=NULL, array &$results=NULL )
+{
+    if( !isset( $params[ 'partial-id' ] ) )
+        throw new \Exception( "The id is not included" );
+    
+    $partial_id = $params[ 'partial-id' ];
+    
+    $type = $child->getType();
+    
+    if( $type != a\DataBlock::TYPE && $type != a\Page::TYPE && $type != a\ScriptFormat::TYPE )
+        return;
+        
+    $id = $child->getId();
+    
+    if( !u\StringUtility::startsWith( $id, $partial_id ) )
+    {
+        return;
+    }
+    else
+    {
+        echo $id;
+    }
+}
+
 function assetTreeDisplay( aohs\AssetOperationHandlerService $service, p\Child $child,
     $params=NULL, &$results=NULL )
 {
@@ -563,6 +589,8 @@ function assetTreeReportPhantomValues(
         return;    
     }
 }
+
+
 
 function assetTreeReportTemplateFormatPaths(
     aohs\AssetOperationHandlerService $service, 
