@@ -4,6 +4,7 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 4/16/2019 Added documentation of copyGroup.
   * 3/30/2018 Added copyGroup.
   * 1/24/2018 Updated documentation.
   * 1/5/2018 Updated documentation.
@@ -144,7 +145,16 @@ class Group extends Asset
         return $this;
     }
 
-    public function copyGroup( string $new_name )
+/**
+<documentation><description><p>Creates a copy of the current group and returns
+either the calling object if the name supplied is identical to the name of the current group,
+or the object representing the new group created.</p></description>
+<example>$new_group = $old_group->copyGroup( $new_group_name );</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function copyGroup( string $new_name ) : Asset
     {
         if( $this->getName() == $new_name )
         {
