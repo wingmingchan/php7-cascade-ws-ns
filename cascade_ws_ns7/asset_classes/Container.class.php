@@ -4,6 +4,7 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 4/25/2019 Added getDescendants.
   * 1/2/2018 Added REST code.
   * 4/25/2016 Added isAncestorOf and contains.
   * 4/22/2016 Added isParentOf.
@@ -199,7 +200,19 @@ then the id's returned are id's of all children of the type asset factory contai
     {
         return $this->container_children_ids;
     }
-    
+
+/**
+<documentation><description><p>Returns an array of <a href="http://www.upstate.edu/web-services/api/property-classes/child.php"><code>p\Child</code></a> objects.</p></description>
+<example>u\DebugUtility::dump( $folder->getDescendants() );</example>
+<return-type>array</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getDescendants() : array
+    {
+    	return $this->getAssetTree()->getContainerDescendants();
+    }
+
 /**
 <documentation><description><p>Returns a bool, indicating whether this container is an ancestor of the named asset.</p></description>
 <example>echo u\StringUtility::boolToString( $folder2->isAncestorOf( $folder1) ), BR;</example>
