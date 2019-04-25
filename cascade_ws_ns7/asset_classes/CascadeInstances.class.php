@@ -4,6 +4,9 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 4/24/2019 Fixed a bug in setMetadataSet, assetTreeUpdatePageConfigurationSet.
+    Added workflow setting code to update folder.
+    Added code to skip drafts of files, formats, and pages.
   * 4/2/2019 Added assetTreeUpdateSharedField, assetTreeUpdateSharedFieldContainer, and
     updateSharedFieldContainer.
   * 6/4/2018 Added $to_exclude to updateFormat.
@@ -1290,7 +1293,7 @@ the same XML, then no updates will be performed.</p></description>
         {
             $source_ct_dd_site = $source_ct_dd->getSiteName();
             $source_ct_dd_path = u\StringUtility::removeSiteNameFromPath( $source_ct_dd->getPath() );
-            $target_ct_dd_site = $source_ct_dd_site;
+            $target_ct_dd_site = $target_site_name;
             // data definition must be there
             $dd = $target_cascade->getAsset( DataDefinition::TYPE, $source_ct_dd_path, $target_ct_dd_site );
         }
@@ -1303,7 +1306,7 @@ the same XML, then no updates will be performed.</p></description>
         
         $source_ct_ms_site = $source_ct_ms->getSiteName();
         $source_ct_ms_path = u\StringUtility::removeSiteNameFromPath( $source_ct_ms->getPath() );
-        $target_ct_ms_site = $source_ct_ms_site;
+        $target_ct_ms_site = $target_site_name;
         
         // metadata set must be there
         $ms = $target_cascade->getAsset( MetadataSet::TYPE, $source_ct_ms_path, $target_ct_ms_site );
@@ -1312,7 +1315,8 @@ the same XML, then no updates will be performed.</p></description>
         
         $source_ct_pcs_site = $source_ct_pcs->getSiteName();
         $source_ct_pcs_path = u\StringUtility::removeSiteNameFromPath( $source_ct_pcs->getPath() );
-        $target_ct_pcs_site = $source_ct_pcs_site;
+        
+        $target_ct_pcs_site = $target_site_name;
         
         // page config set must be there
         $pcs = $target_cascade->getAsset( PageConfigurationSet::TYPE, $source_ct_pcs_path, $target_ct_pcs_site );
@@ -1933,7 +1937,16 @@ the same XML, then no updates will be performed.</p></description>
             return;
         }
     
-        $source_f             = $child->getAsset( $service );
+        try
+        {
+            $source_f = $child->getAsset( $service );
+        }
+        // skip drafts
+        catch( e\NullAssetException $e )
+        {
+        	return;
+        }
+        
         $source_f_path        = u\StringUtility::removeSiteNameFromPath( $source_f->getPath() );
         $source_f_path_array  = u\StringUtility::getExplodedStringArray( "/", $source_f_path );
         $source_f_path        = $source_f_path_array[ count( $source_f_path_array ) - 1 ];
@@ -2051,6 +2064,11 @@ the same XML, then no updates will be performed.</p></description>
         {
             $target_f->setShouldBeIndexed( $source_f->getShouldBeIndexed() );
             $target_f->setShouldBePublished( $source_f->getShouldBePublished() )->edit();
+            $target_wfs = $target_f->getWorkflowSettings();
+            // assume that no inherited and required workflow
+            // more code is needed to synch workflow definitions as well
+            $target_wfs->setInheritWorkflows( false )->setRequireWorkflow( false );
+            $target_f->editWorkflowSettings( true, true );
         }
         catch( e\EditingFailureException $e )
         {
@@ -2114,7 +2132,15 @@ the same XML, then no updates will be performed.</p></description>
         	return;
         }
     
-        $source_format         = $child->getAsset( $service );
+        try
+        {
+            $source_format = $child->getAsset( $service );
+        }
+        // skip drafts
+        catch( e\NullAssetException $e )
+        {
+        	return;
+        }
         
         if( $type == ScriptFormat::TYPE )
             $source_content    = $source_format->getScript();
@@ -2533,6 +2559,11 @@ the same XML, then no updates will be performed.</p></description>
             $source_page      = $child->getAsset( $service );
             $source_page_path = u\StringUtility::removeSiteNameFromPath( $source_page->getPath() );
         }
+        // skip drafts
+        catch( e\NullAssetException $e )
+        {
+            return;
+        }
         catch( \Exception $e )
         {
             throw new e\CascadeInstancesErrorException(
@@ -2925,7 +2956,8 @@ the same XML, then no updates will be performed.</p></description>
         if( self::DEBUG ) { u\DebugUtility::out( "Extension: " . $source_pcs_default_config_extension . BR .
             "Type: " . $source_pcs_default_config_type ); }
         
-        $target_pcs_default_config_template_site = $source_pcs_default_config_template_site;
+        $target_site_name = $target_site->getName();
+        $target_pcs_default_config_template_site = $target_site_name;
     
         try
         {
@@ -2933,7 +2965,6 @@ the same XML, then no updates will be performed.</p></description>
             $template = $target_cascade->getAsset( Template::TYPE,
                 $source_pcs_default_config_template_path, $target_pcs_default_config_template_site );
             
-            $target_site_name = $target_site->getName();
             // parent must be there
             $target_parent    = $target_cascade->getAsset( PageConfigurationSetContainer::TYPE,
                 $source_pcs_parent_path, $target_site_name );
@@ -2955,7 +2986,7 @@ the same XML, then no updates will be performed.</p></description>
                 $source_template      = $source_config->getTemplate();
                 $source_template_path = u\StringUtility::removeSiteNameFromPath( $source_template->getPath() );
                 $source_template_site = $source_template->getSiteName();
-                $target_template_site = $source_template_site;
+                $target_template_site = $target_site_name;
                 
                 // template must be there
                 $target_template = 
@@ -2994,7 +3025,7 @@ the same XML, then no updates will be performed.</p></description>
                     $source_config_format      = $source_cascade->getXsltFormat( $source_config_format_id );
                     $source_config_format_path = u\StringUtility::removeSiteNameFromPath( $source_config_format->getPath() );
                     $source_config_format_site = $source_config_format->getSiteName();
-                    $target_config_format_site = $source_config_format_site;
+                    $target_config_format_site = $target_site_name;
 
                     try
                     {
@@ -3035,7 +3066,7 @@ the same XML, then no updates will be performed.</p></description>
                             $source_block_path = u\StringUtility::removeSiteNameFromPath( $source_block->getPath() );
                             $source_block_site = $source_block->getSiteName();
                             $source_block_type = $source_block->getType();
-                            $target_block_site = $source_block_site;
+                            $target_block_site = $target_site_name;
 
                             try
                             {
@@ -3063,7 +3094,7 @@ the same XML, then no updates will be performed.</p></description>
                             $source_format_path = u\StringUtility::removeSiteNameFromPath( $source_format->getPath() );
                             $source_format_site = $source_format->getSiteName();
                             $source_format_type = $source_format->getType();
-                            $target_format_site = $source_format_site;
+                            $target_format_site = $target_site_name;
 
                             try
                             {
@@ -3875,7 +3906,7 @@ the same XML, then no updates will be performed.</p></description>
         $source_ms      = $source_asset->getMetadataSet();
         $source_ms_path = u\StringUtility::removeSiteNameFromPath( $source_ms->getPath() );
         $source_ms_site = $source_ms->getSiteName();
-        $target_ms_site = $source_ms_site;
+        $target_ms_site = $target_site->getName();
         
         if( $exception_thrown )
         {
