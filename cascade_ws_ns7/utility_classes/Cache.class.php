@@ -4,7 +4,7 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
-  * 5/2/2019 Added storeAsset.
+  * 5/2/2019 Added storeAsset, displayCache and displayCacheKeys.
   * 8/26/2016 Added constant NAME_SPACE.
   * 5/28/2015 Added namespaces.
   * 7/25/2014 File created.
@@ -41,6 +41,44 @@ Clears the cache array.
     public function clearCache()
     {
         $this->cache = array();
+    }
+    
+/**
+Displays the cache array and returns the cache.
+<documentation><description><p>Displays the cache array and returns the cache.</p></description>
+<example>$cache->displayCache();</example>
+<return-type>Cache</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function displayCache() : Cache
+    {
+        if( empty( self::$instance ) )
+        {
+        	throw new e\NullCacheException( "The cache cannot be NULL." );
+        }
+        
+        DebugUtility::dump( $this->cache );
+        return self::$instance;
+    }
+
+/**
+Displays the keys of the cache array and returns the cache.
+<documentation><description><p>Displays the keys of the cache array and returns the cache.</p></description>
+<example>$cache->displayCacheKeys();</example>
+<return-type>Cache</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function displayCacheKeys() : Cache
+    {
+        if( empty( self::$instance ) )
+        {
+        	throw new e\NullCacheException( "The cache cannot be NULL." );
+        }
+        
+        DebugUtility::dump( array_keys( $this->cache ) );
+        return self::$instance;
     }
 
 /**
