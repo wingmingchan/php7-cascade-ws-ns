@@ -53,11 +53,6 @@ Displays the cache array and returns the cache.
 */
     public function displayCache() : Cache
     {
-        if( empty( self::$instance ) )
-        {
-        	throw new e\NullCacheException( "The cache cannot be NULL." );
-        }
-        
         DebugUtility::dump( $this->cache );
         return self::$instance;
     }
@@ -72,11 +67,6 @@ Displays the keys of the cache array and returns the cache.
 */
     public function displayCacheKeys() : Cache
     {
-        if( empty( self::$instance ) )
-        {
-        	throw new e\NullCacheException( "The cache cannot be NULL." );
-        }
-        
         DebugUtility::dump( array_keys( $this->cache ) );
         return self::$instance;
     }
