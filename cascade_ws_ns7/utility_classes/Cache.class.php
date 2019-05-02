@@ -4,6 +4,7 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 5/2/2019 Added storeAsset.
   * 8/26/2016 Added constant NAME_SPACE.
   * 5/28/2015 Added namespaces.
   * 7/25/2014 File created.
@@ -25,8 +26,8 @@ use cascade_ws_property  as p;
 */
 class Cache
 {
-    const DEBUG = false;
-    const DUMP  = false;
+    const DEBUG      = false;
+    const DUMP       = false;
     const NAME_SPACE = "cascade_ws_utility";
     
 /**
@@ -60,7 +61,26 @@ Retrieves and returns the asset bearing the identifier.
             $this->cache[ $id ] = $child->getAsset( self::$service );
         return $this->cache[ $id ];
     }
-    
+
+/**
+Stores the supplied asset in the cache.
+@param Asset $a The asset to be stored
+<documentation><description><p>Stores the supplied asset in the cache.</p></description>
+<example>$template = $cache->storeAsset( $page );</example>
+<return-type></return-type>
+<exception></exception>
+</documentation>
+*/
+    public function storeAsset( a\Asset $a )
+    {
+        $id = $a->getId();
+        
+        if( !isset( $this->cache[ $id ] ) )
+        {
+            $this->cache[ $id ] = $a;
+        }
+    }
+
 /**
 Returns the cache.
 @param AssetOperationHandlerService $service The $service object
@@ -81,9 +101,9 @@ Returns the cache.
         }
         return self::$instance;
     }
-    
-    private function __construct() { }
-    
+
+    private function __construct() {}
+
     private $cache = array();
     private static $instance;
     private static $service;
