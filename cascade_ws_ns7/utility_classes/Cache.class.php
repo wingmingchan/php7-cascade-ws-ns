@@ -19,7 +19,10 @@ use cascade_ws_property  as p;
 
 /**
 <documentation><description><h2>Introduction</h2>
-<p>This class implements a cache for storing Asset objects.</p>
+<p>This class implements a cache for storing Asset objects. This is a singleton class; meaning
+that only one <code>Cache</code> object is allowed. The constructor cannot be called because
+it is <code>private</code>. Instead, call <code>u\Cache::getInstance( $service )</code> to
+get the cache.</p>
 </description>
 <postscript><h2>Test Code</h2><ul><li><a href="https://github.com/wingmingchan/php-cascade-ws-ns-examples/blob/master/utility-class-test-code/cache.php">cache.php</a></li></ul></postscript>
 </documentation>
@@ -94,7 +97,7 @@ Retrieves and returns the asset bearing the identifier.
 Stores the supplied asset in the cache.
 @param Asset $a The asset to be stored
 <documentation><description><p>Stores the supplied asset in the cache.</p></description>
-<example>$template = $cache->storeAsset( $page );</example>
+<example>$cache->storeAsset( $page );</example>
 <return-type></return-type>
 <exception></exception>
 </documentation>
