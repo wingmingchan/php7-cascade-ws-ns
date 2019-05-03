@@ -1,0 +1,8 @@
+{
+    "name" : "wingmingchan/php7-cascade-ws-ns",
+    "description": "The reusable code library for Cascade web services written in PHP 7.",
+    "type": "library",
+    "require": {
+        "php": "^7.0"
+    }
+}
