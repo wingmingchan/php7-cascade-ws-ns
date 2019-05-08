@@ -328,10 +328,10 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
 <documentation><description><p>Returns <code>blockId</code> of the named node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getBlockId( $id ) ), BR;</example>
 <return-type>mixed</return-type>
-<exception>string</exception>
+<exception></exception>
 </documentation>
 */
-    public function getBlockId( string $node_name ) : string
+    public function getBlockId( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
         {
@@ -344,10 +344,10 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
 <documentation><description><p>Returns <code>blockPath</code> of the named node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getBlockPath( $id ) ), BR;</example>
 <return-type>mixed</return-type>
-<exception>string</exception>
+<exception></exception>
 </documentation>
 */
-    public function getBlockPath( string $node_name ) : string
+    public function getBlockPath( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
         {
@@ -396,10 +396,10 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
 <documentation><description><p>Returns <code>fieldId</code> of the named node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getFileId( $id ) ), BR;</example>
 <return-type>mixed</return-type>
-<exception>string</exception>
+<exception></exception>
 </documentation>
 */
-    public function getFileId( string $node_name ) : string
+    public function getFileId( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
         {
@@ -411,11 +411,11 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
 /**
 <documentation><description><p>Returns <code>fieldPath</code> of the named node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getFilePath( $id ) ), BR;</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getFilePath( string $node_name ) : string
+    public function getFilePath( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
         {
@@ -472,11 +472,11 @@ an instance of an asset field of type <code>page</code>, <code>file</code>,
 a symlink; therefore, the id can be the <code>fileId</code>, <code>pageId</code>, or
 <code>symlinkId</code> of the node).</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getLinkableId( $id ) ), BR;</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getLinkableId( string $node_name ) : string
+    public function getLinkableId( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
         {
@@ -491,11 +491,11 @@ a symlink; therefore, the id can be the <code>fileId</code>, <code>pageId</code>
 or a symlink; therefore, the path can be the <code>filePath</code>, <code>pagePath</code>,
 or <code>symlinkPath</code> of the node).</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getLinkablePath( $id ) ), BR;</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getLinkablePath( string $node_name ) : string
+    public function getLinkablePath( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
         {
@@ -597,11 +597,11 @@ supplied identifier being the one of the first instance.</p></description>
 /**
 <documentation><description><p>Returns <code>pageId</code> of the named node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getPageId( $id ) ), BR;</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPageId( string $node_name ) : string
+    public function getPageId( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
         {
@@ -613,11 +613,11 @@ supplied identifier being the one of the first instance.</p></description>
 /**
 <documentation><description><p>Returns <code>pagePath</code> of the named node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getPagePath( $id ) ), BR;</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getPagePath( string $node_name ) : string
+    public function getPagePath( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
         {
@@ -657,11 +657,11 @@ supplied identifier being the one of the first instance.</p></description>
 /**
 <documentation><description><p>Returns <code>symlinkId</code> of the named node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getSymlinkId( $id ) ), BR;</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSymlinkId( string $node_name ) : string
+    public function getSymlinkId( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
         {
@@ -673,11 +673,11 @@ supplied identifier being the one of the first instance.</p></description>
 /**
 <documentation><description><p>Returns <code>symlinkPath</code> of the named node.</p></description>
 <example>echo u\StringUtility::getCoalescedString( $sd->getSymlinkPath( $id ) ), BR;</example>
-<return-type>string</return-type>
+<return-type>mixed</return-type>
 <exception></exception>
 </documentation>
 */
-    public function getSymlinkPath( string $node_name ) : string
+    public function getSymlinkPath( string $node_name )
     {
         if( isset( $this->node_map[ $node_name ] ) )
         {
