@@ -4,6 +4,9 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 5/8/2019 Added setMasterSites and changed all static methods to take master sites
+    into the consideration when dealing with external relationships.
+    Updated setMetadataSet accordingly.
   * 4/24/2019 Fixed a bug in setMetadataSet, assetTreeUpdatePageConfigurationSet.
     Added workflow setting code to update folder.
     Added code to skip drafts of files, formats, and pages.
@@ -129,6 +132,11 @@ class CascadeInstances
         return $this->source_cascade;
     }
     
+    public function getSourceMasterSite()
+    {
+        return $this->source_master_site;
+    }
+    
 /**
 <documentation><description><p>Returns the source <code>AssetOperationHandlerService</code> object encapsulated in the source <code>Cascade</code> object.</p></description>
 <example></example>
@@ -177,7 +185,13 @@ class CascadeInstances
     {
         return $this->target_cascade;
     }
-    
+
+    public function getTargetMasterSite()
+    {
+        return $this->source_master_site;
+    }
+
+
 /**
 <documentation><description><p>Returns the target <code>AssetOperationHandlerService</code> object encapsulated in the target <code>Cascade</code> object.</p></description>
 <example></example>
@@ -365,6 +379,47 @@ get a report on assets that are missing from the target site. The <code>$type_ar
     }
 
 /**
+<documentation><description><p>Sets the master sites on both instances, and returns
+the calling object. When synching a type of assets, an asset can have either internal or external relationship.
+It is assumed here that all relationships are either internal (meaning that associated assets
+are within the same site) or external (associated assets are in the master site) but not both. When
+no master sites are supplied, it is always assumed that relationships are internal. When two
+master sites are supplied, then it is always assumed that relationships are external. Relationships
+are resolved with code of the following type:</p>
+<pre>
+        // external
+        if( isset( $target_master_site ) )
+        {
+            $target_asset_site_name = $target_master_site->getName();
+        }
+        // internal
+        else
+        {
+            $target_asset_site_name = $target_site->getName();
+        }
+</pre></description>
+<example>    $instances->setMasterSites( "_common", "_new" );</example>
+<return-type>CascadeInstances</return-type>
+<exception>CascadeInstancesErrorException</exception>
+</documentation>
+*/
+    public function setMasterSites( string $source_m_name, string $target_m_name ) :
+        CascadeInstances
+    {
+        try
+        {
+            $this->source_master_site = $this->source_cascade->getSite( $source_m_name );
+            $this->target_master_site = $this->target_cascade->getSite( $target_m_name );
+        }
+        catch( \Exception $e )
+        {
+            throw new e\CascadeInstancesErrorException( $e );
+        }
+        
+        return $this;
+    }
+
+/**
 <documentation><description><p>Sets the source site and returns the calling object.</p></description>
 <example></example>
 <return-type>CascadeInstances</return-type>
@@ -437,10 +492,12 @@ get a report on assets that are missing from the target site. The <code>$type_ar
             // params array    
             array(
                 c\F::SKIP_ROOT_CONTAINER => true,
-                'source-cascade'   => $this->source_cascade,
-                'target-cascade'   => $this->target_cascade,
-                'target-site'      => $this->target_site,
-                'exception-thrown' => $exception_thrown
+                'source-cascade'     => $this->source_cascade,
+                'target-cascade'     => $this->target_cascade,
+                'target-site'        => $this->target_site, // for retrieving the parent
+                'source-master-site' => $this->source_master_site,
+                'target-master-site' => $this->target_master_site,
+                'exception-thrown'   => $exception_thrown
             )
         );
         return $this;
@@ -485,13 +542,15 @@ radio buttons cannot be synched.</p></description>
            ),
             // params array    
             array(
-                'source-cascade'   => $this->source_cascade,
-                'source-site'      => $this->source_site,
-                'target-cascade'   => $this->target_cascade,
-                'target-site'      => $this->target_site,
-                'exception-thrown' => $exception_thrown,
-                'update-data'      => $update_data,
-                'update-metadata'  => $update_metadata
+                'source-cascade'     => $this->source_cascade,
+                'source-site'        => $this->source_site,
+                'target-cascade'     => $this->target_cascade,
+                'target-site'        => $this->target_site,
+                'source-master-site' => $this->source_master_site,
+                'target-master-site' => $this->target_master_site,
+                'exception-thrown'   => $exception_thrown,
+                'update-data'        => $update_data,
+                'update-metadata'    => $update_metadata
             )
         );
         return $this;
@@ -525,8 +584,10 @@ radio buttons cannot be synched.</p></description>
             // params array    
             array(
                 c\F::SKIP_ROOT_CONTAINER => true,
-                'target-cascade' => $this->target_cascade,
-                'target-site'    => $this->target_site
+                'target-cascade'     => $this->target_cascade,
+                'target-site'        => $this->target_site,
+                'source-master-site' => $this->source_master_site,
+                'target-master-site' => $this->target_master_site
             )
         );
         return $this;
@@ -596,10 +657,12 @@ radio buttons cannot be synched.</p></description>
                 ),
             // params array    
             array(
-                'source-site'      => $this->source_site,
-                'target-cascade'   => $this->target_cascade,
-                'target-site'      => $this->target_site,
-                'exception-thrown' => $exception_thrown
+                'source-site'        => $this->source_site,
+                'target-cascade'     => $this->target_cascade,
+                'target-site'        => $this->target_site,
+                'source-master-site' => $this->source_master_site,
+                'target-master-site' => $this->target_master_site,
+                'exception-thrown'   => $exception_thrown
             )
         );
         return $this;
@@ -639,10 +702,12 @@ See <code>updateBlock</code> for more information.</p></description>
             // params array    
             array(
                 c\F::SKIP_ROOT_CONTAINER => $bypass_root,
-                'source-site'      => $this->source_site,
-                'target-cascade'   => $this->target_cascade,
-                'target-site'      => $this->target_site,
-                'exception-thrown' => $exception_thrown
+                'source-site'        => $this->source_site,
+                'target-cascade'     => $this->target_cascade,
+                'target-site'        => $this->target_site,
+                'source-master-site' => $this->source_master_site,
+                'target-master-site' => $this->target_master_site,
+                'exception-thrown'   => $exception_thrown
             )
         );
         return $this;
@@ -751,13 +816,15 @@ See <code>updateBlock</code> for more information.</p></description>
                 ),
             // params array    
             array(
-                'source-cascade'   => $this->source_cascade,
-                'source-site'      => $this->source_site,
-                'target-cascade'   => $this->target_cascade,
-                'target-site'      => $this->target_site,
-                'exception-thrown' => $exception_thrown,
-                'update-data'      => $update_data,
-                'update-metadata'  => $update_metadata
+                'source-cascade'     => $this->source_cascade,
+                'source-site'        => $this->source_site,
+                'target-cascade'     => $this->target_cascade,
+                'target-site'        => $this->target_site,
+                'source-master-site' => $this->source_master_site,
+                'target-master-site' => $this->target_master_site,
+                'exception-thrown'   => $exception_thrown,
+                'update-data'        => $update_data,
+                'update-metadata'    => $update_metadata
             )
         );
         return $this;
@@ -792,10 +859,12 @@ See <code>updateBlock</code> for more information.</p></description>
             // params array    
             array(
                 c\F::SKIP_ROOT_CONTAINER => true,
-                'source-cascade'   => $this->source_cascade,
-                'target-cascade'   => $this->target_cascade,
-                'target-site'      => $this->target_site,
-                'exception-thrown' => $exception_thrown
+                'source-cascade'     => $this->source_cascade,
+                'target-cascade'     => $this->target_cascade,
+                'target-site'        => $this->target_site,
+                'source-master-site' => $this->source_master_site,
+                'target-master-site' => $this->target_master_site,
+                'exception-thrown'   => $exception_thrown
             )
         );
         return $this;
@@ -900,9 +969,11 @@ the same XML, then no updates will be performed.</p></description>
             // params array    
             array(
                 c\F::SKIP_ROOT_CONTAINER => true,
-                'source-cascade' => $this->source_cascade,
-                'target-cascade' => $this->target_cascade,
-                'target-site'    => $this->target_site
+                'source-cascade'     => $this->source_cascade,
+                'target-cascade'     => $this->target_cascade,
+                'target-site'        => $this->target_site,
+                'source-master-site' => $this->source_master_site,
+                'target-master-site' => $this->target_master_site
             )
         );
         return $this;
@@ -934,11 +1005,13 @@ the same XML, then no updates will be performed.</p></description>
             ),
             // params array
             array(
-                'source-cascade'   => $this->source_cascade,
-                'source-site'      => $this->source_site,
-                'target-cascade'   => $this->target_cascade,
-                'target-site'      => $this->target_site,
-                'exception-thrown' => $exception_thrown
+                'source-cascade'     => $this->source_cascade,
+                'source-site'        => $this->source_site,
+                'target-cascade'     => $this->target_cascade,
+                'target-site'        => $this->target_site,
+                'source-master-site' => $this->source_master_site,
+                'target-master-site' => $this->target_master_site,
+                'exception-thrown'   => $exception_thrown
             )
         );
         return $this;
@@ -1029,17 +1102,28 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'base-cascade' ] ) )
+        {
             $base_cascade = $params[ 'base-cascade' ];
+        }
         if( isset( $params[ 'base-site' ] ) )
+        {
             $base_site = $params[ 'base-site' ];
+        }
         if( isset( $params[ 'other-cascade' ] ) )
+        {
             $other_cascade = $params[ 'other-cascade' ];
+        }
         else
+        {
             echo "The other cascade is not set." . BR;
+        }
         if( isset( $params[ 'other-site' ] ) )
+        {
             $other_site = $params[ 'other-site' ];
-            
+        }
+
         $other_path = $child->getPathPath();
+        
         try
         {
             $other_cascade->getAsset(
@@ -1063,7 +1147,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'source-cascade' ] ) )
+        {
             $source_cascade = $params[ 'source-cascade' ];
+        }
         else
         {
             echo c\M::SOURCE_CASCADE_NOT_SET . BR;
@@ -1071,7 +1157,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -1079,15 +1167,24 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
             return;
         }
         
+        if( isset( $params[ 'target-master-site' ] ) )
+        {
+            $target_master_site = $params[ 'target-master-site' ];
+        }
+        
         if( isset( $params[ 'exception-thrown' ] ) )
+        {
             $exception_thrown = $params[ 'exception-thrown' ];
+        }
         else
         {
             echo c\M::EXCEPTION_THROWN_NOT_SET . BR;
@@ -1120,7 +1217,9 @@ the same XML, then no updates will be performed.</p></description>
         $source_base_asset_type = $source_af->getAssetType();
         
         if( $source_base_asset_type == "block" && isset( $source_base_asset_id ) )
+        {
             $source_base_asset_type = Block::getBlockType( $service, $source_base_asset_id );
+        }
             
         if( isset( $source_base_asset_id ) )
         {
@@ -1129,10 +1228,20 @@ the same XML, then no updates will be performed.</p></description>
             $source_base_asset_path = 
                 u\StringUtility::removeSiteNameFromPath( $source_base_asset->getPath() );
             $source_base_asset_site = $source_base_asset->getSiteName();
-        
-            $target_base_asset_site = $source_base_asset_site;
+            
+            // if a target master site is supplied
+            if( isset( $target_master_site ) )
+            {
+                $target_base_asset_site = $target_master_site->getName();
+            }
+            else
+            {
+                // must identical to the source
+                $target_base_asset_site = $source_base_asset_site;
+            }
+
             // base asset must be there
-            $target_base_asset      = $target_cascade->getAsset(
+            $target_base_asset = $target_cascade->getAsset(
                 $source_base_asset->getType(), $source_base_asset_path, $target_base_asset_site );
         }
             
@@ -1140,8 +1249,10 @@ the same XML, then no updates will be performed.</p></description>
         $source_placement_folder_path = $source_af->getPlacementFolderPath();
         
         if( isset( $source_placement_folder_id ) )
+        {
             $source_placement_folder  = $source_cascade->getFolder(
                 $source_placement_folder_id, $source_af->getSiteName() );
+        }
             
         if( isset( $source_placement_folder ) )
         {
@@ -1163,10 +1274,14 @@ the same XML, then no updates will be performed.</p></description>
             setOverwrite( $source_af->getOverwrite() );
             
         if( isset( $target_base_asset ) )
+        {
             $target_af->setBaseAsset( $target_base_asset );
+        }
             
         if( isset( $target_placemet_folder ) )
+        {
             $target_af->setPlacementFolder( $target_placemet_folder );
+        }
             
         try
         {
@@ -1185,7 +1300,9 @@ the same XML, then no updates will be performed.</p></description>
                     if( isset( $plug_in_params ) )
                     {
                         if( !is_array( $plug_in_params ) )
+                        {
                             $plug_in_params = array( $plug_in_params );
+                        }
                         
                         foreach( $plug_in_params as $plug_in_param )
                         {
@@ -1263,7 +1380,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -1271,11 +1390,23 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
             return;
+        }
+        
+        if( isset( $params[ 'source-master-site' ] ) )
+        {
+            $source_master_site = $params[ 'source-master-site' ];
+        }
+        
+        if( isset( $params[ 'target-master-site' ] ) )
+        {
+            $target_master_site = $params[ 'target-master-site' ];
         }
         
         $source_ct             = $child->getAsset( $service );
@@ -1286,16 +1417,25 @@ the same XML, then no updates will be performed.</p></description>
         // parent must be there
         $target_parent    = $target_cascade->getAsset( ContentTypeContainer::TYPE,
             $source_ct_parent_path, $target_site_name );
-            
-        $source_ct_dd      = $source_ct->getDataDefinition();
+        
+        $source_ct_dd     = $source_ct->getDataDefinition();
         
         if( $source_ct_dd )
         {
             $source_ct_dd_site = $source_ct_dd->getSiteName();
             $source_ct_dd_path = u\StringUtility::removeSiteNameFromPath( $source_ct_dd->getPath() );
-            $target_ct_dd_site = $target_site_name;
+            
+            if( isset( $target_master_site ) )
+            {
+                $target_ct_dd_site_name = $target_master_site->getName();
+            }
+            else
+            {
+                $target_ct_dd_site_name = $target_site_name;
+            }
             // data definition must be there
-            $dd = $target_cascade->getAsset( DataDefinition::TYPE, $source_ct_dd_path, $target_ct_dd_site );
+            $dd = $target_cascade->getAsset(
+                DataDefinition::TYPE, $source_ct_dd_path, $target_ct_dd_site_name );
         }
         else
         {
@@ -1303,23 +1443,38 @@ the same XML, then no updates will be performed.</p></description>
         }
         
         $source_ct_ms      = $source_ct->getMetadataSet();
-        
         $source_ct_ms_site = $source_ct_ms->getSiteName();
         $source_ct_ms_path = u\StringUtility::removeSiteNameFromPath( $source_ct_ms->getPath() );
-        $target_ct_ms_site = $target_site_name;
+        
+        if( isset( $target_master_site ) )
+        {
+            $target_ct_ms_site_name = $target_master_site->getName();
+        }
+        else
+        {
+            $target_ct_ms_site_name = $target_site_name;
+        }
         
         // metadata set must be there
-        $ms = $target_cascade->getAsset( MetadataSet::TYPE, $source_ct_ms_path, $target_ct_ms_site );
+        $ms = $target_cascade->getAsset(
+            MetadataSet::TYPE, $source_ct_ms_path, $target_ct_ms_site_name );
 
         $source_ct_pcs      = $source_ct->getPageConfigurationSet();
-        
         $source_ct_pcs_site = $source_ct_pcs->getSiteName();
         $source_ct_pcs_path = u\StringUtility::removeSiteNameFromPath( $source_ct_pcs->getPath() );
         
-        $target_ct_pcs_site = $target_site_name;
+        if( isset( $target_master_site ) )
+        {
+            $target_ct_pcs_site_name = $target_master_site->getName();
+        }
+        else
+        {
+            $target_ct_pcs_site_name = $target_site_name;
+        }
         
         // page config set must be there
-        $pcs = $target_cascade->getAsset( PageConfigurationSet::TYPE, $source_ct_pcs_path, $target_ct_pcs_site );
+        $pcs = $target_cascade->getAsset(
+            PageConfigurationSet::TYPE, $source_ct_pcs_path, $target_ct_pcs_site_name );
             
         $target_ct = $target_cascade->createContentType( 
             $target_parent,
@@ -1337,7 +1492,7 @@ the same XML, then no updates will be performed.</p></description>
             $target_ct->setPublishMode( $config_name, $mode )->edit();
         }
     }
-    
+
 /**
 <documentation><description><p></p></description>
 <example></example>
@@ -1350,7 +1505,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -1358,7 +1515,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
@@ -1392,7 +1551,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -1400,7 +1561,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
@@ -1440,7 +1603,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'source-cascade' ] ) )
+        {
             $source_cascade = $params[ 'source-cascade' ];
+        }
         else
         {
             echo c\M::SOURCE_CASCADE_NOT_SET . BR;
@@ -1448,7 +1613,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -1456,7 +1623,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'source-site' ] ) )
+        {
             $source_site = $params[ 'source-site' ];
+        }
         else
         {
             echo c\M::SOURCE_SITE_NOT_SET . BR;
@@ -1464,15 +1633,29 @@ the same XML, then no updates will be performed.</p></description>
         }
     
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
             return;
         }
+        
+        if( isset( $params[ 'source-master-site' ] ) )
+        {
+            $source_master_site = $params[ 'source-master-site' ];
+        }
+        
+        if( isset( $params[ 'target-master-site' ] ) )
+        {
+            $target_master_site = $params[ 'target-master-site' ];
+        }
     
         if( isset( $params[ 'exception-thrown' ] ) )
+        {
             $exception_thrown = $params[ 'exception-thrown' ];
+        }
         else
         {
             echo c\M::EXCEPTION_THROWN_NOT_SET . BR;
@@ -1480,14 +1663,22 @@ the same XML, then no updates will be performed.</p></description>
         }
         
         if( isset( $params[ 'update-data' ] ) )
+        {
             $update_data = $params[ 'update-data' ];
+        }
         else
+        {
             $update_data = true;
+        }
         
         if( isset( $params[ 'update-metadata' ] ) )
+        {
             $update_metadata = $params[ 'update-metadata' ];
+        }
         else
+        {
             $update_metadata = true;
+        }
     
         if( self::DEBUG && self::DUMP ) 
         { u\DebugUtility::out( "Retrieving block" ); u\DebugUtility::dump( $child->toStdClass() ); }
@@ -1497,6 +1688,18 @@ the same XML, then no updates will be performed.</p></description>
             $source_block      = $child->getAsset( $service );
             $source_block_path = u\StringUtility::removeSiteNameFromPath( $source_block->getPath() );
         }
+        catch( e\NullAssetException $e )
+        {
+            // skip drafts
+            if( strpos( $e->getMessage(), c\M::NO_READ_PERMISSION ) !== false )
+            {
+                return;
+            }
+            else
+            {
+                throw $e;
+            }
+        }        
         catch( \Exception $e )
         {
             throw new e\CascadeInstancesErrorException(
@@ -1511,20 +1714,33 @@ the same XML, then no updates will be performed.</p></description>
             $source_block_dd      = $source_block->getDataDefinition();
             $source_block_dd_path = 
                 u\StringUtility::removeSiteNameFromPath( $source_block_dd->getPath() );
-            $source_block_dd_site = $source_block_dd->getSiteName();
-            $target_block_dd_site = $source_block_dd_site;
+            $source_block_dd_site_name = $source_block_dd->getSiteName();
+            
+            if( isset( $target_master_site ) )
+            {
+                $target_block_dd_site_name = $target_master_site->getName();
+            }
+            else
+            {
+                $target_block_dd_site_name = $target_site->getName();
+            }
         
             // compare the two data definitions
             $source_dd = Asset::getAsset( 
-                $service, DataDefinition::TYPE, $source_block_dd_path, $source_block_dd_site );
+                $service, DataDefinition::TYPE, $source_block_dd_path, $source_block_dd_site_name );
             // the data definition must be there
             $target_dd = $target_cascade->getAsset( 
-                DataDefinition::TYPE, $source_block_dd_path, $target_block_dd_site );
-            $source_xml = new \SimpleXMLElement( $source_dd->getXml() );
-            $target_xml = new \SimpleXMLElement( $target_dd->getXml() );
+                DataDefinition::TYPE, $source_block_dd_path, $target_block_dd_site_name );
+            // two DDs are considered identical if they have the same set of ordered FQIs 
+            $source_dd_identifiers = $source_dd->getIdentifiers();
+            $target_dd_identifiers = $target_dd->getIdentifiers();
+            $diff                  = array_diff( $source_dd_identifiers, $target_dd_identifiers );
             
-            if( !u\XMLUtility::isXmlIdentical( $source_xml, $target_xml ) )
+            if( count( $diff ) > 0 )
             {
+            	echo "Source DD ID: " . $source_dd->getId() . BR;
+            	echo "Target DD ID: " . $target_dd->getId() . BR;
+            	
                 throw new e\CascadeInstancesErrorException(
                     S_SPAN . c\M::DIFFERENT_DATA_DEFINITIONS . E_SPAN );
             }
@@ -1549,7 +1765,9 @@ the same XML, then no updates will be performed.</p></description>
             $source_block_parent_path, $target_site_name );
             
         if( !isset( $source_content ) )
+        {
             $source_content = "";
+        }
             
         $target_block     = $target_cascade->createXhtmlDataDefinitionBlock( 
             $target_parent, $source_block_path, $target_dd, $source_content );
@@ -1620,15 +1838,19 @@ the same XML, then no updates will be performed.</p></description>
                                     catch( \Exception $e )
                                     {
                                         if( $exception_thrown )
+                                        {
                                             throw new e\CascadeInstancesErrorException(
                                                 $e . BR . S_SPAN . 
                                                 "Block: " . $source_block->getPath() . BR .
                                                 "Resource: " . $source_resource_path  . E_SPAN );
+                                        }
                                         else
+                                        {
                                             u\DebugUtility::out( $e->getMessage() . BR . 
                                                 "<span style='color:red;font-weight:bold;'>" . 
                                                 "Block: " . $source_block->getPath() . BR .
                                                 "Resource: " . $source_resource_path . "</span>" );
+                                        }
                                     }
                                 }
                                 else
@@ -1692,9 +1914,18 @@ the same XML, then no updates will be performed.</p></description>
         
         if( $update_metadata )
         {
-            self::setMetadataSet( 
-                $target_cascade, $source_site, $target_site, $source_block, 
-                $target_block, $exception_thrown );
+		    if( isset( $target_master_site ) )
+		    {
+		        self::setMetadataSet( 
+                    $target_cascade, $source_site, $target_site, $source_block, 
+                    $target_block, $exception_thrown, $source_master_site, $target_master_site );
+            }
+            else
+            {
+		        self::setMetadataSet( 
+                    $target_cascade, $source_site, $target_site, $source_block, 
+                    $target_block, $exception_thrown );
+            }
         }
     }
     
@@ -1710,7 +1941,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -1718,7 +1951,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
@@ -1752,7 +1987,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'source-cascade' ] ) )
+        {
             $source_cascade = $params[ 'source-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -1760,7 +1997,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -1768,11 +2007,23 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
             return;
+        }
+        
+        if( isset( $params[ 'source-master-site' ] ) )
+        {
+            $source_master_site = $params[ 'source-master-site' ];
+        }
+        
+        if( isset( $params[ 'target-master-site' ] ) )
+        {
+            $target_master_site = $params[ 'target-master-site' ];
         }
         
         $source_d                = $child->getAsset( $service );
@@ -1783,16 +2034,27 @@ the same XML, then no updates will be performed.</p></description>
         
         // fix the path if from Global by removing "Global:"
         if( u\StringUtility::startsWith( $source_d_transport_path, "Global:" ) )
+        {
             $source_d_transport_path = str_replace( "Global:", "", $source_d_transport_path );
+        }
         
         $source_d_transport_type = $service->getType( $source_d_transport_id );
         
         $source_d_transport = $source_cascade->getAsset( $source_d_transport_type, $source_d_transport_id );
-        $source_d_transport_site = $source_d_transport->getSiteName();
-        $target_d_transport_site = $source_d_transport_site;
+        $source_d_transport_site_name = $source_d_transport->getSiteName();
+        
+        if( isset( $target_master_site ) )
+        {
+            $target_d_transport_site_name = $target_master_site->getName();
+        }
+        else
+        {
+            $target_d_transport_site_name = $source_d_transport_site_name;
+        }
         
         $target_d_transport = 
-            $target_cascade->getAsset( $source_d_transport_type, $source_d_transport_path, $target_d_transport_site );
+            $target_cascade->getAsset(
+                $source_d_transport_type, $source_d_transport_path, $source_d_transport_site_name );
         
         $target_site_name = $target_site->getName();
         // parent must be there
@@ -1823,7 +2085,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -1831,7 +2095,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'source-site' ] ) )
+        {
             $source_site = $params[ 'source-site' ];
+        }
         else
         {
             echo c\M::SOURCE_SITE_NOT_SET . BR;
@@ -1839,29 +2105,59 @@ the same XML, then no updates will be performed.</p></description>
         }
     
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
             return;
         }
-    
+
+        if( isset( $params[ 'source-master-site' ] ) )
+        {
+            $source_master_site = $params[ 'source-master-site' ];
+        }
+        
+        if( isset( $params[ 'target-master-site' ] ) )
+        {
+            $target_master_site = $params[ 'target-master-site' ];
+        }
+
         if( isset( $params[ 'exception-thrown' ] ) )
+        {
             $exception_thrown = $params[ 'exception-thrown' ];
+        }
         else
         {
             echo c\M::EXCEPTION_THROWN_NOT_SET . BR;
             return;
         }
     
-        $source_block             = $child->getAsset( $service );
+        try
+        {
+            $source_block             = $child->getAsset( $service );
+        }
+        catch( e\NullAssetException $e )
+        {
+            // skip drafts
+            if( strpos( $e->getMessage(), c\M::NO_READ_PERMISSION ) !== false )
+            {
+                return;
+            }
+            else
+            {
+                throw $e;
+            }
+        }
+        
         $source_content           = $source_block->getFeedUrl();
         $source_block_path        = u\StringUtility::removeSiteNameFromPath( $source_block->getPath() );
-        
+    
         $source_block_path_array  = u\StringUtility::getExplodedStringArray( "/", $source_block_path );
         $source_block_path        = $source_block_path_array[ count( $source_block_path_array ) - 1 ];
         $source_block_parent_path = $source_block->getParentContainerPath();
-        
+    
         // create block
         $target_site_name = $target_site->getName();
         // parent must be there
@@ -1869,7 +2165,7 @@ the same XML, then no updates will be performed.</p></description>
             $source_block_parent_path, $target_site_name );
         $target_block     = $target_cascade->createFeedBlock( 
             $target_parent, $source_block_path, $source_content );
-            
+        
         // update url
         if( $source_content != $target_block->getFeedUrl() )
         {
@@ -1890,8 +2186,18 @@ the same XML, then no updates will be performed.</p></description>
             }
         }
         // metadata        
-        self::setMetadataSet( 
-            $target_cascade, $source_site, $target_site, $source_block, $target_block, $exception_thrown );
+		if( isset( $target_master_site ) )
+		{
+			self::setMetadataSet( 
+				$target_cascade, $source_site, $target_site, $source_block, 
+				$target_block, $exception_thrown, $source_master_site, $target_master_site );
+		}
+		else
+		{
+			self::setMetadataSet( 
+				$target_cascade, $source_site, $target_site, $source_block, 
+				$target_block, $exception_thrown );
+		}
     }
     
 /**
@@ -1906,7 +2212,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'source-site' ] ) )
+        {
             $source_site = $params[ 'source-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
@@ -1914,7 +2222,9 @@ the same XML, then no updates will be performed.</p></description>
         }
     
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -1922,15 +2232,29 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
             return;
         }
     
+        if( isset( $params[ 'source-master-site' ] ) )
+        {
+            $source_master_site = $params[ 'source-master-site' ];
+        }
+        
+        if( isset( $params[ 'target-master-site' ] ) )
+        {
+            $target_master_site = $params[ 'target-master-site' ];
+        }
+
         if( isset( $params[ 'exception-thrown' ] ) )
+        {
             $exception_thrown = $params[ 'exception-thrown' ];
+        }
         else
         {
             echo c\M::EXCEPTION_THROWN_NOT_SET . BR;
@@ -1941,10 +2265,17 @@ the same XML, then no updates will be performed.</p></description>
         {
             $source_f = $child->getAsset( $service );
         }
-        // skip drafts
         catch( e\NullAssetException $e )
         {
-        	return;
+            // skip drafts
+            if( strpos( $e->getMessage(), c\M::NO_READ_PERMISSION ) !== false )
+            {
+                return;
+            }
+            else
+            {
+                throw $e;
+            }
         }
         
         $source_f_path        = u\StringUtility::removeSiteNameFromPath( $source_f->getPath() );
@@ -1960,8 +2291,19 @@ the same XML, then no updates will be performed.</p></description>
             $source_f_parent_path, $target_site_name );
         $target_f         = $target_cascade->createFile( 
             $target_parent, $source_f_path, $source_f_text, $source_f_data );
-        self::setMetadataSet( 
-            $target_cascade, $source_site, $target_site, $source_f, $target_f, $exception_thrown );
+            
+		if( isset( $target_master_site ) )
+		{
+			self::setMetadataSet( 
+				$target_cascade, $source_site, $target_site, $source_block, 
+				$target_block, $exception_thrown, $source_master_site, $target_master_site );
+		}
+		else
+		{
+			self::setMetadataSet( 
+				$target_cascade, $source_site, $target_site, $source_block, 
+				$target_block, $exception_thrown );
+		}
 
         try
         {
@@ -1999,7 +2341,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'source-site' ] ) )
+        {
             $source_site = $params[ 'source-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
@@ -2007,7 +2351,9 @@ the same XML, then no updates will be performed.</p></description>
         }
     
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -2015,15 +2361,29 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
             return;
         }
     
+        if( isset( $params[ 'source-master-site' ] ) )
+        {
+            $source_master_site = $params[ 'source-master-site' ];
+        }
+        
+        if( isset( $params[ 'target-master-site' ] ) )
+        {
+            $target_master_site = $params[ 'target-master-site' ];
+        }
+
         if( isset( $params[ 'exception-thrown' ] ) )
+        {
             $exception_thrown = $params[ 'exception-thrown' ];
+        }
         else
         {
             echo c\M::EXCEPTION_THROWN_NOT_SET . BR;
@@ -2039,7 +2399,7 @@ the same XML, then no updates will be performed.</p></description>
             $source_f_path        = $source_f_path_array[ count( $source_f_path_array ) - 1 ];
         }
         $source_f_parent_path = $source_f->getParentContainerPath();
-        $target_site_name = $target_site->getName();
+        $target_site_name     = $target_site->getName();
         
         // create folder
         if( isset( $source_f_parent_path ) )
@@ -2056,8 +2416,18 @@ the same XML, then no updates will be performed.</p></description>
         $target_f = $target_cascade->createFolder( 
             $target_parent, $source_f_path, $target_site_name );
             
-        self::setMetadataSet( 
-            $target_cascade, $source_site, $target_site, $source_f, $target_f, $exception_thrown );
+		if( isset( $target_master_site ) )
+		{
+			self::setMetadataSet( 
+				$target_cascade, $source_site, $target_site, $source_block, 
+				$target_block, $exception_thrown, $source_master_site, $target_master_site );
+		}
+		else
+		{
+			self::setMetadataSet( 
+				$target_cascade, $source_site, $target_site, $source_block, 
+				$target_block, $exception_thrown );
+		}
 
         // other flags
         try
@@ -2095,7 +2465,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -2103,14 +2475,18 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             return;
         }
         
         if( isset( $params[ 'exception-thrown' ] ) )
+        {
             $exception_thrown = $params[ 'exception-thrown' ];
+        }
         else
         {
             echo c\M::EXCEPTION_THROWN_NOT_SET . BR;
@@ -2121,7 +2497,7 @@ the same XML, then no updates will be performed.</p></description>
         
         if( isset( $params[ 'to-exclude' ] ) && is_array( $params[ 'to-exclude' ] ) )
         {
-        	$to_exclude = $params[ 'to-exclude' ];
+            $to_exclude = $params[ 'to-exclude' ];
         }
         
         $type = $child->getType();
@@ -2129,23 +2505,34 @@ the same XML, then no updates will be performed.</p></description>
         
         if( in_array( $path, $to_exclude ) )
         {
-        	return;
+            return;
         }
     
         try
         {
             $source_format = $child->getAsset( $service );
         }
-        // skip drafts
         catch( e\NullAssetException $e )
         {
-        	return;
+            // skip drafts
+            if( strpos( $e->getMessage(), c\M::NO_READ_PERMISSION ) !== false )
+            {
+                return;
+            }
+            else
+            {
+                throw $e;
+            }
         }
         
         if( $type == ScriptFormat::TYPE )
+        {
             $source_content    = $source_format->getScript();
+        }
         else
+        {
             $source_content    = $source_format->getXml();
+        }
             
         $source_format_path        = u\StringUtility::removeSiteNameFromPath( $source_format->getPath() );
         $source_format_path_array  = u\StringUtility::getExplodedStringArray( "/", $source_format_path );
@@ -2205,7 +2592,9 @@ the same XML, then no updates will be performed.</p></description>
         $f  = NULL;
     
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -2213,7 +2602,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'source-site' ] ) )
+        {
             $source_site = $params[ 'source-site' ];
+        }
         else
         {
             echo c\M::SOURCE_SITE_NOT_SET . BR;
@@ -2221,22 +2612,52 @@ the same XML, then no updates will be performed.</p></description>
         }
     
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
             return;
         }
+        
+        if( isset( $params[ 'source-master-site' ] ) )
+        {
+            $source_master_site = $params[ 'source-master-site' ];
+        }
+    
+        if( isset( $params[ 'target-master-site' ] ) )
+        {
+            $target_master_site = $params[ 'target-master-site' ];
+        }
     
         if( isset( $params[ 'exception-thrown' ] ) )
+        {
             $exception_thrown = $params[ 'exception-thrown' ];
+        }
         else
         {
             echo c\M::EXCEPTION_THROWN_NOT_SET . BR;
             return;
         }
     
-        $source_block             = $child->getAsset( $service );
+        try
+        {
+            $source_block             = $child->getAsset( $service );
+        }
+        catch( e\NullAssetException $e )
+        {
+            // skip drafts
+            if( strpos( $e->getMessage(), c\M::NO_READ_PERMISSION ) !== false )
+            {
+                return;
+            }
+            else
+            {
+                throw $e;
+            }
+        }
+        
         $type                     = $source_block->getIndexBlockType();
         $max_rendered_assets      = $source_block->getMaxRenderedAssets();
         $source_block_path        = u\StringUtility::removeSiteNameFromPath( $source_block->getPath() );
@@ -2252,25 +2673,34 @@ the same XML, then no updates will be performed.</p></description>
             if( isset( $source_ct ) )
             {
                 $source_ct_path = u\StringUtility::removeSiteNameFromPath( $source_ct->getPath() );
-                $source_ct_site = $source_ct->getSiteName();
-                $target_ct_site = $source_ct_site;
+                $source_ct_site_name = $source_ct->getSiteName();
+                
+                if( isset( $target_master_site ) )
+                {
+                    $target_ct_site_name = $target_master_site->getName();
+                }
+                else
+                {
+                    $target_ct_site_name = $source_ct_site_name;
+                }
         
                 if( $exception_thrown )
                 {
                     try
                     {
-                        $ct = $target_cascade->getAsset( ContentType::TYPE, $source_ct_path, $target_ct_site );
+                        $ct = $target_cascade->getAsset(
+                            ContentType::TYPE, $source_ct_path, $target_ct_site_name );
                     }
                     catch( \Exception $e )
                     {
-                        $msg = "The content type $source_ct_path does not exist in $target_ct_site. ";
+                        $msg = "The content type $source_ct_path does not exist in $target_ct_site_name. ";
                         throw new e\CascadeInstancesErrorException(
                             S_SPAN . $msg . E_SPAN . $e );
                     }
                 }
                 else
                 {
-                    $ct = $target_cascade->getContentType( $source_ct_path, $target_ct_site );
+                    $ct = $target_cascade->getContentType( $source_ct_path, $target_ct_site_name );
                 }
             }
         }
@@ -2339,7 +2769,9 @@ the same XML, then no updates will be performed.</p></description>
             $target_block->setDepthOfIndex( $depth );
             
             if( isset( $source_f ) )
+            {
                 $target_block->setFolder( $f );
+            }
         }
         else
         {
@@ -2380,8 +2812,18 @@ the same XML, then no updates will be performed.</p></description>
             }
         }
         
-        self::setMetadataSet( 
-            $target_cascade, $source_site, $target_site, $source_block, $target_block, $exception_thrown );
+		if( isset( $target_master_site ) )
+		{
+			self::setMetadataSet( 
+				$target_cascade, $source_site, $target_site, $source_block, 
+				$target_block, $exception_thrown, $source_master_site, $target_master_site );
+		}
+		else
+		{
+			self::setMetadataSet( 
+				$target_cascade, $source_site, $target_site, $source_block, 
+				$target_block, $exception_thrown );
+		}
     }
 
 /**
@@ -2396,7 +2838,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -2404,7 +2848,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
@@ -2461,7 +2907,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -2469,7 +2917,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
@@ -2505,7 +2955,9 @@ the same XML, then no updates will be performed.</p></description>
         $source_content = NULL;
         
         if( isset( $params[ 'source-cascade' ] ) )
+        {
             $source_cascade = $params[ 'source-cascade' ];
+        }
         else
         {
             echo c\M::SOURCE_CASCADE_NOT_SET . BR;
@@ -2513,7 +2965,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -2521,7 +2975,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'source-site' ] ) )
+        {
             $source_site = $params[ 'source-site' ];
+        }
         else
         {
             echo c\M::SOURCE_SITE_NOT_SET . BR;
@@ -2529,15 +2985,29 @@ the same XML, then no updates will be performed.</p></description>
         }
     
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
             return;
         }
+        
+        if( isset( $params[ 'source-master-site' ] ) )
+        {
+            $source_master_site = $params[ 'source-master-site' ];
+        }
+        
+        if( isset( $params[ 'target-master-site' ] ) )
+        {
+            $target_master_site = $params[ 'target-master-site' ];
+        }
     
         if( isset( $params[ 'exception-thrown' ] ) )
+        {
             $exception_thrown = $params[ 'exception-thrown' ];
+        }
         else
         {
             echo c\M::EXCEPTION_THROWN_NOT_SET . BR;
@@ -2545,24 +3015,39 @@ the same XML, then no updates will be performed.</p></description>
         }
         
         if( isset( $params[ 'update-data' ] ) )
+        {
             $update_data = $params[ 'update-data' ];
+        }
         else
+        {
             $update_data = true;
+        }
             
         if( isset( $params[ 'update-metadata' ] ) )
+        {
             $update_metadata = $params[ 'update-metadata' ];
+        }
         else
+        {
             $update_metadata = true;
+        }
     
         try
         {
             $source_page      = $child->getAsset( $service );
             $source_page_path = u\StringUtility::removeSiteNameFromPath( $source_page->getPath() );
         }
-        // skip drafts
         catch( e\NullAssetException $e )
         {
-            return;
+            // skip drafts
+            if( strpos( $e->getMessage(), c\M::NO_READ_PERMISSION ) !== false )
+            {
+                return;
+            }
+            else
+            {
+                throw $e;
+            }
         }
         catch( \Exception $e )
         {
@@ -2576,14 +3061,23 @@ the same XML, then no updates will be performed.</p></description>
         {
             $source_page_dd      = $source_page->getDataDefinition();
             $source_page_dd_path = u\StringUtility::removeSiteNameFromPath( $source_page_dd->getPath() );
-            $source_page_dd_site = $source_page_dd->getSiteName();
-            $target_page_dd_site = $source_page_dd_site;
+            $source_page_dd_site_name = $source_page_dd->getSiteName();
+            
+            if( isset( $target_master_site ) )
+            {
+                $target_page_dd_site_name = $target_master_site->getName();
+            }
+            else
+            {
+                $target_page_dd_site_name = $source_page_dd_site_name;
+            }
         
             // compare the two data definitions
-            $source_dd = Asset::getAsset( $service, DataDefinition::TYPE, $source_page_dd_path, $source_page_dd_site );
+            $source_dd = $source_cascade->getAsset(
+                DataDefinition::TYPE, $source_page_dd_path, $source_page_dd_site_name );
             // data definition must be there
             $target_dd = $target_cascade->getAsset( 
-                DataDefinition::TYPE, $source_page_dd_path, $target_page_dd_site );
+                DataDefinition::TYPE, $source_page_dd_path, $target_page_dd_site_name );
             $source_xml = new \SimpleXMLElement( $source_dd->getXml() );
             $target_xml = new \SimpleXMLElement( $target_dd->getXml() );
             
@@ -2597,7 +3091,6 @@ the same XML, then no updates will be performed.</p></description>
             $target_dd_id               = $target_dd->getId();
             $target_structured_data_std = $source_structured_data_std;
             $target_structured_data_std->definitionId = $target_dd_id;
-            
         }
         else
         {
@@ -2607,12 +3100,20 @@ the same XML, then no updates will be performed.</p></description>
         // content type
         $source_page_ct      = $source_page->getContentType();
         $source_page_ct_path = u\StringUtility::removeSiteNameFromPath( $source_page_ct->getPath() );
-        $source_page_ct_site = $source_page_ct->getSiteName();
-        $target_page_ct_site = $source_page_ct_site;
+        $source_page_ct_site_name = $source_page_ct->getSiteName();
+        
+        if( isset( $target_master_site ) )
+        {
+            $target_page_ct_site_name = $target_master_site->getName();
+        }
+        else
+        {
+            $target_page_ct_site_name = $source_page_ct_site_name;
+        }
             
         // content type must be there
         $target_page_ct = $target_cascade->getAsset( 
-            ContentType::TYPE, $source_page_ct_path, $target_page_ct_site );
+            ContentType::TYPE, $source_page_ct_path, $target_page_ct_site_name );
             
         $source_page_path_array  = u\StringUtility::getExplodedStringArray( "/", $source_page_path );
         $source_page_path        = $source_page_path_array[ count( $source_page_path_array ) - 1 ];
@@ -2709,9 +3210,13 @@ the same XML, then no updates will be performed.</p></description>
                                 catch( \Exception $e )
                                 {
                                     if( $exception_thrown )
+                                    {
                                         throw new e\CascadeInstancesErrorException( $e );
+                                    }
                                     else
+                                    {
                                         DebugUtility::out( $e->getMessage() );
+                                    }
                                 }
                             }
                             
@@ -2720,8 +3225,8 @@ the same XML, then no updates will be performed.</p></description>
                         }
                     }
                         
-                    $identifiers     = array_keys( $identifier_asset_map );
-                    $count           = count( $identifiers );
+                    $identifiers = array_keys( $identifier_asset_map );
+                    $count       = count( $identifiers );
                 
                     if( $count > 0 )
                     {
@@ -2761,9 +3266,13 @@ the same XML, then no updates will be performed.</p></description>
                     catch( \Exception $e )
                     {
                         if( $exception_thrown )
+                        {
                             throw new e\CascadeInstancesErrorException( $e );
+                        }
                         else
+                        {
                             DebugUtility::out( $e->getMessage() );
+                        }
                     }
                 
                     if( $count > 0 )
@@ -2779,9 +3288,13 @@ the same XML, then no updates will be performed.</p></description>
                 catch( \Exception $e )
                 {
                     if( $exception_thrown )
+                    {
                         throw new e\CascadeInstancesErrorException( $e );
+                    }
                     else
+                    {
                         DebugUtility::out( $e->getMessage() );
+                    }
                 }
             }
         
@@ -2806,9 +3319,13 @@ the same XML, then no updates will be performed.</p></description>
                             $source_block_site = $source_block->getSiteName();
                         
                             if( $source_block_site == $source_page->getSiteName() )
+                            {
                                 $target_block_site = $target_page->getSiteName();
+                            }
                             else
+                            {
                                 $target_block_site = $source_block_site;
+                            }
                             
                             try
                             {
@@ -2819,9 +3336,13 @@ the same XML, then no updates will be performed.</p></description>
                             catch( \Exception $e )
                             {
                                 if( $exception_thrown )
+                                {
                                     throw new e\CascadeInstancesErrorException( $e );
+                                }
                                 else
+                                {
                                     DebugUtility::out( $e->getMessage() );
+                                }
                             }
                         }
                         else if( isset( $block_format[ 'no-block' ] ) )
@@ -2839,9 +3360,13 @@ the same XML, then no updates will be performed.</p></description>
                             $source_format_site = $source_format->getSiteName();
                         
                             if( $source_format_site == $source_page->getSiteName() )
+                            {
                                 $target_format_site = $target_page->getSiteName();
+                            }
                             else
+                            {
                                 $target_format_site = $source_format_site;
+                            }
                             
                             try
                             {
@@ -2852,9 +3377,13 @@ the same XML, then no updates will be performed.</p></description>
                             catch( \Exception $e )
                             {
                                 if( $exception_thrown )
+                                {
                                     throw new e\CascadeInstancesErrorException( $e );
+                                }
                                 else
+                                {
                                     DebugUtility::out( $e->getMessage() );
+                                }
                             }
                         }
                         else if( isset( $block_format[ 'no-format' ] ) )
@@ -2905,7 +3434,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'source-cascade' ] ) )
+        {
             $source_cascade = $params[ 'source-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -2913,7 +3444,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -2921,15 +3454,29 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
             return;
         }
         
+        if( isset( $params[ 'source-master-site' ] ) )
+        {
+            $source_master_site = $params[ 'source-master-site' ];
+        }
+        
+        if( isset( $params[ 'target-master-site' ] ) )
+        {
+            $target_master_site = $params[ 'target-master-site' ];
+        }
+        
         if( isset( $params[ 'exception-thrown' ] ) )
+        {
             $exception_thrown = $params[ 'exception-thrown' ];
+        }
         else
         {
             echo c\M::EXCEPTION_THROWN_NOT_SET . BR;
@@ -2950,6 +3497,7 @@ the same XML, then no updates will be performed.</p></description>
             u\StringUtility::getNameFromPath( $source_pcs_default_config_template_path );
         $source_pcs_default_config_template      = $source_pcs_default_config->getTemplate();
         $source_pcs_default_config_template_site = $source_pcs_default_config_template->getSiteName();
+        
         $source_pcs_default_config_extension     = $source_pcs_default_config->getOutputExtension();
         $source_pcs_default_config_type          = $source_pcs_default_config->getSerializationType();
         
@@ -2957,7 +3505,15 @@ the same XML, then no updates will be performed.</p></description>
             "Type: " . $source_pcs_default_config_type ); }
         
         $target_site_name = $target_site->getName();
-        $target_pcs_default_config_template_site = $target_site_name;
+        
+        if( isset( $target_master_site ) )
+        {
+            $target_pcs_default_config_template_site = $target_master_site->getName();
+        }
+        else
+        {
+            $target_pcs_default_config_template_site = $target_site_name;
+        }
     
         try
         {
@@ -2966,7 +3522,7 @@ the same XML, then no updates will be performed.</p></description>
                 $source_pcs_default_config_template_path, $target_pcs_default_config_template_site );
             
             // parent must be there
-            $target_parent    = $target_cascade->getAsset( PageConfigurationSetContainer::TYPE,
+            $target_parent = $target_cascade->getAsset( PageConfigurationSetContainer::TYPE,
                 $source_pcs_parent_path, $target_site_name );
             $target_pcs = $target_cascade->createPageConfigurationSet( 
                 $target_parent, $source_pcs_name, 
@@ -2986,7 +3542,15 @@ the same XML, then no updates will be performed.</p></description>
                 $source_template      = $source_config->getTemplate();
                 $source_template_path = u\StringUtility::removeSiteNameFromPath( $source_template->getPath() );
                 $source_template_site = $source_template->getSiteName();
-                $target_template_site = $target_site_name;
+                
+                if( isset( $target_master_site ) )
+                {
+                    $target_template_site = $target_master_site->getName();
+                }
+                else
+                {
+                    $target_template_site = $target_site_name;
+                }
                 
                 // template must be there
                 $target_template = 
@@ -3025,13 +3589,23 @@ the same XML, then no updates will be performed.</p></description>
                     $source_config_format      = $source_cascade->getXsltFormat( $source_config_format_id );
                     $source_config_format_path = u\StringUtility::removeSiteNameFromPath( $source_config_format->getPath() );
                     $source_config_format_site = $source_config_format->getSiteName();
-                    $target_config_format_site = $target_site_name;
+                    
+                    if( isset( $target_master_site ) )
+                    {
+                        $target_config_format_site = $target_master_site->getName();
+                    }
+                    else
+                    {
+                        $target_config_format_site = $source_config_format_site;
+                    }
 
                     try
                     {
                         if( $exception_thrown )
+                        {
                             $target_format = $target_cascade->getAsset( 
                                 XsltFormat::TYPE, $source_config_format_path, $target_config_format_site );
+                        }
                         else
                         {
                             $target_format = $target_cascade->getXsltFormat( 
@@ -3056,7 +3630,9 @@ the same XML, then no updates will be performed.</p></description>
                     foreach( $region_names as $region_name )
                     {
                         if( !$source_pcs->hasPageRegion( $source_config_name, $region_name ) )
+                        {
                             continue;
+                        }
                             
                         $source_block  = $source_pcs->getPageRegion( $source_config_name, $region_name )->getBlock();
                         $source_format = $source_pcs->getPageRegion( $source_config_name, $region_name )->getFormat();
@@ -3071,7 +3647,9 @@ the same XML, then no updates will be performed.</p></description>
                             try
                             {
                                 if( $exception_thrown )
+                                {
                                     $target_block = $target_cascade->getAsset( $source_block_type, $source_block_path, $target_block_site );
+                                }
                                 else
                                 {
                                     $class_name   = c\T::getClassNameByType( $source_block_type );
@@ -3099,7 +3677,9 @@ the same XML, then no updates will be performed.</p></description>
                             try
                             {
                                 if( $exception_thrown )
+                                {
                                     $target_format = $target_cascade->getAsset( $source_format_type, $source_format_path, $target_format_site );
+                                }
                                 else
                                 {
                                     $class_name    = c\T::getClassNameByType( $source_format_type );
@@ -3156,7 +3736,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -3164,7 +3746,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
@@ -3198,7 +3782,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -3206,7 +3792,9 @@ the same XML, then no updates will be performed.</p></description>
         }
         
         if( isset( $params[ 'source-site' ] ) )
+        {
             $source_site = $params[ 'source-site' ];
+        }
         else
         {
             echo c\M::SOURCE_SITE_NOT_SET . BR;
@@ -3214,7 +3802,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
@@ -3252,7 +3842,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -3260,7 +3852,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
@@ -3300,7 +3894,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -3308,7 +3904,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
@@ -3342,7 +3940,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -3350,13 +3950,15 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
             return;
         }
-    
+
         $source_sdc             = $child->getAsset( $service );
         $source_sdc_path        = u\StringUtility::removeSiteNameFromPath( $source_sdc->getPath() );
         $source_sdc_path_array  = u\StringUtility::getExplodedStringArray( "/", $source_sdc_path );
@@ -3384,7 +3986,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -3392,7 +3996,9 @@ the same XML, then no updates will be performed.</p></description>
         }
         
         if( isset( $params[ 'source-site' ] ) )
+        {
             $source_site = $params[ 'source-site' ];
+        }
         else
         {
             echo c\M::SOURCE_SITE_NOT_SET . BR;
@@ -3400,22 +4006,51 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
             return;
         }
         
+        if( isset( $params[ 'source-master-site' ] ) )
+        {
+            $source_master_site = $params[ 'source-master-site' ];
+        }
+        
+        if( isset( $params[ 'target-master-site' ] ) )
+        {
+            $target_master_site = $params[ 'target-master-site' ];
+        }
+
         if( isset( $params[ 'exception-thrown' ] ) )
+        {
             $exception_thrown = $params[ 'exception-thrown' ];
+        }
         else
         {
             echo c\M::EXCEPTION_THROWN_NOT_SET . BR;
             return;
         }
     
-        $source_symlink             = $child->getAsset( $service );
+        try
+        {
+            $source_symlink             = $child->getAsset( $service );
+        }
+        catch( e\NullAssetException $e )
+        {
+            // skip drafts
+            if( strpos( $e->getMessage(), c\M::NO_READ_PERMISSION ) !== false )
+            {
+                return;
+            }
+            else
+            {
+                throw $e;
+            }
+        }
         $source_symlink_parent_path = $source_symlink->getParentContainerPath();
         $source_symlink_url         = $source_symlink->getLinkURL();
         
@@ -3446,8 +4081,18 @@ the same XML, then no updates will be performed.</p></description>
             }
         }
         // metadata        
-        self::setMetadataSet( 
-            $target_cascade, $source_site, $target_site, $source_symlink, $target_symlink, $exception_thrown );
+		if( isset( $target_master_site ) )
+		{
+			self::setMetadataSet( 
+				$target_cascade, $source_site, $target_site, $source_block, 
+				$target_block, $exception_thrown, $source_master_site, $target_master_site );
+		}
+		else
+		{
+			self::setMetadataSet( 
+				$target_cascade, $source_site, $target_site, $source_block, 
+				$target_block, $exception_thrown );
+		}
     }
 
 /**
@@ -3462,7 +4107,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'source-site' ] ) )
+        {
             $source_site = $params[ 'source-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
@@ -3470,7 +4117,9 @@ the same XML, then no updates will be performed.</p></description>
         }
     
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -3478,7 +4127,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
@@ -3486,7 +4137,9 @@ the same XML, then no updates will be performed.</p></description>
         }
         
         if( isset( $params[ 'exception-thrown' ] ) )
+        {
             $exception_thrown = $params[ 'exception-thrown' ];
+        }
         else
         {
             echo c\M::EXCEPTION_THROWN_NOT_SET . BR;
@@ -3524,9 +4177,13 @@ the same XML, then no updates will be performed.</p></description>
             try
             {
                 if( $exception_thrown )
+                {
                     $format = $target_cascade->getAsset( XsltFormat::TYPE, $source_format_path, $target_format_site );
+                }
                 else
+                {
                     $format = $target_cascade->getXsltFormat( $source_format_path, $target_format_site );
+                }
                 $target_t->setFormat( $format )->edit();
             }
             catch( \Exception $e )
@@ -3548,7 +4205,9 @@ the same XML, then no updates will be performed.</p></description>
                 $block = $source_t->getPageRegionBlock( $region );
                 
                 if( !isset( $block ) )
+                {
                     continue;
+                }
                     
                 $type  = $block->getType();
                 $source_block_path = u\StringUtility::removeSiteNameFromPath( $block->getPath() );
@@ -3558,7 +4217,9 @@ the same XML, then no updates will be performed.</p></description>
                 try
                 {
                     if( $exception_thrown )
+                    {
                         $target_block = $target_cascade->getAsset( $type, $source_block_path, $target_block_site );
+                    }
                     else
                     {
                         $class_name   = c\T::getClassNameByType( $type );
@@ -3582,7 +4243,9 @@ the same XML, then no updates will be performed.</p></description>
                 $format = $source_t->getPageRegionFormat( $region );
                 
                 if( !isset( $format ) )
+                {
                     continue;
+                }
                     
                 $type  = $format->getType();
                 $source_format_path = u\StringUtility::removeSiteNameFromPath( $format->getPath() );
@@ -3592,7 +4255,9 @@ the same XML, then no updates will be performed.</p></description>
                 try
                 {
                     if( $exception_thrown )
+                    {
                         $target_format = $target_cascade->getAsset( $type, $source_format_path, $target_format_site );
+                    }
                     else
                     {
                         $class_name    = c\T::getClassNameByType( $type );
@@ -3624,7 +4289,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -3632,7 +4299,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'source-site' ] ) )
+        {
             $source_site = $params[ 'source-site' ];
+        }
         else
         {
             echo c\M::SOURCE_SITE_NOT_SET . BR;
@@ -3640,22 +4309,52 @@ the same XML, then no updates will be performed.</p></description>
         }
     
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
             return;
         }
     
+        if( isset( $params[ 'source-master-site' ] ) )
+        {
+            $source_master_site = $params[ 'source-master-site' ];
+        }
+        
+        if( isset( $params[ 'target-master-site' ] ) )
+        {
+            $target_master_site = $params[ 'target-master-site' ];
+        }
+
         if( isset( $params[ 'exception-thrown' ] ) )
+        {
             $exception_thrown = $params[ 'exception-thrown' ];
+        }
         else
         {
             echo c\M::EXCEPTION_THROWN_NOT_SET . BR;
             return;
         }
     
-        $source_block             = $child->getAsset( $service );
+        try
+        {
+            $source_block             = $child->getAsset( $service );
+        }
+        catch( e\NullAssetException $e )
+        {
+            // skip drafts
+            if( strpos( $e->getMessage(), c\M::NO_READ_PERMISSION ) !== false )
+            {
+                return;
+            }
+            else
+            {
+                throw $e;
+            }
+        }
+
         $source_content           = $source_block->getText();
         $source_block_path        = u\StringUtility::removeSiteNameFromPath( $source_block->getPath() );
         
@@ -3689,7 +4388,6 @@ the same XML, then no updates will be performed.</p></description>
             }
         }
         
-        
         // if asset already exists containing different text, update text
         if( $source_content != $target_block->getText() )
         {
@@ -3710,8 +4408,18 @@ the same XML, then no updates will be performed.</p></description>
             }
         }
         // metadata
-        self::setMetadataSet( 
-            $target_cascade, $source_site, $target_site, $source_block, $target_block, $exception_thrown );
+		if( isset( $target_master_site ) )
+		{
+			self::setMetadataSet( 
+				$target_cascade, $source_site, $target_site, $source_block, 
+				$target_block, $exception_thrown, $source_master_site, $target_master_site );
+		}
+		else
+		{
+			self::setMetadataSet( 
+				$target_cascade, $source_site, $target_site, $source_block, 
+				$target_block, $exception_thrown );
+		}
     }
 
 /**
@@ -3726,7 +4434,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -3734,7 +4444,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
@@ -3778,7 +4490,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -3786,7 +4500,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
@@ -3820,7 +4536,9 @@ the same XML, then no updates will be performed.</p></description>
         p\Child $child, array $params=NULL, array &$results=NULL )
     {
         if( isset( $params[ 'target-cascade' ] ) )
+        {
             $target_cascade = $params[ 'target-cascade' ];
+        }
         else
         {
             echo c\M::TARGET_CASCADE_NOT_SET . BR;
@@ -3828,7 +4546,9 @@ the same XML, then no updates will be performed.</p></description>
         }
 
         if( isset( $params[ 'source-site' ] ) )
+        {
             $source_site = $params[ 'source-site' ];
+        }
         else
         {
             echo c\M::SOURCE_SITE_NOT_SET . BR;
@@ -3836,22 +4556,52 @@ the same XML, then no updates will be performed.</p></description>
         }
     
         if( isset( $params[ 'target-site' ] ) )
+        {
             $target_site = $params[ 'target-site' ];
+        }
         else
         {
             echo c\M::TARGET_SITE_NOT_SET . BR;
             return;
         }
     
+        if( isset( $params[ 'source-master-site' ] ) )
+        {
+            $source_master_site = $params[ 'source-master-site' ];
+        }
+        
+        if( isset( $params[ 'target-master-site' ] ) )
+        {
+            $target_master_site = $params[ 'target-master-site' ];
+        }
+
         if( isset( $params[ 'exception-thrown' ] ) )
+        {
             $exception_thrown = $params[ 'exception-thrown' ];
+        }
         else
         {
             echo c\M::EXCEPTION_THROWN_NOT_SET . BR;
             return;
         }
     
-        $source_block             = $child->getAsset( $service );
+        try
+        {
+            $source_block = $child->getAsset( $service );
+        }
+        catch( e\NullAssetException $e )
+        {
+            // skip drafts
+            if( strpos( $e->getMessage(), c\M::NO_READ_PERMISSION ) !== false )
+            {
+                return;
+            }
+            else
+            {
+                throw $e;
+            }
+        }
+
         $source_content           = $source_block->getXml();
         $source_block_path        = u\StringUtility::removeSiteNameFromPath( $source_block->getPath() );
         $source_block_path_array  = u\StringUtility::getExplodedStringArray( "/", $source_block_path );
@@ -3883,8 +4633,18 @@ the same XML, then no updates will be performed.</p></description>
                 $target_block->getPath() . E_SPAN );
         }
         // metadata
-        self::setMetadataSet( 
-            $target_cascade, $source_site, $target_site, $source_block, $target_block, $exception_thrown );
+		if( isset( $target_master_site ) )
+		{
+			self::setMetadataSet( 
+				$target_cascade, $source_site, $target_site, $source_block, 
+				$target_block, $exception_thrown, $source_master_site, $target_master_site );
+		}
+		else
+		{
+			self::setMetadataSet( 
+				$target_cascade, $source_site, $target_site, $source_block, 
+				$target_block, $exception_thrown );
+		}
     }
     
 /**
@@ -3900,19 +4660,29 @@ the same XML, then no updates will be performed.</p></description>
         Site $target_site,
         Asset $source_asset, 
         Asset $target_asset,
-        bool $exception_thrown=true )
+        bool $exception_thrown=true,
+        Site $source_master_site=NULL,
+        Site $target_master_site=NULL )
     {
         // get metadata set
         $source_ms      = $source_asset->getMetadataSet();
         $source_ms_path = u\StringUtility::removeSiteNameFromPath( $source_ms->getPath() );
         $source_ms_site = $source_ms->getSiteName();
-        $target_ms_site = $target_site->getName();
+        
+        if( isset( $target_master_site ) )
+        {
+            $target_ms_site_name = $target_master_site->getName();
+        }
+        else
+        {
+            $target_ms_site_name = $target_site->getName();
+        }
         
         if( $exception_thrown )
         {
             try
             {
-                $ms = $target_cascade->getAsset( MetadataSet::TYPE, $source_ms_path, $target_ms_site );
+                $ms = $target_cascade->getAsset( MetadataSet::TYPE, $source_ms_path, $target_ms_site_name );
                 $target_asset->setMetadataSet( $ms );
             }
             catch( \Exception $e )
@@ -3924,7 +4694,7 @@ the same XML, then no updates will be performed.</p></description>
         }
         else
         {
-            $ms = $target_cascade->getMetadataSet( $source_ms_path, $target_ms_site );
+            $ms = $target_cascade->getMetadataSet( $source_ms_path, $target_ms_site_name );
             
             if( isset( $ms ) )
             {
@@ -4031,11 +4801,13 @@ the same XML, then no updates will be performed.</p></description>
     private $source_site;
     private $source_site_set;
     private $source_url;
+    private $source_master_site;
     private $target_cascade;
     private $target_service;
     private $target_site;
     private $target_site_set;
     private $target_url;
+    private $target_master_site;
     private $cache;
 }
 ?>
