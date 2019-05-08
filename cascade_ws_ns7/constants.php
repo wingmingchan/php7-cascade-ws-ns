@@ -239,6 +239,7 @@ class M // messages for exceptions
     const GOOGLE_CONNECTOR_NO_CT         = "A google analytics connector does not have content type. ";
     const INFORMATION_NOT_AVAILABLE      = "<p>Information not available.</p>";
     const MOVE_ASSET_FAILURE             = "Failed to move/rename the asset. ";
+    const NO_READ_PERMISSION             = "You do not have read permissions for the requested asset";
     const NOT_ARRAY                      = "The parameter is not an array. ";
     const NOT_DATA_BLOCK                 = "The block is not a data definition block. ";
     const NOT_XHTML_BLOCK                = "The block is not an xhmtl block. ";
