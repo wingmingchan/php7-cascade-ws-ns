@@ -1,9 +1,12 @@
 <?php 
 /**
   * Author: Wing Ming Chan
-  * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
+  * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>,
+                       German Drulyk <drulykg@upstate.edu>,
+                       Peter Thomas <thomaspe@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 5/15/2019 Fixed a bug in copy, Peter and German.
   * 2/22/2019 Moved copy here from Asset.
   * 1/3/2018 Added code to test for NULL.
   * 11/28/2017 Added getSiteId and getSiteName.
@@ -97,7 +100,16 @@ type in the supplied parent container, and returns an object representing the ne
                 $children = $parent->children->child;
             elseif( $this->getService()->isRest() )
                 $children = $parent->children;
-            
+
+            if( $children === NULL )
+            {
+                $children = array();
+            }
+            elseif( !is_array( $children ) )
+            {
+                $children = array( $children );
+            } 
+/*            
             $child_count = 0;
 
             if( is_array( $children) )
@@ -109,7 +121,7 @@ type in the supplied parent container, and returns an object representing the ne
             {
                 $children = array( $children );
             }
-            
+*/            
             // look for the new child
             foreach( $children as $child )
             {
