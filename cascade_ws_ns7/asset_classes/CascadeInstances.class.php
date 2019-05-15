@@ -4,6 +4,7 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 5/13/2019 Bug fixes.
   * 5/8/2019 Added setMasterSites and changed all static methods to take master sites
     into the consideration when dealing with external relationships.
     Updated setMetadataSet accordingly.
@@ -2295,14 +2296,14 @@ the same XML, then no updates will be performed.</p></description>
 		if( isset( $target_master_site ) )
 		{
 			self::setMetadataSet( 
-				$target_cascade, $source_site, $target_site, $source_block, 
-				$target_block, $exception_thrown, $source_master_site, $target_master_site );
+				$target_cascade, $source_site, $target_site, $source_f, 
+				$target_f, $exception_thrown, $source_master_site, $target_master_site );
 		}
 		else
 		{
 			self::setMetadataSet( 
-				$target_cascade, $source_site, $target_site, $source_block, 
-				$target_block, $exception_thrown );
+				$target_cascade, $source_site, $target_site, $source_f, 
+				$target_f, $exception_thrown );
 		}
 
         try
@@ -2419,14 +2420,14 @@ the same XML, then no updates will be performed.</p></description>
 		if( isset( $target_master_site ) )
 		{
 			self::setMetadataSet( 
-				$target_cascade, $source_site, $target_site, $source_block, 
-				$target_block, $exception_thrown, $source_master_site, $target_master_site );
+				$target_cascade, $source_site, $target_site, $source_f, 
+				$target_f, $exception_thrown, $source_master_site, $target_master_site );
 		}
 		else
 		{
 			self::setMetadataSet( 
-				$target_cascade, $source_site, $target_site, $source_block, 
-				$target_block, $exception_thrown );
+				$target_cascade, $source_site, $target_site, $source_f, 
+				$target_f, $exception_thrown );
 		}
 
         // other flags
@@ -4084,14 +4085,14 @@ the same XML, then no updates will be performed.</p></description>
 		if( isset( $target_master_site ) )
 		{
 			self::setMetadataSet( 
-				$target_cascade, $source_site, $target_site, $source_block, 
-				$target_block, $exception_thrown, $source_master_site, $target_master_site );
+				$target_cascade, $source_site, $target_site, $source_symlink, 
+				$target_symlink, $exception_thrown, $source_master_site, $target_master_site );
 		}
 		else
 		{
 			self::setMetadataSet( 
-				$target_cascade, $source_site, $target_site, $source_block, 
-				$target_block, $exception_thrown );
+				$target_cascade, $source_site, $target_site, $source_symlink, 
+				$target_symlink, $exception_thrown );
 		}
     }
 
