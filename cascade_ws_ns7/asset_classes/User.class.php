@@ -4,6 +4,7 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/28/2019 Added setAuthType.
   * 2/25/2019 Removed getDefaultGroup, and setDefaultGroup.
   * 1/24/2018 Updated documentation.
   * 1/3/2018 Added code to test for NULL.
@@ -367,7 +368,28 @@ mixed this method call with other <code>User::set</code> methods.</p></descripti
             $this->getProperty()->username ) )->edit();
         return $this;
     }
-    
+
+/**
+<documentation><description><p>Sets <code>authType</code> and returns the calling object.</p></description>
+<example>$u->setAuthType( c\T::CUSTOM )->edit();</example>
+<return-type>Asset</return-type>
+<exception>UnacceptableAuthTypeException</exception>
+</documentation>
+*/
+    public function setAuthType( string $type ) : Asset
+    {
+    	$type_trimmed = trim( $type );
+    	
+        if( $type_trimmed != c\T::NORMAL && $type_trimmed != c\T::LDAP &&
+            $type_trimmed != c\T::CUSTOM )
+        {
+        	throw new UnacceptableAuthTypeException( "The authType $type is unacceptqble." );
+        }
+        
+        $this->getProperty()->authType = $type_trimmed;
+        return $this;
+    }
+
 /**
 <documentation><description><p>Sets <code>defaultSiteId</code> and <code>defaultSiteName</code> and returns the calling object.</p></description>
 <example>$u->setDefaultSite( 
