@@ -4,6 +4,8 @@
   * Copyright (c) 2019 Wing Ming Chan <chanw@upstate.edu>
   * MIT Licensed
   * Modification history:
+  * 6/28/2019 Added more documentation.
+  * Added addTags and changed code in addTag, using the class variable tags to cache.
   * 10/12/2018 Fixed bugs in addTag, isInTags and removeTag.
   * 5/18/2018 Added addTag, isInTags, hasTag and removeTag.
   * 1/3/2018 Added code to test for NULL.
@@ -45,6 +47,19 @@ abstract class FolderContainedAsset extends ContainedAsset
         aohs\AssetOperationHandlerService $service, \stdClass $identifier )
     {
         parent::__construct( $service, $identifier );
+        
+        if( $this->getService()->isSoap() )
+        {
+        	// could be NULL
+        	if( isset( $this->getProperty()->tags->tag ) )
+        	{
+        		$this->tags = $this->getProperty()->tags->tag; 
+        	}
+        }
+        elseif( $this->getService()->isRest() )
+        {
+        	$this->tags = $this->getProperty()->tags;
+        }
     }
 
 /**
@@ -62,38 +77,159 @@ abstract class FolderContainedAsset extends ContainedAsset
         if( $this->getService()->isSoap() )
         {
             // empty
-            if( !isset( $this->getProperty()->tags->tag ) )
+            if( !isset( $this->tags ) )
             {
-                $this->getProperty()->tags->tag = $std;
+                $this->tags = $std;
             }
             // one other tag
-            elseif( !is_array( $this->getProperty()->tags->tag ) )
+            elseif( !is_array( $this->tags ) )
             {
-                if( $this->getProperty()->tags->tag->name != $t )
+                if( $this->tags->name != $t )
                 {
-                	$cur_tag = $this->getProperty()->tags->tag;
-                	$this->getProperty()->tags->tag = array();
-                	$this->getProperty()->tags->tag[] = $cur_tag;
-                	$this->getProperty()->tags->tag[] = $std;
+                	$cur_tag = $this->tags;
+                	$this->tags = array();
+                	$this->tags = $cur_tag;
+                	$this->tags = $std;
                 }
             }
             // tag not in array
-            elseif( !in_array( $std, $this->getProperty()->tags->tag ) )
+            elseif( !in_array( $std, $this->tags ) )
             {
-                $this->getProperty()->tags->tag[] = $std;
+                $this->tags[] = $std;
             }
+
+        	$this->getProperty()->tags->tag = $this->tags; 
         }
         elseif( $this->getService()->isRest() )
         {
-            if( !in_array( $std, $this->getProperty()->tags ) )
+            if( !in_array( $std, $this->tags ) )
             {
-                $this->getProperty()->tags[] = $std;
+                $this->tags[] = $std;
             }
+            
+            $this->getProperty()->tags = $this->tags;
         }
-        
         return $this;
     }
-    
+
+/**
+<documentation><description><p>Adds tags, if they do not exist, and returns the calling object.</p></description>
+<example>$page->addTags( array( "education", "healthcare" ) )->edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function addTags( array $a ) : Asset
+    {
+		foreach( $a as $s )
+		{
+			if( !is_string( $s ) )
+			{
+				continue;
+			}
+			else
+			{
+				$s_trimmed = trim( $s );
+				$this->addTag( $s );
+			}
+		}
+        return $this;
+    }
+
+/**
+<documentation><description><p>Returns the parent folder or <code>NULL</code>.</p></description>
+<example>u\DebugUtility::dump( $bf->getParentFolder() );</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getParentFolder()
+    {
+        if( $this->getParentFolderId() != NULL )
+        {
+            $parent_id    = $this->getParentContainerId();
+            $parent_type  = c\T::$type_parent_type_map[ $this->getType() ];
+            
+            return Asset::getAsset( $this->getService(), $parent_type, $parent_id );
+        }
+        return NULL;
+    }
+
+/**
+<documentation><description><p>Returns <code>getParentFolderId</code> or NULL.</p></description>
+<example>echo $dd->getParentFolderId(), BR,
+     $dd->getParentFolderPath(), BR;</example>
+<return-type>mixed</return-type>
+<exception>WrongAssetTypeException</exception>
+</documentation>
+*/
+    public function getParentFolderId()
+    {
+        if( isset( $this->getProperty()->parentFolderId ) )
+            return $this->getProperty()->parentFolderId;
+        return NULL;
+    }
+
+/**
+<documentation><description><p>Returns <code>parentFolderPath</code> or NULL.</p></description>
+<example>echo $dd->getParentFolderId(), BR,
+     $dd->getParentFoldPath(), BR;</example>
+<return-type>mixed</return-type>
+<exception>WrongAssetTypeException</exception>
+</documentation>
+*/
+    public function getParentFolderPath()
+    {
+        if( isset( $this->getProperty()->parentFolderPath ) )
+            return $this->getProperty()->parentFolderPath;
+        return NULL;
+    }
+
+/**
+<documentation><description><p>Returns <code>tags</code> (an <code>stdClass</code> object for SOAP, and an array for REST).</p></description>
+<example>u\DebugUtility::dump( $page->getTags() );</example>
+<return-type>mixed</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function getTags()
+    {
+        return $this->getProperty()->tags;
+    }
+
+/**
+<documentation><description><p>An alias of <code>isInTags</code>.</p></description>
+<example>echo u\StringUtility::boolToString( $page->hasTag( "education" ) );</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function hasTag( string $t ) : bool
+    {
+    	return $this->isInTags( $t );
+    }
+
+/**
+<documentation><description><p>An alias of <code>isDescendantOf</code>.</p></description>
+<example>if( $page->isInContainer( $test2 ) )
+    $page->move( $test1, false );</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
+    public function isInFolder( Folder $folder ) : bool
+    {
+        return $this->isDescendantOf( $folder );
+    }
+
+/**
+<documentation><description><p>Returns a bool, indicating whether the tag is already in
+the <code>tags</code> property.</p></description>
+<example>echo u\StringUtility::boolToString( $page->isInTags( "education" ) );</example>
+<return-type>bool</return-type>
+<exception></exception>
+</documentation>
+*/
     public function isInTags( string $t ) : bool
     {
     	if( $this->getService()->isSoap() )
@@ -134,11 +270,13 @@ abstract class FolderContainedAsset extends ContainedAsset
         }
     }
     
-    public function hasTag( string $t ) : bool
-    {
-    	return $this->isInTags( $t );
-    }
-    
+/**
+<documentation><description><p>Removes a tag, if it exists, and returns the calling object.</p></description>
+<example>$page->removeTag( "education" )->edit();</example>
+<return-type>Asset</return-type>
+<exception></exception>
+</documentation>
+*/
     public function removeTag( string $t ) : Asset
     {
     	if( $this->isInTags( $t ) )
@@ -185,79 +323,7 @@ abstract class FolderContainedAsset extends ContainedAsset
     	
     	return $this;
     }
-
-/**
-<documentation><description><p>Returns the parent folder or <code>NULL</code>.</p></description>
-<example>u\DebugUtility::dump( $bf->getParentFolder() );</example>
-<return-type>mixed</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getParentFolder()
-    {
-        if( $this->getParentFolderId() != NULL )
-        {
-            $parent_id    = $this->getParentContainerId();
-            $parent_type  = c\T::$type_parent_type_map[ $this->getType() ];
-            
-            return Asset::getAsset( $this->getService(), $parent_type, $parent_id );
-        }
-        return NULL;
-    }
     
-/**
-<documentation><description><p>Returns <code>getParentFolderId</code> or NULL.</p></description>
-<example>echo $dd->getParentFolderId(), BR,
-     $dd->getParentFolderPath(), BR;</example>
-<return-type>mixed</return-type>
-<exception>WrongAssetTypeException</exception>
-</documentation>
-*/
-    public function getParentFolderId()
-    {
-        if( isset( $this->getProperty()->parentFolderId ) )
-            return $this->getProperty()->parentFolderId;
-        return NULL;
-    }
-    
-/**
-<documentation><description><p>Returns <code>parentFolderPath</code> or NULL.</p></description>
-<example>echo $dd->getParentFolderId(), BR,
-     $dd->getParentFoldPath(), BR;</example>
-<return-type>mixed</return-type>
-<exception>WrongAssetTypeException</exception>
-</documentation>
-*/
-    public function getParentFolderPath()
-    {
-        if( isset( $this->getProperty()->parentFolderPath ) )
-            return $this->getProperty()->parentFolderPath;
-        return NULL;
-    }
-    
-/**
-<documentation><description><p>Returns <code>tags</code> (an <code>stdClass</code> object for SOAP, and an array for REST).</p></description>
-<example>u\DebugUtility::dump( $page->getTags() );</example>
-<return-type>mixed</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function getTags()
-    {
-        return $this->getProperty()->tags;
-    }
-  
-/**
-<documentation><description><p>An alias of <code>isDescendantOf</code>.</p></description>
-<example>if( $page->isInContainer( $test2 ) )
-    $page->move( $test1, false );</example>
-<return-type>bool</return-type>
-<exception></exception>
-</documentation>
-*/
-    public function isInFolder( Folder $folder ) : bool
-    {
-        return $this->isDescendantOf( $folder );
-    }
+    private $tags;
 }
 ?>
